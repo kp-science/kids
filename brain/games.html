@@ -143,6 +143,103 @@ button.it:hover{transform:translateY(-3px);border-color:var(--k)}
 .win p{color:var(--mute);margin-bottom:10px}
 .win .btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .win .btns .bigbtn{margin:0}
+
+
+/* ================= วิธีเล่น ================= */
+details.howto{background:#fff;border-radius:26px;margin-bottom:14px;box-shadow:0 10px 26px rgba(58,51,80,.08);overflow:hidden}
+details.howto summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 16px;font-family:'Mali',sans-serif;font-weight:700;color:var(--kd)}
+details.howto summary::-webkit-details-marker{display:none}
+details.howto summary .hi{width:38px;height:38px;border-radius:13px;background:var(--kl);display:grid;place-items:center;font-size:1.3rem}
+details.howto summary::after{content:"แตะเพื่อเปิด ▾";margin-left:auto;font-family:'Noto Sans Thai Looped',sans-serif;font-size:.8rem;color:var(--mute);font-weight:600}
+details.howto[open] summary::after{content:"ซ่อน ▴"}
+.hbody{padding:0 16px 16px}
+.hgoal{background:var(--kl);color:var(--kd);border-radius:16px;padding:10px 14px;font-weight:700;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.hsteps{list-style:none;display:grid;gap:8px}
+.hsteps li{display:flex;gap:12px;align-items:center;background:#FDFCFF;border-radius:16px;padding:8px 12px}
+.hsteps li .hn{width:28px;height:28px;border-radius:50%;background:var(--kd);color:#fff;font-weight:700;display:grid;place-items:center;font-size:.9rem;flex:none}
+.hsteps li .he{font-size:1.7rem;flex:none;width:36px;text-align:center}
+.htip{margin-top:10px;background:#FFF9DB;border-radius:16px;padding:9px 14px;font-size:.95rem}
+.hlv{margin-top:8px;font-size:.85rem;color:var(--mute);text-align:center}
+.hbtns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.hbtns .bigbtn{margin:0}
+/* ================= เกมท้าทาย ================= */
+.sechead{display:flex;align-items:center;gap:10px;margin:26px 0 12px}
+.sechead .si{width:44px;height:44px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 4px 12px rgba(58,51,80,.08)}
+.sechead h2{font-size:1.35rem}
+.sechead small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-weight:600;font-size:.82rem;color:var(--mute)}
+.pal{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pal button{width:62px;height:62px;border-radius:18px;background:#FDFCFF;font-size:2rem;box-shadow:0 4px 12px rgba(58,51,80,.1);border:3px solid transparent}
+.pal button.sel{border-color:var(--kd);transform:scale(1.08)}
+
+/* ซูดูกุ */
+.sdk{display:grid;margin:4px auto;background:#fff;border:3px solid var(--kd);border-radius:14px;overflow:hidden;width:max-content}
+.sdk .c{display:grid;place-items:center;background:#FDFCFF;border-right:1px solid #E9E3F1;border-bottom:1px solid #E9E3F1}
+.sdk .c.given{background:var(--kl)}
+.sdk .c.bl{cursor:pointer}
+.sdk .c.focus{background:#FFF1B8}
+.sdk .c.good{background:#EFFAF2}
+.sdk .c.br{border-right:3px solid var(--kd)} .sdk .c.bb{border-bottom:3px solid var(--kd)}
+
+/* ตาชั่ง */
+.eq{display:flex;align-items:center;justify-content:center;gap:10px;background:#FDFCFF;border-radius:20px;padding:10px 12px;margin:8px auto;max-width:560px;
+  box-shadow:0 3px 10px rgba(58,51,80,.06);flex-wrap:wrap}
+.eq .pan{min-width:90px;min-height:58px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px;font-size:1.9rem;
+  background:var(--kl);border-radius:14px;padding:4px 10px}
+.eq .mid{font-size:1.8rem}
+.eq.ask{box-shadow:0 0 0 3px var(--k)}
+.eq .pan .qm{font-family:'Mali',sans-serif;font-size:1.6rem;color:var(--kd)}
+.numopts{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.numopts button{min-width:70px;height:62px;border-radius:18px;font-size:1.6rem;font-weight:700;background:#FDFCFF;box-shadow:0 4px 12px rgba(58,51,80,.1);border:3px solid transparent;padding:0 10px}
+.numopts button.right{border-color:#9EDDB2;background:#EFFAF2}
+.numopts button.wrong{border-color:#FFCBB3;background:#FFF5EF}
+
+/* ฮานอย */
+.hanoi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0}
+.peg{position:relative;height:230px;border-radius:20px;background:#FDFCFF;display:flex;flex-direction:column-reverse;align-items:center;
+  padding:10px 4px 16px;gap:4px;box-shadow:0 3px 10px rgba(58,51,80,.06);cursor:pointer}
+.peg::before{content:"";position:absolute;bottom:16px;top:24px;left:50%;width:8px;margin-left:-4px;border-radius:8px;background:#E2D9EC}
+.peg::after{content:"";position:absolute;bottom:8px;left:10%;right:10%;height:8px;border-radius:8px;background:#D4C8E2}
+.peg.sel{box-shadow:0 0 0 3px var(--k)}
+.peg.goal{background:#F3FBF5}
+.disk{position:relative;z-index:1;height:26px;border-radius:13px;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.disk.up{transform:translateY(-14px)}
+
+/* เลื่อนตัวเลข */
+.slide{display:grid;gap:6px;margin:4px auto;width:max-content;background:#EFEAF5;padding:6px;border-radius:18px}
+.tl{display:grid;place-items:center;border-radius:14px;font-family:'Mali',sans-serif;font-weight:700;color:#4A4060;box-shadow:0 3px 0 rgba(58,51,80,.12);transition:transform .12s}
+.tl.empty{background:transparent;box-shadow:none}
+.tl.ok{outline:3px solid #9EDDB2}
+
+/* รถติด */
+.lot{position:relative;margin:6px auto;background:#E9E4F0;border-radius:18px;padding:0}
+.lot .gridbg{position:absolute;inset:0;display:grid;border-radius:18px;overflow:hidden}
+.lot .gridbg span{border:1px dashed #D7CFE3}
+.lot .exit{position:absolute;right:-18px;width:18px;background:#9EDDB2;border-radius:0 10px 10px 0;display:grid;place-items:center;font-size:.8rem}
+.car{position:absolute;border-radius:12px;display:grid;place-items:center;font-size:1.6rem;touch-action:none;cursor:grab;
+  box-shadow:0 3px 0 rgba(0,0,0,.14);transition:transform .15s,left .15s,top .15s}
+.car.drag{transition:none;z-index:5;box-shadow:0 8px 16px rgba(0,0,0,.2)}
+.car.red{background:#FF8A80}
+
+/* นักสืบ */
+.houses{display:grid;gap:10px;margin:6px 0}
+.house{border-radius:20px;background:#FDFCFF;text-align:center;padding:0 0 8px;box-shadow:0 3px 10px rgba(58,51,80,.07);overflow:hidden;cursor:pointer}
+.house .roof{font-size:.85rem;font-weight:700;padding:4px 2px;color:#fff}
+.house .spot{height:64px;margin:8px auto 0;width:64px;border-radius:18px;border:3px dashed #DCD3E6;display:grid;place-items:center;font-size:2.4rem}
+.house.hot .spot{background:#FFF1B8;border-color:#F2C94C}
+.house .pos{font-size:.75rem;color:var(--mute)}
+.clues{list-style:none;background:#FDFCFF;border-radius:18px;padding:8px 12px;margin:10px 0}
+.clues li{display:flex;gap:8px;align-items:center;padding:6px 2px;border-bottom:1px dashed #EFEAF5;font-weight:600}
+.clues li:last-child{border-bottom:none}
+.clues li .cn{width:26px;height:26px;border-radius:9px;background:var(--kl);color:var(--kd);display:grid;place-items:center;font-size:.85rem;flex:none}
+.clues li.bad{background:#FFF5EF;border-radius:10px}
+.clues li.bad .cn{background:#F29B72;color:#fff}
+.tray2{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;min-height:70px;margin-top:6px}
+.tray2 button{width:64px;height:64px;border-radius:18px;background:#fff;font-size:2.3rem;box-shadow:0 4px 12px rgba(58,51,80,.1);border:3px solid transparent}
+.tray2 button.sel{border-color:var(--kd);transform:scale(1.08)}
+@media (max-width:480px){
+  .peg{height:190px}.pal button{width:52px;height:52px;font-size:1.7rem}.eq .pan{font-size:1.5rem;min-width:70px}
+  .house .spot{width:52px;height:52px;font-size:2rem}.tray2 button{width:54px;height:54px;font-size:2rem}
+}
 @media (max-width:480px){
   .hero h1{font-size:1.5rem}.hero .emo{width:62px;height:62px;font-size:2.2rem}
   .it{width:70px;height:70px;font-size:2.3rem}.seq .it{width:48px;height:48px;font-size:1.7rem;border-radius:14px}
@@ -178,6 +275,19 @@ const GAMES = [
     how:'เลขในแต่ละช่อง = เลข 2 ช่องที่อยู่ข้างล่างบวกกัน' },
   { id:'dog',     emo:'🐶', name:'พาน้องหมาไปหากระดูก', skill:'คิดเป็นขั้นตอน', c:['#7ED9B0','#EAFAF2','#1F7F58'],
     how:'เรียงลูกศรให้น้องหมาเดินไปถึงกระดูก 🦴 หลบต้นไม้ แล้วกด ▶ เดิน' },
+  /* ---- เกมท้าทาย ---- */
+  { id:'sudoku',  emo:'🧩', name:'ซูดูกุรูปภาพ',     skill:'ตรรกะ',        c:['#B9A2F5','#F4EFFF','#5E3FB8'], hard:true,
+    how:'เติมภาพให้ครบ แต่ละแถว แต่ละหลัก และแต่ละกรอบใหญ่ ต้องมีภาพไม่ซ้ำกัน' },
+  { id:'balance', emo:'⚖️', name:'ตาชั่งปริศนา',     skill:'คิดแบบสมการ',  c:['#F2C94C','#FFF8E1','#8A6100'], hard:true,
+    how:'ดูว่าผลไม้อะไรหนักเท่ากัน แล้วหาคำตอบว่าต้องใช้กี่ลูก' },
+  { id:'hanoi',   emo:'🗼', name:'หอคอยฮานอย',       skill:'วางแผนล่วงหน้า', c:['#F79BC0','#FFEFF5','#B33A6E'], hard:true,
+    how:'ย้ายแผ่นทั้งหมดไปเสาขวาสุด ย้ายได้ทีละแผ่น ห้ามวางแผ่นใหญ่ทับแผ่นเล็ก' },
+  { id:'slide',   emo:'🔢', name:'เลื่อนเลขเรียงลำดับ', skill:'มิติสัมพันธ์', c:['#8EC5FF','#EEF6FF','#2F6DB0'], hard:true,
+    how:'แตะแผ่นตัวเลขที่อยู่ติดช่องว่าง เพื่อเลื่อนให้เรียง 1, 2, 3, … ตามลำดับ' },
+  { id:'traffic', emo:'🚗', name:'รถติด! พารถแดงออก', skill:'คิดหลายขั้นตอน', c:['#FFB38A','#FFF2EA','#B4551C'], hard:true,
+    how:'ลากรถคันอื่นหลบทาง แล้วพารถแดงออกทางประตูขวา รถเลื่อนได้แค่ตามแนวของมัน' },
+  { id:'detective', emo:'🕵️', name:'นักสืบหาบ้านสัตว์', skill:'อ่านแล้วคิดตรรกะ', c:['#7ED9B0','#EAFAF2','#1F7F58'], hard:true,
+    how:'อ่านเบาะแสแล้วพาสัตว์แต่ละตัวไปอยู่บ้านที่ถูกต้อง' },
 ];
 const LVNAME = ['ง่าย','กลาง','ยาก'];
 const $ = s => document.querySelector(s);
@@ -247,7 +357,14 @@ function menu(){
   app.innerHTML =
     '<div class="hero">'+scene()+'<div class="row"><span class="emo">🧠</span><div><h1>เกมฝึกสมอง</h1>'+
     '<p>เลือกเกมแล้วเริ่มจากระดับง่าย ผ่านแล้วได้ดาว ⭐ และปลดล็อกระดับต่อไป</p></div></div></div>'+
-    '<div class="games">'+GAMES.map(g =>
+    section('🧠','เกมฝึกสมอง','เริ่มต้นตรงนี้ เล่นง่าย สนุก',GAMES.filter(g=>!g.hard))+
+    section('🔥','เกมท้าทาย','ยากขึ้นอีกขั้น ต้องคิดหลายชั้น',GAMES.filter(g=>g.hard));
+  app.querySelectorAll('.lv[data-g]').forEach(b => b.onclick = () => go(b.dataset.g, +b.dataset.l));
+  window.scrollTo(0,0);
+}
+function section(icon, title, sub, list){
+  return '<div class="sechead"><span class="si">'+icon+'</span><h2>'+title+'<small>'+sub+'</small></h2></div>'+
+    '<div class="games">'+list.map(g =>
       '<div class="gcard" style="--gl:'+g.c[1]+';--gd:'+g.c[2]+'">'+
         '<div class="gh"><span class="gi">'+g.emo+'</span><div><h3>'+g.name+'</h3><span class="skill">'+g.skill+'</span></div></div>'+
         '<p>'+g.how+'</p>'+
@@ -255,9 +372,60 @@ function menu(){
           ? '<button class="lv" type="button" data-g="'+g.id+'" data-l="'+l+'">'+LVNAME[l]+'<small>'+starStr(starsOf(g.id,l))+'</small></button>'
           : '<span class="lv lock">🔒 '+LVNAME[l]+'<small>ผ่านระดับก่อน</small></span>').join('')+
         '</div></div>').join('')+'</div>';
-  app.querySelectorAll('.lv[data-g]').forEach(b => b.onclick = () => go(b.dataset.g, +b.dataset.l));
-  window.scrollTo(0,0);
 }
+
+
+/* ---------------- วิธีเล่นของแต่ละเกม: goal = เป้าหมาย · steps = [รูป, ขั้นตอน] · tip = เคล็ดลับ · lv = ความต่างของระดับ ---------------- */
+const HOWTO = {
+  memory:{ goal:'หาคู่การ์ดที่ภาพเหมือนกันให้ครบทุกคู่',
+    steps:[['👆','แตะการ์ด 1 ใบ เพื่อพลิกดูภาพ'],['👆','แตะการ์ดอีก 1 ใบ ถ้าภาพเหมือนกัน การ์ดจะเปิดค้างไว้'],['🙈','ถ้าภาพไม่เหมือนกัน การ์ดจะคว่ำกลับ ต้องจำไว้ว่าภาพอะไรอยู่ตรงไหน'],['⭐','ยิ่งพลิกน้อยครั้ง ยิ่งได้ดาวเยอะ']],
+    tip:'พูดในใจว่า "หมาอยู่มุมซ้ายบน แมวอยู่แถวสอง" จะจำได้ง่ายขึ้น', lv:'ง่าย 6 คู่ · กลาง 8 คู่ · ยาก 10 คู่' },
+  simon:{ goal:'จำลำดับสัตว์ที่ร้อง แล้วแตะตามให้ถูก',
+    steps:[['▶️','กดปุ่ม "เริ่ม"'],['👀','ดูและฟังว่าสัตว์ตัวไหนกะพริบและร้องก่อน-หลัง'],['👆','แตะสัตว์ตามลำดับเดิมทุกตัว'],['➕','ถ้าถูก จะเพิ่มสัตว์อีก 1 ตัว ลำดับยาวขึ้นเรื่อย ๆ'],['🔁','ถ้าแตะผิด จะเล่นลำดับเดิมให้ดูอีกครั้ง']],
+    tip:'จำเป็นเสียงหรือพูดตามก็ได้ เช่น "กบ ไก่ ปลาวาฬ"', lv:'ง่าย จำ 4 ตัว · กลาง 6 ตัว · ยาก 8 ตัว และเร็วขึ้น' },
+  odd:{ goal:'หาภาพที่ไม่ใช่พวกเดียวกับภาพอื่น',
+    steps:[['👀','ดูภาพทั้งหมด แล้วคิดว่าส่วนใหญ่เป็นพวกอะไร เช่น ผลไม้ หรือยานพาหนะ'],['👆','แตะภาพที่ไม่ใช่พวกนั้น'],['💡','ตอบถูกแล้วจะบอกเหตุผลให้ฟัง'],['🔟','ทำให้ครบ 6 ข้อ']],
+    tip:'ถามตัวเองว่า "ภาพพวกนี้เหมือนกันตรงไหน"', lv:'ง่าย 4 ภาพ · กลาง 5 ภาพ · ยาก 6 ภาพ และพวกที่คล้ายกัน เช่น ผลไม้กับผัก' },
+  pattern:{ goal:'หาภาพที่หายไปจากแถวที่เรียงซ้ำ ๆ',
+    steps:[['👀','ดูแถวภาพว่าเรียงซ้ำกันแบบไหน เช่น 🔴🔵🔴🔵'],['❓','ช่อง ? คือภาพที่หายไป'],['👆','แตะภาพด้านล่างที่ใส่ในช่อง ? แล้วรูปแบบถูกต้อง'],['🔟','ทำให้ครบ 6 ข้อ']],
+    tip:'ลองอ่านออกเสียงทีละภาพ "แดง ฟ้า แดง ฟ้า…" จะได้ยินจังหวะที่ซ้ำ', lv:'ง่าย ซ้ำ 2 ภาพ · กลาง ซ้ำ 3 ภาพ · ยาก ซ้ำ 4 ภาพ และช่องว่างอยู่กลางแถว' },
+  pyramid:{ goal:'เติมเลขในพีระมิดให้ครบทุกช่อง',
+    steps:[['🔺','กฎของพีระมิด: เลขในช่อง = เลข 2 ช่องที่อยู่ข้างล่างบวกกัน'],['👆','แตะช่องว่าง แล้วแตะตัวเลขด้านล่าง (หรือลากตัวเลขไปวางก็ได้)'],['✅','ถ้าถูก ช่องจะเป็นสีเขียว ถ้าผิดลองใหม่ได้'],['3️⃣','ทำให้ครบ 3 พีระมิด']],
+    tip:'เริ่มจากแถวล่างขึ้นไปข้างบน · ระดับยาก ถ้ารู้ช่องบนกับช่องล่าง 1 ช่อง ให้เอาไปลบกัน', lv:'ง่าย 3 แถว · กลาง 4 แถว · ยาก ต้องคิดลบย้อนกลับ' },
+  dog:{ goal:'สั่งให้น้องหมา 🐶 เดินไปถึงกระดูก 🦴',
+    steps:[['⬆️','แตะลูกศรเพื่อเพิ่มคำสั่ง ลูกศร 1 อัน = เดิน 1 ช่อง'],['📝','เรียงคำสั่งให้ครบทั้งเส้นทางก่อน'],['▶️','กด "เดิน" น้องหมาจะเดินตามคำสั่งทีละข้อ'],['🌳','ถ้าชนต้นไม้หรือตกขอบ จะบอกว่าคำสั่งข้อไหนผิด แก้แล้วลองใหม่'],['⌫','กด "ลบ" เพื่อลบคำสั่งอันสุดท้าย']],
+    tip:'ใช้นิ้วลากตามทางบนจอก่อน แล้วค่อยนับว่าต้องไปทางไหนกี่ช่อง', lv:'ง่าย ตาราง 4×4 · กลาง 5×5 มีต้นไม้ · ยาก 6×6 ต้นไม้เยอะ' },
+  sudoku:{ goal:'เติมภาพให้เต็มตาราง โดยห้ามมีภาพซ้ำ',
+    steps:[['➡️','แต่ละแถวแนวนอน ต้องมีภาพครบทุกแบบ ไม่ซ้ำกัน'],['⬇️','แต่ละหลักแนวตั้ง ต้องมีภาพครบทุกแบบ ไม่ซ้ำกัน'],['🔲','แต่ละกรอบเส้นหนา ต้องมีภาพครบทุกแบบ ไม่ซ้ำกัน'],['👆','แตะช่องว่าง แล้วแตะภาพด้านล่าง']],
+    tip:'หาแถว หลัก หรือกรอบที่ขาดภาพอยู่แค่ 1 ช่องก่อน จะรู้ทันทีว่าต้องเป็นภาพอะไร', lv:'ง่าย 4×4 ว่าง 6 ช่อง · กลาง 4×4 ว่าง 10 ช่อง · ยาก 6×6' },
+  balance:{ goal:'หาว่าตาชั่งอันสุดท้ายต้องใช้ผลไม้กี่ลูก',
+    steps:[['⚖️','ตาชั่งแต่ละอันหนักเท่ากันทั้งสองข้าง เช่น 🍌 = 🍒🍒 แปลว่ากล้วย 1 ลูกหนักเท่าเชอร์รี 2 ลูก'],['🔍','ใช้ตาชั่งด้านบนช่วยคิด'],['❓','ตาชั่งอันสุดท้ายมีช่อง ❓ ต้องใช้ผลไม้นั้นกี่ลูก'],['👆','แตะตัวเลขคำตอบ']],
+    tip:'แทนที่ทีละอย่าง เช่น 🍌🍌 = (🍒🍒)(🍒🍒) = เชอร์รี 4 ลูก', lv:'ง่าย 1 ตาชั่ง · กลาง ต้องคิด 2 ต่อ · ยาก ต้องเอาของที่เหมือนกันออกทั้งสองข้าง' },
+  hanoi:{ goal:'ย้ายแผ่นทั้งหมดไปไว้ที่เสาขวาสุด 🏁',
+    steps:[['👆','แตะเสาที่จะหยิบ แผ่นบนสุดจะยกขึ้น'],['👆','แตะเสาที่จะวางแผ่นนั้น'],['1️⃣','ย้ายได้ทีละแผ่นเท่านั้น'],['🚫','ห้ามวางแผ่นใหญ่ทับแผ่นเล็ก'],['⭐','ถ้าย้ายได้ใกล้จำนวนครั้งน้อยสุด จะได้ 3 ดาว']],
+    tip:'แผ่นเล็กสุดย้ายบ่อยที่สุด ลองย้ายแผ่นเล็กสุดวนไปทางเดียวกันทุกครั้ง', lv:'ง่าย 3 แผ่น (7 ครั้ง) · กลาง 4 แผ่น (15 ครั้ง) · ยาก 5 แผ่น (31 ครั้ง)' },
+  slide:{ goal:'เลื่อนแผ่นตัวเลขให้เรียง 1, 2, 3, … ตามลำดับ',
+    steps:[['⬜','ในตารางมีช่องว่าง 1 ช่อง'],['👆','แตะแผ่นที่อยู่ติดกับช่องว่าง แผ่นนั้นจะเลื่อนเข้าไป'],['🔢','เรียงจากซ้ายไปขวา บนลงล่าง ช่องว่างอยู่มุมขวาล่าง'],['🟩','แผ่นที่อยู่ถูกที่แล้วจะมีกรอบสีเขียว']],
+    tip:'เรียงแถวบนสุดให้เสร็จก่อน แล้วค่อยทำแถวถัดไป', lv:'ง่าย 3×3 สลับนิดเดียว · กลาง 3×3 สลับเยอะ · ยาก 4×4' },
+  traffic:{ goal:'พารถแดง 🚗 ออกจากลานจอดทางประตูขวา ➡️',
+    steps:[['🚙','รถแนวนอนเลื่อนได้แค่ซ้าย-ขวา รถแนวตั้งเลื่อนได้แค่ขึ้น-ลง'],['👆','ใช้นิ้วลากรถคันที่ขวางทางให้หลบไป'],['🚗','ลากรถแดงไปทางขวาจนสุดประตู'],['⭐','ขยับน้อยครั้งใกล้ "ทำได้ใน … ครั้ง" จะได้ดาวเยอะ']],
+    tip:'ดูว่ารถคันไหนขวางรถแดงอยู่ แล้วถามว่า "มันจะหลบไปได้ไหม ถ้าไม่ได้ ต้องย้ายคันไหนก่อน"', lv:'ง่าย ขยับ 3–5 ครั้ง · กลาง 6–9 ครั้ง · ยาก 10 ครั้งขึ้นไป' },
+  detective:{ goal:'พาสัตว์ทุกตัวไปอยู่บ้านที่ถูกต้องตามเบาะแส',
+    steps:[['📜','อ่านเบาะแสทุกข้อ แตะที่เบาะแสเพื่อฟังเสียงอ่านได้'],['👆','แตะสัตว์ แล้วแตะบ้านที่คิดว่าใช่ (แตะบ้านอีกครั้งเพื่อเอาสัตว์ออก)'],['🔍','ใส่ครบทุกตัวแล้ว กด "ตรวจคำตอบ"'],['🟧','ถ้ายังไม่ถูก เบาะแสข้อที่ไม่ตรงจะเป็นสีส้ม ลองสลับบ้านดู']],
+    tip:'เริ่มจากเบาะแสที่ชัดที่สุด เช่น "อยู่บ้านซ้ายสุด" ก่อน แล้วค่อยใช้เบาะแสอื่น', lv:'ง่าย 3 บ้าน · กลาง 3 บ้าน เบาะแสยากขึ้น · ยาก 4 บ้าน' },
+};
+function howtoHTML(id, open){
+  const h=HOWTO[id]; if(!h) return '';
+  const say = h.goal+' '+h.steps.map((x,i)=>'ข้อ '+(i+1)+' '+x[1]).join(' ')+' เคล็ดลับ '+h.tip;
+  return '<details class="howto" id="howto"'+(open?' open':'')+'><summary><span class="hi">📖</span>วิธีเล่น</summary><div class="hbody">'+
+    '<div class="hgoal"><span style="font-size:1.4rem">🎯</span><span>'+h.goal+'</span></div>'+
+    '<ol class="hsteps">'+h.steps.map((x,i)=>'<li><span class="hn">'+(i+1)+'</span><span class="he">'+x[0]+'</span><span>'+x[1]+'</span></li>').join('')+'</ol>'+
+    '<div class="htip">💡 <b>เคล็ดลับ:</b> '+h.tip+'</div><div class="hlv">'+h.lv+'</div>'+
+    '<div class="hbtns"><button class="bigbtn gh" type="button" id="hsay" data-t="'+say.replace(/"/g,'&quot;')+'">🔊 ฟังวิธีเล่น</button>'+
+    '<button class="bigbtn" type="button" id="hok">เข้าใจแล้ว เริ่มเล่น ▶</button></div></div></details>';
+}
+let SEEN = {};
+try{ SEEN = JSON.parse(localStorage.getItem('kids-brain-seen')||'{}') || {}; }catch(e){ SEEN = {}; }
 
 /* ---------------- เข้าเกม ---------------- */
 let CUR = null;   // {g, l, mistakes, token}
@@ -270,7 +438,14 @@ function go(id, l, push=true){
   $('#tt').textContent = g.emo+' '+g.name+' · '+LVNAME[l];
   const b=$('#backbtn'); b.textContent='‹ เกมทั้งหมด'; b.href='#';
   b.onclick = e => { e.preventDefault(); history.pushState(null,'',location.pathname); menu(); };
-  app.innerHTML = '<div class="stage" id="stage"></div>';
+  /* เปิดวิธีเล่นให้อัตโนมัติครั้งแรกของแต่ละเกม ครั้งต่อไปพับไว้ แตะเปิดดูได้ */
+  app.innerHTML = howtoHTML(id, !SEEN[id]) + '<div class="stage" id="stage"></div>';
+  $('#hsay').onclick = e => speak(e.currentTarget.dataset.t);
+  $('#hok').onclick = () => {
+    $('#howto').open = false; SEEN[id] = 1;
+    try{ localStorage.setItem('kids-brain-seen', JSON.stringify(SEEN)); }catch(e){}
+    $('#stage').scrollIntoView({behavior:'smooth', block:'start'});
+  };
   window.scrollTo(0,0);
   RUN[id](l, $('#stage'), CUR.token);
 }
@@ -480,15 +655,17 @@ function gPyramid(l, st, tok){
     /* ลากตัวเลข หรือแตะเลือก */
     nums.forEach(b => {
       let sx=0, sy=0, moved=false, ghost=null, hot=null;
-      b.onpointerdown = e => { e.preventDefault(); sx=e.clientX; sy=e.clientY; moved=false; b.setPointerCapture(e.pointerId); };
+      let down=false;
+      b.onpointerdown = e => { e.preventDefault(); sx=e.clientX; sy=e.clientY; moved=false; down=true; try{ b.setPointerCapture(e.pointerId); }catch(err){} };
       b.onpointermove = e => {
-        if(!b.hasPointerCapture(e.pointerId)) return;
+        if(!down) return;
         if(!moved && Math.hypot(e.clientX-sx,e.clientY-sy)>8){ moved=true; ghost=b.cloneNode(true); ghost.classList.add('ghost'); document.body.appendChild(ghost); }
         if(moved){ ghost.style.transform='translate('+e.clientX+'px,'+e.clientY+'px) translate(-50%,-50%)';
           const el=document.elementFromPoint(e.clientX,e.clientY), c=el&&el.closest('.cell.blank');
           if(hot&&hot!==c) hot.classList.remove('hot'); if(c) c.classList.add('hot'); hot=c; }
       };
       b.onpointerup = e => {
+        if(!down) return; down=false;
         if(ghost){ ghost.remove(); ghost=null; }
         if(hot){ hot.classList.remove('hot'); }
         if(moved){ if(hot) put(hot,+b.dataset.n); hot=null; return; }
@@ -497,7 +674,7 @@ function gPyramid(l, st, tok){
         if(sel===b){ b.classList.remove('sel'); sel=null; return; }
         if(sel) sel.classList.remove('sel'); sel=b; b.classList.add('sel');
       };
-      b.onpointercancel = () => { if(ghost){ ghost.remove(); ghost=null; } if(hot) hot.classList.remove('hot'); hot=null; };
+      b.onpointercancel = () => { down=false; if(ghost){ ghost.remove(); ghost=null; } if(hot) hot.classList.remove('hot'); hot=null; };
     });
   }
   round();
@@ -572,7 +749,364 @@ function gDog(l, st, tok){
   round();
 }
 
-const RUN = { memory:gMemory, simon:gSimon, odd:gOdd, pattern:gPattern, pyramid:gPyramid, dog:gDog };
+
+/* ============================================================
+   7) ซูดูกุรูปภาพ
+   ============================================================ */
+function sdkOk(g,n,bw,bh,r,c,v){
+  for(let i=0;i<n;i++){ if(g[r][i]===v||g[i][c]===v) return false; }
+  const r0=r-r%bh, c0=c-c%bw;
+  for(let i=r0;i<r0+bh;i++) for(let j=c0;j<c0+bw;j++) if(g[i][j]===v) return false;
+  return true;
+}
+function sdkCount(g,n,bw,bh,limit){
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++) if(!g[r][c]){
+    let cnt=0;
+    for(let v=1;v<=n;v++) if(sdkOk(g,n,bw,bh,r,c,v)){ g[r][c]=v; cnt+=sdkCount(g,n,bw,bh,limit-cnt); g[r][c]=0; if(cnt>=limit) return cnt; }
+    return cnt;
+  }
+  return 1;
+}
+function sdkFill(g,n,bw,bh){
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++) if(!g[r][c]){
+    for(const v of shuffle(Array.from({length:n},(_,i)=>i+1))) if(sdkOk(g,n,bw,bh,r,c,v)){ g[r][c]=v; if(sdkFill(g,n,bw,bh)) return true; g[r][c]=0; }
+    return false;
+  }
+  return true;
+}
+function makeSudoku(l){
+  const n=l<2?4:6, bw=l<2?2:3, bh=2, want=[6,10,18][l];
+  const sol=Array.from({length:n},()=>Array(n).fill(0)); sdkFill(sol,n,bw,bh);
+  const puz=sol.map(r=>r.slice()); let removed=0;
+  for(const k of shuffle(Array.from({length:n*n},(_,i)=>i))){
+    if(removed>=want) break;
+    const r=Math.floor(k/n), c=k%n, keep=puz[r][c]; puz[r][c]=0;
+    if(sdkCount(puz.map(x=>x.slice()),n,bw,bh,2)===1) removed++; else puz[r][c]=keep;
+  }
+  return {n,bw,bh,sol,puz};
+}
+const SDK_EMO=['🍎','🍌','🍇','🍓','🍉','🍊'];
+function gSudoku(l, st, tok){
+  const {n,bw,bh,sol,puz}=makeSudoku(l), size=Math.min(l<2?72:56, Math.floor((Math.min(window.innerWidth,860)-70)/n));
+  const em=shuffle(SDK_EMO).slice(0,n);
+  st.innerHTML=head('เติมภาพให้ครบ แต่ละแถว แต่ละหลัก และแต่ละกรอบหนา ต้องมีภาพไม่ซ้ำกัน','<span class="chip">'+n+'×'+n+'</span>')+
+    '<div class="sdk" style="grid-template-columns:repeat('+n+','+size+'px)">'+
+      puz.map((row,r)=>row.map((v,c)=>'<div class="c'+(v?' given':' bl')+((c+1)%bw===0&&c<n-1?' br':'')+((r+1)%bh===0&&r<n-1?' bb':'')+
+        '" data-r="'+r+'" data-c="'+c+'" style="width:'+size+'px;height:'+size+'px;font-size:'+(size*.55)+'px">'+(v?em[v-1]:'')+'</div>').join('')).join('')+'</div>'+
+    '<div class="pal">'+em.map((e,i)=>'<button type="button" data-v="'+(i+1)+'">'+e+'</button>').join('')+'</div>'+
+    '<div class="msg" id="msg">แตะช่องว่างแล้วแตะภาพ หรือแตะภาพแล้วแตะช่อง</div>';
+  let foc=null, sel=null, left=st.querySelectorAll('.c.bl').length;
+  async function put(cell,v){
+    if(!cell||cell.classList.contains('good')) return;
+    const r=+cell.dataset.r, c=+cell.dataset.c;
+    if(sol[r][c]===v){ cell.textContent=em[v-1]; cell.classList.remove('focus','bl'); cell.classList.add('good'); good(); foc=null; left--;
+      if(!left){ await sleep(900); if(alive(tok)) win(starsByMistakes(CUR.mistakes)); } }
+    else { cell.textContent=em[v-1]; bad(cell); setTimeout(()=>{ if(!cell.classList.contains('good')) cell.textContent=''; },650); }
+  }
+  st.querySelectorAll('.c.bl').forEach(cell=>cell.onclick=()=>{
+    if(cell.classList.contains('good')) return;
+    if(sel){ const v=+sel.dataset.v; sel.classList.remove('sel'); sel=null; put(cell,v); return; }
+    st.querySelectorAll('.c.focus').forEach(x=>x.classList.remove('focus')); foc=cell; cell.classList.add('focus'); sfx.tap();
+  });
+  st.querySelectorAll('.pal button').forEach(b=>b.onclick=()=>{
+    sfx.tap();
+    if(foc){ put(foc,+b.dataset.v); return; }
+    if(sel===b){ b.classList.remove('sel'); sel=null; return; }
+    if(sel) sel.classList.remove('sel'); sel=b; b.classList.add('sel');
+  });
+}
+
+/* ============================================================
+   8) ตาชั่งปริศนา
+   ============================================================ */
+function makeBalance(l){
+  const [Y,X,Z]=shuffle(['🍒','🍓','🍎','🍋','🥝','🍐']).slice(0,1).concat(shuffle(['🍌','🥕','🍆','🌽']).slice(0,1), shuffle(['🍉','🍍','🎃','🥥']).slice(0,1));
+  const rep_=(e,k)=>Array(k).fill(e);
+  const two=()=>2+rnd(2);
+  if(l===0){
+    const a=two(), k=two();
+    return rnd(2)
+      ? {known:[[[X],rep_(Y,a)]], ask:[rep_(X,k),Y], ans:a*k}
+      : {known:[[[X],rep_(Y,a)]], ask:[rep_(Y,a*k),X], ans:k};
+  }
+  if(l===1){
+    const a=two(), b=two();
+    return rnd(2)
+      ? {known:[[[X],rep_(Y,a)],[[Z],rep_(X,b)]], ask:[[Z],Y], ans:a*b}
+      : {known:[[[X],rep_(Y,a)]], ask:[[X,Y],Y], ans:a+1};
+  }
+  const v=rnd(3);
+  if(v===0){ const n=1+rnd(2), d=two(); return {known:[[[X].concat(rep_(Y,n)),rep_(Y,n+d)]], ask:[[X,X],Y], ans:2*d}; }
+  if(v===1){ const a=two(), b=1+rnd(3); return {known:[[[X],rep_(Y,a)],[[Z],[X].concat(rep_(Y,b))]], ask:[[Z],Y], ans:a+b}; }
+  const c=[4,6][rnd(2)]; return {known:[[[X,X],[Z]],[[Z],rep_(Y,c)]], ask:[[X],Y], ans:c/2};
+}
+function gBalance(l, st, tok){
+  const rounds=5; let r=0;
+  const pan = arr => '<div class="pan">'+arr.join('')+'</div>';
+  function round(){
+    const q=makeBalance(l);
+    const opts=shuffle([q.ans].concat(shuffle([q.ans-2,q.ans-1,q.ans+1,q.ans+2,q.ans+3].filter(x=>x>0&&x!==q.ans)).slice(0,3)));
+    st.innerHTML=head('ตาชั่งด้านบนหนักเท่ากันทั้งสองข้าง แล้วตาชั่งสุดท้ายต้องใช้กี่ลูก?','<span class="chip">ข้อ '+(r+1)+' / '+rounds+'</span>')+
+      q.known.map(k=>'<div class="eq">'+pan(k[0])+'<span class="mid">⚖️</span>'+pan(k[1])+'</div>').join('')+
+      '<div class="eq ask">'+pan(q.ask[0])+'<span class="mid">⚖️</span><div class="pan"><span class="qm">❓</span>'+q.ask[1]+'</div></div>'+
+      '<div class="numopts">'+opts.map(o=>'<button type="button" data-v="'+o+'">'+o+'</button>').join('')+'</div><div class="msg" id="msg"></div>';
+    let done=false;
+    st.querySelectorAll('.numopts button').forEach(b=>b.onclick=async()=>{
+      if(done) return;
+      if(+b.dataset.v===q.ans){ done=true; b.classList.add('right'); st.querySelector('.eq.ask .qm').textContent=q.ans+' ×'; good();
+        await sleep(1400); if(!alive(tok)) return; if(++r===rounds) win(starsByMistakes(CUR.mistakes)); else round(); }
+      else { b.classList.add('wrong'); bad(b); setTimeout(()=>b.classList.remove('wrong'),700); }
+    });
+  }
+  round();
+}
+
+/* ============================================================
+   9) หอคอยฮานอย
+   ============================================================ */
+const DISKC=['#FF9EC4','#FFC58A','#FFE08A','#95E08A','#8EC5FF','#C9A8FF'];
+function gHanoi(l, st, tok){
+  const n=[3,4,5][l], best=(1<<n)-1;
+  let pegs=[Array.from({length:n},(_,i)=>n-i),[],[]], from=null, moves=0;
+  st.innerHTML=head('ย้ายแผ่นทั้งหมดไปเสาขวาสุด 🏁 ย้ายได้ทีละแผ่น ห้ามวางแผ่นใหญ่ทับแผ่นเล็ก','<span class="chip" id="hm">ย้าย 0 ครั้ง</span><span class="chip">น้อยสุด '+best+' ครั้ง</span>')+
+    '<div class="hanoi" id="hanoi"></div><div class="msg" id="msg">แตะเสาที่จะหยิบแผ่นบนสุด แล้วแตะเสาที่จะวาง</div>';
+  function draw(){
+    $('#hanoi').innerHTML=pegs.map((pg,i)=>'<div class="peg'+(i===2?' goal':'')+(from===i?' sel':'')+'" data-i="'+i+'">'+
+      pg.map((d,k)=>'<div class="disk'+(from===i&&k===pg.length-1?' up':'')+'" style="width:'+(28+d*(64/n)*1)+'%;background:'+DISKC[d-1]+'"></div>').join('')+'</div>').join('');
+    st.querySelectorAll('.peg').forEach(pg=>pg.onclick=()=>tap(+pg.dataset.i));
+  }
+  async function tap(i){
+    if(from===null){ if(!pegs[i].length) return; from=i; sfx.tap(); draw(); return; }
+    if(from===i){ from=null; draw(); return; }
+    const d=pegs[from][pegs[from].length-1], top=pegs[i][pegs[i].length-1];
+    if(top!==undefined && top<d){ bad(st.querySelector('.peg[data-i="'+i+'"]')); setMsg('แผ่นใหญ่วางทับแผ่นเล็กไม่ได้นะ 💪','no'); from=null; draw(); return; }
+    pegs[i].push(pegs[from].pop()); from=null; moves++; $('#hm').textContent='ย้าย '+moves+' ครั้ง'; tone(420+pegs[i].length*40,.1,'sine',.1); setMsg(''); draw();
+    if(pegs[2].length===n){ good(); await sleep(900); if(!alive(tok)) return;
+      CUR.mistakes=Math.max(CUR.mistakes, moves-best); win(moves<=Math.ceil(best*1.25)?3:moves<=best*2?2:1); }
+  }
+  draw();
+}
+
+/* ============================================================
+   10) เลื่อนเลขเรียงลำดับ
+   ============================================================ */
+const TILEC=['#FFD6E5','#FFE2C7','#FFF0B3','#D5F3DF','#D6EBFF','#E6DBFF'];
+function gSlide(l, st, tok){
+  const n=l<2?3:4, scram=[14,40,70][l], N=n*n;
+  let b=Array.from({length:N},(_,i)=>(i+1)%N), e=N-1, last=-1;
+  const nb=i=>[i-n,i+n,(i%n)?i-1:-1,(i%n<n-1)?i+1:-1].filter(x=>x>=0&&x<N);
+  for(let k=0;k<scram;k++){ const opts=nb(e).filter(x=>x!==last); const t=pick(opts); b[e]=b[t]; b[t]=0; last=e; e=t; }
+  if(b.every((v,i)=>v===(i+1)%N)) return gSlide(l,st,tok);
+  let moves=0; const size=Math.min(n===3?88:70, Math.floor((Math.min(window.innerWidth,860)-80)/n));
+  st.innerHTML=head('แตะแผ่นที่อยู่ติดช่องว่าง เลื่อนให้เรียง 1, 2, 3, … จากซ้ายไปขวา บนลงล่าง','<span class="chip" id="sm">เลื่อน 0 ครั้ง</span>')+
+    '<div class="slide" id="slide" style="grid-template-columns:repeat('+n+','+size+'px)"></div><div class="msg" id="msg"></div>';
+  function draw(){
+    $('#slide').innerHTML=b.map((v,i)=>v?'<button type="button" class="tl'+(v===i+1?' ok':'')+'" data-i="'+i+'" style="width:'+size+'px;height:'+size+'px;font-size:'+(size*.42)+'px;background:'+TILEC[(v-1)%TILEC.length]+'">'+v+'</button>'
+      :'<span class="tl empty" style="width:'+size+'px;height:'+size+'px"></span>').join('');
+    st.querySelectorAll('.tl[data-i]').forEach(t=>t.onclick=()=>tap(+t.dataset.i));
+  }
+  async function tap(i){
+    const z=b.indexOf(0);
+    if(!nb(z).includes(i)){ const t=st.querySelector('.tl[data-i="'+i+'"]'); t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake'); return; }
+    b[z]=b[i]; b[i]=0; moves++; $('#sm').textContent='เลื่อน '+moves+' ครั้ง'; sfx.tap(); draw();
+    if(b.every((v,k)=>v===(k+1)%N)){ good(); await sleep(900); if(!alive(tok)) return;
+      win(moves<=scram*1.5?3:moves<=scram*3?2:1); }
+  }
+  draw();
+}
+
+/* ============================================================
+   11) รถติด! พารถแดงออก
+   ============================================================ */
+const RH_N=6, RH_ROW=2;
+function rhSolve(cars, limit=40000){
+  const key=pos=>pos.join(',');
+  const start=cars.map(c=>c.d==='h'?c.c:c.r), seen=new Map([[key(start),0]]); let q=[start], depth=0;
+  while(q.length){
+    const nq=[];
+    for(const pos of q){
+      if(pos[0]+cars[0].len===RH_N) return depth;
+      const occ=Array(RH_N*RH_N).fill(-1);
+      cars.forEach((c,i)=>{ for(let k=0;k<c.len;k++){ const r=c.d==='h'?c.r:pos[i]+k, cc=c.d==='h'?pos[i]+k:c.c; occ[r*RH_N+cc]=i; } });
+      cars.forEach((c,i)=>{
+        for(const dir of [-1,1]){
+          let p=pos[i];
+          while(true){
+            const np=p+dir, lead=dir<0?np:np+c.len-1;
+            if(lead<0||lead>=RH_N) break;
+            const cell=c.d==='h'?c.r*RH_N+lead:lead*RH_N+c.c;
+            if(occ[cell]!==-1) break;
+            p=np; const npos=pos.slice(); npos[i]=p; const k=key(npos);
+            if(!seen.has(k)){ seen.set(k,depth+1); nq.push(npos); if(seen.size>limit) return -1; }
+          }
+        }
+      });
+    }
+    q=nq; depth++;
+  }
+  return -1;
+}
+function rhFits(cars,cand){
+  const occ=new Set();
+  for(const c of cars) for(let k=0;k<c.len;k++) occ.add(c.d==='h'?c.r*RH_N+c.c+k:(c.r+k)*RH_N+c.c);
+  for(let k=0;k<cand.len;k++){ const cell=cand.d==='h'?cand.r*RH_N+cand.c+k:(cand.r+k)*RH_N+cand.c; if(occ.has(cell)) return false; }
+  return true;
+}
+function rhRandCar(){
+  const len=rnd(4)===0?3:2, d=rnd(2)?'h':'v';
+  if(d==='h'){ let r=rnd(RH_N); if(r===RH_ROW) r=(r+1+rnd(RH_N-1))%RH_N; return {r,c:rnd(RH_N-len+1),len,d}; }
+  return {r:rnd(RH_N-len+1),c:rnd(RH_N),len,d};
+}
+function makeTraffic(l){
+  const [lo,hi]=[[3,5],[6,9],[10,15]][l], t0=Date.now();
+  let best=null, bestM=-1;
+  while(Date.now()-t0<2500){
+    let cars=[{r:RH_ROW,c:rnd(2),len:2,d:'h'}];
+    const count=[5,8,9][l]+rnd(3);
+    for(let tries=0; cars.length<count && tries<80; tries++){ const cand=rhRandCar(); if(rhFits(cars,cand)) cars.push(cand); }
+    let m=rhSolve(cars);
+    for(let it=0; it<[20,60,120][l] && m>=0 && m<lo && Date.now()-t0<2500; it++){
+      const trial=cars.map(c=>({...c}));
+      const cap=[8,11,12][l];   /* ไม่ให้ลานแน่นเกินไปจนดูยาก */
+      if(trial.length>2 && (trial.length>=cap || rnd(2))) trial.splice(1+rnd(trial.length-1),1);
+      if(trial.length<cap) for(let tries=0;tries<20;tries++){ const cand=rhRandCar(); if(rhFits(trial,cand)){ trial.push(cand); break; } }
+      const tm=rhSolve(trial); if(tm>=m){ cars=trial; m=tm; }
+    }
+    if(m>=lo && m<=hi) return {cars,m};
+    if(m>=0 && Math.abs(m-(lo+hi)/2)<Math.abs(bestM-(lo+hi)/2)){ best=cars; bestM=m; }
+  }
+  return {cars:best,m:bestM};
+}
+const CAR_EMO=['🚙','🚕','🚓','🚑','🚜','🚌','🚚','🚐'], CAR_BG=['#D6EBFF','#FFF0B3','#D5F3DF','#E6DBFF','#FFE2C7','#FFD6E5'];
+function gTraffic(l, st, tok){
+  const rounds=2; let r=0;
+  function round(){
+    st.innerHTML=head('กำลังสร้างลานจอดรถ… 🚧');
+    setTimeout(()=>{ if(!alive(tok)) return; build(makeTraffic(l)); },30);
+  }
+  function build({cars,m}){
+    const size=Math.min(62, Math.floor((Math.min(window.innerWidth,860)-90)/RH_N)), W=size*RH_N;
+    let moves=0;
+    st.innerHTML=head('ลากรถคันอื่นหลบ แล้วพา 🚗 รถแดงออกประตูขวา','<span class="chip">ลาน '+(r+1)+' / '+rounds+'</span><span class="chip" id="rm">ขยับ 0 ครั้ง</span><span class="chip">ทำได้ใน '+m+' ครั้ง</span>')+
+      '<div class="lot" id="lot" style="width:'+W+'px;height:'+W+'px"><div class="gridbg" style="grid-template-columns:repeat('+RH_N+',1fr)">'+'<span></span>'.repeat(RH_N*RH_N)+'</div>'+
+      '<div class="exit" style="top:'+(RH_ROW*size)+'px;height:'+size+'px">➡️</div></div>'+
+      '<div class="msg" id="msg">ลากรถไปข้างหน้าหรือถอยหลังตามแนวของรถ</div>';
+    const lot=$('#lot');
+    const els=cars.map((c,i)=>{
+      const d=document.createElement('div'); d.className='car'+(i===0?' red':'');
+      d.style.width=(c.d==='h'?c.len*size:size)-6+'px'; d.style.height=(c.d==='v'?c.len*size:size)-6+'px';
+      d.style.left=c.c*size+3+'px'; d.style.top=c.r*size+3+'px';
+      if(i>0) d.style.background=CAR_BG[i%CAR_BG.length];
+      d.textContent=i===0?'🚗':(c.len===3?'🚚':CAR_EMO[i%CAR_EMO.length]);
+      lot.appendChild(d); return d;
+    });
+    const occupied=(skip)=>{ const s=new Set(); cars.forEach((c,i)=>{ if(i===skip) return; for(let k=0;k<c.len;k++) s.add(c.d==='h'?c.r*RH_N+c.c+k:(c.r+k)*RH_N+c.c); }); return s; };
+    els.forEach((el,i)=>{
+      let start=null, min=0, max=0, base=0;
+      el.onpointerdown=e=>{
+        e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(err){} el.classList.add('drag');
+        const c=cars[i], occ=occupied(i); base=c.d==='h'?c.c:c.r; min=base; max=base;
+        while(min-1>=0 && !occ.has(c.d==='h'?c.r*RH_N+min-1:(min-1)*RH_N+c.c)) min--;
+        while(max+c.len<RH_N && !occ.has(c.d==='h'?c.r*RH_N+max+c.len:(max+c.len)*RH_N+c.c)) max++;
+        start=c.d==='h'?e.clientX:e.clientY;
+      };
+      el.onpointermove=e=>{
+        if(start===null) return; const c=cars[i];
+        const delta=((c.d==='h'?e.clientX:e.clientY)-start)/size;
+        const p=Math.max(min,Math.min(max,base+delta));
+        if(c.d==='h') el.style.left=p*size+3+'px'; else el.style.top=p*size+3+'px';
+      };
+      el.onpointerup=el.onpointercancel=async e=>{
+        if(start===null) return; const c=cars[i];
+        const delta=((c.d==='h'?e.clientX:e.clientY)-start)/size;
+        const p=Math.max(min,Math.min(max,Math.round(base+delta)));
+        start=null; el.classList.remove('drag');
+        if(c.d==='h'){ c.c=p; el.style.left=p*size+3+'px'; } else { c.r=p; el.style.top=p*size+3+'px'; }
+        if(p!==base){ moves++; $('#rm').textContent='ขยับ '+moves+' ครั้ง'; sfx.tap(); }
+        if(i===0 && c.c+c.len===RH_N){
+          el.style.left=(RH_N+1)*size+'px'; good(); await sleep(1000); if(!alive(tok)) return;
+          CUR.mistakes+=Math.max(0,Math.floor((moves-m)/3));
+          if(++r===rounds) win(starsByMistakes(CUR.mistakes)); else round();
+        }
+      };
+    });
+  }
+  round();
+}
+
+/* ============================================================
+   12) นักสืบหาบ้านสัตว์
+   ============================================================ */
+const DET_A=[['🐶','หมา'],['🐱','แมว'],['🐰','กระต่าย'],['🐸','กบ']];
+const DET_H=[['#F08080','แดง'],['#6FB8F5','ฟ้า'],['#6FD08C','เขียว'],['#F2C94C','เหลือง']];
+function perms(n){ if(n===1) return [[0]]; const out=[]; perms(n-1).forEach(p=>{ for(let i=0;i<=p.length;i++){ const q=p.slice(); q.splice(i,0,n-1); out.push(q); } }); return out; }
+function makeDetective(l){
+  const N=l<2?3:4, A=shuffle(DET_A).slice(0,N), H=shuffle(DET_H).slice(0,N), all=perms(N);
+  const nm=i=>A[i][0]+A[i][1], hn=j=>'บ้านสี'+H[j][1];
+  for(let tries=0;tries<300;tries++){
+    const sol=pick(all);                       /* sol[สัตว์] = ตำแหน่งบ้าน (0 = ซ้ายสุด) */
+    const cand=[];
+    for(let a=0;a<N;a++){
+      for(let h=0;h<N;h++){
+        if(l===0) cand.push({t:nm(a)+' อยู่'+hn(h), f:p=>p[a]===h, ok:sol[a]===h, w:'direct'});
+        cand.push({t:nm(a)+' ไม่ได้อยู่'+hn(h), f:p=>p[a]!==h, ok:sol[a]!==h});
+      }
+      cand.push({t:nm(a)+' อยู่บ้านซ้ายสุด', f:p=>p[a]===0, ok:sol[a]===0});
+      cand.push({t:nm(a)+' อยู่บ้านขวาสุด', f:p=>p[a]===N-1, ok:sol[a]===N-1});
+      if(l>0) for(let b=0;b<N;b++) if(a!==b){
+        cand.push({t:nm(a)+' อยู่ติดกับ'+nm(b), f:p=>Math.abs(p[a]-p[b])===1, ok:Math.abs(sol[a]-sol[b])===1});
+        cand.push({t:nm(a)+' อยู่ทางซ้ายของ'+nm(b), f:p=>p[a]<p[b], ok:sol[a]<sol[b]});
+        if(l===2){ cand.push({t:nm(a)+' ไม่ได้อยู่ติดกับ'+nm(b), f:p=>Math.abs(p[a]-p[b])!==1, ok:Math.abs(sol[a]-sol[b])!==1});
+                   cand.push({t:nm(a)+' อยู่ถัดจาก'+nm(b)+'ไปทางขวา 1 หลัง', f:p=>p[a]===p[b]+1, ok:sol[a]===sol[b]+1}); }
+      }
+    }
+    let pool=shuffle(cand.filter(c=>c.ok)), clues=[], direct=0;
+    const count=cs=>all.filter(p=>cs.every(c=>c.f(p))).length;
+    for(const c of pool){ if(c.w==='direct'){ if(direct) continue; direct++; } clues.push(c); if(count(clues)===1) break; }
+    if(count(clues)!==1) continue;
+    for(let i=clues.length-1;i>=0;i--){ const t=clues.slice(0,i).concat(clues.slice(i+1)); if(count(t)===1) clues=t; }
+    if(clues.length<=[3,4,6][l] && clues.length>=[2,3,4][l]) return {N,A,H,sol,clues:shuffle(clues)};
+  }
+}
+function gDetective(l, st, tok){
+  const rounds=2; let r=0;
+  function round(){
+    const D=makeDetective(l), N=D.N; let place=Array(N).fill(-1), sel=null;   /* place[บ้าน] = สัตว์ */
+    st.innerHTML=head('อ่านเบาะแส แล้วพาสัตว์ไปอยู่บ้านที่ถูกต้อง','<span class="chip">คดี '+(r+1)+' / '+rounds+'</span>')+
+      '<ul class="clues">'+D.clues.map((c,i)=>'<li data-i="'+i+'"><span class="cn">'+(i+1)+'</span><span style="flex:1">'+c.t+'</span></li>').join('')+'</ul>'+
+      '<div class="houses" style="grid-template-columns:repeat('+N+',1fr)">'+D.H.map((h,j)=>
+        '<div class="house" data-j="'+j+'"><div class="roof" style="background:'+h[0]+'">🏠 บ้านสี'+h[1]+'</div><div class="spot"></div>'+
+        '<div class="pos">'+(j===0?'ซ้ายสุด':j===N-1?'ขวาสุด':'หลังที่ '+(j+1))+'</div></div>').join('')+'</div>'+
+      '<div class="tray2" id="tray2"></div>'+
+      '<button class="bigbtn" id="check" type="button">🔍 ตรวจคำตอบ</button><div class="msg" id="msg">แตะสัตว์ แล้วแตะบ้านที่คิดว่าใช่</div>';
+    st.querySelectorAll('.clues li').forEach(li=>li.onclick=()=>speak(D.clues[+li.dataset.i].t.replace(/[^฀-๿\s0-9]/gu,'')));
+    function draw(){
+      st.querySelectorAll('.house').forEach(h=>{ const a=place[+h.dataset.j]; h.querySelector('.spot').textContent=a>=0?D.A[a][0]:''; });
+      $('#tray2').innerHTML=D.A.map((a,i)=>place.includes(i)?'':'<button type="button" data-a="'+i+'" class="'+(sel===i?'sel':'')+'">'+a[0]+'</button>').join('');
+      st.querySelectorAll('#tray2 button').forEach(b=>b.onclick=()=>{ sfx.tap(); const a=+b.dataset.a; sel=sel===a?null:a; draw(); });
+    }
+    st.querySelectorAll('.house').forEach(h=>h.onclick=()=>{
+      const j=+h.dataset.j;
+      if(sel!==null){ if(place[j]>=0){} place[j]=sel; sel=null; sfx.tap(); }
+      else if(place[j]>=0){ place[j]=-1; }
+      st.querySelectorAll('.clues li').forEach(li=>li.classList.remove('bad')); draw();
+    });
+    $('#check').onclick=async()=>{
+      if(place.includes(-1)){ setMsg('พาสัตว์ไปอยู่บ้านให้ครบทุกตัวก่อนนะ','no'); return; }
+      const p=Array(N); place.forEach((a,j)=>p[a]=j);
+      const wrong=D.clues.map((c,i)=>c.f(p)?-1:i).filter(i=>i>=0);
+      st.querySelectorAll('.clues li').forEach(li=>li.classList.toggle('bad', wrong.includes(+li.dataset.i)));
+      if(!wrong.length){ good(); setMsg('✓ ไขคดีสำเร็จ! นักสืบเก่งมาก 🕵️','ok'); await sleep(1300); if(!alive(tok)) return;
+        if(++r===rounds) win(starsByMistakes(CUR.mistakes)); else round(); }
+      else { bad(); setMsg('ยังไม่ตรงกับเบาะแสข้อ '+wrong.map(i=>i+1).join(', ')+' ลองสลับบ้านดูนะ 💪','no'); }
+    };
+    draw();
+  }
+  round();
+}
+
+const RUN = { memory:gMemory, simon:gSimon, odd:gOdd, pattern:gPattern, pyramid:gPyramid, dog:gDog,
+  sudoku:gSudoku, balance:gBalance, hanoi:gHanoi, slide:gSlide, traffic:gTraffic, detective:gDetective };
 
 /* ---------------- เปิดหน้า: #เกม-ระดับ ---------------- */
 function route(){
