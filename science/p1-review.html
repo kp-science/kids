@@ -5,7 +5,7 @@
 <title>ทบทวนก่อนสอบ ป.1 · วิทยาศาสตร์</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Mali:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--ink:#2B2430;--mute:#8A7F8C;--paper:#FAF5EF;--line:#E6DDD3;
@@ -189,11 +189,127 @@ a.back{text-decoration:none;color:inherit;display:inline-block}
 .shake{animation:shk .3s}
 @keyframes shk{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 @media(max-width:480px){.slot{min-width:72px}.mrow .slot{min-width:120px}.numpad .tile{min-width:33px;font-size:16px}}
+
+/* ================= ธีมเด็ก: สีสัน ภาพ และสติกเกอร์ ================= */
+body{background:#FFF9EE;font-family:'Noto Sans Thai Looped','Sarabun',sans-serif}
+body::before{opacity:.45;background-image:radial-gradient(circle at 2px 2px,var(--bd) 2px,transparent 0);background-size:30px 30px}
+.top{background:rgba(255,255,255,.94);border-bottom:3px solid var(--bd)}
+.back{border-color:var(--ac);color:var(--ac);box-shadow:0 3px 0 var(--ac);border-radius:999px}
+.top .tt{color:var(--ac)}
+.pill{background:var(--ac);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.pbar{height:8px;background:var(--tn)}
+.pbar>i{display:block;height:100%;width:0;border-radius:0 99px 99px 0;transition:width .35s;
+  background:repeating-linear-gradient(45deg,var(--ac) 0 10px,var(--bd) 10px 20px)}
+
+/* ---- ป้ายหัวหน้าวิชา: ท้องฟ้า + เนินหญ้า ---- */
+.shero{position:relative;overflow:hidden;margin:16px 0 8px;border-radius:28px;padding:18px 20px 70px;
+  background:linear-gradient(180deg,#7CC8F2,#D2F0FF);border:3px solid var(--ac);box-shadow:0 6px 0 var(--ac)}
+.shero svg{position:absolute;left:0;bottom:0;width:100%;height:84px}
+.shero .row{position:relative;display:flex;align-items:center;gap:14px}
+.shero .emo{width:74px;height:74px;border-radius:24px;background:#fff;display:grid;place-items:center;font-size:2.6rem;
+  box-shadow:0 5px 0 var(--ac);transform:rotate(-6deg);flex:none}
+.shero h2{margin:0;font-size:32px;line-height:1.2;color:#fff;text-shadow:0 3px 0 var(--ac)}
+.shero p{margin:2px 0 0;color:#1F4E6E;font-weight:600;font-size:15.5px}
+.shero .sun{position:absolute;right:16px;top:12px;font-size:2.4rem;animation:sway 4s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(14deg) scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.shero .sun{animation:none}}
+
+/* ---- รายการชุด: การ์ดสีรุ้ง ---- */
+.sets{gap:14px}
+.set{border:3px solid var(--sc);border-radius:22px;box-shadow:0 5px 0 var(--scd);padding:12px 14px;background:#fff}
+.set:active{transform:translateY(4px);box-shadow:0 1px 0 var(--scd)}
+.setn{width:52px;height:52px;border-radius:18px;background:var(--sc);border:none;font-size:1.7rem;color:#fff;
+  box-shadow:0 3px 0 var(--scd);transform:rotate(-5deg);position:relative}
+.setn b{position:absolute;right:-8px;bottom:-8px;background:#fff;color:var(--scd);border:2px solid var(--sc);border-radius:99px;
+  min-width:24px;height:24px;font-size:13px;display:grid;place-items:center;font-family:'Mali',cursive}
+.set .t b{font-family:'Mali',cursive;font-size:19px;color:var(--ink)}
+.set .arw{color:var(--scd);font-weight:700}
+.score{background:#FFF3C4;color:#8A6100;border:2px solid #F2C94C}
+
+/* ---- หัวชุดแบบฝึก ---- */
+.ttl.band{display:flex;align-items:center;gap:12px;background:var(--tn);border:3px solid var(--bd);border-radius:24px;
+  padding:12px 16px;margin:16px 0 6px}
+.ttl.band .emo{font-size:2.4rem;flex:none;transform:rotate(-6deg)}
+.ttl.band h2{color:var(--ac)}
+
+/* ---- คำชี้แจง: ริบบิ้นสี ---- */
+.instr{background:var(--ac);color:#fff;border:none;border-radius:999px;padding:7px 8px 7px 8px;margin:26px 0 12px;
+  box-shadow:0 4px 0 rgba(0,0,0,.14);font-family:'Mali',cursive;font-weight:600}
+.instr .ie{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.25rem;flex:none}
+.instr>span:not(.ie){flex:1}
+.instr .spk{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.95)}
+
+/* ---- กล่องจำให้ได้: กระดาษโน้ต ---- */
+.box{background:#FFF6BF;border:none;border-radius:6px 22px 22px 22px;padding:14px 16px;margin:18px 4px;transform:rotate(-.6deg);
+  box-shadow:0 5px 0 #F2C94C, 0 8px 16px rgba(0,0,0,.06);position:relative}
+.box::before{content:"📌";position:absolute;top:-14px;left:14px;font-size:1.4rem}
+.box .bt{color:#9A6A00;font-size:20px}
+.box .bt::before{content:"💡 "}
+
+/* ---- ข้อสอบแต่ละข้อ ---- */
+.item{border:2.5px solid var(--bd);border-radius:20px;box-shadow:0 4px 0 var(--bd);padding:12px 14px;margin-bottom:14px}
+.item.ok{border-color:#58B368;background:#F1FAF0;box-shadow:0 4px 0 #58B368}
+.item.no{border-color:#E57373;background:#FFF3F3;box-shadow:0 4px 0 #E57373}
+.qt .n{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;
+  font-size:15px;font-weight:700;margin-top:1px}
+.opt{border:2.5px solid var(--bd);border-radius:16px;padding:9px 12px;display:flex;align-items:center;gap:6px;
+  box-shadow:0 3px 0 var(--tn);font-weight:600}
+.opt i{width:30px;height:30px;border-radius:50%;background:var(--tn);color:var(--ac);display:grid;place-items:center;margin-right:6px;flex:none}
+.opt:hover{background:var(--tn)}
+.opt.good{border-color:#58B368;background:#E3F5E1}
+.opt.good i{background:#58B368;color:#fff}
+.opt.bad{border-color:#E57373;background:#FFE6E6}
+.opt.bad i{background:#E57373;color:#fff}
+.tfb button{border-radius:16px;font-size:18px;padding:9px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.tfb button:first-child{border-color:#8FD19A;background:#F0FAF1}
+.tfb button:last-child{border-color:#F4A3A3;background:#FFF2F2}
+.tfb button.good{border-color:#58B368;background:#C9EDCB}
+.tfb button.bad{border-color:#E57373;background:#FFD2D2}
+
+.fb{font-family:'Mali',cursive;font-size:17px}
+.fb.ok{color:#2E8B3E}
+
+/* ---- ลากวาง ---- */
+.tray{background:#FFFDF6;border:3px dashed var(--bd);border-radius:20px}
+.tile{background:var(--tn);border:2.5px solid var(--ac);color:var(--ac);border-radius:14px;box-shadow:0 3px 0 var(--bd)}
+.tile.sel{background:var(--ac);color:#fff}
+.slot{background:#fff;border-color:var(--bd);border-radius:14px}
+.numpad .tile{color:#fff;border-color:transparent;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.numpad .tile:nth-of-type(6n+1){background:#FF7AA8}
+.numpad .tile:nth-of-type(6n+2){background:#FF9F43}
+.numpad .tile:nth-of-type(6n+3){background:#F6B800}
+.numpad .tile:nth-of-type(6n+4){background:#3DBE6B}
+.numpad .tile:nth-of-type(6n+5){background:#3AA0F0}
+.numpad .tile:nth-of-type(6n){background:#9B6BFF}
+.numpad .tile.sel{outline:3px solid var(--ink);transform:scale(1.12)}
+.calcgrid .item{box-shadow:0 3px 0 var(--bd)}
+.calcgrid .item b{color:var(--ac)}
+.slotline{border-color:var(--bd);background:#fff;border-radius:16px}
+.ordrow button{background:var(--tn);border:2.5px solid var(--ac);color:var(--ac);font-weight:700;border-radius:14px;box-shadow:0 3px 0 var(--bd)}
+.mini{border-radius:999px;border-color:var(--bd)}
+
+/* ---- แผนภูมิ ---- */
+.pic{border:3px solid var(--bd);border-radius:22px}
+.pic .pt{background:var(--ac);color:#fff}
+.pic .pr:nth-child(odd){background:var(--tn)}
+.cntrow .sy{background:var(--tn);border-radius:14px;padding:6px 10px}
+.bank span{background:var(--tn);border-color:var(--bd);font-weight:600}
+textarea.free{border-color:var(--bd);background:#FFFEF8;border-radius:16px}
+
+/* ---- สรุปคะแนน ---- */
+.result{border:4px solid var(--ac);border-radius:28px;box-shadow:0 7px 0 var(--ac);
+  background:#fff radial-gradient(circle at 12% 20%,var(--tn) 0 26px,transparent 27px),
+             radial-gradient(circle at 88% 30%,var(--tn) 0 18px,transparent 19px)}
+.result .stars{font-size:44px;letter-spacing:6px;line-height:1.2}
+.result .cheer{font-size:40px}
+.btn{border-color:var(--ac);border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.btn.gh{color:var(--ac)}
+@media(max-width:480px){.shero h2{font-size:26px}.shero .emo{width:62px;height:62px;font-size:2.2rem}}
 </style></head><body>
 <div class="top" id="top"></div>
 <div class="wrap" id="app"></div>
 <script>
-var D = [{"id": "sci", "name": "วิทยาศาสตร์", "icon": "🌱", "accent": "#2E7D32", "tint": "#E6F4E8", "band": "#C8E6C9", "pages": [{"title": "อวัยวะภายนอกของเรา", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 1", "blocks": [{"t": "box", "title": "อวัยวะภายนอก คืออะไร", "text": "อวัยวะภายนอก คือ ส่วนของร่างกายที่เรามองเห็นและสัมผัสได้จากภายนอก\nเช่น  ตา  หู  จมูก  ปาก  ลิ้น  ฟัน  ผม  แขน  ขา  มือ  เท้า  นิ้ว  ผิวหนัง"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะที่ทำหน้าที่ต่อไปนี้"}, {"t": "fill", "cols": 2, "items": [{"q": "ใช้มองเห็นสิ่งต่าง ๆ", "a": "ตา"}, {"q": "ใช้ฟังเสียง", "a": "หู"}, {"q": "ใช้ดมกลิ่นและหายใจ", "a": "จมูก"}, {"q": "ใช้พูดและกินอาหาร", "a": "ปาก"}, {"q": "ใช้เคี้ยวอาหารให้ละเอียด", "a": "ฟัน"}, {"q": "ใช้หยิบจับสิ่งของ", "a": "มือ"}, {"q": "ใช้เดินและวิ่ง", "a": "เท้า"}, {"q": "ใช้รับรสชาติอาหาร", "a": "ลิ้น"}]}, {"t": "instr", "text": "2. จับคู่ โดยเขียนตัวอักษรหน้าคำตอบลงในช่องว่าง"}, {"t": "match", "left": ["ตา", "หู", "จมูก", "ลิ้น", "ผิวหนัง"], "right": ["ได้ยินเสียง", "รับรสชาติ", "มองเห็น", "รู้สึกร้อน–เย็น", "ได้กลิ่น"], "a": [2, 0, 4, 1, 3]}, {"t": "instr", "text": "3. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ข้อใด ไม่ใช่ อวัยวะภายนอก", "opts": ["หู", "หัวใจ", "จมูก"], "a": 1}, {"q": "ถ้าเราไม่มีตา จะทำสิ่งใดไม่ได้", "opts": ["มองเห็นหนังสือ", "ฟังเพลง", "ดมกลิ่นดอกไม้"], "a": 0}, {"q": "อวัยวะใดช่วยให้เราทรงตัวและเคลื่อนที่ได้", "opts": ["ขาและเท้า", "หูและตา", "ฟันและลิ้น"], "a": 0}, {"q": "อวัยวะที่ห่อหุ้มร่างกายเราไว้ทั้งหมดคือข้อใด", "opts": ["ผม", "ผิวหนัง", "เล็บ"], "a": 1}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "ฟันเป็นอวัยวะภายนอกที่ใช้เคี้ยวอาหาร", "a": true}, {"q": "เราใช้จมูกในการฟังเสียง", "a": false}, {"q": "มือมีนิ้วข้างละ 5 นิ้ว", "a": true}, {"q": "เล็บช่วยป้องกันปลายนิ้วของเรา", "a": true}]}]}, {"title": "อวัยวะภายในของเรา", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 2", "blocks": [{"t": "box", "title": "อวัยวะภายใน คืออะไร", "text": "อวัยวะภายใน คือ ส่วนของร่างกายที่อยู่ข้างใน มองไม่เห็นจากภายนอก\nสมอง — ควบคุมการทำงานของร่างกาย คิด จำ สั่งการ\nหัวใจ — สูบฉีดเลือดไปเลี้ยงทั่วร่างกาย\nปอด — ใช้ในการหายใจ รับอากาศเข้าสู่ร่างกาย\nกระเพาะอาหาร — ย่อยอาหารที่เรากินเข้าไป\nลำไส้ — ดูดซึมสารอาหารไปใช้"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะภายในให้ตรงกับหน้าที่"}, {"t": "fill", "cols": 2, "items": [{"q": "สูบฉีดเลือดไปเลี้ยงร่างกาย", "a": "หัวใจ"}, {"q": "ใช้หายใจ รับอากาศเข้าร่างกาย", "a": "ปอด"}, {"q": "ควบคุมและสั่งการร่างกาย", "a": "สมอง"}, {"q": "ย่อยอาหารที่เรากิน", "a": "กระเพาะอาหาร"}, {"q": "ดูดซึมสารอาหาร", "a": "ลำไส้"}, {"q": "อยู่ในอก เต้นตุบ ๆ ตลอดเวลา", "a": "หัวใจ"}]}, {"t": "instr", "text": "2. จับคู่ โดยเขียนตัวอักษรหน้าคำตอบลงในช่องว่าง"}, {"t": "match", "left": ["สมอง", "ปอด", "กระเพาะอาหาร", "หัวใจ"], "right": ["อยู่ในช่องท้อง ย่อยอาหาร", "อยู่ในกะโหลกศีรษะ", "อยู่ในช่องอก มี 2 ข้าง", "อยู่ในช่องอก เต้นตลอดเวลา"], "a": [1, 2, 0, 3]}, {"t": "instr", "text": "3. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ข้อใดเป็นอวัยวะภายในทั้งหมด", "opts": ["ตา หู จมูก", "หัวใจ ปอด สมอง", "มือ เท้า แขน"], "a": 1}, {"q": "เมื่อเราวิ่งเร็ว ๆ อวัยวะใดเต้นเร็วขึ้น", "opts": ["สมอง", "หัวใจ", "ลำไส้"], "a": 1}, {"q": "อวัยวะใดทำงานเมื่อเราหายใจเข้า–ออก", "opts": ["ปอด", "กระเพาะอาหาร", "ตับ"], "a": 0}, {"q": "เมื่อเราท่องสูตรคูณ อวัยวะใดทำงาน", "opts": ["หัวใจ", "ปอด", "สมอง"], "a": 2}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "อวัยวะภายในมองเห็นได้ด้วยตาเปล่าจากภายนอก", "a": false}, {"q": "หัวใจของคนเราอยู่ในช่องอก", "a": true}, {"q": "สมองช่วยให้เราจำสิ่งที่เรียนได้", "a": true}, {"q": "ปอดทำหน้าที่ย่อยอาหาร", "a": false}]}]}, {"title": "ประสาทสัมผัสทั้ง 5", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 3", "blocks": [{"t": "box", "title": "ประสาทสัมผัสทั้ง 5", "text": "ตา — การมองเห็น        หู — การได้ยิน        จมูก — การได้กลิ่น\nลิ้น — การรับรส         ผิวหนัง — การสัมผัส (ร้อน เย็น นุ่ม แข็ง)"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะที่ใช้รับรู้สิ่งต่อไปนี้"}, {"t": "fill", "cols": 2, "items": [{"q": "กลิ่นหอมของดอกไม้", "a": "จมูก"}, {"q": "เสียงเพลงจากวิทยุ", "a": "หู"}, {"q": "รสหวานของน้ำตาล", "a": "ลิ้น"}, {"q": "สีของท้องฟ้า", "a": "ตา"}, {"q": "ความร้อนของน้ำในแก้ว", "a": "ผิวหนัง"}, {"q": "รสเปรี้ยวของมะนาว", "a": "ลิ้น"}, {"q": "ความนุ่มของตุ๊กตา", "a": "ผิวหนัง"}, {"q": "เสียงครูเรียกชื่อ", "a": "หู"}]}, {"t": "instr", "text": "2. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ประสาทสัมผัสของคนเรามีกี่อย่าง", "opts": ["3 อย่าง", "5 อย่าง", "7 อย่าง"], "a": 1}, {"q": "ถ้าเราปิดตาแล้วดมอาหาร เราใช้ประสาทสัมผัสใด", "opts": ["การได้กลิ่น", "การมองเห็น", "การได้ยิน"], "a": 0}, {"q": "เมื่อจับน้ำแข็งแล้วรู้สึกเย็น เป็นหน้าที่ของอวัยวะใด", "opts": ["ลิ้น", "ผิวหนัง", "จมูก"], "a": 1}, {"q": "เรารู้ว่าอาหารเค็มหรือหวานได้เพราะอวัยวะใด", "opts": ["ลิ้น", "จมูก", "ตา"], "a": 0}, {"q": "ข้อใดใช้ประสาทสัมผัสมากกว่า 1 อย่าง", "opts": ["ฟังเสียงนกร้อง", "กินส้มตำ", "มองดูภาพวาด"], "a": 1}]}, {"t": "instr", "text": "3. รสชาติพื้นฐานที่ลิ้นรับรู้ได้  เขียนมา 4 รส"}, {"t": "write", "lines": 1, "items": ["รสชาติที่ลิ้นรับรู้ได้"]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "ถ้าเป็นหวัดคัดจมูก เราจะได้กลิ่นน้อยลง", "a": true}, {"q": "ผิวหนังบอกได้ว่าของร้อนหรือเย็น", "a": true}, {"q": "เราใช้ตาในการรับรสอาหาร", "a": false}]}]}, {"title": "การดูแลรักษาอวัยวะ", "sub": "บทที่ 2 · ชุดที่ 4", "blocks": [{"t": "instr", "text": "1. ตอบว่า ควร (✓) หรือ ไม่ควร (✗) ปฏิบัติ"}, {"t": "tf", "items": [{"q": "แปรงฟันอย่างน้อยวันละ 2 ครั้ง", "a": true}, {"q": "อ่านหนังสือในที่มืดหรือแสงน้อย", "a": false}, {"q": "ล้างมือก่อนกินอาหารทุกครั้ง", "a": true}, {"q": "แคะหูด้วยของแหลม", "a": false}, {"q": "ฟังเพลงเสียงดังมาก ๆ เป็นเวลานาน", "a": false}, {"q": "ตัดเล็บให้สั้นอยู่เสมอ", "a": true}, {"q": "ดูโทรทัศน์หรือมือถือใกล้ ๆ นาน ๆ", "a": false}, {"q": "อาบน้ำและสระผมให้สะอาด", "a": true}, {"q": "กินอาหารครบ 5 หมู่", "a": true}, {"q": "ขยี้ตาแรง ๆ เมื่อมีฝุ่นเข้าตา", "a": false}]}, {"t": "instr", "text": "2. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "การดูแลดวงตาที่ถูกต้องคือข้อใด", "opts": ["อ่านหนังสือในที่มีแสงสว่างเพียงพอ", "ดูมือถือในที่มืด", "ขยี้ตาบ่อย ๆ"], "a": 0}, {"q": "ถ้าไม่แปรงฟันจะเกิดอะไรขึ้น", "opts": ["ฟังไม่ได้ยิน", "ฟันผุ", "มองไม่เห็น"], "a": 1}, {"q": "การดูแลผิวหนังที่ถูกต้องคือข้อใด", "opts": ["อาบน้ำให้สะอาดทุกวัน", "ใส่เสื้อผ้าเปียกชื้น", "เกาแรง ๆ เมื่อคัน"], "a": 0}, {"q": "เพื่อให้ปอดแข็งแรง ควรทำสิ่งใด", "opts": ["อยู่ใกล้ควันบุหรี่", "ออกกำลังกายและอยู่ในที่อากาศบริสุทธิ์", "กลั้นหายใจนาน ๆ"], "a": 1}]}, {"t": "instr", "text": "3. เขียนวิธีดูแลอวัยวะต่อไปนี้ อย่างละ 1 ข้อ"}, {"t": "write", "lines": 1, "items": ["ดวงตา", "หู", "ฟัน", "ผิวหนัง"]}]}, {"title": "พืชและสัตว์น่ารู้", "sub": "บทที่ 2 · ชุดที่ 5", "blocks": [{"t": "box", "title": "ส่วนประกอบของพืช", "text": "ราก — ดูดน้ำและแร่ธาตุจากดิน ยึดลำต้นให้มั่นคง\nลำต้น — ลำเลียงน้ำและอาหาร ค้ำจุนกิ่ง ใบ\nใบ — สร้างอาหารให้พืช\nดอก — ใช้สืบพันธุ์  ต่อมากลายเป็น ผล และ เมล็ด"}, {"t": "instr", "text": "1. เขียนชื่อส่วนของพืชให้ตรงกับหน้าที่"}, {"t": "fill", "cols": 2, "items": [{"q": "ดูดน้ำจากดิน", "a": "ราก"}, {"q": "สร้างอาหารให้พืช", "a": "ใบ"}, {"q": "ลำเลียงน้ำขึ้นสู่ใบ", "a": "ลำต้น"}, {"q": "ใช้ในการสืบพันธุ์ มีสีสันสวยงาม", "a": "ดอก"}, {"q": "ส่วนที่นำไปปลูกให้เกิดต้นใหม่", "a": "เมล็ด"}, {"q": "ยึดลำต้นไม่ให้ล้ม", "a": "ราก"}]}, {"t": "instr", "text": "2. สิ่งมีชีวิตต้องการสิ่งใดในการเจริญเติบโต  เลือกคำตอบที่ถูก"}, {"t": "mc", "cols": 1, "items": [{"q": "พืชต้องการสิ่งใดในการเจริญเติบโต", "opts": ["น้ำ อากาศ แสงแดด ดิน", "น้ำ ไฟฟ้า พลาสติก", "แสงแดด กระดาษ หิน"], "a": 0}, {"q": "สัตว์ต้องการสิ่งใดในการดำรงชีวิต", "opts": ["อาหาร น้ำ อากาศ ที่อยู่อาศัย", "อาหาร ของเล่น เสียงเพลง", "น้ำ โทรทัศน์ อากาศ"], "a": 0}, {"q": "ถ้าไม่รดน้ำต้นไม้เป็นเวลานาน จะเกิดอะไรขึ้น", "opts": ["ต้นไม้โตเร็วขึ้น", "ต้นไม้เหี่ยวและตาย", "ต้นไม้ออกดอกมากขึ้น"], "a": 1}, {"q": "ข้อใด ไม่ใช่ สิ่งมีชีวิต", "opts": ["ต้นมะม่วง", "ก้อนหิน", "ปลาทอง"], "a": 1}]}, {"t": "instr", "text": "3. แยกประเภท  เขียน  พืช  หรือ  สัตว์"}, {"t": "fill", "cols": 3, "items": [{"q": "กุหลาบ", "a": "พืช"}, {"q": "ผีเสื้อ", "a": "สัตว์"}, {"q": "ต้นกล้วย", "a": "พืช"}, {"q": "นกพิราบ", "a": "สัตว์"}, {"q": "หญ้า", "a": "พืช"}, {"q": "ปลาทอง", "a": "สัตว์"}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "พืชทุกชนิดมีดอก", "a": false}, {"q": "สัตว์เคลื่อนที่ได้เอง แต่พืชเคลื่อนที่เองไม่ได้", "a": true}, {"q": "สิ่งมีชีวิตทุกชนิดต้องการอาหารและน้ำ", "a": true}, {"q": "ใบไม้ทำหน้าที่ดูดน้ำจากดิน", "a": false}]}]}, {"title": "ทบทวนรวม  ตัวเรา พืชและสัตว์", "sub": "ชุดที่ 6", "blocks": [{"t": "instr", "text": "1. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "อวัยวะใดเป็นอวัยวะภายนอก", "opts": ["ปอด", "ลิ้น", "ลำไส้"], "a": 1}, {"q": "อวัยวะใดทำหน้าที่สูบฉีดเลือด", "opts": ["สมอง", "หัวใจ", "กระเพาะอาหาร"], "a": 1}, {"q": "เราใช้อวัยวะใดรับรู้ความเจ็บเมื่อถูกของมีคม", "opts": ["ผิวหนัง", "หู", "ลิ้น"], "a": 0}, {"q": "ส่วนใดของพืชทำหน้าที่สร้างอาหาร", "opts": ["ราก", "ใบ", "ดอก"], "a": 1}, {"q": "ข้อใดคือการดูแลอวัยวะที่ถูกต้อง", "opts": ["ฟังเพลงเสียงดังมาก", "ล้างมือก่อนกินอาหาร", "อ่านหนังสือในที่มืด"], "a": 1}, {"q": "สิ่งใด ไม่ จำเป็นต่อการเจริญเติบโตของพืช", "opts": ["น้ำ", "แสงแดด", "โทรทัศน์"], "a": 2}]}, {"t": "instr", "text": "2. เติมคำลงในช่องว่าง"}, {"t": "fill", "cols": 2, "items": [{"q": "ประสาทสัมผัสของคนเรามี ____ อย่าง", "a": "5"}, {"q": "อวัยวะที่ใช้หายใจคือ ____", "a": "ปอด"}, {"q": "ส่วนของพืชที่ดูดน้ำคือ ____", "a": "ราก"}, {"q": "เราใช้ ____ ในการรับรสอาหาร", "a": "ลิ้น"}, {"q": "อวัยวะที่ควบคุมการคิดและการจำคือ ____", "a": "สมอง"}, {"q": "เราควรแปรงฟันวันละอย่างน้อย ____ ครั้ง", "a": "2"}]}, {"t": "instr", "text": "3. ตอบคำถามต่อไปนี้"}, {"t": "write", "lines": 2, "items": ["ถ้าคนเราไม่มีประสาทสัมผัสด้านการได้ยิน จะเกิดผลอย่างไรบ้าง", "ยกตัวอย่างวิธีดูแลต้นไม้ที่บ้านของนักเรียน 2 วิธี"]}]}]}], S = {view:'home', si:0, pi:0}, PROG = {};
+var D = [{"id": "sci", "name": "วิทยาศาสตร์", "icon": "🌱", "accent": "#23843B", "tint": "#E3F7DF", "band": "#95E08A", "pages": [{"title": "อวัยวะภายนอกของเรา", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 1", "blocks": [{"t": "box", "title": "อวัยวะภายนอก คืออะไร", "text": "อวัยวะภายนอก คือ ส่วนของร่างกายที่เรามองเห็นและสัมผัสได้จากภายนอก\nเช่น  ตา  หู  จมูก  ปาก  ลิ้น  ฟัน  ผม  แขน  ขา  มือ  เท้า  นิ้ว  ผิวหนัง"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะที่ทำหน้าที่ต่อไปนี้"}, {"t": "fill", "cols": 2, "items": [{"q": "ใช้มองเห็นสิ่งต่าง ๆ", "a": "ตา"}, {"q": "ใช้ฟังเสียง", "a": "หู"}, {"q": "ใช้ดมกลิ่นและหายใจ", "a": "จมูก"}, {"q": "ใช้พูดและกินอาหาร", "a": "ปาก"}, {"q": "ใช้เคี้ยวอาหารให้ละเอียด", "a": "ฟัน"}, {"q": "ใช้หยิบจับสิ่งของ", "a": "มือ"}, {"q": "ใช้เดินและวิ่ง", "a": "เท้า"}, {"q": "ใช้รับรสชาติอาหาร", "a": "ลิ้น"}]}, {"t": "instr", "text": "2. จับคู่ โดยเขียนตัวอักษรหน้าคำตอบลงในช่องว่าง"}, {"t": "match", "left": ["ตา", "หู", "จมูก", "ลิ้น", "ผิวหนัง"], "right": ["ได้ยินเสียง", "รับรสชาติ", "มองเห็น", "รู้สึกร้อน–เย็น", "ได้กลิ่น"], "a": [2, 0, 4, 1, 3]}, {"t": "instr", "text": "3. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ข้อใด ไม่ใช่ อวัยวะภายนอก", "opts": ["หู", "หัวใจ", "จมูก"], "a": 1}, {"q": "ถ้าเราไม่มีตา จะทำสิ่งใดไม่ได้", "opts": ["มองเห็นหนังสือ", "ฟังเพลง", "ดมกลิ่นดอกไม้"], "a": 0}, {"q": "อวัยวะใดช่วยให้เราทรงตัวและเคลื่อนที่ได้", "opts": ["ขาและเท้า", "หูและตา", "ฟันและลิ้น"], "a": 0}, {"q": "อวัยวะที่ห่อหุ้มร่างกายเราไว้ทั้งหมดคือข้อใด", "opts": ["ผม", "ผิวหนัง", "เล็บ"], "a": 1}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "ฟันเป็นอวัยวะภายนอกที่ใช้เคี้ยวอาหาร", "a": true}, {"q": "เราใช้จมูกในการฟังเสียง", "a": false}, {"q": "มือมีนิ้วข้างละ 5 นิ้ว", "a": true}, {"q": "เล็บช่วยป้องกันปลายนิ้วของเรา", "a": true}]}]}, {"title": "อวัยวะภายในของเรา", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 2", "blocks": [{"t": "box", "title": "อวัยวะภายใน คืออะไร", "text": "อวัยวะภายใน คือ ส่วนของร่างกายที่อยู่ข้างใน มองไม่เห็นจากภายนอก\nสมอง — ควบคุมการทำงานของร่างกาย คิด จำ สั่งการ\nหัวใจ — สูบฉีดเลือดไปเลี้ยงทั่วร่างกาย\nปอด — ใช้ในการหายใจ รับอากาศเข้าสู่ร่างกาย\nกระเพาะอาหาร — ย่อยอาหารที่เรากินเข้าไป\nลำไส้ — ดูดซึมสารอาหารไปใช้"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะภายในให้ตรงกับหน้าที่"}, {"t": "fill", "cols": 2, "items": [{"q": "สูบฉีดเลือดไปเลี้ยงร่างกาย", "a": "หัวใจ"}, {"q": "ใช้หายใจ รับอากาศเข้าร่างกาย", "a": "ปอด"}, {"q": "ควบคุมและสั่งการร่างกาย", "a": "สมอง"}, {"q": "ย่อยอาหารที่เรากิน", "a": "กระเพาะอาหาร"}, {"q": "ดูดซึมสารอาหาร", "a": "ลำไส้"}, {"q": "อยู่ในอก เต้นตุบ ๆ ตลอดเวลา", "a": "หัวใจ"}]}, {"t": "instr", "text": "2. จับคู่ โดยเขียนตัวอักษรหน้าคำตอบลงในช่องว่าง"}, {"t": "match", "left": ["สมอง", "ปอด", "กระเพาะอาหาร", "หัวใจ"], "right": ["อยู่ในช่องท้อง ย่อยอาหาร", "อยู่ในกะโหลกศีรษะ", "อยู่ในช่องอก มี 2 ข้าง", "อยู่ในช่องอก เต้นตลอดเวลา"], "a": [1, 2, 0, 3]}, {"t": "instr", "text": "3. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ข้อใดเป็นอวัยวะภายในทั้งหมด", "opts": ["ตา หู จมูก", "หัวใจ ปอด สมอง", "มือ เท้า แขน"], "a": 1}, {"q": "เมื่อเราวิ่งเร็ว ๆ อวัยวะใดเต้นเร็วขึ้น", "opts": ["สมอง", "หัวใจ", "ลำไส้"], "a": 1}, {"q": "อวัยวะใดทำงานเมื่อเราหายใจเข้า–ออก", "opts": ["ปอด", "กระเพาะอาหาร", "ตับ"], "a": 0}, {"q": "เมื่อเราท่องสูตรคูณ อวัยวะใดทำงาน", "opts": ["หัวใจ", "ปอด", "สมอง"], "a": 2}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "อวัยวะภายในมองเห็นได้ด้วยตาเปล่าจากภายนอก", "a": false}, {"q": "หัวใจของคนเราอยู่ในช่องอก", "a": true}, {"q": "สมองช่วยให้เราจำสิ่งที่เรียนได้", "a": true}, {"q": "ปอดทำหน้าที่ย่อยอาหาร", "a": false}]}]}, {"title": "ประสาทสัมผัสทั้ง 5", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 3", "blocks": [{"t": "box", "title": "ประสาทสัมผัสทั้ง 5", "text": "ตา — การมองเห็น        หู — การได้ยิน        จมูก — การได้กลิ่น\nลิ้น — การรับรส         ผิวหนัง — การสัมผัส (ร้อน เย็น นุ่ม แข็ง)"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะที่ใช้รับรู้สิ่งต่อไปนี้"}, {"t": "fill", "cols": 2, "items": [{"q": "กลิ่นหอมของดอกไม้", "a": "จมูก"}, {"q": "เสียงเพลงจากวิทยุ", "a": "หู"}, {"q": "รสหวานของน้ำตาล", "a": "ลิ้น"}, {"q": "สีของท้องฟ้า", "a": "ตา"}, {"q": "ความร้อนของน้ำในแก้ว", "a": "ผิวหนัง"}, {"q": "รสเปรี้ยวของมะนาว", "a": "ลิ้น"}, {"q": "ความนุ่มของตุ๊กตา", "a": "ผิวหนัง"}, {"q": "เสียงครูเรียกชื่อ", "a": "หู"}]}, {"t": "instr", "text": "2. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ประสาทสัมผัสของคนเรามีกี่อย่าง", "opts": ["3 อย่าง", "5 อย่าง", "7 อย่าง"], "a": 1}, {"q": "ถ้าเราปิดตาแล้วดมอาหาร เราใช้ประสาทสัมผัสใด", "opts": ["การได้กลิ่น", "การมองเห็น", "การได้ยิน"], "a": 0}, {"q": "เมื่อจับน้ำแข็งแล้วรู้สึกเย็น เป็นหน้าที่ของอวัยวะใด", "opts": ["ลิ้น", "ผิวหนัง", "จมูก"], "a": 1}, {"q": "เรารู้ว่าอาหารเค็มหรือหวานได้เพราะอวัยวะใด", "opts": ["ลิ้น", "จมูก", "ตา"], "a": 0}, {"q": "ข้อใดใช้ประสาทสัมผัสมากกว่า 1 อย่าง", "opts": ["ฟังเสียงนกร้อง", "กินส้มตำ", "มองดูภาพวาด"], "a": 1}]}, {"t": "instr", "text": "3. รสชาติพื้นฐานที่ลิ้นรับรู้ได้  เขียนมา 4 รส"}, {"t": "write", "lines": 1, "items": ["รสชาติที่ลิ้นรับรู้ได้"]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "ถ้าเป็นหวัดคัดจมูก เราจะได้กลิ่นน้อยลง", "a": true}, {"q": "ผิวหนังบอกได้ว่าของร้อนหรือเย็น", "a": true}, {"q": "เราใช้ตาในการรับรสอาหาร", "a": false}]}]}, {"title": "การดูแลรักษาอวัยวะ", "sub": "บทที่ 2 · ชุดที่ 4", "blocks": [{"t": "instr", "text": "1. ตอบว่า ควร (✓) หรือ ไม่ควร (✗) ปฏิบัติ"}, {"t": "tf", "items": [{"q": "แปรงฟันอย่างน้อยวันละ 2 ครั้ง", "a": true}, {"q": "อ่านหนังสือในที่มืดหรือแสงน้อย", "a": false}, {"q": "ล้างมือก่อนกินอาหารทุกครั้ง", "a": true}, {"q": "แคะหูด้วยของแหลม", "a": false}, {"q": "ฟังเพลงเสียงดังมาก ๆ เป็นเวลานาน", "a": false}, {"q": "ตัดเล็บให้สั้นอยู่เสมอ", "a": true}, {"q": "ดูโทรทัศน์หรือมือถือใกล้ ๆ นาน ๆ", "a": false}, {"q": "อาบน้ำและสระผมให้สะอาด", "a": true}, {"q": "กินอาหารครบ 5 หมู่", "a": true}, {"q": "ขยี้ตาแรง ๆ เมื่อมีฝุ่นเข้าตา", "a": false}]}, {"t": "instr", "text": "2. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "การดูแลดวงตาที่ถูกต้องคือข้อใด", "opts": ["อ่านหนังสือในที่มีแสงสว่างเพียงพอ", "ดูมือถือในที่มืด", "ขยี้ตาบ่อย ๆ"], "a": 0}, {"q": "ถ้าไม่แปรงฟันจะเกิดอะไรขึ้น", "opts": ["ฟังไม่ได้ยิน", "ฟันผุ", "มองไม่เห็น"], "a": 1}, {"q": "การดูแลผิวหนังที่ถูกต้องคือข้อใด", "opts": ["อาบน้ำให้สะอาดทุกวัน", "ใส่เสื้อผ้าเปียกชื้น", "เกาแรง ๆ เมื่อคัน"], "a": 0}, {"q": "เพื่อให้ปอดแข็งแรง ควรทำสิ่งใด", "opts": ["อยู่ใกล้ควันบุหรี่", "ออกกำลังกายและอยู่ในที่อากาศบริสุทธิ์", "กลั้นหายใจนาน ๆ"], "a": 1}]}, {"t": "instr", "text": "3. เขียนวิธีดูแลอวัยวะต่อไปนี้ อย่างละ 1 ข้อ"}, {"t": "write", "lines": 1, "items": ["ดวงตา", "หู", "ฟัน", "ผิวหนัง"]}]}, {"title": "พืชและสัตว์น่ารู้", "sub": "บทที่ 2 · ชุดที่ 5", "blocks": [{"t": "box", "title": "ส่วนประกอบของพืช", "text": "ราก — ดูดน้ำและแร่ธาตุจากดิน ยึดลำต้นให้มั่นคง\nลำต้น — ลำเลียงน้ำและอาหาร ค้ำจุนกิ่ง ใบ\nใบ — สร้างอาหารให้พืช\nดอก — ใช้สืบพันธุ์  ต่อมากลายเป็น ผล และ เมล็ด"}, {"t": "instr", "text": "1. เขียนชื่อส่วนของพืชให้ตรงกับหน้าที่"}, {"t": "fill", "cols": 2, "items": [{"q": "ดูดน้ำจากดิน", "a": "ราก"}, {"q": "สร้างอาหารให้พืช", "a": "ใบ"}, {"q": "ลำเลียงน้ำขึ้นสู่ใบ", "a": "ลำต้น"}, {"q": "ใช้ในการสืบพันธุ์ มีสีสันสวยงาม", "a": "ดอก"}, {"q": "ส่วนที่นำไปปลูกให้เกิดต้นใหม่", "a": "เมล็ด"}, {"q": "ยึดลำต้นไม่ให้ล้ม", "a": "ราก"}]}, {"t": "instr", "text": "2. สิ่งมีชีวิตต้องการสิ่งใดในการเจริญเติบโต  เลือกคำตอบที่ถูก"}, {"t": "mc", "cols": 1, "items": [{"q": "พืชต้องการสิ่งใดในการเจริญเติบโต", "opts": ["น้ำ อากาศ แสงแดด ดิน", "น้ำ ไฟฟ้า พลาสติก", "แสงแดด กระดาษ หิน"], "a": 0}, {"q": "สัตว์ต้องการสิ่งใดในการดำรงชีวิต", "opts": ["อาหาร น้ำ อากาศ ที่อยู่อาศัย", "อาหาร ของเล่น เสียงเพลง", "น้ำ โทรทัศน์ อากาศ"], "a": 0}, {"q": "ถ้าไม่รดน้ำต้นไม้เป็นเวลานาน จะเกิดอะไรขึ้น", "opts": ["ต้นไม้โตเร็วขึ้น", "ต้นไม้เหี่ยวและตาย", "ต้นไม้ออกดอกมากขึ้น"], "a": 1}, {"q": "ข้อใด ไม่ใช่ สิ่งมีชีวิต", "opts": ["ต้นมะม่วง", "ก้อนหิน", "ปลาทอง"], "a": 1}]}, {"t": "instr", "text": "3. แยกประเภท  เขียน  พืช  หรือ  สัตว์"}, {"t": "fill", "cols": 3, "items": [{"q": "กุหลาบ", "a": "พืช"}, {"q": "ผีเสื้อ", "a": "สัตว์"}, {"q": "ต้นกล้วย", "a": "พืช"}, {"q": "นกพิราบ", "a": "สัตว์"}, {"q": "หญ้า", "a": "พืช"}, {"q": "ปลาทอง", "a": "สัตว์"}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "พืชทุกชนิดมีดอก", "a": false}, {"q": "สัตว์เคลื่อนที่ได้เอง แต่พืชเคลื่อนที่เองไม่ได้", "a": true}, {"q": "สิ่งมีชีวิตทุกชนิดต้องการอาหารและน้ำ", "a": true}, {"q": "ใบไม้ทำหน้าที่ดูดน้ำจากดิน", "a": false}]}]}, {"title": "ทบทวนรวม  ตัวเรา พืชและสัตว์", "sub": "ชุดที่ 6", "blocks": [{"t": "instr", "text": "1. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "อวัยวะใดเป็นอวัยวะภายนอก", "opts": ["ปอด", "ลิ้น", "ลำไส้"], "a": 1}, {"q": "อวัยวะใดทำหน้าที่สูบฉีดเลือด", "opts": ["สมอง", "หัวใจ", "กระเพาะอาหาร"], "a": 1}, {"q": "เราใช้อวัยวะใดรับรู้ความเจ็บเมื่อถูกของมีคม", "opts": ["ผิวหนัง", "หู", "ลิ้น"], "a": 0}, {"q": "ส่วนใดของพืชทำหน้าที่สร้างอาหาร", "opts": ["ราก", "ใบ", "ดอก"], "a": 1}, {"q": "ข้อใดคือการดูแลอวัยวะที่ถูกต้อง", "opts": ["ฟังเพลงเสียงดังมาก", "ล้างมือก่อนกินอาหาร", "อ่านหนังสือในที่มืด"], "a": 1}, {"q": "สิ่งใด ไม่ จำเป็นต่อการเจริญเติบโตของพืช", "opts": ["น้ำ", "แสงแดด", "โทรทัศน์"], "a": 2}]}, {"t": "instr", "text": "2. เติมคำลงในช่องว่าง"}, {"t": "fill", "cols": 2, "items": [{"q": "ประสาทสัมผัสของคนเรามี ____ อย่าง", "a": "5"}, {"q": "อวัยวะที่ใช้หายใจคือ ____", "a": "ปอด"}, {"q": "ส่วนของพืชที่ดูดน้ำคือ ____", "a": "ราก"}, {"q": "เราใช้ ____ ในการรับรสอาหาร", "a": "ลิ้น"}, {"q": "อวัยวะที่ควบคุมการคิดและการจำคือ ____", "a": "สมอง"}, {"q": "เราควรแปรงฟันวันละอย่างน้อย ____ ครั้ง", "a": "2"}]}, {"t": "instr", "text": "3. ตอบคำถามต่อไปนี้"}, {"t": "write", "lines": 2, "items": ["ถ้าคนเราไม่มีประสาทสัมผัสด้านการได้ยิน จะเกิดผลอย่างไรบ้าง", "ยกตัวอย่างวิธีดูแลต้นไม้ที่บ้านของนักเรียน 2 วิธี"]}]}], "emoji": "🔬"}], S = {view:'home', si:0, pi:0}, PROG = {};
 var TL = ['ก','ข','ค','ง','จ','ฉ','ช','ซ'];
 var app = document.getElementById('app'), top_ = document.getElementById('top');
 
@@ -205,11 +321,33 @@ function setVars(s){var r=document.documentElement.style;
   if(s){r.setProperty('--ac',s.accent);r.setProperty('--tn',s.tint);r.setProperty('--bd',s.band)}
   else{r.setProperty('--ac','#2B2430');r.setProperty('--tn','#F3EDE6');r.setProperty('--bd','#E6DDD3')}}
 
+
+/* ================= ธีมเด็ก ================= */
+var RAINBOW=[['#FF8FB8','#C2306F'],['#FFB35C','#B85A12'],['#F6C945','#8A6100'],['#6FD08C','#23843B'],['#6FB8F5','#2560B8'],['#B08CFF','#6E3CC0']];
+/* อิโมจิประจำชุดจากชื่อเรื่อง */
+var TOPIC=[[/ทบทวน/,'⭐'],[/สระ/,'🔤'],[/วรรณยุกต์/,'🎵'],[/ประโยค/,'🧩'],[/จำนวน/,'🔢'],[/โจทย์/,'🤔'],[/บวก|ลบ/,'➕'],[/แผนภูมิ/,'📊'],
+  [/น้ำหนัก/,'⚖️'],[/ภายนอก/,'🙋'],[/ภายใน/,'🫀'],[/ประสาท/,'👀'],[/ดูแล/,'🪥'],[/พืช|สัตว์/,'🌱'],[/หลักธรรม/,'🙏'],
+  [/ครอบครัว|โรงเรียน/,'👨‍👩‍👧'],[/ออม|จ่าย/,'🐷'],[/รอบตัว/,'🌳'],[/Colors/i,'🎨'],[/School Things/i,'🎒'],[/Senses/i,'👂'],
+  [/Toys|Shapes/i,'🧸'],[/Pets|Nature/i,'🐶'],[/Numbers|Food/i,'🍱']];
+function topicEmoji(t){ for(var i=0;i<TOPIC.length;i++){ if(TOPIC[i][0].test(t)) return TOPIC[i][1]; } return '📝'; }
+var BLOCKEMO={mc:'🔘',tf:'✅',fill:'✏️',calc:'🧮',count:'🔢',picto:'📊',match:'🔗',order:'🧩',write:'📝',bank:'📦',trace:'✍️'};
+var PRAISE=['✓ ถูกต้อง เก่งมาก! 🎉','✓ สุดยอดเลย! ⭐','✓ ถูกต้อง! 👏','✓ เยี่ยมมาก! 🌈','✓ ใช่แล้ว! 😄'];
+function praise(){ return PRAISE[Math.floor(Math.random()*PRAISE.length)]; }
+function sceneSVG(){
+  return '<svg viewBox="0 0 600 84" preserveAspectRatio="none" aria-hidden="true">'+
+    '<path d="M0 50 Q120 18 260 44 T600 34 V84 H0Z" fill="#8FD46B"/>'+
+    '<path d="M0 66 Q170 40 360 62 T600 56 V84 H0Z" fill="#6CC04A"/>'+
+    '<g fill="#FF7AB6"><circle cx="80" cy="70" r="5"/><circle cx="300" cy="74" r="5"/><circle cx="520" cy="68" r="5"/></g>'+
+    '<g fill="#FFD93D"><circle cx="80" cy="70" r="2"/><circle cx="300" cy="74" r="2"/><circle cx="520" cy="68" r="2"/></g>'+
+    '<g fill="#fff" opacity=".9"><ellipse cx="430" cy="16" rx="30" ry="11"/><ellipse cx="455" cy="20" rx="20" ry="9"/></g></svg>';
+}
+function progBar(){ var b=document.querySelector('.pbar>i'); if(b&&CUR) b.style.width=(CUR.total?Object.keys(CUR.done).length/CUR.total*100:0)+'%'; }
+
 /* ------- scoring ------- */
 var CUR = null;
 function newRun(){CUR={total:0, right:0, done:{}}}
 function mark(id, ok){ if(CUR.done[id]!==undefined) return; CUR.done[id]=ok; if(ok)CUR.right++;
-  var el=document.getElementById('prog'); if(el) el.textContent=CUR.right+' / '+CUR.total;
+  var el=document.getElementById('prog'); if(el) el.textContent=CUR.right+' / '+CUR.total; progBar();
   if(Object.keys(CUR.done).length===CUR.total) showResult(); }
 
 function showResult(){
@@ -219,7 +357,8 @@ function showResult(){
             pct>=50?'ผ่านแล้ว ลองอ่านกล่องทบทวนอีกครั้ง' : 'ไม่เป็นไร ลองใหม่อีกครั้งนะ';
   var d=document.getElementById('result');
   d.className='result';
-  d.innerHTML='<h3>ทำครบแล้ว!</h3><div class="big">'+CUR.right+' / '+CUR.total+'</div>'+
+  var stars = pct>=90?'⭐⭐⭐' : pct>=70?'⭐⭐☆' : pct>=50?'⭐☆☆' : '💪';
+  d.innerHTML='<div class="cheer">'+(pct>=70?'🎉🏆🎉':'🌈')+'</div><div class="stars">'+stars+'</div><h3>ทำครบแล้ว!</h3><div class="big">'+CUR.right+' / '+CUR.total+'</div>'+
     '<p>'+msg+'</p><button class="btn" onclick="openSet('+S.si+','+S.pi+')">ทำชุดนี้อีกครั้ง</button>'+
     '<button class="btn gh" onclick="openSub('+S.si+')">กลับไปเลือกชุด</button>';
   d.scrollIntoView({behavior:'smooth',block:'center'});
@@ -248,12 +387,14 @@ function openSub(i){
   S.view='sub'; S.si=i; var s=D[i]; setVars(s);
   top_.innerHTML='<div class="in"><a class="back" href="../">‹ หน้ารวม</a>'+
                  '<div class="tt">'+esc(s.name)+'</div></div>';
-  var h='<div class="ttl"><h2>'+esc(s.name)+'</h2><p>ทบทวนก่อนสอบ ป.1 · ภาคเรียนที่ 1 · เลือกชุดที่ต้องการ</p></div><div class="sets">';
+  var h='<div class="shero">'+sceneSVG()+'<span class="sun">☀️</span><div class="row"><span class="emo">'+(s.emoji||'⭐')+'</span>'+
+        '<div><h2>'+esc(s.name)+'</h2><p>ทบทวนก่อนสอบ ป.1 · เลือกชุดที่อยากทำได้เลย</p></div></div></div><div class="sets">';
   s.pages.forEach(function(p,j){
     var sc=PROG[key(i,j)];
-    h+='<div class="set" onclick="openSet('+i+','+j+')"><div class="setn">'+(j+1)+'</div>'+
+    var rc=RAINBOW[j%RAINBOW.length];
+    h+='<div class="set" style="--sc:'+rc[0]+';--scd:'+rc[1]+'" onclick="openSet('+i+','+j+')"><div class="setn">'+topicEmoji(p.title)+'<b>'+(j+1)+'</b></div>'+
        '<div class="t"><b>'+esc(p.title)+'</b><i>'+esc(p.sub)+'</i></div>'+
-       (sc!==undefined?'<span class="score">'+sc+'%</span>':'<span class="arw">›</span>')+'</div>';
+       (sc!==undefined?'<span class="score">⭐ '+sc+'%</span>':'<span class="arw">›</span>')+'</div>';
   });
   app.innerHTML=h+'</div>';
   window.scrollTo(0,0);
@@ -262,9 +403,9 @@ function openSub(i){
 function openSet(i,j){
   S.view='set'; S.si=i; S.pi=j; var s=D[i], p=s.pages[j]; setVars(s); newRun();
   top_.innerHTML='<div class="in"><button class="back" onclick="openSub('+i+')">‹ ชุด</button>'+
-                 '<div class="tt">'+esc(p.title)+'</div><span class="pill" id="prog">0 / 0</span></div>';
-  var h='<div class="ttl"><h2>'+esc(p.title)+'</h2><p>'+esc(s.name)+' · '+esc(p.sub)+'</p></div>';
-  p.blocks.forEach(function(b,bi){ h+= (RB[b.t]||function(){return''})(b,bi); });
+                 '<div class="tt">'+esc(p.title)+'</div><span class="pill" id="prog">0 / 0</span></div><div class="pbar"><i></i></div>';
+  var h='<div class="ttl band"><span class="emo">'+topicEmoji(p.title)+'</span><div><h2>'+esc(p.title)+'</h2><p>'+esc(s.name)+' · '+esc(p.sub)+'</p></div></div>';
+  p.blocks.forEach(function(b,bi){ h+= (RB[b.t]||function(){return''})(b,bi,p.blocks[bi+1]); });
   h+='<div id="result" class="hide"></div>';
   app.innerHTML=h; SEL=FOC=null; setupNumpad();
   document.getElementById('prog').textContent='0 / '+CUR.total;
@@ -273,7 +414,7 @@ function openSet(i,j){
 
 /* ------- block renderers ------- */
 var RB={};
-RB.instr=function(b){return '<div class="instr"><span>'+esc(b.text)+'</span>'+spk(b.text)+'</div>'};
+RB.instr=function(b,bi,nx){return '<div class="instr"><span class="ie">'+((nx&&BLOCKEMO[nx.t])||'⭐')+'</span><span>'+esc(b.text)+'</span>'+spk(b.text)+'</div>'};
 RB.box=function(b){return '<div class="box"><div class="bt">'+esc(b.title)+spk(b.title+' … '+b.text)+'</div><div class="bb">'+esc(b.text)+'</div></div>'};
 RB.bank=function(b){return '<div class="bank">'+b.words.map(function(w){return '<span>'+esc(w)+'</span>'}).join('')+'</div>'};
 RB.trace=function(b){return '<div class="bank">'+b.items.map(function(w){return '<span>'+esc(w)+'</span>'}).join('')+'</div>'};
@@ -304,7 +445,7 @@ function pickMC(id,oi,a){
   bs[a].classList.add('good'); if(!ok) bs[oi].classList.add('bad');
   el.classList.add(ok?'ok':'no');
   el.querySelector('.fb').className='fb '+(ok?'ok':'no');
-  el.querySelector('.fb').textContent= ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือข้อ '+TL[a];
+  el.querySelector('.fb').textContent= ok?praise():'✗ คำตอบที่ถูกคือข้อ '+TL[a];
   mark(id,ok);
 }
 
@@ -313,8 +454,8 @@ RB.tf=function(b,bi){
   b.items.forEach(function(it,k){
     var id='tf'+bi+'_'+k; CUR.total++;
     h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span>'+spk(it.q)+'</div>'+
-       '<div class="tfb"><button onclick="pickTF(\''+id+'\',1,'+(it.a?1:0)+')">✓ ถูก</button>'+
-       '<button onclick="pickTF(\''+id+'\',0,'+(it.a?1:0)+')">✗ ผิด</button></div><div class="fb"></div></div>';
+       '<div class="tfb"><button onclick="pickTF(\''+id+'\',1,'+(it.a?1:0)+')">⭕ ถูก</button>'+
+       '<button onclick="pickTF(\''+id+'\',0,'+(it.a?1:0)+')">❌ ผิด</button></div><div class="fb"></div></div>';
   });
   return h+'</div>';
 };
@@ -324,7 +465,7 @@ function pickTF(id,v,a){
   bs[a?0:1].classList.add('good'); if(!ok) bs[v?0:1].classList.add('bad');
   el.classList.add(ok?'ok':'no');
   el.querySelector('.fb').className='fb '+(ok?'ok':'no');
-  el.querySelector('.fb').textContent= ok?'✓ ถูกต้อง!':'✗ ข้อนี้ตอบว่า '+(a?'ถูก':'ผิด');
+  el.querySelector('.fb').textContent= ok?praise():'✗ ข้อนี้ตอบว่า '+(a?'ถูก':'ผิด');
   mark(id,ok);
 }
 
@@ -409,7 +550,7 @@ function place(t,s){
   if(el){
     el.classList.add(ok?'ok':'no');
     var fb=el.querySelector('.fb'), right=s.dataset.al||tileLabel(s.dataset.a);
-    if(fb){ fb.className='fb '+(ok?'ok':'no'); fb.textContent=ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+right; }
+    if(fb){ fb.className='fb '+(ok?'ok':'no'); fb.textContent=ok?praise():'✗ คำตอบที่ถูกคือ  '+right; }
     else if(!ok){ s.insertAdjacentHTML('afterend','<span class="cans">→ '+esc(right)+'</span>'); }
   }
   if(ok && !t.dataset.reuse) t.classList.add('used');
@@ -575,7 +716,7 @@ function checkOrder(id){
   var ok = norm(got.join(''))===norm(el.dataset.a);
   s.classList.add(ok?'ok':'no'); el.classList.add(ok?'ok':'no');
   var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
-  fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+el.dataset.a;
+  fb.textContent = ok?praise():'✗ คำตอบที่ถูกคือ  '+el.dataset.a;
   speak(el.dataset.a);
   mark(id,ok);
 }

@@ -98,6 +98,43 @@ button{font:inherit;color:inherit;cursor:pointer}
   .opt .lt{width:22px;height:22px;font-size:.75rem;top:4px;left:4px}
   .qt{font-size:1.02rem}
 }
+
+/* ================= ธีมเด็ก: สีสัน ================= */
+body{background:#FFF9EE}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.5;
+  background-image:radial-gradient(circle at 2px 2px,#CDEBC4 2px,transparent 0);background-size:30px 30px}
+.top{background:rgba(255,255,255,.95);border-bottom:3px solid #95E08A}
+.back{border-color:var(--leaf);color:var(--leaf);border-radius:999px;box-shadow:0 3px 0 var(--leaf)}
+.top .tt{color:var(--leaf)}
+.hero{position:relative;overflow:hidden;border-radius:28px;margin-top:6px;padding:20px 18px 78px;
+  background:linear-gradient(180deg,#7CC8F2,#D2F0FF);border:3px solid var(--leaf);box-shadow:0 6px 0 var(--leaf)}
+.hero svg{position:absolute;left:0;bottom:0;width:100%;height:90px}
+.hero h1{position:relative;color:#fff;text-shadow:0 3px 0 var(--leaf)}
+.hero p{position:relative;color:#1F4E6E;font-weight:600}
+.hero .deco{position:relative;font-size:2.4rem;letter-spacing:6px;display:block;margin-bottom:2px}
+.tabs button{border:3px solid #95E08A;box-shadow:0 3px 0 #95E08A;padding:7px 18px}
+.tabs button.on{background:var(--leaf);border-color:var(--leaf);box-shadow:0 3px 0 #1B5E37}
+.part{background:var(--pc);box-shadow:0 4px 0 var(--pcd);border-radius:999px;padding:9px 18px;font-size:1.15rem;
+  display:flex;align-items:center;gap:10px}
+.part .pe{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.3rem}
+.q{border:3px solid var(--pcl);box-shadow:0 5px 0 var(--pcl);border-radius:22px}
+.q.ok{border-color:#58B368;box-shadow:0 5px 0 #58B368;background:#F6FCF5}
+.q.no{border-color:#E57373;box-shadow:0 5px 0 #E57373;background:#FFF6F6}
+.num{background:var(--pc);box-shadow:0 3px 0 var(--pcd);transform:rotate(-6deg);border-radius:14px}
+.opt{border-width:3px;box-shadow:0 4px 0 var(--oc);border-color:var(--oc);background:var(--ob)}
+.opt .lt{border-color:var(--od);color:#fff;background:var(--od)}
+.opts .opt:nth-child(1){--oc:#FFC2D8;--ob:#FFF4F8;--od:#E0518A}
+.opts .opt:nth-child(2){--oc:#B9DBFF;--ob:#F3F9FF;--od:#3A86D8}
+.opts .opt:nth-child(3){--oc:#FFE08A;--ob:#FFFBEA;--od:#D49B00}
+.opt:not([disabled]):hover{background:#fff;border-color:var(--od)}
+.opt.right{border-color:#58B368;background:#E3F5E1;box-shadow:0 4px 0 #58B368}
+.opt.right .lt{background:#58B368;border-color:#58B368}
+.opt.wrong{border-color:#E57373;background:#FFE6E6;box-shadow:0 4px 0 #E57373}
+.opt.wrong .lt{background:#E57373;border-color:#E57373}
+.fb{font-family:'Mali',sans-serif;font-size:1.05rem}
+.result{border:4px solid var(--leaf);box-shadow:0 7px 0 var(--leaf);border-radius:28px}
+.result .cheer{font-size:2.6rem}
+.btn{border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
 </style>
 </head>
 <body>
@@ -109,6 +146,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 <div class="wrap">
   <div class="hero">
+    <svg viewBox="0 0 600 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 52 Q120 20 260 46 T600 36 V90 H0Z" fill="#8FD46B"/>
+      <path d="M0 70 Q170 44 360 66 T600 60 V90 H0Z" fill="#6CC04A"/>
+      <g fill="#FF7AB6"><circle cx="70" cy="74" r="5"/><circle cx="310" cy="78" r="5"/><circle cx="530" cy="72" r="5"/></g>
+      <g fill="#FFD93D"><circle cx="70" cy="74" r="2"/><circle cx="310" cy="78" r="2"/><circle cx="530" cy="72" r="2"/></g>
+    </svg>
+    <span class="deco" aria-hidden="true">🌱🌵🐟🐦🐢</span>
     <h1>แบบทดสอบวิทยาศาสตร์ ป.1</h1>
     <p>เรื่อง ส่วนต่าง ๆ ของพืชและสัตว์ · แตะคำตอบที่ถูกต้องที่สุดเพียงข้อเดียว</p>
   </div>
@@ -201,6 +245,9 @@ const TESTS = [
 ];
 
 const TL=['ก','ข','ค'];
+/* สีประจำตอน: [สีหลัก, สีเข้ม, สีอ่อน, รูป] */
+const PARTC=[['#3DAA5C','#23843B','#C9ECC3','🌱'],['#D98A2B','#9A5A12','#FFE0B8','🌵'],['#3A86D8','#2560B8','#C8E0FF','🐾']];
+const PRAISE=['✓ ถูกต้อง เก่งมาก! 🎉','✓ สุดยอดเลย! ⭐','✓ ถูกต้อง! 👏','✓ เยี่ยมมาก! 🌈','✓ ใช่แล้ว! 😄'];
 const $=s=>document.querySelector(s);
 let cur=0, ans={};      // ans[ลำดับข้อ] = ตัวเลือกที่แตะ
 
@@ -241,11 +288,12 @@ function render(){
   load(); renderTabs();
   const T=TESTS[cur];
   $('#tt').textContent=T.name+' · '+T.title;
-  let n=0, h='';
+  let n=0, h='', pi=0, pc=PARTC[0];
+  const pcv=()=>'--pc:'+pc[0]+';--pcd:'+pc[1]+';--pcl:'+pc[2];
   T.items.forEach(x=>{
-    if(!Array.isArray(x)){ h+='<div class="part">'+x.part+'</div>'; return; }
+    if(!Array.isArray(x)){ pc=PARTC[pi++%PARTC.length]; h+='<div class="part" style="'+pcv()+'"><span class="pe">'+pc[3]+'</span>'+x.part+'</div>'; return; }
     const k=n++;
-    h+='<div class="q" id="q'+k+'"><div class="qh"><div class="num">'+(k+1)+'</div>'+
+    h+='<div class="q" style="'+pcv()+'" id="q'+k+'"><div class="qh"><div class="num">'+(k+1)+'</div>'+
        '<div class="qt">'+x[0]+'</div>'+(x[3]?'<div class="qe">'+x[3]+'</div>':'')+
        '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button></div>'+
        '<div class="opts'+(T.style==='list'?' list':'')+'">'+
@@ -274,7 +322,7 @@ function show(k,i){
   });
   const fb=el.querySelector('.fb');
   fb.className='fb '+(ok?'ok':'no');
-  fb.textContent= ok ? '✓ ถูกต้อง เก่งมาก!' : '✗ คำตอบที่ถูกคือ '+TL[q[2]]+'. '+q[1][q[2]][1];
+  fb.textContent= ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[q[2]]+'. '+q[1][q[2]][1];
 }
 
 function pick(k,i,fresh){
@@ -301,7 +349,7 @@ function updateScore(fresh){
             : pct>=.5?'ผ่านแล้ว ลองดูข้อสีแดงแล้วทำใหม่อีกรอบ' : 'ไม่เป็นไร ค่อย ๆ ทบทวนแล้วลองใหม่นะ';
   const other=TESTS[(cur+1)%TESTS.length];
   r.className='result';
-  r.innerHTML='<div class="stars">'+stars+'</div><div class="big">'+right+' / '+Q.length+'</div><p>'+msg+'</p>'+
+  r.innerHTML='<div class="cheer">'+(pct>=.7?'🎉🏆🎉':'🌈')+'</div><div class="stars">'+stars+'</div><div class="big">'+right+' / '+Q.length+'</div><p>'+msg+'</p>'+
     '<button class="btn" type="button" id="again">ทำชุดนี้ใหม่</button>'+
     '<button class="btn gh" type="button" id="other">ไปทำ'+other.name+'</button>';
   $('#again').onclick=resetCur;

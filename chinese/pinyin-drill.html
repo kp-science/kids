@@ -11,8 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#FBFAF6; --paper-2:#F2F0E8;
-  --jade:#23594A; --jade-2:#3F8A72; --jade-soft:#DDEBE4;
+  --paper:#FFF9EE; --paper-2:#FFF0E0;
+  --jade:#B83426; --jade-2:#E0574A; --jade-soft:#FFE4E0;
   --staff:#7FA9C4; --ink:#1B2420; --muted:#6B7A74;
   --seal:#B4362C; --gold:#C79A2E; --line:#D6D9D0;
 }
@@ -484,6 +484,47 @@ table.dgrid,.gwrap,.stile,.tile,.prow,.saytarget,.cue,.staff,.choices,.side,.wbt
   .cue{font-size:2rem}.cover .big{font-size:1.8rem}
   .choices button{min-width:66px;font-size:1.15rem;padding:9px 12px}
 }
+
+/* ================= ธีมเด็ก: โคมแดง เมฆทอง ================= */
+body{background:#FFF9EE}
+.cover{position:relative;overflow:hidden;border-bottom:none;padding-bottom:26px;
+  background:linear-gradient(135deg,#E0463A 0%,#B83426 60%,#8E2419 100%)}
+.cover::before{content:"🏮";position:absolute;right:18px;top:calc(8px + env(safe-area-inset-top));font-size:2.6rem;
+  animation:lantern 3.2s ease-in-out infinite;transform-origin:50% 0}
+.cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14px;
+  background:radial-gradient(circle at 10px -2px,transparent 12px,#FFF9EE 13px) 0 0/20px 14px repeat-x}
+@keyframes lantern{50%{transform:rotate(8deg)}}
+@media (prefers-reduced-motion:reduce){.cover::before{animation:none}}
+.cover .big{width:84px;height:84px;border-radius:26px;background:#FFD66B;color:#B83426;display:grid;place-items:center;
+  font-size:2.1rem;letter-spacing:0;box-shadow:0 5px 0 #8E2419;transform:rotate(-6deg);opacity:1}
+.cover-txt h1{font-size:1.45rem;text-shadow:0 2px 0 #8E2419}
+.cover-txt p{opacity:.92}
+.chip b{background:#FFD66B;color:#8E2419;border:none;box-shadow:0 3px 0 #8E2419}
+.home{background:#fff;color:#B83426;border:none;box-shadow:0 3px 0 #8E2419;font-weight:700}
+.cover .home{position:absolute;left:16px;top:calc(12px + env(safe-area-inset-top));flex-basis:auto;margin:0}
+.cover{padding-top:calc(60px + env(safe-area-inset-top))}
+.home:hover{background:#FFF0E0}
+
+nav{background:#FFF9EE;border-bottom:none;gap:8px;padding:10px 14px 6px}
+nav button{border:3px solid #FFC2B8;border-radius:999px;padding:7px 14px;background:#fff;color:#8E2419;
+  box-shadow:0 3px 0 #FFC2B8}
+nav button.on{background:#B83426;border-color:#B83426;color:#fff;box-shadow:0 3px 0 #8E2419}
+nav button[data-p="rule"]::before{content:"📖 "}
+nav button[data-p="drill"]::before{content:"🃏 "}
+nav button[data-p="game"]::before{content:"🎮 "}
+nav button[data-p="cmp"]::before{content:"👂 "}
+nav button[data-p="say"]::before{content:"🎤 "}
+nav button[data-p="pure"]::before{content:"🔤 "}
+nav button[data-p="sheet"]::before{content:"📝 "}
+
+h2.sec{font-size:1.25rem}
+h2.sec .no{width:32px;height:32px;border-radius:12px;background:#FFB400;color:#fff;transform:rotate(-6deg);box-shadow:0 3px 0 #C98A00}
+.rule{border:3px solid #FFD2C8;border-radius:20px;box-shadow:0 4px 0 #FFD2C8}
+.rule h3{font-family:'Mali',sans-serif;font-size:1rem}
+.audiobar{border:3px solid #FFE08A;border-radius:18px;box-shadow:0 4px 0 #FFE08A;background:#FFFDF3}
+.rulebox{border-radius:6px 18px 18px 18px;background:#FFF6BF;border-left:none;box-shadow:0 4px 0 #F2C94C}
+.tile{border-radius:14px;box-shadow:0 3px 0 #FFC2B8}
+.sslot{border-radius:12px 12px 0 0}
 </style>
 </head>
 <body>
