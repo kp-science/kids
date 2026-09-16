@@ -152,16 +152,6 @@ button{font:inherit;color:inherit}
 .backbtn:active{transform:translateY(3px);box-shadow:none}
 .crumb .ghead{margin:0;flex:1;min-width:220px}
 
-/* ---------------- ส่วนผู้ปกครอง ---------------- */
-details.howto{background:#fff;border:2px dashed var(--line);border-radius:18px;margin-top:40px;overflow:hidden}
-details.howto summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted);list-style:none}
-details.howto summary::-webkit-details-marker{display:none}
-details.howto summary::before{content:"▸ ";display:inline-block;transition:.15s}
-details.howto[open] summary::before{transform:rotate(90deg)}
-details.howto .body{padding:0 16px 16px;font-size:.86rem}
-details.howto ol{margin:8px 0 8px 20px}
-details.howto li{margin-bottom:6px}
-details.howto code{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.85rem}
 footer{text-align:center;font-size:.8rem;color:var(--muted);padding:6px 18px 30px}
 footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4px}
 
@@ -238,18 +228,6 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
   <div class="picker" id="chips" role="tablist" aria-label="เลือกวิชา"></div>
   <div id="list"></div>
 
-  <details class="howto">
-    <summary>สำหรับผู้ปกครอง · วิธีเพิ่มสื่อใหม่เข้าหน้านี้</summary>
-    <div class="body">
-      <ol>
-        <li>วางไฟล์ HTML ไว้ในโฟลเดอร์ของวิชานั้น เช่น <code>thai/</code> <code>math/</code> <code>science/</code> <code>chinese/</code></li>
-        <li>เปิดไฟล์ <code>index.html</code> นี้ แล้วเลื่อนไปที่บรรทัด <code>const MATERIALS = [</code> ใกล้ท้ายไฟล์</li>
-        <li>คัดลอกบรรทัดของรายการเดิมหนึ่งบรรทัด วางต่อท้าย แล้วแก้ข้อความกับ <code>url</code> ให้ตรงกับไฟล์ใหม่ — ถ้าใช้ชื่อวิชาใหม่ที่ยังไม่มี ให้เพิ่มสีและรูปใน <code>SUBJECTS</code> ด้วย</li>
-        <li>บันทึกแล้ว push ขึ้น GitHub — หน้าเว็บจะอัปเดตเองภายในไม่กี่นาที</li>
-      </ol>
-      <p><b>เพิ่มลงหน้าจอโฮมบนไอแพด:</b> เปิดหน้านี้ใน Safari → ปุ่มแชร์ → เพิ่มไปยังหน้าจอโฮม จะได้ไอคอนเปิดเต็มจอเหมือนแอป</p>
-    </div>
-  </details>
 </main>
 
 <footer><span class="grass">🌷🌱🌼🌱🌷</span>ทำด้วยความรักให้ลูก</footer>
