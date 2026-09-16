@@ -1,0 +1,436 @@
+<!doctype html><html lang="th"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>ทบทวนก่อนสอบ ป.1 · วิทยาศาสตร์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Mali:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#2B2430;--mute:#8A7F8C;--paper:#FAF5EF;--line:#E6DDD3;
+      --ok:#2E7D32;--okbg:#E6F3E8;--no:#C62828;--nobg:#FCEAEA;--ac:#C2185B;--tn:#FCE7EF;--bd:#F8BBD0}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Sarabun',sans-serif;font-size:19.1px;
+     line-height:1.65;padding-bottom:40px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:radial-gradient(circle at 1px 1px,#e2d8cd 1px,transparent 0);background-size:22px 22px}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+h1,h2,h3,.mali{font-family:'Mali',cursive;font-weight:700}
+
+/* ---------- topbar ---------- */
+.top{position:sticky;top:0;z-index:20;background:rgba(250,245,239,.94);backdrop-filter:blur(6px);
+     border-bottom:2px solid var(--line)}
+.top .in{max-width:760px;margin:0 auto;padding:9px 16px;display:flex;align-items:center;gap:10px}
+.back{border:2px solid var(--ink);background:#fff;border-radius:12px;padding:4px 12px;font:inherit;
+      font-weight:600;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.back:active{transform:translate(2px,2px);box-shadow:none}
+.top .tt{font-family:'Mali',cursive;font-weight:700;font-size:19.1px;flex:1;overflow:hidden;
+         text-overflow:ellipsis;white-space:nowrap}
+.pill{background:var(--ac);color:#fff;border-radius:99px;padding:3px 12px;font-size:15.8px;font-weight:600;white-space:nowrap}
+
+/* ---------- home ---------- */
+.hero{text-align:center;padding:26px 0 16px}
+.hero h1{font-size:30.4px;margin:0;line-height:1.35}
+.hero p{margin:6px 0 0;color:var(--mute);font-size:16.9px}
+.rain{height:7px;border-radius:99px;margin:14px 0 20px;
+      background:linear-gradient(90deg,#C2185B 0 20%,#1565C0 20% 40%,#2E7D32 40% 60%,#E65100 60% 80%,#5E35B1 80%)}
+.subs{display:grid;gap:13px}
+.sub{display:flex;align-items:center;gap:13px;background:#fff;border:2.5px solid var(--ink);
+     border-radius:18px;padding:13px 15px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);
+     transition:transform .09s}
+.sub:active{transform:translate(4px,4px);box-shadow:none}
+.ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:25.9px;
+    font-family:'Mali',cursive;font-weight:700;color:#fff;flex:none;transform:rotate(-4deg)}
+.sub .nm{flex:1}
+.sub .nm b{font-family:'Mali',cursive;font-size:20.2px;display:block}
+.sub .nm i{font-style:normal;color:var(--mute);font-size:15.2px}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px;max-width:190px}
+.bar>i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.arw{font-size:24.8px;color:var(--mute)}
+
+/* ---------- set list ---------- */
+.sets{display:grid;gap:11px;margin-top:16px}
+.set{display:flex;align-items:center;gap:12px;background:#fff;border:2.5px solid var(--ink);
+     border-radius:16px;padding:11px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+.set:active{transform:translate(3px,3px);box-shadow:none}
+.setn{width:34px;height:34px;border-radius:11px;background:var(--tn);border:2px solid var(--ac);
+      display:grid;place-items:center;font-family:'Mali',cursive;font-weight:700;color:var(--ac);flex:none}
+.set .t{flex:1}
+.set .t b{display:block;font-size:18px}
+.set .t i{font-style:normal;font-size:14.6px;color:var(--mute)}
+.score{font-size:15.8px;font-weight:700;color:var(--ok);background:var(--okbg);border-radius:99px;padding:2px 10px}
+
+/* ---------- exercise ---------- */
+.ttl{margin:18px 0 4px}
+.ttl h2{margin:0;font-size:25.9px;color:var(--ac);line-height:1.3}
+.ttl p{margin:2px 0 0;color:var(--mute);font-size:15.8px}
+.blk{margin-bottom:20px}
+.instr{font-weight:700;font-size:19.1px;margin:22px 0 10px;padding-left:11px;border-left:5px solid var(--ac)}
+.box{background:var(--tn);border:2px dashed var(--ac);border-radius:16px;padding:11px 15px;margin:14px 0}
+.box .bt{font-family:'Mali',cursive;color:var(--ac);font-size:18px;margin-bottom:2px}
+.box .bb{white-space:pre-wrap;font-size:17.5px;line-height:1.65}
+.bank{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.bank span{border:2px solid var(--bd);background:#fff;border-radius:99px;padding:3px 14px}
+
+.item{background:#fff;border:2px solid var(--line);border-radius:15px;padding:11px 14px;margin-bottom:10px}
+.item.ok{border-color:var(--ok);background:var(--okbg)}
+.item.no{border-color:var(--no);background:var(--nobg)}
+.qt{font-weight:600;margin-bottom:7px;display:flex;gap:7px;align-items:flex-start}
+.qt .n{color:var(--ac);flex:none}
+.opt{display:block;width:100%;text-align:left;font:inherit;background:#fff;border:2px solid var(--line);
+     border-radius:12px;padding:8px 13px;margin-top:6px;cursor:pointer}
+.opt:hover{border-color:var(--ac)}
+.opt.sel{border-color:var(--ac);background:var(--tn)}
+.opt.good{border-color:var(--ok);background:var(--okbg);font-weight:700}
+.opt.bad{border-color:var(--no);background:var(--nobg)}
+.opt i{font-style:normal;color:var(--mute);margin-right:8px;font-weight:700}
+.tfb{display:flex;gap:9px;margin-top:5px}
+.tfb button{flex:1;font:inherit;font-weight:700;background:#fff;border:2px solid var(--line);
+            border-radius:12px;padding:8px;cursor:pointer}
+.tfb button.good{border-color:var(--ok);background:var(--okbg)}
+.tfb button.bad{border-color:var(--no);background:var(--nobg)}
+.tfb button.sel{border-color:var(--ac);background:var(--tn)}
+
+input.ans{font:inherit;font-family:'Sarabun',sans-serif;border:none;border-bottom:2.5px dotted var(--ac);
+  background:transparent;width:130px;padding:1px 5px;text-align:center;outline:none}
+input.ans:focus{background:var(--tn);border-radius:6px 6px 0 0}
+input.ans.ok{border-bottom-color:var(--ok);color:var(--ok);font-weight:700}
+input.ans.no{border-bottom-color:var(--no);color:var(--no)}
+.fillrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 12px}
+.chips button{font:inherit;background:#fff;border:2px solid var(--bd);border-radius:99px;
+              padding:3px 13px;cursor:pointer}
+.chips button:active{background:var(--tn)}
+.chips .hint{color:var(--mute);font-size:15.2px;width:100%;margin-bottom:-2px}
+
+select.ans{font:inherit;border:2px solid var(--ac);border-radius:10px;padding:4px 7px;background:#fff}
+select.ans.ok{border-color:var(--ok);background:var(--okbg)}
+select.ans.no{border-color:var(--no);background:var(--nobg)}
+.mrow{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.mrow span{flex:1}
+.rlist{border:2px solid var(--bd);border-radius:14px;background:#fff;padding:9px 13px;margin-bottom:12px}
+.rlist div{padding:2px 0}
+.rlist b{color:var(--ac);margin-right:7px}
+
+.calcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:9px}
+.calcgrid .item{margin:0;display:flex;align-items:center;gap:6px;padding:9px 11px}
+.calcgrid .item b{font-size:19.1px}
+.calcgrid input.ans{width:52px}
+
+.cntrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cntrow .sy{font-size:23.6px;letter-spacing:3px;flex:1;min-width:150px;line-height:1.45}
+.pic{border:2px solid var(--bd);border-radius:16px;overflow:hidden;margin:10px 0;background:#fff}
+.pic .pt{background:var(--tn);padding:6px 13px;font-weight:700;border-bottom:2px solid var(--bd)}
+.pic .pr{display:flex;gap:10px;padding:7px 13px;border-bottom:1px dashed var(--line);align-items:center}
+.pic .pr b{width:74px;flex:none}
+.pic .pr span{font-size:22.5px;letter-spacing:3px;line-height:1.4}
+
+.ordrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:7px}
+.ordrow button{font:inherit;background:#fff;border:2px solid var(--bd);border-radius:11px;
+               padding:4px 13px;cursor:pointer}
+.ordrow button.used{opacity:.3;pointer-events:none}
+.slotline{min-height:40px;border:2px dashed var(--ac);border-radius:12px;background:var(--tn);
+          padding:6px 11px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.slotline.ok{border-color:var(--ok);background:var(--okbg)}
+.slotline.no{border-color:var(--no);background:var(--nobg)}
+.slotline em{font-style:normal;color:var(--mute)}
+.mini{font:inherit;font-size:15.8px;border:2px solid var(--line);background:#fff;border-radius:10px;
+      padding:2px 11px;cursor:pointer;margin-top:6px}
+textarea.free{width:100%;font:inherit;border:2px dashed var(--line);border-radius:12px;padding:8px 11px;
+              background:#fff;min-height:52px;resize:vertical}
+
+.fb{font-size:16.3px;margin-top:6px;font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+
+.result{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:20px;text-align:center;
+        box-shadow:5px 5px 0 var(--ink);margin:26px 0}
+.result h3{margin:0 0 4px;font-size:24.8px}
+.result .big{font-family:'Mali',cursive;font-size:45px;color:var(--ac);line-height:1.1}
+.result p{color:var(--mute);margin:6px 0 14px}
+.btn{font:inherit;font-weight:700;border:2.5px solid var(--ink);background:var(--ac);color:#fff;
+     border-radius:14px;padding:9px 22px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);margin:0 5px}
+.btn.gh{background:#fff;color:var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:none}
+.hide{display:none}
+@media(max-width:480px){body{font-size:18px}.hero h1{font-size:25.9px}.ttl h2{font-size:22.5px}}
+.top{padding-top:env(safe-area-inset-top)}
+a.back{text-decoration:none;color:inherit;display:inline-block}
+</style></head><body>
+<div class="top" id="top"></div>
+<div class="wrap" id="app"></div>
+<script>
+var D = [{"id": "sci", "name": "วิทยาศาสตร์", "icon": "🌱", "accent": "#2E7D32", "tint": "#E6F4E8", "band": "#C8E6C9", "pages": [{"title": "อวัยวะภายนอกของเรา", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 1", "blocks": [{"t": "box", "title": "อวัยวะภายนอก คืออะไร", "text": "อวัยวะภายนอก คือ ส่วนของร่างกายที่เรามองเห็นและสัมผัสได้จากภายนอก\nเช่น  ตา  หู  จมูก  ปาก  ลิ้น  ฟัน  ผม  แขน  ขา  มือ  เท้า  นิ้ว  ผิวหนัง"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะที่ทำหน้าที่ต่อไปนี้"}, {"t": "fill", "cols": 2, "items": [{"q": "ใช้มองเห็นสิ่งต่าง ๆ", "a": "ตา"}, {"q": "ใช้ฟังเสียง", "a": "หู"}, {"q": "ใช้ดมกลิ่นและหายใจ", "a": "จมูก"}, {"q": "ใช้พูดและกินอาหาร", "a": "ปาก"}, {"q": "ใช้เคี้ยวอาหารให้ละเอียด", "a": "ฟัน"}, {"q": "ใช้หยิบจับสิ่งของ", "a": "มือ"}, {"q": "ใช้เดินและวิ่ง", "a": "เท้า"}, {"q": "ใช้รับรสชาติอาหาร", "a": "ลิ้น"}]}, {"t": "instr", "text": "2. จับคู่ โดยเขียนตัวอักษรหน้าคำตอบลงในช่องว่าง"}, {"t": "match", "left": ["ตา", "หู", "จมูก", "ลิ้น", "ผิวหนัง"], "right": ["ได้ยินเสียง", "รับรสชาติ", "มองเห็น", "รู้สึกร้อน–เย็น", "ได้กลิ่น"], "a": [2, 0, 4, 1, 3]}, {"t": "instr", "text": "3. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ข้อใด ไม่ใช่ อวัยวะภายนอก", "opts": ["หู", "หัวใจ", "จมูก"], "a": 1}, {"q": "ถ้าเราไม่มีตา จะทำสิ่งใดไม่ได้", "opts": ["มองเห็นหนังสือ", "ฟังเพลง", "ดมกลิ่นดอกไม้"], "a": 0}, {"q": "อวัยวะใดช่วยให้เราทรงตัวและเคลื่อนที่ได้", "opts": ["ขาและเท้า", "หูและตา", "ฟันและลิ้น"], "a": 0}, {"q": "อวัยวะที่ห่อหุ้มร่างกายเราไว้ทั้งหมดคือข้อใด", "opts": ["ผม", "ผิวหนัง", "เล็บ"], "a": 1}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "ฟันเป็นอวัยวะภายนอกที่ใช้เคี้ยวอาหาร", "a": true}, {"q": "เราใช้จมูกในการฟังเสียง", "a": false}, {"q": "มือมีนิ้วข้างละ 5 นิ้ว", "a": true}, {"q": "เล็บช่วยป้องกันปลายนิ้วของเรา", "a": true}]}]}, {"title": "อวัยวะภายในของเรา", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 2", "blocks": [{"t": "box", "title": "อวัยวะภายใน คืออะไร", "text": "อวัยวะภายใน คือ ส่วนของร่างกายที่อยู่ข้างใน มองไม่เห็นจากภายนอก\nสมอง — ควบคุมการทำงานของร่างกาย คิด จำ สั่งการ\nหัวใจ — สูบฉีดเลือดไปเลี้ยงทั่วร่างกาย\nปอด — ใช้ในการหายใจ รับอากาศเข้าสู่ร่างกาย\nกระเพาะอาหาร — ย่อยอาหารที่เรากินเข้าไป\nลำไส้ — ดูดซึมสารอาหารไปใช้"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะภายในให้ตรงกับหน้าที่"}, {"t": "fill", "cols": 2, "items": [{"q": "สูบฉีดเลือดไปเลี้ยงร่างกาย", "a": "หัวใจ"}, {"q": "ใช้หายใจ รับอากาศเข้าร่างกาย", "a": "ปอด"}, {"q": "ควบคุมและสั่งการร่างกาย", "a": "สมอง"}, {"q": "ย่อยอาหารที่เรากิน", "a": "กระเพาะอาหาร"}, {"q": "ดูดซึมสารอาหาร", "a": "ลำไส้"}, {"q": "อยู่ในอก เต้นตุบ ๆ ตลอดเวลา", "a": "หัวใจ"}]}, {"t": "instr", "text": "2. จับคู่ โดยเขียนตัวอักษรหน้าคำตอบลงในช่องว่าง"}, {"t": "match", "left": ["สมอง", "ปอด", "กระเพาะอาหาร", "หัวใจ"], "right": ["อยู่ในช่องท้อง ย่อยอาหาร", "อยู่ในกะโหลกศีรษะ", "อยู่ในช่องอก มี 2 ข้าง", "อยู่ในช่องอก เต้นตลอดเวลา"], "a": [1, 2, 0, 3]}, {"t": "instr", "text": "3. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ข้อใดเป็นอวัยวะภายในทั้งหมด", "opts": ["ตา หู จมูก", "หัวใจ ปอด สมอง", "มือ เท้า แขน"], "a": 1}, {"q": "เมื่อเราวิ่งเร็ว ๆ อวัยวะใดเต้นเร็วขึ้น", "opts": ["สมอง", "หัวใจ", "ลำไส้"], "a": 1}, {"q": "อวัยวะใดทำงานเมื่อเราหายใจเข้า–ออก", "opts": ["ปอด", "กระเพาะอาหาร", "ตับ"], "a": 0}, {"q": "เมื่อเราท่องสูตรคูณ อวัยวะใดทำงาน", "opts": ["หัวใจ", "ปอด", "สมอง"], "a": 2}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "อวัยวะภายในมองเห็นได้ด้วยตาเปล่าจากภายนอก", "a": false}, {"q": "หัวใจของคนเราอยู่ในช่องอก", "a": true}, {"q": "สมองช่วยให้เราจำสิ่งที่เรียนได้", "a": true}, {"q": "ปอดทำหน้าที่ย่อยอาหาร", "a": false}]}]}, {"title": "ประสาทสัมผัสทั้ง 5", "sub": "บทที่ 1 ตัวเรา · ชุดที่ 3", "blocks": [{"t": "box", "title": "ประสาทสัมผัสทั้ง 5", "text": "ตา — การมองเห็น        หู — การได้ยิน        จมูก — การได้กลิ่น\nลิ้น — การรับรส         ผิวหนัง — การสัมผัส (ร้อน เย็น นุ่ม แข็ง)"}, {"t": "instr", "text": "1. เขียนชื่ออวัยวะที่ใช้รับรู้สิ่งต่อไปนี้"}, {"t": "fill", "cols": 2, "items": [{"q": "กลิ่นหอมของดอกไม้", "a": "จมูก"}, {"q": "เสียงเพลงจากวิทยุ", "a": "หู"}, {"q": "รสหวานของน้ำตาล", "a": "ลิ้น"}, {"q": "สีของท้องฟ้า", "a": "ตา"}, {"q": "ความร้อนของน้ำในแก้ว", "a": "ผิวหนัง"}, {"q": "รสเปรี้ยวของมะนาว", "a": "ลิ้น"}, {"q": "ความนุ่มของตุ๊กตา", "a": "ผิวหนัง"}, {"q": "เสียงครูเรียกชื่อ", "a": "หู"}]}, {"t": "instr", "text": "2. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "ประสาทสัมผัสของคนเรามีกี่อย่าง", "opts": ["3 อย่าง", "5 อย่าง", "7 อย่าง"], "a": 1}, {"q": "ถ้าเราปิดตาแล้วดมอาหาร เราใช้ประสาทสัมผัสใด", "opts": ["การได้กลิ่น", "การมองเห็น", "การได้ยิน"], "a": 0}, {"q": "เมื่อจับน้ำแข็งแล้วรู้สึกเย็น เป็นหน้าที่ของอวัยวะใด", "opts": ["ลิ้น", "ผิวหนัง", "จมูก"], "a": 1}, {"q": "เรารู้ว่าอาหารเค็มหรือหวานได้เพราะอวัยวะใด", "opts": ["ลิ้น", "จมูก", "ตา"], "a": 0}, {"q": "ข้อใดใช้ประสาทสัมผัสมากกว่า 1 อย่าง", "opts": ["ฟังเสียงนกร้อง", "กินส้มตำ", "มองดูภาพวาด"], "a": 1}]}, {"t": "instr", "text": "3. รสชาติพื้นฐานที่ลิ้นรับรู้ได้  เขียนมา 4 รส"}, {"t": "write", "lines": 1, "items": ["รสชาติที่ลิ้นรับรู้ได้"]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "ถ้าเป็นหวัดคัดจมูก เราจะได้กลิ่นน้อยลง", "a": true}, {"q": "ผิวหนังบอกได้ว่าของร้อนหรือเย็น", "a": true}, {"q": "เราใช้ตาในการรับรสอาหาร", "a": false}]}]}, {"title": "การดูแลรักษาอวัยวะ", "sub": "บทที่ 2 · ชุดที่ 4", "blocks": [{"t": "instr", "text": "1. ตอบว่า ควร (✓) หรือ ไม่ควร (✗) ปฏิบัติ"}, {"t": "tf", "items": [{"q": "แปรงฟันอย่างน้อยวันละ 2 ครั้ง", "a": true}, {"q": "อ่านหนังสือในที่มืดหรือแสงน้อย", "a": false}, {"q": "ล้างมือก่อนกินอาหารทุกครั้ง", "a": true}, {"q": "แคะหูด้วยของแหลม", "a": false}, {"q": "ฟังเพลงเสียงดังมาก ๆ เป็นเวลานาน", "a": false}, {"q": "ตัดเล็บให้สั้นอยู่เสมอ", "a": true}, {"q": "ดูโทรทัศน์หรือมือถือใกล้ ๆ นาน ๆ", "a": false}, {"q": "อาบน้ำและสระผมให้สะอาด", "a": true}, {"q": "กินอาหารครบ 5 หมู่", "a": true}, {"q": "ขยี้ตาแรง ๆ เมื่อมีฝุ่นเข้าตา", "a": false}]}, {"t": "instr", "text": "2. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "การดูแลดวงตาที่ถูกต้องคือข้อใด", "opts": ["อ่านหนังสือในที่มีแสงสว่างเพียงพอ", "ดูมือถือในที่มืด", "ขยี้ตาบ่อย ๆ"], "a": 0}, {"q": "ถ้าไม่แปรงฟันจะเกิดอะไรขึ้น", "opts": ["ฟังไม่ได้ยิน", "ฟันผุ", "มองไม่เห็น"], "a": 1}, {"q": "การดูแลผิวหนังที่ถูกต้องคือข้อใด", "opts": ["อาบน้ำให้สะอาดทุกวัน", "ใส่เสื้อผ้าเปียกชื้น", "เกาแรง ๆ เมื่อคัน"], "a": 0}, {"q": "เพื่อให้ปอดแข็งแรง ควรทำสิ่งใด", "opts": ["อยู่ใกล้ควันบุหรี่", "ออกกำลังกายและอยู่ในที่อากาศบริสุทธิ์", "กลั้นหายใจนาน ๆ"], "a": 1}]}, {"t": "instr", "text": "3. เขียนวิธีดูแลอวัยวะต่อไปนี้ อย่างละ 1 ข้อ"}, {"t": "write", "lines": 1, "items": ["ดวงตา", "หู", "ฟัน", "ผิวหนัง"]}]}, {"title": "พืชและสัตว์น่ารู้", "sub": "บทที่ 2 · ชุดที่ 5", "blocks": [{"t": "box", "title": "ส่วนประกอบของพืช", "text": "ราก — ดูดน้ำและแร่ธาตุจากดิน ยึดลำต้นให้มั่นคง\nลำต้น — ลำเลียงน้ำและอาหาร ค้ำจุนกิ่ง ใบ\nใบ — สร้างอาหารให้พืช\nดอก — ใช้สืบพันธุ์  ต่อมากลายเป็น ผล และ เมล็ด"}, {"t": "instr", "text": "1. เขียนชื่อส่วนของพืชให้ตรงกับหน้าที่"}, {"t": "fill", "cols": 2, "items": [{"q": "ดูดน้ำจากดิน", "a": "ราก"}, {"q": "สร้างอาหารให้พืช", "a": "ใบ"}, {"q": "ลำเลียงน้ำขึ้นสู่ใบ", "a": "ลำต้น"}, {"q": "ใช้ในการสืบพันธุ์ มีสีสันสวยงาม", "a": "ดอก"}, {"q": "ส่วนที่นำไปปลูกให้เกิดต้นใหม่", "a": "เมล็ด"}, {"q": "ยึดลำต้นไม่ให้ล้ม", "a": "ราก"}]}, {"t": "instr", "text": "2. สิ่งมีชีวิตต้องการสิ่งใดในการเจริญเติบโต  เลือกคำตอบที่ถูก"}, {"t": "mc", "cols": 1, "items": [{"q": "พืชต้องการสิ่งใดในการเจริญเติบโต", "opts": ["น้ำ อากาศ แสงแดด ดิน", "น้ำ ไฟฟ้า พลาสติก", "แสงแดด กระดาษ หิน"], "a": 0}, {"q": "สัตว์ต้องการสิ่งใดในการดำรงชีวิต", "opts": ["อาหาร น้ำ อากาศ ที่อยู่อาศัย", "อาหาร ของเล่น เสียงเพลง", "น้ำ โทรทัศน์ อากาศ"], "a": 0}, {"q": "ถ้าไม่รดน้ำต้นไม้เป็นเวลานาน จะเกิดอะไรขึ้น", "opts": ["ต้นไม้โตเร็วขึ้น", "ต้นไม้เหี่ยวและตาย", "ต้นไม้ออกดอกมากขึ้น"], "a": 1}, {"q": "ข้อใด ไม่ใช่ สิ่งมีชีวิต", "opts": ["ต้นมะม่วง", "ก้อนหิน", "ปลาทอง"], "a": 1}]}, {"t": "instr", "text": "3. แยกประเภท  เขียน  พืช  หรือ  สัตว์"}, {"t": "fill", "cols": 3, "items": [{"q": "กุหลาบ", "a": "พืช"}, {"q": "ผีเสื้อ", "a": "สัตว์"}, {"q": "ต้นกล้วย", "a": "พืช"}, {"q": "นกพิราบ", "a": "สัตว์"}, {"q": "หญ้า", "a": "พืช"}, {"q": "ปลาทอง", "a": "สัตว์"}]}, {"t": "instr", "text": "4. ตอบว่า ถูก หรือ ผิด"}, {"t": "tf", "items": [{"q": "พืชทุกชนิดมีดอก", "a": false}, {"q": "สัตว์เคลื่อนที่ได้เอง แต่พืชเคลื่อนที่เองไม่ได้", "a": true}, {"q": "สิ่งมีชีวิตทุกชนิดต้องการอาหารและน้ำ", "a": true}, {"q": "ใบไม้ทำหน้าที่ดูดน้ำจากดิน", "a": false}]}]}, {"title": "ทบทวนรวม  ตัวเรา พืชและสัตว์", "sub": "ชุดที่ 6", "blocks": [{"t": "instr", "text": "1. เลือกคำตอบที่ถูกต้อง"}, {"t": "mc", "cols": 1, "items": [{"q": "อวัยวะใดเป็นอวัยวะภายนอก", "opts": ["ปอด", "ลิ้น", "ลำไส้"], "a": 1}, {"q": "อวัยวะใดทำหน้าที่สูบฉีดเลือด", "opts": ["สมอง", "หัวใจ", "กระเพาะอาหาร"], "a": 1}, {"q": "เราใช้อวัยวะใดรับรู้ความเจ็บเมื่อถูกของมีคม", "opts": ["ผิวหนัง", "หู", "ลิ้น"], "a": 0}, {"q": "ส่วนใดของพืชทำหน้าที่สร้างอาหาร", "opts": ["ราก", "ใบ", "ดอก"], "a": 1}, {"q": "ข้อใดคือการดูแลอวัยวะที่ถูกต้อง", "opts": ["ฟังเพลงเสียงดังมาก", "ล้างมือก่อนกินอาหาร", "อ่านหนังสือในที่มืด"], "a": 1}, {"q": "สิ่งใด ไม่ จำเป็นต่อการเจริญเติบโตของพืช", "opts": ["น้ำ", "แสงแดด", "โทรทัศน์"], "a": 2}]}, {"t": "instr", "text": "2. เติมคำลงในช่องว่าง"}, {"t": "fill", "cols": 2, "items": [{"q": "ประสาทสัมผัสของคนเรามี ____ อย่าง", "a": "5"}, {"q": "อวัยวะที่ใช้หายใจคือ ____", "a": "ปอด"}, {"q": "ส่วนของพืชที่ดูดน้ำคือ ____", "a": "ราก"}, {"q": "เราใช้ ____ ในการรับรสอาหาร", "a": "ลิ้น"}, {"q": "อวัยวะที่ควบคุมการคิดและการจำคือ ____", "a": "สมอง"}, {"q": "เราควรแปรงฟันวันละอย่างน้อย ____ ครั้ง", "a": "2"}]}, {"t": "instr", "text": "3. ตอบคำถามต่อไปนี้"}, {"t": "write", "lines": 2, "items": ["ถ้าคนเราไม่มีประสาทสัมผัสด้านการได้ยิน จะเกิดผลอย่างไรบ้าง", "ยกตัวอย่างวิธีดูแลต้นไม้ที่บ้านของนักเรียน 2 วิธี"]}]}]}], S = {view:'home', si:0, pi:0}, PROG = {};
+var TL = ['ก','ข','ค','ง','จ','ฉ','ช','ซ'];
+var app = document.getElementById('app'), top_ = document.getElementById('top');
+
+function key(a,b){return a+'-'+b}
+function norm(s){return (s||'').toString().trim().toLowerCase().replace(/\s+/g,'').replace(/[.。]/g,'')}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function setVars(s){var r=document.documentElement.style;
+  if(s){r.setProperty('--ac',s.accent);r.setProperty('--tn',s.tint);r.setProperty('--bd',s.band)}
+  else{r.setProperty('--ac','#2B2430');r.setProperty('--tn','#F3EDE6');r.setProperty('--bd','#E6DDD3')}}
+
+/* ------- scoring ------- */
+var CUR = null;
+function newRun(){CUR={total:0, right:0, done:{}}}
+function mark(id, ok){ if(CUR.done[id]!==undefined) return; CUR.done[id]=ok; if(ok)CUR.right++;
+  var el=document.getElementById('prog'); if(el) el.textContent=CUR.right+' / '+CUR.total;
+  if(Object.keys(CUR.done).length===CUR.total) showResult(); }
+
+function showResult(){
+  var pct = CUR.total? Math.round(CUR.right/CUR.total*100):0;
+  PROG[key(S.si,S.pi)] = pct;
+  var msg = pct>=90?'เก่งมาก! พร้อมสอบแล้ว 🎉' : pct>=70?'ดีมาก! ทบทวนอีกนิดนะ' :
+            pct>=50?'ผ่านแล้ว ลองอ่านกล่องทบทวนอีกครั้ง' : 'ไม่เป็นไร ลองใหม่อีกครั้งนะ';
+  var d=document.getElementById('result');
+  d.className='result';
+  d.innerHTML='<h3>ทำครบแล้ว!</h3><div class="big">'+CUR.right+' / '+CUR.total+'</div>'+
+    '<p>'+msg+'</p><button class="btn" onclick="openSet('+S.si+','+S.pi+')">ทำชุดนี้อีกครั้ง</button>'+
+    '<button class="btn gh" onclick="openSub('+S.si+')">กลับไปเลือกชุด</button>';
+  d.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ------- views ------- */
+function home(){
+  setVars(null); S.view='home';
+  top_.innerHTML='<div class="in"><div class="tt">แบบฝึกหัดทบทวนก่อนสอบ ป.1</div></div>';
+  var h='<div class="hero"><h1>แบบฝึกหัดทบทวน<br>ก่อนสอบ ป.1</h1>'+
+        '<p>ภาคเรียนที่ 1 · ปีการศึกษา 2569</p></div><div class="rain"></div><div class="subs">';
+  D.forEach(function(s,i){
+    var n=s.pages.length, done=0, sum=0;
+    for(var j=0;j<n;j++){ if(PROG[key(i,j)]!==undefined){done++; sum+=PROG[key(i,j)];} }
+    h+='<div class="sub" onclick="openSub('+i+')"><div class="ic" style="background:'+s.accent+'">'+esc(s.icon)+'</div>'+
+       '<div class="nm"><b>'+esc(s.name)+'</b><i>'+n+' ชุด'+(done?' · ทำแล้ว '+done+' ชุด · เฉลี่ย '+Math.round(sum/done)+'%':'')+'</i>'+
+       '<div class="bar"><i style="width:'+(done/n*100)+'%;background:'+s.accent+'"></i></div></div>'+
+       '<div class="arw">›</div></div>';
+  });
+  app.innerHTML=h+'</div>';
+  window.scrollTo(0,0);
+}
+
+function openSub(i){
+  S.view='sub'; S.si=i; var s=D[i]; setVars(s);
+  top_.innerHTML='<div class="in"><a class="back" href="../">‹ หน้ารวม</a>'+
+                 '<div class="tt">'+esc(s.name)+'</div></div>';
+  var h='<div class="ttl"><h2>'+esc(s.name)+'</h2><p>ทบทวนก่อนสอบ ป.1 · ภาคเรียนที่ 1 · เลือกชุดที่ต้องการ</p></div><div class="sets">';
+  s.pages.forEach(function(p,j){
+    var sc=PROG[key(i,j)];
+    h+='<div class="set" onclick="openSet('+i+','+j+')"><div class="setn">'+(j+1)+'</div>'+
+       '<div class="t"><b>'+esc(p.title)+'</b><i>'+esc(p.sub)+'</i></div>'+
+       (sc!==undefined?'<span class="score">'+sc+'%</span>':'<span class="arw">›</span>')+'</div>';
+  });
+  app.innerHTML=h+'</div>';
+  window.scrollTo(0,0);
+}
+
+function openSet(i,j){
+  S.view='set'; S.si=i; S.pi=j; var s=D[i], p=s.pages[j]; setVars(s); newRun();
+  top_.innerHTML='<div class="in"><button class="back" onclick="openSub('+i+')">‹ ชุด</button>'+
+                 '<div class="tt">'+esc(p.title)+'</div><span class="pill" id="prog">0 / 0</span></div>';
+  var h='<div class="ttl"><h2>'+esc(p.title)+'</h2><p>'+esc(s.name)+' · '+esc(p.sub)+'</p></div>';
+  p.blocks.forEach(function(b,bi){ h+= (RB[b.t]||function(){return''})(b,bi); });
+  h+='<div id="result" class="hide"></div>';
+  app.innerHTML=h;
+  document.getElementById('prog').textContent='0 / '+CUR.total;
+  window.scrollTo(0,0);
+}
+
+/* ------- block renderers ------- */
+var RB={};
+RB.instr=function(b){return '<div class="instr">'+esc(b.text)+'</div>'};
+RB.box=function(b){return '<div class="box"><div class="bt">'+esc(b.title)+'</div><div class="bb">'+esc(b.text)+'</div></div>'};
+RB.bank=function(b){return '<div class="bank">'+b.words.map(function(w){return '<span>'+esc(w)+'</span>'}).join('')+'</div>'};
+RB.trace=function(b){return '<div class="bank">'+b.items.map(function(w){return '<span>'+esc(w)+'</span>'}).join('')+'</div>'};
+
+RB.write=function(b,bi){
+  return '<div class="blk">'+b.items.map(function(p,k){
+    return '<div style="margin-bottom:10px"><div class="qt"><span>'+esc(p)+'</span></div>'+
+           '<textarea class="free" placeholder="เขียนคำตอบของหนู..."></textarea></div>'}).join('')+
+    '<div style="color:var(--mute);font-size:15.8px">ข้อเขียนอิสระ ไม่นับคะแนน — ให้ผู้ปกครองช่วยอ่าน</div></div>';
+};
+
+RB.mc=function(b,bi){
+  var h='<div class="blk">';
+  b.items.forEach(function(it,k){
+    var id='mc'+bi+'_'+k; CUR.total++;
+    h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span></div>';
+    it.opts.forEach(function(o,oi){
+      h+='<button class="opt" onclick="pickMC(\''+id+'\','+oi+','+it.a+')"><i>'+TL[oi]+'.</i>'+esc(o)+'</button>';
+    });
+    h+='<div class="fb"></div></div>';
+  });
+  return h+'</div>';
+};
+function pickMC(id,oi,a){
+  var el=document.getElementById(id); if(el.dataset.done) return; el.dataset.done=1;
+  var bs=el.querySelectorAll('.opt'); var ok=(oi===a);
+  bs[a].classList.add('good'); if(!ok) bs[oi].classList.add('bad');
+  el.classList.add(ok?'ok':'no');
+  el.querySelector('.fb').className='fb '+(ok?'ok':'no');
+  el.querySelector('.fb').textContent= ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือข้อ '+TL[a];
+  mark(id,ok);
+}
+
+RB.tf=function(b,bi){
+  var h='<div class="blk">';
+  b.items.forEach(function(it,k){
+    var id='tf'+bi+'_'+k; CUR.total++;
+    h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span></div>'+
+       '<div class="tfb"><button onclick="pickTF(\''+id+'\',1,'+(it.a?1:0)+')">✓ ถูก</button>'+
+       '<button onclick="pickTF(\''+id+'\',0,'+(it.a?1:0)+')">✗ ผิด</button></div><div class="fb"></div></div>';
+  });
+  return h+'</div>';
+};
+function pickTF(id,v,a){
+  var el=document.getElementById(id); if(el.dataset.done) return; el.dataset.done=1;
+  var bs=el.querySelectorAll('.tfb button'), ok=(v===a);
+  bs[a?0:1].classList.add('good'); if(!ok) bs[v?0:1].classList.add('bad');
+  el.classList.add(ok?'ok':'no');
+  el.querySelector('.fb').className='fb '+(ok?'ok':'no');
+  el.querySelector('.fb').textContent= ok?'✓ ถูกต้อง!':'✗ ข้อนี้ตอบว่า '+(a?'ถูก':'ผิด');
+  mark(id,ok);
+}
+
+function chipBar(vals,gid){
+  if(!vals.length) return '';
+  return '<div class="chips"><span class="hint">แตะช่องว่างก่อน แล้วแตะคำตอบด้านล่าง (หรือพิมพ์เองก็ได้)</span>'+
+    shuffle(vals).map(function(v){return '<button onclick="useChip(\''+gid+'\',this)">'+esc(v)+'</button>'}).join('')+'</div>';
+}
+var FOCUS=null;
+function useChip(gid,btn){
+  var t = (FOCUS && FOCUS.dataset.gid===gid && !FOCUS.dataset.done) ? FOCUS :
+          document.querySelector('input.ans[data-gid="'+gid+'"]:not([data-done])');
+  if(!t) return;
+  t.value = btn.textContent; checkFill(t);
+}
+
+RB.fill=function(b,bi){
+  var gid='f'+bi;
+  var uniq=[]; b.items.forEach(function(it){ if(uniq.indexOf(it.a)<0) uniq.push(it.a) });
+  var useChips = uniq.length<=9;
+  var h='<div class="blk">';
+  b.items.forEach(function(it,k){
+    var id=gid+'_'+k; CUR.total++;
+    var q=esc(it.q), inp='<input class="ans" data-gid="'+gid+'" data-a="'+esc(it.a)+'" id="'+id+'" '+
+      'onfocus="FOCUS=this" onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)">';
+    q = q.replace(/_{2,}/, inp);
+    if(q.indexOf('<input')<0) q = q+' '+inp;
+    h+='<div class="item" id="w'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span>'+
+       '<span class="fillrow">'+q+'</span></div><div class="fb"></div></div>';
+  });
+  h+='</div>';
+  return (useChips? '<div class="blk">'+chipBar(uniq,gid)+'</div>':'') + h;
+};
+function checkFill(inp){
+  if(inp.dataset.done || !inp.value.trim()) return;
+  inp.dataset.done=1;
+  var ok = norm(inp.value)===norm(inp.dataset.a);
+  inp.classList.add(ok?'ok':'no');
+  var el=document.getElementById('w'+inp.id); el.classList.add(ok?'ok':'no');
+  var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+inp.dataset.a;
+  mark(inp.id,ok);
+}
+
+RB.calc=function(b,bi){
+  var h='<div class="blk calcgrid">';
+  b.items.forEach(function(it,k){
+    var id='c'+bi+'_'+k; CUR.total++;
+    h+='<div class="item" id="w'+id+'"><b>'+esc(it.q)+'</b>'+
+       '<input class="ans" inputmode="numeric" id="'+id+'" data-a="'+esc(it.a)+'" '+
+       'onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)"></div>';
+  });
+  return h+'</div>';
+};
+
+RB.count=function(b,bi){
+  var h='<div class="blk">';
+  b.items.forEach(function(it,k){
+    var id='n'+bi+'_'+k; CUR.total++;
+    var sym=''; for(var z=0;z<it.n;z++) sym+=it.sym;
+    h+='<div class="item cntrow" id="w'+id+'"><span class="sy">'+esc(sym)+'</span>'+
+       '<input class="ans" inputmode="numeric" style="width:70px" id="'+id+'" data-a="'+it.n+'" '+
+       'onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)"><div class="fb"></div></div>';
+  });
+  return h+'</div>';
+};
+
+RB.picto=function(b,bi){
+  var h='<div class="pic"><div class="pt">'+esc(b.title)+'</div>';
+  b.rows.forEach(function(r){
+    var sym=''; for(var z=0;z<r.n;z++) sym+=r.sym;
+    h+='<div class="pr"><b>'+esc(r.label)+'</b><span>'+esc(sym)+'</span></div>';
+  });
+  h+='</div><div class="blk">';
+  b.qs.forEach(function(q,k){
+    var id='p'+bi+'_'+k; CUR.total++;
+    h+='<div class="item" id="w'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span>'+
+       '<span class="fillrow">'+esc(q.q)+' <input class="ans" id="'+id+'" data-a="'+esc(q.a)+'" '+
+       'onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)"></span></div><div class="fb"></div></div>';
+  });
+  return h+'</div>';
+};
+
+RB.match=function(b,bi){
+  var h='<div class="rlist">'+b.right.map(function(r,i){return '<div><b>'+TL[i]+'.</b>'+esc(r)+'</div>'}).join('')+'</div><div class="blk">';
+  b.left.forEach(function(l,k){
+    var id='m'+bi+'_'+k; CUR.total++;
+    var opts='<option value="">–</option>'+b.right.map(function(r,i){return '<option value="'+i+'">'+TL[i]+'</option>'}).join('');
+    h+='<div class="item" id="w'+id+'"><div class="mrow"><span>'+(k+1)+'. '+esc(l)+'</span>'+
+       '<select class="ans" id="'+id+'" data-a="'+b.a[k]+'" onchange="checkMatch(this)">'+opts+'</select>'+
+       '</div><div class="fb"></div></div>';
+  });
+  return h+'</div>';
+};
+function checkMatch(sel){
+  if(sel.dataset.done || sel.value==='') return; sel.dataset.done=1;
+  var ok = sel.value===sel.dataset.a;
+  sel.classList.add(ok?'ok':'no');
+  var el=document.getElementById('w'+sel.id); el.classList.add(ok?'ok':'no');
+  var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือข้อ '+TL[+sel.dataset.a];
+  mark(sel.id,ok);
+}
+
+RB.order=function(b,bi){
+  var h='<div class="blk">';
+  b.items.forEach(function(it,k){
+    var id='o'+bi+'_'+k; CUR.total++;
+    h+='<div class="item" id="w'+id+'" data-a="'+esc(it.a)+'"><div class="slotline" id="s'+id+'"><em>แตะคำด้านล่างเรียงเป็นประโยค</em></div>'+
+       '<div class="ordrow" id="r'+id+'" style="margin-top:8px">'+
+       shuffle(it.words).map(function(w){return '<button onclick="addWord(\''+id+'\',this)">'+esc(w)+'</button>'}).join('')+'</div>'+
+       '<button class="mini" onclick="resetOrder(\''+id+'\')">ล้างคำตอบ</button>'+
+       '<button class="mini" onclick="checkOrder(\''+id+'\')">ตรวจคำตอบ</button><div class="fb"></div></div>';
+  });
+  return h+'</div>';
+};
+function addWord(id,btn){
+  var el=document.getElementById('w'+id); if(el.dataset.done) return;
+  var s=document.getElementById('s'+id);
+  if(s.querySelector('em')) s.innerHTML='';
+  var sp=document.createElement('span'); sp.textContent=btn.textContent;
+  sp.style.cssText='background:#fff;border:2px solid var(--ac);border-radius:10px;padding:2px 11px';
+  s.appendChild(sp); btn.classList.add('used');
+}
+function resetOrder(id){
+  var el=document.getElementById('w'+id); if(el.dataset.done) return;
+  document.getElementById('s'+id).innerHTML='<em>แตะคำด้านล่างเรียงเป็นประโยค</em>';
+  document.getElementById('r'+id).querySelectorAll('button').forEach(function(b){b.classList.remove('used')});
+}
+function checkOrder(id){
+  var el=document.getElementById('w'+id); if(el.dataset.done) return;
+  var s=document.getElementById('s'+id);
+  var got=Array.prototype.map.call(s.querySelectorAll('span'),function(x){return x.textContent});
+  if(!got.length) return;
+  el.dataset.done=1;
+  var ok = norm(got.join(''))===norm(el.dataset.a);
+  s.classList.add(ok?'ok':'no'); el.classList.add(ok?'ok':'no');
+  var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
+  fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+el.dataset.a;
+  mark(id,ok);
+}
+
+openSub(0);
+</script></body></html>
