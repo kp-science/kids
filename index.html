@@ -175,6 +175,11 @@ button{font:inherit;color:inherit}
 .folder .flist li.more{color:var(--muted);font-weight:600}
 .folder .go{background:#fff;color:var(--cd)}
 
+.subhead{display:flex;align-items:center;gap:12px;margin:22px 0 12px;background:var(--cl);border-radius:20px;padding:10px 14px}
+.subhead .si{width:46px;height:46px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:1.6rem;flex:none}
+.subhead h3{font-family:'Mali',sans-serif;font-size:1.25rem;color:var(--cd);line-height:1.2}
+.subhead .sc{font-family:'Noto Sans Thai Looped',sans-serif;font-size:.78rem;background:#fff;border-radius:999px;padding:1px 10px;vertical-align:middle}
+.subhead small{display:block;color:var(--muted);font-weight:600;font-size:.82rem}
 .crumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 16px}
 .backbtn{background:#fff;border:3px solid var(--cd);color:var(--cd);font-weight:700;border-radius:999px;padding:5px 16px;
   cursor:pointer;box-shadow:0 3px 0 var(--cd)}
@@ -313,30 +318,30 @@ const MATERIALS = [
     d:'Unit 1 At School — Colors · Unit 1 At School — School Things · Unit 1 At School — Senses · Unit 2 Let\'s Play — Toys & Shapes · Unit 3 Pet Show — Pets & Nature · Unit 3–4 Numbers & Food for Lunch',
     tags:['ป.1','6 ชุด','ตรวจคำตอบทันที'] },
 
-  { t:'จับคู่พลิกการ์ด', g:'เกมฝึกสมอง', url:'brain/games.html#memory', icon:'🃏',
+  { t:'จับคู่พลิกการ์ด', g:'เกม', sub:'เกมฝึกสมอง', url:'brain/games.html#memory', icon:'🃏',
     d:'พลิกการ์ดทีละ 2 ใบ หาคู่สัตว์ที่เหมือนกัน ฝึกความจำ', tags:['3 ระดับ','ความจำ'] },
-  { t:'จำลำดับเสียง', g:'เกมฝึกสมอง', url:'brain/games.html#simon', icon:'🎵',
+  { t:'จำลำดับเสียง', g:'เกม', sub:'เกมฝึกสมอง', url:'brain/games.html#simon', icon:'🎵',
     d:'ดูและฟังสัตว์ร้องตามลำดับ แล้วแตะตามให้ถูก ฝึกความจำและสมาธิ', tags:['3 ระดับ','มีเสียง'] },
-  { t:'ตัวไหนไม่เข้าพวก', g:'เกมฝึกสมอง', url:'brain/games.html#odd', icon:'🔍',
+  { t:'ตัวไหนไม่เข้าพวก', g:'เกม', sub:'เกมฝึกสมอง', url:'brain/games.html#odd', icon:'🔍',
     d:'หาภาพที่ไม่เหมือนเพื่อน ฝึกสังเกตและจัดกลุ่ม', tags:['3 ระดับ','การสังเกต'] },
-  { t:'ต่อลำดับให้ครบ', g:'เกมฝึกสมอง', url:'brain/games.html#pattern', icon:'🔁',
+  { t:'ต่อลำดับให้ครบ', g:'เกม', sub:'เกมฝึกสมอง', url:'brain/games.html#pattern', icon:'🔁',
     d:'ดูว่าภาพเรียงซ้ำกันแบบไหน แล้วเลือกภาพที่หายไป', tags:['3 ระดับ','หารูปแบบ'] },
-  { t:'พีระมิดตัวเลข', g:'เกมฝึกสมอง', url:'brain/games.html#pyramid', icon:'🔺',
+  { t:'พีระมิดตัวเลข', g:'เกม', sub:'เกมฝึกสมอง', url:'brain/games.html#pyramid', icon:'🔺',
     d:'เติมเลขให้ครบ ช่องบนเท่ากับ 2 ช่องล่างบวกกัน ลากตัวเลขไปวาง', tags:['3 ระดับ','บวกเลขในใจ'] },
-  { t:'พาน้องหมาไปหากระดูก', g:'เกมฝึกสมอง', url:'brain/games.html#dog', icon:'🐶',
+  { t:'พาน้องหมาไปหากระดูก', g:'เกม', sub:'เกมฝึกสมอง', url:'brain/games.html#dog', icon:'🐶',
     d:'เรียงลูกศรสั่งให้น้องหมาเดินหลบต้นไม้ไปหากระดูก พื้นฐานการเขียนโปรแกรม', tags:['3 ระดับ','คิดเป็นขั้นตอน'] },
 
-  { t:'ซูดูกุรูปภาพ', g:'เกมท้าทาย', url:'brain/games.html#sudoku', icon:'🧩',
+  { t:'ซูดูกุรูปภาพ', g:'เกม', sub:'เกมท้าทาย', url:'brain/games.html#sudoku', icon:'🧩',
     d:'เติมผลไม้ให้ครบ แต่ละแถว หลัก และกรอบ ต้องไม่ซ้ำกัน · 4×4 ถึง 6×6', tags:['3 ระดับ','ตรรกะ'] },
-  { t:'ตาชั่งปริศนา', g:'เกมท้าทาย', url:'brain/games.html#balance', icon:'⚖️',
+  { t:'ตาชั่งปริศนา', g:'เกม', sub:'เกมท้าทาย', url:'brain/games.html#balance', icon:'⚖️',
     d:'ผลไม้อะไรหนักเท่ากัน แล้วต้องใช้กี่ลูก พื้นฐานการคิดแบบสมการ', tags:['3 ระดับ','คิดแบบสมการ'] },
-  { t:'หอคอยฮานอย', g:'เกมท้าทาย', url:'brain/games.html#hanoi', icon:'🗼',
+  { t:'หอคอยฮานอย', g:'เกม', sub:'เกมท้าทาย', url:'brain/games.html#hanoi', icon:'🗼',
     d:'ย้ายแผ่นไปเสาขวาสุดทีละแผ่น ห้ามวางแผ่นใหญ่ทับแผ่นเล็ก · 3 ถึง 5 แผ่น', tags:['3 ระดับ','วางแผน'] },
-  { t:'เลื่อนเลขเรียงลำดับ', g:'เกมท้าทาย', url:'brain/games.html#slide', icon:'🔢',
+  { t:'เลื่อนเลขเรียงลำดับ', g:'เกม', sub:'เกมท้าทาย', url:'brain/games.html#slide', icon:'🔢',
     d:'เลื่อนแผ่นตัวเลขให้เรียง 1, 2, 3 … · 3×3 ถึง 4×4', tags:['3 ระดับ','มิติสัมพันธ์'] },
-  { t:'รถติด! พารถแดงออก', g:'เกมท้าทาย', url:'brain/games.html#traffic', icon:'🚗',
+  { t:'รถติด! พารถแดงออก', g:'เกม', sub:'เกมท้าทาย', url:'brain/games.html#traffic', icon:'🚗',
     d:'ลากรถคันอื่นหลบทาง แล้วพารถแดงออกจากลานจอด', tags:['3 ระดับ','คิดหลายขั้นตอน'] },
-  { t:'นักสืบหาบ้านสัตว์', g:'เกมท้าทาย', url:'brain/games.html#detective', icon:'🕵️',
+  { t:'นักสืบหาบ้านสัตว์', g:'เกม', sub:'เกมท้าทาย', url:'brain/games.html#detective', icon:'🕵️',
     d:'อ่านเบาะแสแล้วพาสัตว์ไปอยู่บ้านที่ถูกต้อง ฝึกอ่านและคิดเชิงตรรกะ', tags:['3 ระดับ','อ่านแล้วคิด'] },
 
   /* ---- ตัวอย่างรูปแบบสำหรับเพิ่มรายการใหม่ ลบทิ้งได้ ----
@@ -353,10 +358,14 @@ const SUBJECTS = {
   'สังคมศึกษา':  { c:'#FFC58A', d:'#B85A12', l:'#FFEBD6', e:'🏡' },
   'ภาษาอังกฤษ':  { c:'#C9A8FF', d:'#6E3CC0', l:'#EFE5FF', e:'🔤' },
   'ภาษาจีน':     { c:'#FF9C8F', d:'#B83426', l:'#FFE4E0', e:'🏮' },
-  'เกมฝึกสมอง':  { c:'#8EE0D2', d:'#1F7A70', l:'#DDF6F2', e:'🧠' },
-  'เกมท้าทาย':   { c:'#FFB38A', d:'#B4551C', l:'#FFF2EA', e:'🔥' },
+  'เกม':         { c:'#8EE0D2', d:'#1F7A70', l:'#DDF6F2', e:'🎮' },
 };
-const ORDER = ['ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','สังคมศึกษา','ภาษาอังกฤษ','ภาษาจีน','เกมฝึกสมอง','เกมท้าทาย'];
+const ORDER = ['ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','สังคมศึกษา','ภาษาอังกฤษ','ภาษาจีน','เกม'];
+/* หมวดย่อยในแฟ้ม (ใส่ sub:'ชื่อหมวด' ในรายการ) */
+const SUBGROUPS = {
+  'เกมฝึกสมอง': { c:'#8EE0D2', d:'#1F7A70', l:'#DDF6F2', e:'🧠', note:'เริ่มต้นตรงนี้ เล่นง่าย สนุก' },
+  'เกมท้าทาย':  { c:'#FFB38A', d:'#B4551C', l:'#FFF2EA', e:'🔥', note:'ยากขึ้นอีกขั้น ต้องคิดหลายชั้น' },
+};
 const ALL = { c:'#FFD66B', d:'#9A6A00', l:'#FFF3CC', e:'🌈' };
 const sub = g => SUBJECTS[g] || { c:'#9FE3DA', d:'#1F7A70', l:'#DDF6F2', e:'⭐' };
 const vars = s => '--c:'+s.c+';--cd:'+s.d+';--cl:'+s.l;
@@ -403,7 +412,7 @@ function renderChips(){
 }
 
 function card(x, showSub){
-  const s = sub(x.g), live = !!x.url;
+  const s = (x.sub && SUBGROUPS[x.sub]) || sub(x.g), live = !!x.url;
   const level = (x.tags||[]).find(t => /^ป\.\d/.test(t));
   const tags = (x.tags||[]).filter(t => t!==level);
   const inner =
@@ -417,14 +426,27 @@ function card(x, showSub){
     : '<div class="card soon" style="'+vars(s)+'">'+inner+'</div>';
 }
 
+function subsHTML(items){
+  const subs = [...new Set(items.map(x => x.sub).filter(Boolean))];
+  if(!subs.length) return '<div class="grid">'+items.map(x => card(x)).join('')+'</div>';
+  return subs.map(n => {
+    const sg = SUBGROUPS[n] || {}, list = items.filter(x => x.sub===n);
+    return '<div class="subhead" style="'+vars(sg.c?sg:sub(''))+'"><span class="si">'+(sg.e||'📁')+'</span>'+
+      '<div><h3>'+esc(n)+' <span class="sc">'+list.length+' เรื่อง</span></h3>'+(sg.note?'<small>'+esc(sg.note)+'</small>':'')+'</div></div>'+
+      '<div class="grid">'+list.map(x => card(x)).join('')+'</div>';
+  }).join('') + (items.some(x => !x.sub) ? '<div class="grid" style="margin-top:18px">'+items.filter(x => !x.sub).map(x => card(x)).join('')+'</div>' : '');
+}
 function folder(g, items){
   const s = sub(g), show = items.slice(0,3);
+  const subs = [...new Set(items.map(x => x.sub).filter(Boolean))];
   return '<button type="button" class="folder" data-g="'+esc(g)+'" style="'+vars(s)+'" aria-label="เปิดแฟ้ม'+esc(g)+'">'+
     '<span class="paper"></span>'+(items.length>1?'<span class="paper p2"></span>':'')+
     '<div class="front"><div class="fhead"><span class="fic">'+s.e+'</span>'+
       '<div><h3>'+esc(g)+'</h3><span class="fcount">📄 '+items.length+' เรื่อง</span></div></div>'+
-    '<ul class="flist">'+show.map(x => '<li><i>'+esc(x.icon||s.e)+'</i><span>'+esc(x.t)+'</span></li>').join('')+
-      (items.length>3 ? '<li class="more"><i>➕</i>และอีก '+(items.length-3)+' เรื่อง</li>' : '')+'</ul>'+
+    '<ul class="flist">'+(subs.length
+      ? subs.map(n => '<li><i>'+((SUBGROUPS[n]||{}).e||'📁')+'</i><span>'+esc(n)+' · '+items.filter(x => x.sub===n).length+' เรื่อง</span></li>').join('')
+      : show.map(x => '<li><i>'+esc(x.icon||s.e)+'</i><span>'+esc(x.t)+'</span></li>').join('')+
+        (items.length>3 ? '<li class="more"><i>➕</i>และอีก '+(items.length-3)+' เรื่อง</li>' : ''))+'</ul>'+
     '<span class="go">เปิดแฟ้ม 📂</span></div></button>';
 }
 
@@ -453,7 +475,7 @@ function render(){
   $('#list').innerHTML = '<section class="group" style="'+vars(s)+'"><div class="crumb">'+
       '<button type="button" class="backbtn" id="back">‹ ทุกวิชา</button>'+
       '<div class="ghead"><span class="gi">'+s.e+'</span><h2>'+esc(filter)+'</h2></div></div>'+
-    '<div class="grid">'+items.map(x => card(x)).join('')+'</div></section>';
+    subsHTML(items)+'</section>';
   $('#back').onclick = () => openFolder('all');
 }
 
