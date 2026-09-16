@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>สรุปผลการเรียน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#3A3350;--mute:#8C849E;--paper:#FFFBF4;--line:#EFE9E0;--ok:#2F9E5B;--mid:#C98A00;--low:#D2693C}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped',sans-serif;font-size:16px;line-height:1.6}
+h1,h2{font-family:'Mali',sans-serif;font-weight:700}
+.nf{font-family:'Noto Sans Thai Looped',sans-serif}
+.top{position:sticky;top:0;z-index:5;background:rgba(255,251,244,.92);backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:900px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.pill{background:#fff;color:#2F6DB0;border-radius:999px;padding:4px 14px;font-weight:700;font-size:.92rem;box-shadow:0 3px 12px rgba(58,51,80,.12);text-decoration:none}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 60px}
+.card{background:#fff;border-radius:24px;padding:16px 18px;margin-bottom:16px;box-shadow:0 8px 22px rgba(58,51,80,.07)}
+.card h2{font-size:1.2rem;margin-bottom:10px}
+.card .sub{color:var(--mute);font-size:.86rem;margin:-6px 0 10px}
+.note{color:var(--mute);font-size:.85rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi{background:#FBF8F2;border-radius:18px;padding:10px 14px}
+.kpi b{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-size:1.6rem;line-height:1.2}
+.kpi span{color:var(--mute);font-size:.85rem;font-weight:600}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:170px;padding-top:10px}
+.week .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.week .bar{width:70%;max-width:42px;border-radius:10px 10px 4px 4px;background:#8EC5FF;min-height:4px}
+.week .col.today .bar{background:#2F6DB0}
+.week .v{font-size:.78rem;font-weight:700}
+.week .d{font-size:.78rem;color:var(--mute);text-align:center;line-height:1.2}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mute);font-weight:600;font-size:.82rem}
+td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;border-radius:999px;padding:0 9px;font-weight:700;font-size:.8rem}
+.tag.ok{background:#E6F6EC;color:var(--ok)} .tag.mid{background:#FFF4D6;color:#8A6100} .tag.low{background:#FFEDE4;color:var(--low)}
+.subj{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.sj{background:#FBF8F2;border-radius:18px;padding:10px 14px}
+.sj b{display:block}
+.sj .meter{height:8px;border-radius:99px;background:#EDE7DD;overflow:hidden;margin:6px 0 2px}
+.sj .meter i{display:block;height:100%;border-radius:99px}
+.wrong li{list-style:none;padding:7px 0;border-bottom:1px dashed var(--line);display:flex;gap:10px}
+.wrong li:last-child{border-bottom:none}
+.wrong .cnt{flex:none;min-width:34px;text-align:center;background:#FFEDE4;color:var(--low);border-radius:10px;font-weight:700;font-size:.85rem;height:24px}
+.wrong small{display:block;color:var(--mute);font-size:.78rem}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.gm{background:#FBF8F2;border-radius:14px;padding:7px 12px;font-size:.9rem;display:flex;justify-content:space-between;gap:6px}
+.empty{color:var(--mute);text-align:center;padding:14px}
+details summary{cursor:pointer;color:var(--mute);font-weight:600;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><a class="pill" href="index.html">‹ หน้ารวม</a><div class="tt">👨‍👩‍👧 สรุปผลการเรียน</div></div></div>
+<main class="wrap" id="app"></main>
+<script src="common/progress.js"></script>
+<script>
+(function(){
+  const app = document.getElementById('app');
+  const d = KP.data(), todayK = KP.dayKey();
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const mins = sec => Math.round((sec||0)/60);
+  const pct = e => e.total ? Math.round(e.score/e.total*100) : null;
+  const tagOf = p => p==null ? '' : '<span class="tag '+(p>=80?'ok':p>=60?'mid':'low')+'">'+p+'%</span>';
+  const fmtTime = t => new Date(t).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  const allDays = Object.keys(d.days).sort();
+  const allEvents = allDays.flatMap(k => d.days[k].events.map(e => Object.assign({day:k}, e)));
+  const td = d.days[todayK] || {sec:0, events:[]};
+  let h = '';
+
+  /* ---- วันนี้ ---- */
+  h += '<section class="card"><h2>วันนี้</h2><div class="kpis">'+
+    '<div class="kpi"><b>'+mins(td.sec)+'</b><span>นาทีที่ใช้งาน</span></div>'+
+    '<div class="kpi"><b>'+td.events.length+'</b><span>กิจกรรมที่ทำจบ</span></div>'+
+    '<div class="kpi"><b>⭐ '+td.events.reduce((t,e)=>t+(e.stars||0),0)+'</b><span>ดาวที่ได้</span></div>'+
+    '<div class="kpi"><b>🔥 '+KP.streak(d)+'</b><span>วันติดต่อกัน</span></div>'+
+    '<div class="kpi"><b>'+(td.mission?'✅':KP.missions().filter(m=>m.done(td.events)).length+'/3')+'</b><span>ภารกิจวันนี้</span></div>'+
+    '<div class="kpi"><b>📒 '+KP.stickerCount(d)+'</b><span>สติกเกอร์สะสม</span></div></div>';
+  if(td.events.length){
+    h += '<table style="margin-top:12px"><tr><th>เวลา</th><th>ทำอะไร</th><th class="num">ผล</th></tr>'+
+      td.events.slice().reverse().map(e => '<tr><td>'+fmtTime(e.time)+'</td><td>'+esc((e.subject?e.subject+' · ':'')+e.title)+'</td><td class="num">'+
+        (e.total ? e.score+'/'+e.total+' '+tagOf(pct(e)) : '⭐'.repeat(e.stars||0))+'</td></tr>').join('')+'</table>';
+  } else h += '<p class="empty">วันนี้ยังไม่ได้ทำกิจกรรม</p>';
+  h += '</section>';
+
+  /* ---- 7 วันล่าสุด ---- */
+  const week = [];
+  for(let i=6;i>=0;i--){ const t=new Date(); t.setDate(t.getDate()-i); const k=KP.dayKey(t); week.push([k,t,d.days[k]||{sec:0,events:[]}]); }
+  const maxMin = Math.max(10, ...week.map(w => mins(w[2].sec)));
+  h += '<section class="card"><h2><span class="nf">7</span> วันล่าสุด</h2><p class="sub">นาทีที่ใช้งานในแต่ละวัน (นับเฉพาะตอนที่มีการแตะหรือเลื่อนจอ)</p><div class="week">'+
+    week.map(([k,t,x]) => '<div class="col'+(k===todayK?' today':'')+'"><span class="v">'+mins(x.sec)+'</span>'+
+      '<div class="bar" style="height:'+Math.round(mins(x.sec)/maxMin*120)+'px"></div>'+
+      '<span class="d">'+t.toLocaleDateString('th-TH',{weekday:'short'})+'<br>'+x.events.length+' กิจกรรม</span></div>').join('')+'</div></section>';
+
+  /* ---- ผลแบบฝึกรายวิชา (คะแนนล่าสุดของแต่ละชุด) ---- */
+  const scored = allEvents.filter(e => (e.kind==='worksheet' || e.kind==='test') && e.total);
+  const latest = {}; scored.forEach(e => { latest[e.page+'|'+e.title] = e; });
+  const bySubj = {};
+  Object.values(latest).forEach(e => { (bySubj[e.subject||e.page] = bySubj[e.subject||e.page] || []).push(e); });
+  h += '<section class="card"><h2>ผลแบบฝึกรายวิชา</h2><p class="sub">ใช้คะแนนครั้งล่าสุดของแต่ละชุด</p>';
+  if(Object.keys(bySubj).length){
+    h += '<div class="subj">'+Object.entries(bySubj).map(([s, list]) => {
+      const avg = Math.round(list.reduce((t,e)=>t+pct(e),0)/list.length);
+      const col = avg>=80?'#5BC07D':avg>=60?'#F2C94C':'#F29B72';
+      return '<div class="sj"><b>'+esc(s)+' '+tagOf(avg)+'</b><div class="meter"><i style="width:'+avg+'%;background:'+col+'"></i></div>'+
+        '<span class="note">ทำแล้ว '+list.length+' ชุด</span></div>';
+    }).join('')+'</div>';
+    const weak = Object.values(latest).filter(e => pct(e)<70).sort((a,b)=>pct(a)-pct(b));
+    if(weak.length) h += '<h2 style="margin-top:16px;font-size:1.05rem">ชุดที่ควรทบทวนอีกครั้ง</h2><table><tr><th>วิชา</th><th>ชุด</th><th class="num">ล่าสุด</th></tr>'+
+      weak.map(e => '<tr><td>'+esc(e.subject||e.page)+'</td><td>'+esc(e.title)+'</td><td class="num">'+tagOf(pct(e))+'</td></tr>').join('')+'</table>';
+  } else h += '<p class="empty">ยังไม่มีผลแบบฝึก</p>';
+  h += '</section>';
+
+  /* ---- ข้อที่ผิดบ่อย ---- */
+  const wrongMap = {};
+  allEvents.forEach(e => (e.wrong||[]).forEach(q => { const k=(e.subject||'')+'|'+q; wrongMap[k] = wrongMap[k] || {q, s:e.subject||'', n:0, last:e.day}; wrongMap[k].n++; wrongMap[k].last=e.day; }));
+  const wrongList = Object.values(wrongMap).sort((a,b)=>b.n-a.n || (a.last<b.last?1:-1)).slice(0,15);
+  h += '<section class="card"><h2>ข้อที่ผิดบ่อย</h2><p class="sub">นับจากแบบฝึกและแบบทดสอบทั้งหมด เอาไปคุยทบทวนกับลูกได้</p>'+
+    (wrongList.length ? '<ul class="wrong">'+wrongList.map(w => '<li><span class="cnt">×'+w.n+'</span><span>'+esc(w.q)+'<small>'+esc(w.s)+'</small></span></li>').join('')+'</ul>'
+      : '<p class="empty">ยังไม่มีข้อที่ผิด</p>')+'</section>';
+
+  /* ---- เกม ---- */
+  let brain = {}; try{ brain = JSON.parse(localStorage.getItem('kids-brain')||'{}')||{}; }catch(e){}
+  const LV = ['ง่าย','กลาง','ยาก'];
+  h += '<section class="card"><h2>เกม</h2><p class="sub">ดาวสูงสุดของแต่ละระดับ</p><div class="games">'+
+    KP.GAMES.map(([id,name,e]) => { const s = brain[id]||[0,0,0];
+      return '<div class="gm"><span>'+e+' '+esc(name)+'</span><span>'+s.map((v,i)=>v?LV[i][0]+'⭐'+v:'').filter(Boolean).join(' ')+(s.some(Boolean)?'':'<span class="note">ยังไม่เล่น</span>')+'</span></div>'; }).join('')+
+    '</div></section>';
+
+  h += '<p class="note" style="text-align:center">ข้อมูลทั้งหมดเก็บอยู่ในเครื่องนี้เท่านั้น ถ้าใช้หลายเครื่องหรือล้างข้อมูล Safari ผลจะไม่รวมกัน</p>';
+  app.innerHTML = h;
+})();
+</script>
+</body>
+</html>

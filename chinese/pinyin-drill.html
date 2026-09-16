@@ -1066,6 +1066,8 @@ function judge(val,btn){
 }
 
 function finish(){
+  if(window.KP) KP.log({ kind:'pinyin', page:'pinyin', subject:'ภาษาจีน', title: duel ? 'ท้าดวล 10 ข้อ' : 'การ์ดฝึกจบกอง',
+    score: duel ? duel.score : null, total: duel ? duel.total : null, stars: duel ? (duel.score>=9?3:duel.score>=7?2:1) : 2 });
   $('#answer-area').innerHTML=''; $('#uhelp').textContent='';
   $('#cuewrap').innerHTML='<div class="cue">ครบแล้ว<small>หมดกอง = ตอบถูกทุกใบอย่างน้อยหนึ่งครั้ง</small></div>';
   $('#ans').className='ans blank'; $('#ans').textContent='✓';
@@ -2080,5 +2082,6 @@ pNext();
 
 
 </script>
+<script src="../common/progress.js"></script>
 </body>
 </html>

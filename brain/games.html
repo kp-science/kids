@@ -460,6 +460,7 @@ const alive = tok => CUR && CUR.token===tok;
 
 function win(stars){
   const {g,l} = CUR; saveStars(g.id,l,stars); sfx.win();
+  if(window.KP) KP.log({ kind:'game', page:'brain', item:g.id, title:g.name+' · '+LVNAME[l], level:l, stars, mistakes:CUR.mistakes, hard:!!g.hard });
   const next = l<2 ? l+1 : null;
   speak(stars===3 ? 'เก่งมาก ได้สามดาว' : 'ผ่านแล้ว เก่งมาก');
   $('#stage').innerHTML =
@@ -1116,5 +1117,6 @@ function route(){
 window.addEventListener('popstate', route);
 route();
 </script>
+<script src="../common/progress.js"></script>
 </body>
 </html>

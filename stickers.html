@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>สมุดสติกเกอร์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ink:#3A3350;--mute:#8C849E;--paper:#FFFBF4}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped',sans-serif;font-size:17px;line-height:1.6;min-height:100vh}
+h1,h2{font-family:'Mali',sans-serif;font-weight:700}
+.top{position:sticky;top:0;z-index:5;background:rgba(255,251,244,.92);backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:860px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.pill{background:#fff;color:#5E3FB8;border-radius:999px;padding:4px 14px;font-weight:700;font-size:.92rem;box-shadow:0 3px 12px rgba(58,51,80,.12);text-decoration:none}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 60px}
+
+.cover{border-radius:30px;padding:22px;background:linear-gradient(135deg,#C9A8FF,#FF9EC4);color:#fff;box-shadow:0 12px 30px rgba(110,60,192,.2);
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cover .big{font-size:3.4rem;animation:bob 3s ease-in-out infinite}
+.cover h1{font-size:1.9rem;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,.15)}
+.cover p{font-weight:600;opacity:.95}
+.meter{flex-basis:100%;background:rgba(255,255,255,.35);border-radius:99px;height:12px;overflow:hidden}
+.meter i{display:block;height:100%;background:#fff;border-radius:99px}
+.how{background:#fff;border-radius:22px;padding:12px 16px;margin:16px 0;box-shadow:0 6px 18px rgba(58,51,80,.07);font-weight:600}
+.how b{color:#5E3FB8}
+
+.mine{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.mine .st{width:78px}
+.page{background:#fff;border-radius:28px;padding:16px;margin-bottom:16px;box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.page h2{font-size:1.25rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.page h2 small{font-family:'Noto Sans Thai Looped',sans-serif;font-size:.8rem;color:var(--mute);margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.st{aspect-ratio:1;border-radius:20px;display:grid;place-items:center;font-size:2.4rem;background:#FBF8F2;position:relative;user-select:none}
+.st.have{background:#fff;box-shadow:0 4px 12px rgba(58,51,80,.10);cursor:pointer;animation:none}
+.st.have span{display:block;filter:drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff);transform:rotate(var(--r))}
+.st.lock{color:transparent;border:3px dashed #E8E1EF}
+.st.lock::after{content:"?";position:absolute;color:#CFC6DB;font-family:'Mali',sans-serif;font-size:1.6rem}
+.st.new{animation:pop .7s ease-out both;box-shadow:0 0 0 3px #FF9EC4,0 4px 12px rgba(58,51,80,.1)}
+.st.new::before{content:"ใหม่";position:absolute;top:-8px;right:-6px;background:#FF6B8B;color:#fff;font-size:.7rem;font-weight:700;border-radius:99px;padding:0 7px;line-height:1.6}
+.st.wiggle span{animation:wig .6s ease-in-out}
+@keyframes pop{0%{transform:scale(.3) rotate(-20deg);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes wig{25%{transform:rotate(-18deg) scale(1.2)}75%{transform:rotate(18deg) scale(1.2)}}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+@media (max-width:520px){.grid{grid-template-columns:repeat(4,1fr)}.st{font-size:2rem}.cover h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><a class="pill" href="index.html">‹ หน้ารวม</a><div class="tt">📒 สมุดสติกเกอร์</div></div></div>
+<main class="wrap" id="app"></main>
+<script src="common/progress.js"></script>
+<script>
+(function(){
+  const app = document.getElementById('app');
+  const d = KP.data(), have = KP.owned(d), total = KP.ALL_STICKERS.length, per = KP.STARS_PER_STICKER;
+  const seen = d.seenStickers || 0, newOnes = new Set(have.slice(seen));
+  const toNext = per - (d.totals.stars % per);
+  let html =
+    '<div class="cover"><span class="big">📒</span><div><h1>สมุดสติกเกอร์ของหนู</h1><p>สะสมแล้ว '+have.length+' จาก '+total+' ดวง · ดาวทั้งหมด ⭐ '+d.totals.stars+'</p></div>'+
+    '<div class="meter"><i style="width:'+Math.round(have.length/total*100)+'%"></i></div></div>'+
+    '<div class="how">วิธีได้สติกเกอร์: เก็บดาวครบทุก <b>'+per+' ดาว</b> ได้ 1 ดวง · ทำ <b>ภารกิจวันนี้</b> ครบ ได้เพิ่มอีก 1 ดวง'+
+    (have.length<total ? ' · อีก <b>'+toNext+' ดาว</b> ได้ดวงต่อไป' : ' · สะสมครบแล้ว เก่งที่สุด! 🏆')+'</div>';
+  html += '<section class="page"><h2>✨ สติกเกอร์ของหนู<small>'+have.length+' ดวง</small></h2>'+
+    (have.length ? '<div class="mine">'+have.slice().reverse().map((e,i)=>'<div class="st have'+(newOnes.has(e)?' new':'')+'" style="--r:'+((i*37)%17-8)+'deg"><span>'+e+'</span></div>').join('')+'</div>'
+      : '<p style="text-align:center;color:var(--mute);padding:10px">ยังไม่มีสติกเกอร์ ไปเก็บดาวจากแบบฝึกและเกมกันเถอะ ⭐</p>')+'</section>';
+  KP.STICKER_PAGES.forEach(([name, list]) => {
+    const got = list.filter(e => have.includes(e)).length;
+    html += '<section class="page"><h2>'+name+'<small>'+got+' / '+list.length+'</small></h2><div class="grid">'+
+      list.map((e,i) => have.includes(e)
+        ? '<div class="st have'+(newOnes.has(e)?' new':'')+'" style="--r:'+((i*37)%17-8)+'deg"><span>'+e+'</span></div>'
+        : '<div class="st lock" aria-label="ยังไม่ได้"></div>').join('')+'</div></section>';
+  });
+  app.innerHTML = html;
+  app.querySelectorAll('.st.have').forEach(s => s.onclick = () => { s.classList.remove('wiggle'); void s.offsetWidth; s.classList.add('wiggle'); });
+  KP.markSeen();
+})();
+</script>
+</body>
+</html>

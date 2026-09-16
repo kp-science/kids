@@ -364,6 +364,11 @@ function updateScore(fresh){
   $('#again').onclick=resetCur;
   $('#other').onclick=()=>{ cur=(cur+1)%TESTS.length; try{ localStorage.setItem('kids-plants-animals-tab', cur); }catch(e){} render(); window.scrollTo({top:0}); };
   if(fresh) setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'center'}),700);
+  if(fresh && window.KP){
+    const wrong=keys.filter(k=>ans[k]!==Q[k][2]).map(k=>Q[k][0]).slice(0,15);
+    KP.log({ kind:'test', page:'plants', subject:'วิทยาศาสตร์', title:'แบบทดสอบพืชและสัตว์ · '+TESTS[cur].name, score:right, total:Q.length,
+             stars: pct>=.9?3 : pct>=.7?2 : 1, wrong });
+  }
 }
 
 function resetCur(){ ans={}; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
@@ -371,5 +376,6 @@ $('#reset').onclick=()=>{ if(!Object.keys(ans).length || confirm('ล้าง�
 
 render();
 </script>
+<script src="../common/progress.js"></script>
 </body>
 </html>

@@ -87,6 +87,36 @@ button{font:inherit;color:inherit}
   .kid .fx{font-size:1rem}
 }
 
+/* ---------------- ภารกิจวันนี้ ---------------- */
+.today{background:#fff;border-radius:28px;padding:16px 18px;margin:4px 0 22px;box-shadow:0 10px 26px rgba(42,36,64,.08)}
+.today .th{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.today .th .ti{width:48px;height:48px;border-radius:16px;background:#FFF1C9;display:grid;place-items:center;font-size:1.7rem;flex:none}
+.today .th h2{font-family:'Mali',sans-serif;font-size:1.35rem;line-height:1.2}
+.today .th small{display:block;color:var(--muted);font-weight:600;font-size:.8rem}
+.today .chips2{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.today .chips2 span{background:#FFF6DC;color:#8A6100;border-radius:999px;padding:3px 12px;font-weight:700;font-size:.85rem;white-space:nowrap}
+.today .chips2 span.fire{background:#FFE9E0;color:#B4551C}
+.mlist{list-style:none;display:grid;gap:8px}
+.mlist li{display:flex;align-items:center;gap:12px;background:#FBF8F2;border-radius:18px;padding:9px 12px}
+.mlist li .me{width:42px;height:42px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:1.4rem;flex:none;box-shadow:0 2px 8px rgba(42,36,64,.06)}
+.mlist li .mt{flex:1;font-weight:600;line-height:1.35}
+.mlist li .mt small{display:block;color:var(--muted);font-weight:600;font-size:.78rem}
+.mlist li .mgo{background:#2F6DB0;color:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:.88rem;white-space:nowrap}
+.mlist li.done{background:#EFFAF2}
+.mlist li.done .mt{color:#2F7A4A;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:rgba(47,122,74,.35)}
+.mlist li .mok{font-size:1.5rem}
+.stamp{margin-top:10px;background:linear-gradient(90deg,#FFE3EC,#FFF1C9,#E3F4FF);border-radius:18px;padding:10px 14px;text-align:center;
+  font-family:'Mali',sans-serif;font-weight:700;font-size:1.1rem;color:#6E3CC0;animation:pop2 .6s ease-out}
+@keyframes pop2{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.bookbtn{margin-top:12px;display:flex;align-items:center;gap:12px;background:#F4EFFF;border-radius:18px;padding:10px 14px;color:#5E3FB8;font-weight:700;position:relative}
+.bookbtn .be{font-size:1.9rem}
+.bookbtn .bt{flex:1;line-height:1.35}
+.bookbtn .bt small{display:block;font-weight:600;color:#8C7BB8;font-size:.8rem}
+.bookbtn .bar{height:8px;border-radius:99px;background:#E4DAFB;margin-top:4px;overflow:hidden}
+.bookbtn .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#C9A8FF,#FF9EC4)}
+.bookbtn .new{position:absolute;top:-8px;right:10px;background:#FF6B8B;color:#fff;border-radius:999px;padding:1px 10px;font-size:.78rem;animation:pop2 .6s ease-out}
+footer .parent{display:inline-block;margin-top:6px;color:var(--muted);text-decoration:underline;font-weight:600}
+
 /* ---------------- ปุ่มเลือกวิชา ---------------- */
 .wrap{max-width:980px;margin:0 auto;padding:0 16px 60px;position:relative}
 .picker{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;margin:-58px 0 18px;scrollbar-width:none;
@@ -273,11 +303,13 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
 
 <main class="wrap">
   <div class="picker" id="chips" role="tablist" aria-label="เลือกวิชา"></div>
+  <section class="today" id="today" hidden></section>
   <div id="list"></div>
 
 </main>
 
-<footer><span class="grass">🌷🌱🌼🌱🌷</span>ทำด้วยความรักให้ลูก</footer>
+<footer><span class="grass">🌷🌱🌼🌱🌷</span>ทำด้วยความรักให้ลูก<br><a class="parent" href="parent.html">👨‍👩‍👧 สำหรับพ่อแม่ · ดูผลการเรียน</a></footer>
+<script src="common/progress.js"></script>
 
 <script>
 /* ============================================================
@@ -465,9 +497,37 @@ function folder(g, items){
     '<span class="go">เปิดแฟ้ม 📂</span></div></button>';
 }
 
+/* ภารกิจวันนี้ + ดาว + สติกเกอร์ (แสดงเฉพาะหน้าแรก) */
+function renderToday(show){
+  const box = $('#today');
+  if(!show || !window.KP){ box.hidden = true; return; }
+  const d = KP.data(), td = KP.day(d), ev = td.events, ms = KP.missions();
+  const starsToday = ev.reduce((t,x)=>t+(x.stars||0),0), st = KP.streak(d);
+  const have = KP.stickerCount(d), total = KP.ALL_STICKERS.length, per = KP.STARS_PER_STICKER;
+  const toNext = per - (d.totals.stars % per), isNew = have > (d.seenStickers||0);
+  const allDone = ms.every(m => m.done(ev));
+  const now = new Date();
+  box.hidden = false;
+  box.innerHTML =
+    '<div class="th"><span class="ti">🎯</span><div><h2>ภารกิจวันนี้</h2><small>'+now.toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'})+'</small></div>'+
+      '<div class="chips2">'+(st?'<span class="fire">🔥 '+st+' วันติดต่อกัน</span>':'')+'<span>⭐ วันนี้ '+starsToday+' ดาว</span></div></div>'+
+    '<ul class="mlist">'+ms.map(m => {
+      const ok = m.done(ev);
+      return '<li class="'+(ok?'done':'')+'"><span class="me">'+m.e+'</span><span class="mt">'+esc(m.text)+
+        (m.progress && !ok ? '<small>ตอนนี้ '+m.progress(ev)+'</small>' : '')+'</span>'+
+        (ok ? '<span class="mok">✅</span>' : (m.url ? '<a class="mgo" href="'+esc(m.url)+'">ไปเลย ▶</a>' : ''))+'</li>';
+    }).join('')+'</ul>'+
+    (allDone ? '<div class="stamp">🏅 ภารกิจวันนี้สำเร็จ! ได้สติกเกอร์พิเศษ 1 ดวง 🎉</div>' : '')+
+    '<a class="bookbtn" href="stickers.html"><span class="be">📒</span><span class="bt">สมุดสติกเกอร์ · สะสมแล้ว '+have+' / '+total+
+      '<small>'+(have<total ? 'อีก '+toNext+' ดาวได้สติกเกอร์ใหม่' : 'สะสมครบทุกดวงแล้ว!')+'</small>'+
+      '<div class="bar"><i style="width:'+Math.round(((per-toNext)/per)*100)+'%"></i></div></span>'+
+      (isNew ? '<span class="new">ใหม่!</span>' : '')+'<span style="font-size:1.3rem">›</span></a>';
+}
+
 function render(){
   renderChips();
   const t = term.trim().toLowerCase();
+  renderToday(!t && filter==='all');
 
   /* กำลังค้นหา: แสดงการ์ดที่ตรงกันจากทุกวิชา */
   if(t){
@@ -509,6 +569,8 @@ function render(){
 }
 
 $('#q').addEventListener('input', e => { term = e.target.value; render(); });
+/* กลับมาหน้านี้ด้วยปุ่มย้อนกลับ ให้อัปเดตภารกิจและดาวล่าสุด */
+addEventListener('pageshow', e => { if(e.persisted) render(); });
 
 /* แตะน้องแล้วกระโดดดึ๋ง พร้อมเปลี่ยนคำพูด */
 (function(){
