@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>แบบทดสอบ พืชและสัตว์ ป.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --paper:#F7F9F2; --card:#fff; --ink:#1F2A24; --mute:#6B7A70; --line:#DCE3D6;
+  --leaf:#2E7D4F; --leaf-soft:#E3F1E8; --sky:#1E6FB8; --sky-soft:#E4EFFA;
+  --ok:#2E7D32; --okbg:#E3F4E5; --no:#C62828; --nobg:#FDE8E8; --gold:#E0A100;
+  --ac:var(--leaf); --acs:var(--leaf-soft);
+}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;
+  font-size:18px;line-height:1.6;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(247,249,242,.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:900px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.back{text-decoration:none;color:var(--ink);border:2px solid var(--ink);background:#fff;border-radius:12px;
+  padding:3px 12px;font-size:.9rem;font-weight:700;white-space:nowrap}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.score{background:var(--ac);color:#fff;border-radius:999px;padding:3px 12px;font-weight:700;font-size:.9rem;white-space:nowrap}
+
+.wrap{max-width:900px;margin:0 auto;padding:16px 14px 60px}
+.hero{text-align:center;padding:10px 0 14px}
+.hero h1{font-family:'Mali',sans-serif;font-size:1.7rem;line-height:1.3;color:var(--leaf)}
+.hero p{color:var(--mute);font-size:.95rem}
+
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 18px}
+.tabs button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 16px;font-weight:700;font-size:.95rem}
+.tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+
+.tools{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px;font-size:.9rem;color:var(--mute)}
+.tools label{display:flex;align-items:center;gap:6px}
+.tools input{width:20px;height:20px;accent-color:var(--ac)}
+
+.part{margin:22px 0 10px;background:var(--ac);color:#fff;border-radius:14px;padding:8px 16px;
+  font-family:'Mali',sans-serif;font-weight:700;font-size:1.1rem}
+
+.q{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px;transition:.2s}
+.q.ok{border-color:var(--ok)} .q.no{border-color:var(--no)}
+.qh{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.num{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;
+  font-weight:700;font-size:1.05rem}
+.qt{flex:1;font-weight:700;font-size:1.1rem;padding-top:4px}
+.qe{font-size:2rem;line-height:1}
+.spk{flex-shrink:0;border:2px solid var(--line);background:#fff;border-radius:12px;width:42px;height:42px;font-size:1.2rem}
+.spk:active{background:var(--acs)}
+
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opts.list{grid-template-columns:1fr}
+.opt{position:relative;border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-height:118px;transition:.12s}
+.opt .em{font-size:2.6rem;line-height:1.15}
+.opt .lb{font-size:.98rem;font-weight:600;line-height:1.35}
+.opt .lt{position:absolute;top:6px;left:8px;width:26px;height:26px;border-radius:50%;border:2px solid var(--ac);
+  color:var(--ac);font-weight:700;font-size:.85rem;display:grid;place-items:center;background:#fff}
+.opt.noem{justify-content:center}
+.opt.noem .lb{font-size:1.15rem}
+.opts.list .opt{flex-direction:row;min-height:0;padding:10px 12px;text-align:left;gap:12px}
+.opts.list .opt .lt{position:static;flex-shrink:0}
+.opts.list .opt.noem{justify-content:flex-start}
+.opts.list .opt .lb{font-size:1.02rem}
+.opt:not([disabled]):hover{border-color:var(--ac);background:var(--acs)}
+.opt:not([disabled]):active{transform:scale(.97)}
+.opt[disabled]{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.right .lt{border-color:var(--ok);background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--no);background:var(--nobg)}
+.opt.wrong .lt{border-color:var(--no);background:var(--no);color:#fff}
+.opt.dim{opacity:.45}
+.fb{margin-top:8px;font-weight:700;font-size:.98rem;min-height:0}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+
+.result{background:#fff;border:3px solid var(--gold);border-radius:20px;padding:20px;text-align:center;margin-top:20px}
+.result .stars{font-size:2.4rem;letter-spacing:4px}
+.result .big{font-family:'Mali',sans-serif;font-size:2.2rem;font-weight:700;color:var(--ac)}
+.result p{margin:4px 0 12px}
+.btn{border:none;background:var(--ac);color:#fff;border-radius:12px;padding:9px 20px;font-weight:700;margin:4px}
+.btn.gh{background:#fff;color:var(--ac);border:2px solid var(--ac)}
+.hide{display:none}
+
+@media (max-width:480px){
+  body{font-size:17px}
+  .hero h1{font-size:1.4rem}
+  .opts{gap:7px}
+  .opt{min-height:104px;padding:8px 3px}
+  .opt .em{font-size:2.1rem}
+  .opt .lb{font-size:.86rem}
+  .opt .lt{width:22px;height:22px;font-size:.75rem;top:4px;left:4px}
+  .qt{font-size:1.02rem}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="back" href="../">‹ หน้ารวม</a>
+  <div class="tt" id="tt">แบบทดสอบ พืชและสัตว์</div>
+  <span class="score" id="score">0 / 0</span>
+</div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>แบบทดสอบวิทยาศาสตร์ ป.1</h1>
+    <p>เรื่อง ส่วนต่าง ๆ ของพืชและสัตว์ · แตะคำตอบที่ถูกต้องที่สุดเพียงข้อเดียว</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tools">
+    <label><input type="checkbox" id="autoread"> อ่านโจทย์ให้ฟังอัตโนมัติ</label>
+    <button class="btn gh" id="reset" type="button" style="padding:4px 14px;margin:0">เริ่มชุดนี้ใหม่</button>
+  </div>
+  <div id="list"></div>
+  <div id="result" class="result hide"></div>
+</div>
+
+<script>
+/* ============================================================
+   ข้อมูลข้อสอบ
+   แต่ละข้อ: [โจทย์, [[อิโมจิ, คำตอบ], ...], ลำดับคำตอบที่ถูก (0=ก 1=ข 2=ค), อิโมจิประกอบโจทย์ (ถ้ามี)]
+   { part:'ชื่อตอน' } = หัวตอน
+   ============================================================ */
+const TESTS = [
+{ id:'pic40', name:'ชุดภาพ 40 ข้อ', title:'เรื่อง ส่วนต่าง ๆ ของพืชและสัตว์', style:'grid', items:[
+  {part:'ตอนที่ 1 ส่วนต่าง ๆ ของพืช'},
+  ['ข้อใดเป็นส่วนของพืช', [['👂','หู'],['🫚','ราก'],['👃','จมูก']], 1],
+  ['ส่วนใดดูดน้ำและธาตุอาหารจากดิน', [['🫚','ราก'],['🌸','ดอก'],['🍏','ผล']], 0],
+  ['ส่วนใดช่วยยึดต้นพืชไว้กับดิน', [['🍃','ใบ'],['🌸','ดอก'],['🫚','ราก']], 2],
+  ['ส่วนใดช่วยชูกิ่ง ก้าน ใบ และดอก', [['🍎','ผล'],['🎋','ลำต้น'],['🌰','เมล็ด']], 1],
+  ['ส่วนใดลำเลียงน้ำและธาตุอาหารจากราก', [['🎋','ลำต้น'],['🍏','ผล'],['🌸','ดอก']], 0],
+  ['ส่วนใดสร้างอาหารให้พืช', [['🫚','ราก'],['🌸','ดอก'],['🍃','ใบ']], 2],
+  ['ใบมีหน้าที่ใดอีก', [['🫛','ห่อหุ้มเมล็ด'],['🍃','หายใจและคายน้ำ'],['🫚','ยึดต้นกับดิน']], 1],
+  ['ดอกมีหน้าที่สำคัญอย่างไร', [['🌸','ช่วยสืบพันธุ์'],['🚿','ดูดน้ำ'],['🫚','ยึดต้น']], 0],
+  ['ส่วนใดห่อหุ้มเมล็ด', [['🫚','ราก'],['🍃','ใบ'],['🍏','ผล']], 2],
+  ['เมล็ดสามารถเจริญเป็นอะไรได้', [['🌸','ดอก'],['🌱','ต้นใหม่'],['🪨','ก้อนหิน']], 1],
+  ['ดอกของพืชแต่ละชนิดอาจต่างกันในเรื่องใด', [['🌺','สี รูปร่าง และกลิ่น'],['🦵','มีขาและไม่มีขา'],['🐶','มีหูและไม่มีหู']], 0],
+  ['ใบของพืชส่วนใหญ่มีสีอะไร', [['🖤','สีดำ'],['💜','สีม่วง'],['💚','สีเขียว']], 2],
+  ['ข้อใดเป็นรูปร่างของใบพืชได้', [['❤️','รูปหัวใจ'],['👂','รูปหู'],['👟','รูปเท้า']], 0],
+  ['ข้อใดเป็นลักษณะของลำต้นพืช', [['🪽','มีปีก'],['🎋','มีข้อปล้อง'],['🐟','มีครีบ']], 1],
+  ['พืชบางชนิดมีลำต้นเป็นอย่างไร', [['👂','มีหู'],['🪶','มีขนนก'],['🌵','มีหนาม']], 2],
+  ['ผลของพืชมีลักษณะอย่างไร', [['😋','ทุกชนิดกินได้'],['🍊','บางชนิดกินได้ บางชนิดกินไม่ได้'],['🚫','ทุกชนิดกินไม่ได้']], 1],
+  ['ข้อใดเป็นผลที่กินได้', [['🍊','ส้ม'],['🌲','ลูกสน'],['🪨','ก้อนหิน']], 0],
+  {part:'ตอนที่ 2 รากและการดำรงชีวิตของพืช'},
+  ['รากของพืชในบทเรียนแบ่งเป็นกี่ชนิด', [['','2 ชนิด'],['','3 ชนิด'],['','4 ชนิด']], 1],
+  ['รากขนาดใหญ่ แข็งแรง และอยู่ลึก คือรากใด', [['🥕','รากแก้ว'],['','รากฝอย'],['','รากแขนง']], 0],
+  ['รากเล็ก ๆ จำนวนมากรวมกัน คือรากใด', [['','รากแก้ว'],['','รากฝอย'],['','รากแขนง']], 1],
+  ['รากที่แตกออกมาจากรากแก้ว คือรากใด', [['','รากฝอย'],['🎋','ลำต้น'],['','รากแขนง']], 2],
+  ['ถ้ารากถูกตัด พืชจะขาดสิ่งใด', [['💧','การดูดน้ำและธาตุอาหาร'],['🔇','การฟังเสียง'],['🚶','การเดิน']], 0],
+  ['ถ้าพืชไม่มีราก จะเกิดอะไรขึ้นได้ง่าย', [['🕊️','บินได้'],['🌳','โค่นล้ม'],['🏊','ว่ายน้ำได้']], 1],
+  ['ถ้าพืชขาดน้ำและธาตุอาหารนาน ๆ อาจเป็นอย่างไร', [['🏃','วิ่งได้'],['🗣️','ออกเสียงได้'],['🥀','ตาย']], 2],
+  ['กระบองเพชรมักพบในบริเวณใด', [['🏜️','ทะเลทราย'],['🌊','กลางทะเล'],['🐠','ใต้น้ำ']], 0],
+  ['กระบองเพชรทนแล้งได้ดีเพราะอะไร', [['🪽','มีปีก'],['🌵','ลำต้นเก็บน้ำได้มาก'],['🐟','มีครีบ']], 1],
+  ['ใบของกระบองเพชรเปลี่ยนเป็นอะไร', [['🪽','ปีก'],['🦵','ขา'],['🌵','หนาม']], 2],
+  {part:'ตอนที่ 3 ส่วนต่าง ๆ ของสัตว์'},
+  ['ข้อใดเป็นส่วนต่าง ๆ ที่พบในสัตว์ส่วนใหญ่', [['👀','หู ตา จมูก ปาก ขา เท้า'],['🌿','ราก ลำต้น ใบ'],['🌸','ดอก ผล เมล็ด']], 0],
+  ['ตาของสัตว์มีหน้าที่อะไร', [['👂','ฟังเสียง'],['👀','มองดูสิ่งต่าง ๆ'],['👃','ดมกลิ่น']], 1],
+  ['หูของสัตว์มีหน้าที่อะไร', [['🍽️','กินอาหาร'],['👀','มองเห็น'],['👂','ฟังเสียง']], 2],
+  ['จมูกของสัตว์มีหน้าที่อะไร', [['👃','หายใจและดมกลิ่น'],['🐕','เดินและวิ่ง'],['🐦','มองและฟัง']], 0],
+  ['ปากของสัตว์มีหน้าที่อะไร', [['🎵','ฟังเสียง'],['👄','กินอาหารและส่งเสียงร้อง'],['🐾','เดิน']], 1],
+  ['ผิวหนังของสัตว์มีหน้าที่อะไร', [['🐦','ใช้บิน'],['🏊','ใช้ว่ายน้ำ'],['🐱','ปกคลุมและป้องกันร่างกาย']], 2],
+  ['ขาและเท้ามีหน้าที่อะไร', [['🦆','เคลื่อนที่และรับน้ำหนักตัว'],['👃','ดมกลิ่น'],['👂','ฟังเสียง']], 0],
+  ['ปลาใช้ส่วนใดช่วยว่ายน้ำและทรงตัว', [['🪽','ปีก'],['🐟','ครีบ'],['🦵','ขา']], 1],
+  ['นกส่วนใหญ่ใช้ส่วนใดในการบิน', [['🐟','ครีบ'],['🐂','เขา'],['🪽','ปีก']], 2],
+  ['งูไม่มีขา แต่เคลื่อนที่โดยใช้ส่วนใด', [['🐍','กล้ามเนื้อลำตัว'],['🪽','ปีก'],['🐟','ครีบ']], 0],
+  ['เต่าใช้ส่วนใดห่อหุ้มและปกป้องร่างกาย', [['🪽','ปีก'],['🐢','กระดอง'],['🦵','ขา']], 1],
+  ['ช้างใช้งวงทำอะไร', [['🕊️','บิน'],['💦','ว่ายน้ำอย่างเดียว'],['🐘','หายใจและหยิบจับสิ่งของ']], 2],
+  ['ช้างใช้งาทำอะไรตามบทเรียน', [['⛏️','ขุดหาเกลือแร่หรือน้ำ'],['👂','ฟังเสียง'],['🕊️','บิน']], 0],
+]},
+{ id:'txt20', name:'ชุด 20 ข้อ', title:'เรื่อง พืชและสัตว์', style:'list', items:[
+  {part:'ตอนที่ 1 พืชและส่วนต่าง ๆ ของพืช'},
+  ['ข้อใดเป็นส่วนของพืช', [['','หู'],['','ราก'],['','จมูก']], 1, '🌱'],
+  ['ส่วนใดทำหน้าที่ดูดน้ำและธาตุอาหารจากดิน', [['','ใบ'],['','ดอก'],['','ราก']], 2, '🫚'],
+  ['ส่วนใดช่วยสร้างอาหารให้พืช', [['','ราก'],['','ใบ'],['','ดอก']], 1, '🍃'],
+  ['ส่วนใดช่วยลำเลียงน้ำและธาตุอาหาร', [['','ผล'],['','ลำต้น'],['','เมล็ด']], 1, '🎋'],
+  ['ดอกมีหน้าที่ที่สำคัญอย่างไร', [['','ช่วยสืบพันธุ์'],['','ดูดน้ำ'],['','ยึดต้นกับดิน']], 0, '🌸'],
+  ['แตงโมเป็นส่วนใดของพืช', [['','ใบ'],['','ดอก'],['','ผล']], 2, '🍉'],
+  ['เมล็ดสามารถเจริญเป็นอะไรได้', [['','ดอก'],['','ต้นใหม่'],['','ใบ']], 1, '🫘'],
+  ['รากชนิดใดมีขนาดใหญ่ แข็งแรง และหยั่งลึก', [['','รากฝอย'],['','รากแขนง'],['','รากแก้ว']], 2, '🥕'],
+  ['รากขนาดเล็กจำนวนมากรวมกัน เรียกว่าอะไร', [['','รากแก้ว'],['','รากแขนง'],['','รากฝอย']], 2, '🌾'],
+  ['กระบองเพชรทนแล้งได้ดี เพราะเหตุใด', [['','ใบมีขนาดใหญ่'],['','ลำต้นเก็บน้ำได้มาก'],['','รากมีสีเขียว']], 1, '🌵'],
+  {part:'ตอนที่ 2 สัตว์และส่วนต่าง ๆ ของสัตว์'},
+  ['ส่วนใดใช้ในการมองดูสิ่งต่าง ๆ', [['','หู'],['','ตา'],['','จมูก']], 1, '👁️'],
+  ['หูมีหน้าที่อะไร', [['','ฟังเสียง'],['','ดมกลิ่น'],['','กินอาหาร']], 0, '👂'],
+  ['จมูกมีหน้าที่อะไร', [['','หายใจและดมกลิ่น'],['','มองเห็น'],['','เดินและวิ่ง']], 0, '👃'],
+  ['ปากของสัตว์ใช้ทำอะไร', [['','กินอาหารและส่งเสียง'],['','ฟังเสียง'],['','มองเห็น']], 0, '👅'],
+  ['ผิวหนังของสัตว์ช่วยอะไร', [['','ปกคลุมและป้องกันร่างกาย'],['','ใช้บิน'],['','ใช้ดมกลิ่น']], 0, '🐘'],
+  ['ขาและเท้าช่วยสัตว์ทำอะไร', [['','เคลื่อนที่และรับน้ำหนัก'],['','กินอาหาร'],['','ฟังเสียง']], 0, '🐾'],
+  {part:'ตอนที่ 3 ส่วนพิเศษของสัตว์'},
+  ['ปลาใช้ส่วนใดช่วยว่ายน้ำ', [['','ปีก'],['','ครีบ'],['','งา']], 1, '🐟'],
+  ['นกใช้ส่วนใดในการบิน', [['','ปีก'],['','ครีบ'],['','เขา']], 0, '🐦'],
+  ['งูไม่มีขา แต่ใช้ส่วนใดในการเคลื่อนที่', [['','กล้ามเนื้อลำตัว'],['','ปีก'],['','ครีบ']], 0, '🐍'],
+  ['เต่าใช้ส่วนใดห่อหุ้มและปกป้องร่างกาย', [['','กระดอง'],['','เขา'],['','งา']], 0, '🐢'],
+]}
+];
+
+const TL=['ก','ข','ค'];
+const $=s=>document.querySelector(s);
+let cur=0, ans={};      // ans[ลำดับข้อ] = ตัวเลือกที่แตะ
+
+/* ---- จำคำตอบไว้ในเครื่อง ปิดแล้วเปิดใหม่ยังอยู่ ---- */
+const KEY=id=>'kids-plants-animals-'+id;
+function load(){ try{ ans=JSON.parse(localStorage.getItem(KEY(TESTS[cur].id))||'{}')||{}; }catch(e){ ans={}; } }
+function save(){ try{ localStorage.setItem(KEY(TESTS[cur].id), JSON.stringify(ans)); }catch(e){} }
+try{ const t=localStorage.getItem('kids-plants-animals-tab'); if(t!==null && TESTS[+t]) cur=+t; }catch(e){}
+try{ $('#autoread').checked = localStorage.getItem('kids-plants-animals-read')==='1'; }catch(e){}
+$('#autoread').onchange=e=>{ try{ localStorage.setItem('kids-plants-animals-read', e.target.checked?'1':'0'); }catch(err){} };
+
+/* ---- อ่านออกเสียงภาษาไทย ---- */
+const synth=window.speechSynthesis;
+let thVoice=null;
+function pickVoice(){ if(!synth) return; const v=synth.getVoices().filter(x=>/^th/i.test(x.lang));
+  thVoice=v.find(x=>/Kanya|Narisa|Premwadee|Achara/i.test(x.name))||v[0]||null; }
+if(synth){ pickVoice(); synth.onvoiceschanged=pickVoice; }
+function speak(text){
+  if(!synth) return;
+  try{ synth.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(text); u.lang='th-TH'; u.rate=0.9;
+  if(thVoice) u.voice=thVoice;
+  synth.speak(u);
+}
+const readQ=q=>speak(q[0]+' … '+q[1].map((o,i)=>TL[i]+' '+o[1]).join(' … '));
+
+function questions(){ return TESTS[cur].items.filter(x=>Array.isArray(x)); }
+
+function renderTabs(){
+  $('#tabs').innerHTML=TESTS.map((t,i)=>'<button type="button" class="'+(i===cur?'on':'')+'" data-i="'+i+'">'+t.name+'</button>').join('');
+  $('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    cur=+b.dataset.i; try{ localStorage.setItem('kids-plants-animals-tab', cur); }catch(e){}
+    render(); window.scrollTo({top:0});
+  });
+}
+
+function render(){
+  load(); renderTabs();
+  const T=TESTS[cur];
+  $('#tt').textContent=T.name+' · '+T.title;
+  let n=0, h='';
+  T.items.forEach(x=>{
+    if(!Array.isArray(x)){ h+='<div class="part">'+x.part+'</div>'; return; }
+    const k=n++;
+    h+='<div class="q" id="q'+k+'"><div class="qh"><div class="num">'+(k+1)+'</div>'+
+       '<div class="qt">'+x[0]+'</div>'+(x[3]?'<div class="qe">'+x[3]+'</div>':'')+
+       '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button></div>'+
+       '<div class="opts'+(T.style==='list'?' list':'')+'">'+
+       x[1].map((o,i)=>'<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
+         '<span class="lt">'+TL[i]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
+         '<span class="lb">'+o[1]+'</span></button>').join('')+
+       '</div><div class="fb"></div></div>';
+  });
+  $('#list').innerHTML=h;
+  const Q=questions();
+  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k]));
+  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k,+b.dataset.i,true));
+  Object.keys(ans).forEach(k=>show(+k, ans[k]));
+  updateScore(false);
+}
+
+function show(k,i){
+  const q=questions()[k], el=$('#q'+k); if(!q||!el) return;
+  const ok=i===q[2];
+  el.classList.add(ok?'ok':'no');
+  el.querySelectorAll('.opt').forEach((b,j)=>{
+    b.disabled=true;
+    if(j===q[2]) b.classList.add('right');
+    else if(j===i) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb=el.querySelector('.fb');
+  fb.className='fb '+(ok?'ok':'no');
+  fb.textContent= ok ? '✓ ถูกต้อง เก่งมาก!' : '✗ คำตอบที่ถูกคือ '+TL[q[2]]+'. '+q[1][q[2]][1];
+}
+
+function pick(k,i,fresh){
+  if(ans[k]!==undefined) return;
+  ans[k]=i; save(); show(k,i); updateScore(fresh);
+  if(fresh){
+    const nx=$('#q'+(k+1));
+    if(nx && ans[k+1]===undefined){
+      setTimeout(()=>{ nx.scrollIntoView({behavior:'smooth',block:'center'});
+        if($('#autoread').checked) readQ(questions()[k+1]); },650);
+    }
+  }
+}
+
+function updateScore(fresh){
+  const Q=questions(), keys=Object.keys(ans);
+  const right=keys.filter(k=>ans[k]===Q[k][2]).length;
+  $('#score').textContent=right+' / '+Q.length;
+  const r=$('#result');
+  if(keys.length<Q.length){ r.className='result hide'; return; }
+  const pct=right/Q.length;
+  const stars = pct>=.9?'⭐⭐⭐' : pct>=.7?'⭐⭐' : pct>=.5?'⭐' : '💪';
+  const msg = pct>=.9?'เก่งมาก! พร้อมสอบแล้ว' : pct>=.7?'ดีมาก! ทบทวนข้อที่ผิดอีกนิดนะ'
+            : pct>=.5?'ผ่านแล้ว ลองดูข้อสีแดงแล้วทำใหม่อีกรอบ' : 'ไม่เป็นไร ค่อย ๆ ทบทวนแล้วลองใหม่นะ';
+  const other=TESTS[(cur+1)%TESTS.length];
+  r.className='result';
+  r.innerHTML='<div class="stars">'+stars+'</div><div class="big">'+right+' / '+Q.length+'</div><p>'+msg+'</p>'+
+    '<button class="btn" type="button" id="again">ทำชุดนี้ใหม่</button>'+
+    '<button class="btn gh" type="button" id="other">ไปทำ'+other.name+'</button>';
+  $('#again').onclick=resetCur;
+  $('#other').onclick=()=>{ cur=(cur+1)%TESTS.length; try{ localStorage.setItem('kids-plants-animals-tab', cur); }catch(e){} render(); window.scrollTo({top:0}); };
+  if(fresh) setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'center'}),700);
+}
+
+function resetCur(){ ans={}; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+$('#reset').onclick=()=>{ if(!Object.keys(ans).length || confirm('ล้างคำตอบของชุดนี้แล้วเริ่มใหม่?')) resetCur(); };
+
+render();
+</script>
+</body>
+</html>
