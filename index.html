@@ -115,6 +115,43 @@ button{font:inherit;color:inherit}
 .empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:1rem}
 .empty b{display:block;font-size:3rem}
 
+/* ---------------- แฟ้มวิชา ---------------- */
+.folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px 18px}
+.folder{position:relative;display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;padding:26px 0 0;cursor:pointer;
+  transition:transform .15s}
+.folder::before{content:"";position:absolute;left:0;top:6px;width:48%;height:40px;background:var(--cd);
+  border-radius:18px 18px 0 0}
+.folder .paper{position:absolute;left:16px;right:22px;top:14px;height:60px;background:#fff;border:2px solid var(--line);
+  border-radius:10px;transform:rotate(-3deg);box-shadow:0 2px 4px rgba(0,0,0,.06)}
+.folder .paper.p2{left:30px;right:12px;top:18px;transform:rotate(2.5deg)}
+.folder .paper::after{content:"";position:absolute;left:14px;right:40%;top:14px;height:5px;border-radius:3px;
+  background:var(--cl);box-shadow:0 11px 0 var(--cl)}
+.folder .front{position:relative;background:var(--c);border-radius:0 24px 24px 24px;padding:16px 16px 16px;
+  box-shadow:0 6px 0 var(--cd);border:3px solid var(--cd);flex:1;display:flex;flex-direction:column;align-items:flex-start;
+  background-image:radial-gradient(circle at 88% 18%,rgba(255,255,255,.35) 0 14px,transparent 15px),
+    radial-gradient(circle at 76% 44%,rgba(255,255,255,.25) 0 7px,transparent 8px)}
+.folder:hover{transform:translateY(-4px) rotate(-.6deg)}
+.folder:active{transform:translateY(3px)}
+.folder .fhead{display:flex;align-items:center;gap:12px}
+.folder .fic{width:62px;height:62px;border-radius:20px;background:#fff;display:grid;place-items:center;font-size:2.1rem;
+  box-shadow:0 4px 0 var(--cd);transform:rotate(-6deg);flex:none}
+.folder h3{font-family:'Mali',sans-serif;font-size:1.45rem;line-height:1.2;color:var(--cd)}
+.folder .fcount{display:inline-block;margin-top:3px;background:#fff;color:var(--cd);font-weight:700;font-size:.8rem;
+  border-radius:999px;padding:1px 10px}
+.folder .flist{list-style:none;align-self:stretch;flex:1;background:rgba(255,255,255,.93);border-radius:16px;padding:8px 12px;margin:14px 0 12px}
+.folder .flist li{display:flex;gap:8px;align-items:baseline;font-size:.9rem;font-weight:600;padding:4px 0;
+  border-bottom:2px dotted var(--cl)}
+.folder .flist li:last-child{border-bottom:none}
+.folder .flist li i{font-style:normal;flex:none}
+.folder .flist li.more{color:var(--muted);font-weight:600}
+.folder .go{background:#fff;color:var(--cd)}
+
+.crumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 16px}
+.backbtn{background:#fff;border:3px solid var(--cd);color:var(--cd);font-weight:700;border-radius:999px;padding:5px 16px;
+  cursor:pointer;box-shadow:0 3px 0 var(--cd)}
+.backbtn:active{transform:translateY(3px);box-shadow:none}
+.crumb .ghead{margin:0;flex:1;min-width:220px}
+
 /* ---------------- ส่วนผู้ปกครอง ---------------- */
 details.howto{background:#fff;border:2px dashed var(--line);border-radius:18px;margin-top:40px;overflow:hidden}
 details.howto summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted);list-style:none}
@@ -278,8 +315,8 @@ const vars = s => '--c:'+s.c+';--cd:'+s.d+';--cl:'+s.l;
 const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
 const $ = s => document.querySelector(s);
+const rank = g => { const i = ORDER.indexOf(g); return i<0 ? 99 : i; };
 let filter = 'all', term = '';
-try{ const f = localStorage.getItem('kids-home-filter'); if(f) filter = f; }catch(e){}
 
 /* คำทักทายตามช่วงเวลา */
 (function(){
@@ -291,20 +328,32 @@ try{ const f = localStorage.getItem('kids-home-filter'); if(f) filter = f; }catc
 function groups(){
   const m = new Map();
   MATERIALS.forEach(x => m.set(x.g, (m.get(x.g)||0)+1));
-  return [...m.entries()].sort((a,b) => (ORDER.indexOf(a[0])+99)%99 - (ORDER.indexOf(b[0])+99)%99);
+  return [...m.entries()].sort((a,b) => rank(a[0]) - rank(b[0]));
 }
+
+/* ---- เปิดแฟ้มวิชา: จำไว้ในที่อยู่หน้าเว็บ (#วิชา) ปุ่มย้อนกลับของเบราว์เซอร์จึงใช้ได้ ---- */
+function fromHash(){
+  const g = decodeURIComponent(location.hash.slice(1));
+  return MATERIALS.some(x => x.g===g) ? g : 'all';
+}
+function openFolder(g){
+  filter = g; term = ''; $('#q').value = '';
+  const h = g==='all' ? location.pathname : '#'+encodeURIComponent(g);
+  if(location.hash !== (g==='all' ? '' : h)) history.pushState(null, '', h);
+  render();
+  if(g!=='all') window.scrollTo({ top: $('#chips').getBoundingClientRect().top + scrollY - 8, behavior:'smooth' });
+}
+window.addEventListener('popstate', () => { filter = fromHash(); render(); });
+
 function renderChips(){
   const gs = groups();
-  if(filter!=='all' && !gs.some(([g]) => g===filter)) filter = 'all';
   const pick = (key, label, n, s) =>
     '<button class="pick'+(filter===key?' on':'')+'" data-g="'+esc(key)+'" style="'+vars(s)+'" role="tab" aria-selected="'+(filter===key)+'">'+
-      '<span class="bub">'+s.e+'</span><span class="nm">'+esc(label)+'<span class="ct">'+n+' เรื่อง</span></span></button>';
-  $('#chips').innerHTML = pick('all','ทั้งหมด',MATERIALS.length,ALL) + gs.map(([g,n]) => pick(g,g,n,sub(g))).join('');
-  $('#chips').querySelectorAll('.pick').forEach(b => b.onclick = () => {
-    filter = b.dataset.g; try{ localStorage.setItem('kids-home-filter', filter); }catch(e){}
-    render();
-  });
+      '<span class="bub">'+s.e+'</span><span class="nm">'+esc(label)+'<span class="ct">'+n+'</span></span></button>';
+  $('#chips').innerHTML = pick('all','ทุกวิชา',gs.length+' แฟ้ม',ALL) + gs.map(([g,n]) => pick(g,g,n+' เรื่อง',sub(g))).join('');
+  $('#chips').querySelectorAll('.pick').forEach(b => b.onclick = () => openFolder(b.dataset.g));
 }
+
 function card(x, showSub){
   const s = sub(x.g), live = !!x.url;
   const level = (x.tags||[]).find(t => /^ป\.\d/.test(t));
@@ -319,31 +368,60 @@ function card(x, showSub){
     ? '<a class="card" style="'+vars(s)+'" href="'+esc(x.url)+'">'+inner+'</a>'
     : '<div class="card soon" style="'+vars(s)+'">'+inner+'</div>';
 }
+
+function folder(g, items){
+  const s = sub(g), show = items.slice(0,3);
+  return '<button type="button" class="folder" data-g="'+esc(g)+'" style="'+vars(s)+'" aria-label="เปิดแฟ้ม'+esc(g)+'">'+
+    '<span class="paper"></span>'+(items.length>1?'<span class="paper p2"></span>':'')+
+    '<div class="front"><div class="fhead"><span class="fic">'+s.e+'</span>'+
+      '<div><h3>'+esc(g)+'</h3><span class="fcount">📄 '+items.length+' เรื่อง</span></div></div>'+
+    '<ul class="flist">'+show.map(x => '<li><i>'+esc(x.icon||s.e)+'</i><span>'+esc(x.t)+'</span></li>').join('')+
+      (items.length>3 ? '<li class="more"><i>➕</i>และอีก '+(items.length-3)+' เรื่อง</li>' : '')+'</ul>'+
+    '<span class="go">เปิดแฟ้ม 📂</span></div></button>';
+}
+
 function render(){
   renderChips();
   const t = term.trim().toLowerCase();
-  const hit = MATERIALS.filter(x =>
-    (filter==='all' || x.g===filter) &&
-    (!t || (x.t+' '+(x.d||'')+' '+x.g+' '+(x.tags||[]).join(' ')).toLowerCase().includes(t))
-  );
-  if(!hit.length){ $('#list').innerHTML = '<div class="empty"><b>🙈</b>หาไม่เจอเลย ลองคำอื่นดูนะ</div>'; return; }
 
-  /* หน้า "ทั้งหมด" รวมการ์ดทุกวิชาไว้ตารางเดียว เรียงตามวิชา · เลือกวิชาแล้วค่อยแสดงหัววิชา */
-  if(filter==='all'){
-    const rank = g => { const i = ORDER.indexOf(g); return i<0 ? 99 : i; };
-    $('#list').innerHTML = '<div class="grid">'+hit.slice().sort((a,b) => rank(a.g)-rank(b.g)).map(x => card(x,true)).join('')+'</div>';
+  /* กำลังค้นหา: แสดงการ์ดที่ตรงกันจากทุกวิชา */
+  if(t){
+    const hit = MATERIALS.filter(x => (x.t+' '+(x.d||'')+' '+x.g+' '+(x.tags||[]).join(' ')).toLowerCase().includes(t))
+      .sort((a,b) => rank(a.g)-rank(b.g));
+    $('#list').innerHTML = hit.length ? '<div class="grid">'+hit.map(x => card(x,true)).join('')+'</div>'
+      : '<div class="empty"><b>🙈</b>หาไม่เจอเลย ลองคำอื่นดูนะ</div>';
     return;
   }
-  const byG = new Map();
-  groups().forEach(([g]) => byG.set(g, []));
-  hit.forEach(x => byG.get(x.g).push(x));
-  $('#list').innerHTML = [...byG.entries()].filter(([,items]) => items.length).map(([g, items]) => {
-    const s = sub(g);
-    return '<section class="group" style="'+vars(s)+'"><div class="ghead"><span class="gi">'+s.e+'</span><h2>'+esc(g)+'</h2></div>'+
-      '<div class="grid">'+items.map(card).join('')+'</div></section>';
-  }).join('');
+
+  /* ทุกวิชา: แฟ้มละวิชา */
+  if(filter==='all'){
+    $('#list').innerHTML = '<div class="folders">'+groups().map(([g]) => folder(g, MATERIALS.filter(x => x.g===g))).join('')+'</div>';
+    $('#list').querySelectorAll('.folder').forEach(b => b.onclick = () => openFolder(b.dataset.g));
+    return;
+  }
+
+  /* ในแฟ้ม: การ์ดของวิชานั้น */
+  const s = sub(filter), items = MATERIALS.filter(x => x.g===filter);
+  $('#list').innerHTML = '<section class="group" style="'+vars(s)+'"><div class="crumb">'+
+      '<button type="button" class="backbtn" id="back">‹ ทุกวิชา</button>'+
+      '<div class="ghead"><span class="gi">'+s.e+'</span><h2>'+esc(filter)+'</h2></div></div>'+
+    '<div class="grid">'+items.map(x => card(x)).join('')+'</div></section>';
+  $('#back').onclick = () => openFolder('all');
 }
-$('#q').addEventListener('input', e => { term = e.target.value; if(term.trim()) filter = 'all'; render(); });
+
+$('#q').addEventListener('input', e => { term = e.target.value; render(); });
+
+/* เปิดหน้าแรก: ตามที่อยู่ #วิชา หรือถ้าเพิ่งกลับมาจากแบบฝึก ให้เปิดแฟ้มวิชาของแบบฝึกนั้น */
+filter = fromHash();
+if(filter==='all' && document.referrer){
+  try{
+    const from = new URL(document.referrer);
+    if(from.origin===location.origin){
+      const m = MATERIALS.find(x => x.url && from.pathname.endsWith('/'+x.url));
+      if(m){ filter = m.g; history.replaceState(null, '', '#'+encodeURIComponent(m.g)); }
+    }
+  }catch(e){}
+}
 render();
 </script>
 </body>
