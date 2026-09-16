@@ -59,7 +59,9 @@ button{font:inherit;color:inherit}
 .search::before{content:"🔎";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:1.05rem}
 
 /* ---------------- น้องบนหน้าแรก ขยับดุ๊กดิ๊ก ---------------- */
-.kid{position:absolute;right:max(4%,calc((100% - 980px)/2 + 20px));bottom:40px;width:165px;z-index:2;cursor:pointer;
+.hero{isolation:isolate}   /* หญ้าด้านหน้าซ้อนเฉพาะในฉาก ไม่ทับปุ่มเลือกวิชา */
+.scene.front{z-index:3}
+.kid{position:absolute;right:max(130px,calc((100% - 980px)/2 + 20px));bottom:34px;width:140px;z-index:2;cursor:pointer;
   -webkit-tap-highlight-color:transparent}
 .kid .body{animation:wiggle 2.8s ease-in-out infinite;transform-origin:50% 100%}
 .kid img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-select:none;user-select:none;
@@ -78,9 +80,9 @@ button{font:inherit;color:inherit}
 .kid .fx:nth-of-type(3){left:46%;top:6%;animation-delay:2.4s}
 @keyframes rise{0%{transform:translateY(10px) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(-70px) scale(1.1) rotate(20deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){.kid .body,.kid .bubble,.kid .fx{animation:none!important}.kid .fx{display:none}}
-@media (max-width:900px){.kid{width:152px}}
+@media (max-width:900px){.kid{width:140px}}
 @media (max-width:560px){
-  .kid{width:92px;right:12px;bottom:62px}
+  .kid{width:92px;right:64px;bottom:34px}
   .kid .bubble{left:auto;right:84px;top:30px;font-size:.78rem;padding:5px 10px}
   .kid .fx{font-size:1rem}
 }
@@ -198,6 +200,7 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
 <header class="hero">
   <!-- ภาพวาดฉากท้องฟ้า เนินหญ้า บ้าน และต้นไม้ -->
   <svg class="scene" viewBox="0 0 1200 300" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+    <g transform="translate(104 -14)">
     <g class="sunrays" fill="#FFE08A">
       <path d="M1060 -8 L1068 30 L1052 30Z"/><path d="M1060 132 L1068 94 L1052 94Z"/>
       <path d="M990 62 L1028 54 L1028 70Z"/><path d="M1130 62 L1092 54 L1092 70Z"/>
@@ -208,6 +211,7 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
     <circle cx="1050" cy="56" r="3.5" fill="#6B4A00"/><circle cx="1072" cy="56" r="3.5" fill="#6B4A00"/>
     <path d="M1048 70 Q1061 80 1074 70" stroke="#6B4A00" stroke-width="3" fill="none" stroke-linecap="round"/>
     <circle cx="1042" cy="68" r="4" fill="#FF9E7A" opacity=".7"/><circle cx="1080" cy="68" r="4" fill="#FF9E7A" opacity=".7"/>
+    </g>
 
     <g class="cloud" fill="#fff" opacity=".95">
       <ellipse cx="120" cy="70" rx="46" ry="20"/><ellipse cx="90" cy="76" rx="30" ry="16"/><ellipse cx="152" cy="78" rx="32" ry="15"/>
@@ -249,6 +253,12 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
     <p class="sub">วันนี้หนูอยากเรียนอะไรดี? แตะวิชาด้านล่างได้เลย</p>
     <div class="search"><input id="q" type="search" placeholder="ค้นหา เช่น สระ บวกเลข พืช…" autocomplete="off"></div>
   </div>
+  <svg class="scene front" viewBox="0 0 1200 300" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+    <path d="M0 275 Q240 232 520 266 T1000 252 T1200 262 V300 H0Z" fill="#6CC04A"/>
+    <g fill="#FF7AB6"><circle cx="640" cy="258" r="6"/><circle cx="1140" cy="262" r="6"/><circle cx="905" cy="266" r="6"/></g>
+    <g fill="#FFD93D"><circle cx="640" cy="258" r="2.5"/><circle cx="1140" cy="262" r="2.5"/><circle cx="905" cy="266" r="2.5"/></g>
+    <g fill="#B18CFF"><circle cx="780" cy="282" r="5"/><circle cx="1010" cy="276" r="5"/></g>
+  </svg>
   <div class="kid" id="kid" role="img" aria-label="น้องโบกมือทักทาย">
     <span class="bubble" id="bubble">มาเรียนกันเถอะ!</span>
     <div class="body"><img src="img/kid.webp" alt="" width="440" height="827"></div>
