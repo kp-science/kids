@@ -156,6 +156,39 @@ textarea.free{width:100%;font:inherit;border:2px dashed var(--line);border-radiu
 @media(max-width:480px){body{font-size:18px}.hero h1{font-size:25.9px}.ttl h2{font-size:22.5px}}
 .top{padding-top:env(safe-area-inset-top)}
 a.back{text-decoration:none;color:inherit;display:inline-block}
+
+/* ---------- ลากวาง + เสียงอ่าน ---------- */
+.spk{flex:none;margin-left:auto;border:2px solid var(--line);background:#fff;border-radius:10px;width:36px;height:34px;
+  font-size:16px;cursor:pointer;line-height:1;padding:0}
+.spk:active{background:var(--tn)}
+.qt>span:not(.n){flex:1}
+.instr{display:flex;align-items:center;gap:8px}
+.box .bt{display:flex;align-items:center;gap:8px}
+.tray{position:sticky;top:var(--toph,52px);z-index:10;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.97);border:2px solid var(--bd);border-radius:14px;padding:8px 10px;margin:4px 0 12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.07)}
+.tray .hint,.numpad .hint{width:100%;font-size:14px;color:var(--mute);line-height:1.3}
+.tile{display:inline-block;background:#fff;border:2px solid var(--ac);border-radius:11px;padding:3px 13px;font-weight:700;
+  cursor:grab;-webkit-user-select:none;user-select:none;touch-action:none;min-width:42px;text-align:center;transition:transform .1s}
+.tile.sel{background:var(--ac);color:#fff;transform:scale(1.08)}
+.tile.used{display:none}
+.tile.ghost{position:fixed;left:0;top:0;z-index:99;pointer-events:none;opacity:.93;box-shadow:0 8px 18px rgba(0,0,0,.25);transition:none}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:92px;min-height:38px;padding:1px 10px;
+  border:2.5px dashed var(--ac);border-radius:11px;background:var(--tn);vertical-align:middle;cursor:pointer;font-weight:700}
+.slot.hot,.slot.focus{background:#FFE9A8;border-style:solid}
+.slot.ok{border:2.5px solid var(--ok);background:#fff;color:var(--ok);cursor:default}
+.slot.no{border:2.5px solid var(--no);background:#fff;color:var(--no);cursor:default}
+.mrow .slot{min-width:150px}
+.calcgrid .slot{min-width:54px}
+.slot.sm{min-width:48px;padding:1px 4px}
+.calcgrid .item{flex-wrap:wrap}
+.cans{font-size:15px;color:var(--ok);font-weight:700}
+.numpad{max-width:760px;margin:0 auto;padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.numpad .hint{text-align:center}
+.numpad .tile{min-width:38px;padding:1px 6px;font-size:17px}
+.shake{animation:shk .3s}
+@keyframes shk{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media(max-width:480px){.slot{min-width:72px}.mrow .slot{min-width:120px}.numpad .tile{min-width:33px;font-size:16px}}
 </style></head><body>
 <div class="top" id="top"></div>
 <div class="wrap" id="app"></div>
@@ -211,6 +244,7 @@ function home(){
 }
 
 function openSub(i){
+  setTimeout(fitTop,0);
   S.view='sub'; S.si=i; var s=D[i]; setVars(s);
   top_.innerHTML='<div class="in"><a class="back" href="../">‹ หน้ารวม</a>'+
                  '<div class="tt">'+esc(s.name)+'</div></div>';
@@ -232,15 +266,15 @@ function openSet(i,j){
   var h='<div class="ttl"><h2>'+esc(p.title)+'</h2><p>'+esc(s.name)+' · '+esc(p.sub)+'</p></div>';
   p.blocks.forEach(function(b,bi){ h+= (RB[b.t]||function(){return''})(b,bi); });
   h+='<div id="result" class="hide"></div>';
-  app.innerHTML=h;
+  app.innerHTML=h; SEL=FOC=null; setupNumpad();
   document.getElementById('prog').textContent='0 / '+CUR.total;
   window.scrollTo(0,0);
 }
 
 /* ------- block renderers ------- */
 var RB={};
-RB.instr=function(b){return '<div class="instr">'+esc(b.text)+'</div>'};
-RB.box=function(b){return '<div class="box"><div class="bt">'+esc(b.title)+'</div><div class="bb">'+esc(b.text)+'</div></div>'};
+RB.instr=function(b){return '<div class="instr"><span>'+esc(b.text)+'</span>'+spk(b.text)+'</div>'};
+RB.box=function(b){return '<div class="box"><div class="bt">'+esc(b.title)+spk(b.title+' … '+b.text)+'</div><div class="bb">'+esc(b.text)+'</div></div>'};
 RB.bank=function(b){return '<div class="bank">'+b.words.map(function(w){return '<span>'+esc(w)+'</span>'}).join('')+'</div>'};
 RB.trace=function(b){return '<div class="bank">'+b.items.map(function(w){return '<span>'+esc(w)+'</span>'}).join('')+'</div>'};
 
@@ -255,7 +289,8 @@ RB.mc=function(b,bi){
   var h='<div class="blk">';
   b.items.forEach(function(it,k){
     var id='mc'+bi+'_'+k; CUR.total++;
-    h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span></div>';
+    h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span>'+
+       spk(it.q+' … '+it.opts.map(function(o,oi){return TL[oi]+' '+o}).join(' … '))+'</div>';
     it.opts.forEach(function(o,oi){
       h+='<button class="opt" onclick="pickMC(\''+id+'\','+oi+','+it.a+')"><i>'+TL[oi]+'.</i>'+esc(o)+'</button>';
     });
@@ -277,7 +312,7 @@ RB.tf=function(b,bi){
   var h='<div class="blk">';
   b.items.forEach(function(it,k){
     var id='tf'+bi+'_'+k; CUR.total++;
-    h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span></div>'+
+    h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span>'+spk(it.q)+'</div>'+
        '<div class="tfb"><button onclick="pickTF(\''+id+'\',1,'+(it.a?1:0)+')">✓ ถูก</button>'+
        '<button onclick="pickTF(\''+id+'\',0,'+(it.a?1:0)+')">✗ ผิด</button></div><div class="fb"></div></div>';
   });
@@ -293,106 +328,218 @@ function pickTF(id,v,a){
   mark(id,ok);
 }
 
-function chipBar(vals,gid){
-  if(!vals.length) return '';
-  return '<div class="chips"><span class="hint">แตะช่องว่างก่อน แล้วแตะคำตอบด้านล่าง (หรือพิมพ์เองก็ได้)</span>'+
-    shuffle(vals).map(function(v){return '<button onclick="useChip(\''+gid+'\',this)">'+esc(v)+'</button>'}).join('')+'</div>';
-}
-var FOCUS=null;
-function useChip(gid,btn){
-  var t = (FOCUS && FOCUS.dataset.gid===gid && !FOCUS.dataset.done) ? FOCUS :
-          document.querySelector('input.ans[data-gid="'+gid+'"]:not([data-done])');
-  if(!t) return;
-  t.value = btn.textContent; checkFill(t);
-}
 
-RB.fill=function(b,bi){
-  var gid='f'+bi;
-  var uniq=[]; b.items.forEach(function(it){ if(uniq.indexOf(it.a)<0) uniq.push(it.a) });
-  var useChips = uniq.length<=9;
-  var h='<div class="blk">';
-  b.items.forEach(function(it,k){
-    var id=gid+'_'+k; CUR.total++;
-    var q=esc(it.q), inp='<input class="ans" data-gid="'+gid+'" data-a="'+esc(it.a)+'" id="'+id+'" '+
-      'onfocus="FOCUS=this" onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)">';
-    q = q.replace(/_{2,}/, inp);
-    if(q.indexOf('<input')<0) q = q+' '+inp;
-    h+='<div class="item" id="w'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span>'+
-       '<span class="fillrow">'+q+'</span></div><div class="fb"></div></div>';
+/* ================= เสียงอ่าน (เสียงในเครื่อง ไม่ต้องต่อเน็ต) ================= */
+var SYN=window.speechSynthesis, VOX={th:null,en:null};
+var NOVELTY=/Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Junior|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Kathy|Ralph/i;
+function pickVox(){
+  if(!SYN) return; var v=SYN.getVoices();
+  var th=v.filter(function(x){return /^th/i.test(x.lang)});
+  VOX.th=th.filter(function(x){return /Kanya|Narisa|Premwadee/i.test(x.name)})[0]||th[0]||null;
+  var en=v.filter(function(x){return /^en[-_]US/i.test(x.lang)&&!NOVELTY.test(x.name)});
+  if(!en.length) en=v.filter(function(x){return /^en/i.test(x.lang)&&!NOVELTY.test(x.name)});
+  VOX.en=en.filter(function(x){return /Samantha|Allison|Ava|Susan|Google US English/i.test(x.name)})[0]||en[0]||null;
+}
+if(SYN){ pickVox(); SYN.onvoiceschanged=pickVox; }
+/* แปลงโจทย์ให้อ่านออกเสียงได้เป็นธรรมชาติ */
+function spoken(t){
+  t=String(t); var num=/\d/.test(t);
+  return t.replace(/_+/g,' … ').replace(/⟷/g,' ตรงข้ามกับ ').replace(/>/g,' มากกว่า ').replace(/</g,' น้อยกว่า ')
+    .replace(/\+/g,' บวก ').replace(/−/g,' ลบ ').replace(/=/g, num?' เท่ากับ ':' คือ ')
+    .replace(/[()]/g,' ').replace(/\s+/g,' ').trim();
+}
+/* ภาษาไทยอ่านด้วยเสียงไทย คำอังกฤษอ่านด้วยเสียงอังกฤษ */
+function speak(text){
+  if(!SYN||!text) return;
+  try{ SYN.cancel(); }catch(e){}
+  (String(text).match(/[A-Za-z][A-Za-z'’ ]*[A-Za-z]|[A-Za-z]|[^A-Za-z]+/g)||[]).forEach(function(p){
+    if(!/[A-Za-z0-9ก-๛]/.test(p)) return;
+    var en=/[A-Za-z]/.test(p), u=new SpeechSynthesisUtterance(p.trim());
+    u.lang=en?'en-US':'th-TH'; u.rate=en?0.8:0.95;
+    var vo=en?VOX.en:VOX.th; if(vo) u.voice=vo;
+    SYN.speak(u);
   });
-  h+='</div>';
-  return (useChips? '<div class="blk">'+chipBar(uniq,gid)+'</div>':'') + h;
-};
-function checkFill(inp){
-  if(inp.dataset.done || !inp.value.trim()) return;
-  inp.dataset.done=1;
-  var ok = norm(inp.value)===norm(inp.dataset.a);
-  inp.classList.add(ok?'ok':'no');
-  var el=document.getElementById('w'+inp.id); el.classList.add(ok?'ok':'no');
-  var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
-  fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+inp.dataset.a;
-  mark(inp.id,ok);
+}
+function escA(s){ return esc(s).replace(/"/g,'&quot;'); }
+function spk(t){ return '<button class="spk" type="button" aria-label="ฟังเสียง" data-t="'+escA(spoken(t))+'" onclick="speak(this.dataset.t)">🔊</button>'; }
+
+/* ================= ลากวาง / แตะเลือกแล้วแตะช่อง ================= */
+var MARK=/^[ะ-๎]+$/, COMB=/^[ัิ-ฺ็-๎]/;
+function tileLabel(a){ return COMB.test(a)?'◌'+a:a; }
+function sayable(v){ return /[ก-ฮ]{2,}|[A-Za-z]{2,}/.test(v); }
+function tile(v,bank,reuse,label){
+  label=label||tileLabel(v);
+  return '<span class="tile" data-v="'+escA(v)+'" data-bank="'+bank+'"'+(reuse?' data-reuse="1"':'')+
+         (sayable(label)?' data-say="'+escA(label)+'"':'')+'>'+esc(label)+'</span>';
+}
+function slot(id,bank,a,say,al){
+  return '<span class="slot" id="'+id+'" data-bank="'+bank+'" data-a="'+escA(a)+'"'+
+         (say?' data-say="'+escA(say)+'"':'')+(al?' data-al="'+escA(al)+'"':'')+'>&nbsp;</span>';
+}
+function tray(bank,tiles,hint){
+  return '<div class="tray" data-bank="'+bank+'"><span class="hint">'+(hint||'ลากคำตอบไปวางในช่อง หรือแตะคำตอบแล้วแตะช่อง')+'</span>'+tiles+'</div>';
+}
+/* หาช่องว่างในโจทย์: ___ หรือ _ ตัวเดียวที่มีเว้นวรรคสองข้าง */
+function blankOf(q){ return q.match(/_{2,}/)||q.match(/ _ /); }
+function withSlot(q,sl){
+  var m=blankOf(q); if(!m) return esc(q)+' '+sl;
+  return esc(q.slice(0,m.index))+sl+esc(q.slice(m.index+m[0].length));
+}
+function filled(q,a,joinWord){
+  var m=blankOf(q);
+  if(joinWord){ var base=q.split('(')[0]; m=blankOf(base)||base.match(/_+/);
+    return m ? (base.slice(0,m.index)+a+base.slice(m.index+m[0].length)).replace(/\s+/g,'') : base+a; }
+  return m ? q.slice(0,m.index)+' '+a+' '+q.slice(m.index+m[0].length) : q+' '+a;
 }
 
+var DRAG=null, SEL=null, FOC=null, GHOST=null, HOT=null;
+function clearSel(){ if(SEL) SEL.classList.remove('sel'); SEL=null; }
+function clearFoc(){ if(FOC) FOC.classList.remove('focus'); FOC=null; }
+function hot(s){ if(HOT&&HOT!==s) HOT.classList.remove('hot'); if(s&&!s.dataset.done) s.classList.add('hot'); else s=null; HOT=s; }
+function slotAt(x,y){ var e=document.elementFromPoint(x,y); return e?e.closest('.slot'):null; }
+function shake(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+
+function place(t,s){
+  if(!s||s.dataset.done||t.classList.contains('used')) return;
+  if(t.dataset.bank!==s.dataset.bank){ shake(s); shake(t); return; }
+  s.dataset.done=1; clearFoc();
+  var ok=norm(t.dataset.v)===norm(s.dataset.a);
+  s.textContent=t.textContent; s.classList.remove('hot'); s.classList.add(ok?'ok':'no');
+  var el=document.getElementById('w'+s.id);
+  if(el){
+    el.classList.add(ok?'ok':'no');
+    var fb=el.querySelector('.fb'), right=s.dataset.al||tileLabel(s.dataset.a);
+    if(fb){ fb.className='fb '+(ok?'ok':'no'); fb.textContent=ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+right; }
+    else if(!ok){ s.insertAdjacentHTML('afterend','<span class="cans">→ '+esc(right)+'</span>'); }
+  }
+  if(ok && !t.dataset.reuse) t.classList.add('used');
+  if(s.dataset.say) speak(spoken(s.dataset.say));
+  mark(s.id,ok);
+}
+
+document.addEventListener('pointerdown',function(e){
+  var t=e.target.closest('.tile'); if(!t||t.classList.contains('used')||t.classList.contains('ghost')) return;
+  e.preventDefault(); DRAG={el:t,x:e.clientX,y:e.clientY,moved:false};
+});
+document.addEventListener('pointermove',function(e){
+  if(!DRAG) return;
+  var dx=e.clientX-DRAG.x, dy=e.clientY-DRAG.y;
+  if(!DRAG.moved && dx*dx+dy*dy>64){
+    DRAG.moved=true; clearSel();
+    GHOST=DRAG.el.cloneNode(true); GHOST.classList.remove('sel'); GHOST.classList.add('ghost'); document.body.appendChild(GHOST);
+  }
+  if(DRAG.moved){ e.preventDefault();
+    GHOST.style.transform='translate('+e.clientX+'px,'+e.clientY+'px) translate(-50%,-50%) rotate(-3deg)';
+    hot(slotAt(e.clientX,e.clientY)); }
+},{passive:false});
+document.addEventListener('pointerup',function(e){
+  if(!DRAG) return; var d=DRAG; DRAG=null;
+  if(d.moved){ var s=slotAt(e.clientX,e.clientY); if(GHOST){GHOST.remove();GHOST=null;} hot(null); if(s) place(d.el,s); return; }
+  if(d.el.dataset.say) speak(d.el.dataset.say);
+  if(FOC && !FOC.dataset.done && FOC.dataset.bank===d.el.dataset.bank){ var f=FOC; place(d.el,f); return; }
+  if(SEL===d.el){ clearSel(); return; }
+  clearSel(); SEL=d.el; SEL.classList.add('sel');
+});
+document.addEventListener('pointercancel',function(){ if(GHOST){GHOST.remove();GHOST=null;} hot(null); DRAG=null; });
+document.addEventListener('click',function(e){
+  var s=e.target.closest('.slot'); if(!s||s.dataset.done) return;
+  if(SEL){ var t=SEL; clearSel(); place(t,s); return; }
+  if(FOC===s){ clearFoc(); return; }
+  clearFoc(); FOC=s; s.classList.add('focus');
+});
+
+/* แถบตัวเลขติดใต้แถบบน ใช้กับคิดเลข นับจำนวน แผนภูมิ */
+function fitTop(){ document.documentElement.style.setProperty('--toph', top_.offsetHeight+'px'); }
+window.addEventListener('resize',fitTop);
+function setupNumpad(){
+  var ss=document.querySelectorAll('.slot[data-bank="num"]'); if(!ss.length){ fitTop(); return; }
+  var mx=20; Array.prototype.forEach.call(ss,function(s){ mx=Math.max(mx,+s.dataset.a||0); });
+  var h='<div class="numpad"><span class="hint">ลากตัวเลขไปวางในช่อง หรือแตะตัวเลขแล้วแตะช่อง</span>';
+  for(var n=0;n<=mx;n++) h+=tile(String(n),'num',true);
+  top_.insertAdjacentHTML('beforeend',h+'</div>');
+  fitTop();
+}
+
+/* ------- เติมคำ ------- */
+RB.fill=function(b,bi){
+  var ans=b.items.map(function(it){return it.a}), uniq=[];
+  ans.forEach(function(a){ if(uniq.indexOf(a)<0) uniq.push(a); });
+  var numeric=ans.every(function(a){return /^\d+$/.test(a)});
+  var letters=ans.every(function(a){return /^[A-Za-z]$/.test(a)});
+  /* เติมสระ/วรรณยุกต์ หรือตัวอักษรที่หายไป → อ่านคำที่เติมเสร็จทั้งคำ */
+  var joinWord=letters||ans.every(function(a){return a.length<=3 && /^[\u0E30-\u0E3A\u0E40-\u0E4E]/.test(a)});
+  var bank=numeric?'num':'f'+bi, reuse=uniq.length<ans.length||uniq.length<=3, h='';
+  if(!numeric){
+    var vals=uniq.slice();
+    if(letters) shuffle('aeiourst'.split('').filter(function(c){return vals.indexOf(c)<0})).slice(0,3).forEach(function(c){vals.push(c)});
+    h+=tray(bank, shuffle(vals).map(function(v){return tile(v,bank,letters||reuse)}).join(''));
+  }
+  b.items.forEach(function(it,k){
+    var id=bank+'x'+bi+'_'+k; CUR.total++;
+    var sl=slot(id,bank,it.a,filled(it.q,it.a,joinWord));
+    if(joinWord) sl=sl.replace('class="slot"','class="slot sm"');
+    h+='<div class="item" id="w'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span>'+
+       '<span class="fillrow">'+withSlot(it.q,sl)+'</span>'+spk(it.q)+'</div><div class="fb"></div></div>';
+  });
+  return '<div class="blk">'+h+'</div>';
+};
+
+/* ------- คิดเลข ------- */
 RB.calc=function(b,bi){
   var h='<div class="blk calcgrid">';
   b.items.forEach(function(it,k){
     var id='c'+bi+'_'+k; CUR.total++;
-    h+='<div class="item" id="w'+id+'"><b>'+esc(it.q)+'</b>'+
-       '<input class="ans" inputmode="numeric" id="'+id+'" data-a="'+esc(it.a)+'" '+
-       'onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)"></div>';
+    var m=blankOf(it.q), say=filled(it.q,it.a,false);
+    var body = m ? withSlot(it.q, slot(id,'num',it.a,say)) : '<b>'+esc(it.q)+'</b>'+slot(id,'num',it.a,say);
+    h+='<div class="item" id="w'+id+'">'+body+'</div>';
   });
   return h+'</div>';
 };
 
+/* ------- นับจำนวน ------- */
 RB.count=function(b,bi){
   var h='<div class="blk">';
   b.items.forEach(function(it,k){
     var id='n'+bi+'_'+k; CUR.total++;
     var sym=''; for(var z=0;z<it.n;z++) sym+=it.sym;
     h+='<div class="item cntrow" id="w'+id+'"><span class="sy">'+esc(sym)+'</span>'+
-       '<input class="ans" inputmode="numeric" style="width:70px" id="'+id+'" data-a="'+it.n+'" '+
-       'onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)"><div class="fb"></div></div>';
+       slot(id,'num',String(it.n),String(it.n))+'<div class="fb"></div></div>';
   });
   return h+'</div>';
 };
 
+/* ------- แผนภูมิรูปภาพ ------- */
 RB.picto=function(b,bi){
+  var bank='p'+bi, labels=b.rows.map(function(r){return r.label});
   var h='<div class="pic"><div class="pt">'+esc(b.title)+'</div>';
   b.rows.forEach(function(r){
     var sym=''; for(var z=0;z<r.n;z++) sym+=r.sym;
     h+='<div class="pr"><b>'+esc(r.label)+'</b><span>'+esc(sym)+'</span></div>';
   });
   h+='</div><div class="blk">';
+  if(b.qs.some(function(q){return !/^\d+$/.test(q.a)}))
+    h+=tray(bank, labels.map(function(l){return tile(l,bank,true)}).join(''), 'คำตอบที่เป็นชื่อ ลากจากถาดนี้ · คำตอบที่เป็นตัวเลข ลากจากแถบตัวเลขด้านบน');
   b.qs.forEach(function(q,k){
     var id='p'+bi+'_'+k; CUR.total++;
+    var bk=/^\d+$/.test(q.a)?'num':bank;
     h+='<div class="item" id="w'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span>'+
-       '<span class="fillrow">'+esc(q.q)+' <input class="ans" id="'+id+'" data-a="'+esc(q.a)+'" '+
-       'onkeyup="if(event.key===\'Enter\')checkFill(this)" onblur="checkFill(this)"></span></div><div class="fb"></div></div>';
+       '<span class="fillrow">'+esc(q.q)+' '+slot(id,bk,q.a,q.q+' '+q.a)+'</span>'+spk(q.q)+'</div><div class="fb"></div></div>';
   });
   return h+'</div>';
 };
 
+/* ------- จับคู่ ------- */
 RB.match=function(b,bi){
-  var h='<div class="rlist">'+b.right.map(function(r,i){return '<div><b>'+TL[i]+'.</b>'+esc(r)+'</div>'}).join('')+'</div><div class="blk">';
+  var bank='m'+bi, reuse=b.left.length>b.right.length;
+  var h='<div class="blk">'+tray(bank, shuffle(b.right.map(function(r,i){return tile(String(i),bank,reuse,r)})).join(''),
+        'ลากคำด้านล่างไปวางคู่กับคำทางซ้าย หรือแตะคำแล้วแตะช่อง');
   b.left.forEach(function(l,k){
-    var id='m'+bi+'_'+k; CUR.total++;
-    var opts='<option value="">–</option>'+b.right.map(function(r,i){return '<option value="'+i+'">'+TL[i]+'</option>'}).join('');
+    var id='m'+bi+'_'+k, r=b.right[b.a[k]]; CUR.total++;
     h+='<div class="item" id="w'+id+'"><div class="mrow"><span>'+(k+1)+'. '+esc(l)+'</span>'+
-       '<select class="ans" id="'+id+'" data-a="'+b.a[k]+'" onchange="checkMatch(this)">'+opts+'</select>'+
-       '</div><div class="fb"></div></div>';
+       slot(id,bank,String(b.a[k]),l+' … '+r,r)+spk(l)+'</div><div class="fb"></div></div>';
   });
   return h+'</div>';
 };
-function checkMatch(sel){
-  if(sel.dataset.done || sel.value==='') return; sel.dataset.done=1;
-  var ok = sel.value===sel.dataset.a;
-  sel.classList.add(ok?'ok':'no');
-  var el=document.getElementById('w'+sel.id); el.classList.add(ok?'ok':'no');
-  var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
-  fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือข้อ '+TL[+sel.dataset.a];
-  mark(sel.id,ok);
-}
 
 RB.order=function(b,bi){
   var h='<div class="blk">';
@@ -412,7 +559,7 @@ function addWord(id,btn){
   if(s.querySelector('em')) s.innerHTML='';
   var sp=document.createElement('span'); sp.textContent=btn.textContent;
   sp.style.cssText='background:#fff;border:2px solid var(--ac);border-radius:10px;padding:2px 11px';
-  s.appendChild(sp); btn.classList.add('used');
+  s.appendChild(sp); btn.classList.add('used'); speak(btn.textContent);
 }
 function resetOrder(id){
   var el=document.getElementById('w'+id); if(el.dataset.done) return;
@@ -429,6 +576,7 @@ function checkOrder(id){
   s.classList.add(ok?'ok':'no'); el.classList.add(ok?'ok':'no');
   var fb=el.querySelector('.fb'); fb.className='fb '+(ok?'ok':'no');
   fb.textContent = ok?'✓ ถูกต้อง!':'✗ คำตอบที่ถูกคือ  '+el.dataset.a;
+  speak(el.dataset.a);
   mark(id,ok);
 }
 

@@ -240,6 +240,16 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:20px}
 .ghost{position:fixed;left:0;top:0;z-index:99;pointer-events:none;opacity:.92;
   will-change:transform;box-shadow:0 6px 18px rgba(0,0,0,.22);transition:none!important}
 .zone.hot{background:var(--gold)!important;border-color:#8a6a13!important}
+.spell{max-width:420px;margin:0 auto}
+.spellbox{display:flex;gap:8px;justify-content:center;margin:4px 0 14px;padding:8px;border-radius:12px}
+.sslot{min-width:46px;height:56px;display:grid;place-items:center;font-family:'Andika',sans-serif;font-weight:700;
+  font-size:1.7rem;background:var(--paper-2);border-bottom:3px solid var(--jade-2);border-radius:8px 8px 0 0}
+.sslot.on{background:var(--jade-soft);color:var(--jade)}
+.spelltray{margin-bottom:10px}
+.tile.used{visibility:hidden}
+.spell.lock .tile{pointer-events:none}
+.spellbar{text-align:center}
+.spback{border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 14px;font-family:inherit;font-size:.88rem;cursor:pointer}
 .shake{animation:shk .35s}
 @keyframes shk{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
 @media (prefers-reduced-motion:reduce){.shake{animation:none}}
@@ -583,7 +593,7 @@ table.dgrid,.gwrap,.stile,.tile,.prow,.saytarget,.cue,.staff,.choices,.side,.wbt
       <button class="on" data-v="mc">เห็นคำไทย</button>
       <button data-v="listen">ฟังเสียง</button>
       <button data-v="rev">เห็นพินอิน</button>
-      <button data-v="type">พิมพ์เอง</button>
+      <button data-v="type">เรียงตัวอักษร</button>
     </div>
     <button class="duel" id="btn-duel">ท้าดวล 10 ข้อ</button>
   </div>
@@ -673,7 +683,7 @@ table.dgrid,.gwrap,.stile,.tile,.prow,.saytarget,.cue,.staff,.choices,.side,.wbt
       <button data-v="all">รวม</button>
     </div>
     <div class="seg" id="seg-pure">
-      <button class="on" data-v="dict">ฟัง → พิมพ์</button>
+      <button class="on" data-v="dict">ฟัง → เรียงตัวอักษร</button>
       <button data-v="pick">ฟัง → เลือก</button>
       <button data-v="hear">เห็นตัวอักษร → เลือกเสียง</button>
       <button data-v="read">เห็นพินอิน → อ่านออกเสียง</button>
@@ -967,13 +977,9 @@ function renderMC(){
 }
 
 function renderType(){
-  $('#uhelp').textContent='พิมพ์ v แทน ü ได้ · กด Enter เพื่อตรวจ';
-  $('#answer-area').innerHTML='<div class="typebox"><input id="ti" class="py" autocomplete="off" '+
-    'autocapitalize="off" spellcheck="false" placeholder="พิมพ์…"><button class="gobtn" id="tgo" type="button">ตรวจ</button></div>';
-  const inp=$('#ti'); inp.focus();
-  const fire=()=>{ if(!locked) judge(norm(inp.value),null); };
-  $('#tgo').onclick=fire;
-  inp.onkeydown=e=>{ if(e.key==='Enter'){ locked?next():fire(); } };
+  $('#uhelp').textContent='ลากหรือแตะตัวอักษรมาเรียงให้เป็นพินอิน · ครบแล้วตรวจให้เอง';
+  $('#answer-area').innerHTML='';
+  $('#answer-area').appendChild(spellUI(cur[0], v=>{ if(!locked) judge(v,null); }));
 }
 
 function judge(val,btn){
@@ -1023,7 +1029,7 @@ function finish(){
   $('#cuewrap').innerHTML='<div class="cue">ครบแล้ว<small>หมดกอง = ตอบถูกทุกใบอย่างน้อยหนึ่งครั้ง</small></div>';
   $('#ans').className='ans blank'; $('#ans').textContent='✓';
   const msg = duel ? 'ดวล 10 ข้อ ได้ '+duel.score+'/'+duel.total+' — ให้พ่อลองทำบ้าง'
-    : 'ผ่านครบทั้งกองแล้ว ลองสลับไปโหมด “ฟังเสียง” หรือ “พิมพ์เอง” จะยากขึ้นอีกขั้น';
+    : 'ผ่านครบทั้งกองแล้ว ลองสลับไปโหมด “ฟังเสียง” หรือ “เรียงตัวอักษร” จะยากขึ้นอีกขั้น';
   $('#done-box').innerHTML='<div class="done"><h3>จบกอง</h3><p>'+msg+'</p><button id="again" type="button">เริ่มกองใหม่</button></div>';
   $('#again').onclick=()=>{ duel=null; newDeck(); };
 }
@@ -1220,6 +1226,39 @@ function bindZone(el){
   });
 }
 function nope(el){ el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),360); }
+
+/* ---------------- เรียงตัวอักษรพินอิน (ใช้แทนการพิมพ์ — เด็กพิมพ์ ü บนไอแพดยาก) ---------------- */
+const SPELL_POOL='abcdefghijklmnopqrstuwxyzü'.split('');
+function spellUI(key, onDone){
+  const chars=[...key];
+  const extra=shuffle(SPELL_POOL.filter(c=>!chars.includes(c))).slice(0, chars.length<=2?3:4);
+  const wrap=document.createElement('div'); wrap.className='spell';
+  wrap.innerHTML='<div class="spellbox">'+chars.map(()=>'<span class="sslot"></span>').join('')+'</div>'+
+    '<div class="tray spelltray"></div>'+
+    '<div class="spellbar"><button type="button" class="spback">⌫ ลบตัวท้าย</button></div>';
+  const box=wrap.querySelector('.spellbox'), tray=wrap.querySelector('.spelltray'), slots=box.querySelectorAll('.sslot');
+  const placed=[]; let fin=false;
+  const add=t=>{
+    if(fin || t.classList.contains('used')) return;
+    const sl=slots[placed.length]; if(!sl) return;
+    sl.textContent=t.dataset.c; sl.classList.add('on'); t.classList.add('used'); placed.push(t);
+    if(placed.length===chars.length){ fin=true; wrap.classList.add('lock');
+      setTimeout(()=>onDone(placed.map(x=>x.dataset.c).join('')),160); }
+  };
+  bindZone(box);
+  shuffle(chars.concat(extra)).forEach(c=>{
+    const t=document.createElement('span'); t.className='tile'; t.dataset.c=c; t.textContent=c;
+    tray.appendChild(t);
+    bindTile(t,(el,z)=>{ if(z===box) add(el); });
+    t.addEventListener('click',()=>{ clearSel(); add(t); });   /* แตะครั้งเดียวก็ลงช่องถัดไปเลย */
+  });
+  wrap.querySelector('.spback').onclick=()=>{
+    if(fin || !placed.length) return;
+    const t=placed.pop(); t.classList.remove('used');
+    const sl=slots[placed.length]; sl.textContent=''; sl.classList.remove('on');
+  };
+  return wrap;
+}
 
 /* ================= สถานะเกม ================= */
 let game='match', gset='ini', gErr=0, gT0=0, gLeft=0;
@@ -1912,9 +1951,7 @@ function renderPure(){
 
   let body='';
   if(pure==='dict'){
-    body='<div class="pureq">ฟังแล้วพิมพ์พินอินของเสียงนี้ (พิมพ์ v แทน ü ได้)</div>'+
-      '<div class="pureinput"><input id="pin" class="py" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="…">'+
-      '<button class="gobtn" id="pgo" type="button">ตรวจ</button></div>';
+    body='<div class="pureq">ฟังแล้วลากหรือแตะตัวอักษรมาเรียงเป็นพินอินของเสียงนี้</div><div id="pspell"></div>';
   }else if(pure==='hear'){
     const a=ppool();
     hearOpts=shuffle([it].concat(shuffle(a.filter(x=>!twin(x,it))).slice(0,3)));
@@ -1972,10 +2009,7 @@ function renderPure(){
     return;
   }
   if(pure==='dict'){
-    const inp=$('#pin'); inp.focus();
-    const fire=()=>{ if(pLock) return; const v=norm(inp.value); inp.disabled=true; done(sameAns(it,v), v); };
-    $('#pgo').onclick=fire;
-    inp.onkeydown=e=>{ if(e.key==='Enter'){ pLock?pNext():fire(); } };
+    $('#pspell').appendChild(spellUI(it[0], v=>{ if(!pLock) done(sameAns(it,v), v); }));
   }else{
     $('#rp').querySelectorAll('button').forEach(b=>b.onclick=()=>{
       if(pLock) return;
