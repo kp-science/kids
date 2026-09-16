@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ห้องเรียนที่บ้าน</title>
+
+<!-- ให้เพิ่มลงหน้าจอโฮมบน iPad แล้วเปิดเต็มจอเหมือนแอป -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ห้องเรียน">
+<meta name="theme-color" content="#23594A">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&family=Andika:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFAF6; --paper-2:#F2F0E8;
+  --jade:#23594A; --jade-2:#3F8A72; --jade-soft:#DDEBE4;
+  --ink:#1B2420; --muted:#6B7A74; --line:#D6D9D0;
+  --gold:#C79A2E; --seal:#B4362C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;font-size:15px;line-height:1.7;
+  -webkit-text-size-adjust:100%}
+a{color:inherit;text-decoration:none}
+
+header{background:var(--jade);color:#fff;padding:26px 20px 22px;
+  padding-top:calc(26px + env(safe-area-inset-top));border-bottom:4px solid #174236}
+.hwrap{max-width:960px;margin:0 auto}
+header h1{font-family:'Mali',sans-serif;font-size:1.5rem;font-weight:700;line-height:1.35}
+header p{font-size:.85rem;opacity:.78;margin-top:2px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.tools input{flex:1 1 240px;min-width:0;padding:10px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.14);color:#fff;font-family:inherit;font-size:.92rem}
+.tools input::placeholder{color:rgba(255,255,255,.65)}
+.tools input:focus{outline:2px solid var(--gold);background:rgba(255,255,255,.2)}
+
+.wrap{max-width:960px;margin:0 auto;padding:20px 18px 70px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 15px;
+  cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--muted);transition:.12s}
+.chip:hover{background:var(--jade-soft)}
+.chip.on{background:var(--jade);border-color:var(--jade);color:#fff}
+.chip .ct{opacity:.6;font-size:.78rem;margin-left:4px}
+
+.group{margin-bottom:28px}
+.group h2{font-family:'Mali',sans-serif;font-size:1.05rem;color:var(--jade);
+  display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.group h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;
+  display:flex;flex-direction:column;gap:8px;transition:.15s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--jade-2);transform:translateY(-2px);box-shadow:0 6px 18px rgba(27,36,32,.09)}
+.card .mark{width:44px;height:44px;border-radius:11px;background:var(--jade-soft);color:var(--jade);
+  display:grid;place-items:center;font-size:1.4rem;font-weight:700;flex-shrink:0}
+.card h3{font-size:1rem;font-weight:700;line-height:1.4}
+.card p{font-size:.84rem;color:var(--muted);flex:1}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.tags span{font-size:.72rem;border:1px solid var(--jade-soft);background:var(--jade-soft);
+  color:var(--jade);border-radius:999px;padding:2px 9px;font-weight:600}
+.card .go{font-size:.82rem;color:var(--jade);font-weight:700;margin-top:4px}
+.card.soon{opacity:.6}
+.card.soon .go{color:var(--muted)}
+
+.empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:.9rem}
+
+details.howto{background:#fff;border:1px solid var(--line);border-radius:12px;padding:0;margin-top:26px;overflow:hidden}
+details.howto summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--jade);list-style:none}
+details.howto summary::-webkit-details-marker{display:none}
+details.howto summary::before{content:"▸ ";transition:.15s;display:inline-block}
+details.howto[open] summary::before{transform:rotate(90deg)}
+details.howto .body{padding:0 16px 16px;font-size:.86rem;color:var(--ink)}
+details.howto ol{margin:8px 0 8px 20px}
+details.howto li{margin-bottom:6px}
+details.howto code{background:var(--paper-2);border:1px solid var(--line);border-radius:5px;
+  padding:1px 6px;font-family:'Andika',monospace;font-size:.85rem}
+footer{text-align:center;font-size:.76rem;color:var(--muted);padding:10px 18px 30px}
+
+@media (max-width:520px){
+  header h1{font-size:1.25rem}
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <h1>ห้องเรียนที่บ้าน</h1>
+    <p>สื่อฝึกทั้งหมดรวมไว้ที่เดียว เปิดได้ทั้งคอมและไอแพด</p>
+    <div class="tools">
+      <input id="q" type="search" placeholder="ค้นหา เช่น พินอิน ฟิสิกส์ คลื่น…" autocomplete="off">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="chips" id="chips"></div>
+  <div id="list"></div>
+
+  <details class="howto">
+    <summary>วิธีเพิ่มสื่อใหม่เข้าหน้านี้</summary>
+    <div class="body">
+      <ol>
+        <li>วางไฟล์ HTML ไว้ในโฟลเดอร์ของวิชานั้น เช่น <code>chinese/</code> หรือ <code>physics/</code></li>
+        <li>เปิดไฟล์ <code>index.html</code> นี้ แล้วเลื่อนไปที่บรรทัด <code>const MATERIALS = [</code> ใกล้ท้ายไฟล์</li>
+        <li>คัดลอกบรรทัดของรายการเดิมหนึ่งบรรทัด วางต่อท้าย แล้วแก้ข้อความกับ <code>url</code> ให้ตรงกับไฟล์ใหม่</li>
+        <li>บันทึกแล้ว push ขึ้น GitHub — หน้าเว็บจะอัปเดตเองภายในไม่กี่นาที</li>
+      </ol>
+      <p><b>เพิ่มลงหน้าจอโฮมบนไอแพด:</b> เปิดหน้านี้ใน Safari → ปุ่มแชร์ → เพิ่มไปยังหน้าจอโฮม จะได้ไอคอนเปิดเต็มจอเหมือนแอป ไม่มีแถบเบราว์เซอร์มากวน</p>
+    </div>
+  </details>
+</div>
+
+<footer>ปรับปรุงล่าสุด <span id="stamp"></span></footer>
+
+<script>
+/* ============================================================
+   แก้เฉพาะรายการด้านล่างนี้เวลาเพิ่มสื่อใหม่
+   t    = ชื่อสื่อ
+   d    = คำอธิบายสั้น
+   g    = กลุ่ม/วิชา (จะกลายเป็นปุ่มกรองอัตโนมัติ)
+   url  = ที่อยู่ไฟล์ ถ้ายังไม่มีให้ใส่ '' จะขึ้นว่า "เร็วๆ นี้"
+   icon = ตัวอักษรหรืออิโมจิบนการ์ด
+   tags = ป้ายกำกับ
+   ============================================================ */
+const MATERIALS = [
+  { t:'ฝึกพินอิน พยัญชนะ–สระ', g:'ภาษาจีน', url:'chinese/pinyin-drill.html', icon:'拼',
+    d:'声母 23 · 韵母 36 ครบทั้งใบงานสองหน้า มีกฎลัด เกมลากวาง เทียบเสียงคล้าย ฝึกออกเสียง และโหมดไร้คำไทย',
+    tags:['มีเสียง','ลากวาง','อัดเสียงได้'] },
+
+  /* ---- ตัวอย่างรูปแบบสำหรับเพิ่มรายการใหม่ ลบทิ้งได้ ----
+  { t:'ชื่อสื่อ', g:'วิชา', url:'โฟลเดอร์/ไฟล์.html', icon:'⚛',
+    d:'คำอธิบายสั้นๆ', tags:['ป้าย1','ป้าย2'] },
+  ---------------------------------------------------------- */
+];
+
+const $ = s => document.querySelector(s);
+let filter = 'all', term = '';
+
+function groups(){
+  const m = new Map();
+  MATERIALS.forEach(x => m.set(x.g, (m.get(x.g)||0)+1));
+  return [...m.entries()];
+}
+function renderChips(){
+  const gs = groups();
+  $('#chips').innerHTML =
+    '<button class="chip'+(filter==='all'?' on':'')+'" data-g="all">ทั้งหมด<span class="ct">'+MATERIALS.length+'</span></button>'+
+    gs.map(([g,n]) => '<button class="chip'+(filter===g?' on':'')+'" data-g="'+g+'">'+g+'<span class="ct">'+n+'</span></button>').join('');
+  $('#chips').querySelectorAll('.chip').forEach(b => b.onclick = () => { filter = b.dataset.g; render(); });
+}
+function card(x){
+  const live = !!x.url;
+  const inner =
+    '<div class="mark">'+(x.icon||'✦')+'</div>'+
+    '<h3>'+x.t+'</h3>'+
+    '<p>'+(x.d||'')+'</p>'+
+    (x.tags&&x.tags.length ? '<div class="tags">'+x.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>' : '')+
+    '<div class="go">'+(live?'เปิดใช้งาน →':'เร็วๆ นี้')+'</div>';
+  return live
+    ? '<a class="card" href="'+x.url+'">'+inner+'</a>'
+    : '<div class="card soon">'+inner+'</div>';
+}
+function render(){
+  renderChips();
+  const t = term.trim().toLowerCase();
+  const hit = MATERIALS.filter(x =>
+    (filter==='all' || x.g===filter) &&
+    (!t || (x.t+' '+(x.d||'')+' '+x.g+' '+(x.tags||[]).join(' ')).toLowerCase().includes(t))
+  );
+  if(!hit.length){ $('#list').innerHTML = '<div class="empty">ไม่พบสื่อที่ตรงกับคำค้น</div>'; return; }
+
+  const byG = new Map();
+  hit.forEach(x => { if(!byG.has(x.g)) byG.set(x.g, []); byG.get(x.g).push(x); });
+  $('#list').innerHTML = [...byG.entries()].map(([g, items]) =>
+    '<section class="group"><h2>'+g+'</h2><div class="grid">'+items.map(card).join('')+'</div></section>'
+  ).join('');
+}
+$('#q').addEventListener('input', e => { term = e.target.value; render(); });
+$('#stamp').textContent = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+render();
+</script>
+</body>
+</html>

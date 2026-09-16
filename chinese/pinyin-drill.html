@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拼音 ฝึกพยัญชนะ–สระพินอิน (มีเสียง)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFAF6; --paper-2:#F2F0E8;
+  --jade:#23594A; --jade-2:#3F8A72; --jade-soft:#DDEBE4;
+  --staff:#7FA9C4; --ink:#1B2420; --muted:#6B7A74;
+  --seal:#B4362C; --gold:#C79A2E; --line:#D6D9D0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;
+  font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%}
+.py{font-family:'Andika',sans-serif}
+.han{font-family:'Noto Sans Thai Looped',sans-serif}
+
+.cover{background:var(--jade);color:#fff;padding:18px 20px 16px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:4px solid #174236}
+.cover .big{font-size:2.4rem;line-height:1;font-weight:700;letter-spacing:.08em;opacity:.95}
+.cover-txt h1{font-family:'Mali',sans-serif;font-size:1.15rem;font-weight:700;line-height:1.4}
+.cover-txt p{font-size:.82rem;opacity:.75;line-height:1.4}
+.cover .chip{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.chip b{display:block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);
+  padding:5px 12px;border-radius:999px;font-size:.78rem;font-weight:600;white-space:nowrap}
+
+nav{display:flex;background:var(--paper-2);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:none;border-bottom:3px solid transparent;padding:12px 18px;
+  cursor:pointer;white-space:nowrap;font-family:'Noto Sans Thai Looped',sans-serif;
+  font-size:.9rem;font-weight:600;color:var(--muted);transition:.15s}
+nav button:hover{color:var(--jade)}
+nav button.on{color:var(--jade);border-bottom-color:var(--jade);background:var(--paper)}
+nav button:focus-visible{outline:2px solid var(--jade);outline-offset:-3px}
+
+.wrap{max-width:900px;margin:0 auto;padding:22px 18px 60px}
+.pane{display:none}
+.pane.on{display:block}
+
+/* ---- แถบเสียง ---- */
+.audiobar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:16px}
+.audiobar label{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.audiobar select{font-family:inherit;font-size:.82rem;padding:4px 8px;border:1px solid var(--line);
+  border-radius:6px;background:var(--paper);color:var(--ink);max-width:190px}
+.audiobar input[type=range]{accent-color:var(--jade);width:110px}
+.audiobar .sw{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--ink);font-weight:600}
+#voicewarn{font-size:.8rem;color:var(--seal);background:#FBEDEB;border-left:3px solid var(--seal);
+  padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:16px;display:none}
+
+h2.sec{font-family:'Mali',sans-serif;font-size:1.05rem;color:var(--jade);
+  margin:26px 0 10px;display:flex;align-items:center;gap:9px}
+h2.sec:first-child{margin-top:4px}
+h2.sec .no{background:var(--jade);color:#fff;font-family:'Andika',sans-serif;width:24px;height:24px;
+  border-radius:50%;display:grid;place-items:center;font-size:.8rem;flex-shrink:0}
+p.lead{color:var(--muted);font-size:.88rem;margin-bottom:12px}
+
+.rule{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.rule h3{font-size:.92rem;color:var(--jade);margin-bottom:8px;font-weight:700}
+.rule .hint{font-size:.83rem;color:var(--muted);margin-top:8px}
+.pairs{display:flex;flex-wrap:wrap;gap:8px}
+.spk{border:1px solid var(--jade-soft);background:var(--jade-soft);border-radius:8px;
+  padding:6px 11px;font-size:.86rem;cursor:pointer;font-family:inherit;color:var(--ink);
+  display:inline-flex;align-items:center;gap:6px;transition:.12s;text-align:left}
+.spk:hover{background:#C9E2D6;border-color:var(--jade-2)}
+.spk:active{transform:scale(.96)}
+.spk.on{background:var(--jade);color:#fff}
+.spk b{font-family:'Andika',sans-serif;color:var(--jade);font-size:1.05rem}
+.spk.on b{color:#fff}
+.spk .ic{opacity:.55;font-size:.8rem}
+.spk:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+table.grid{border-collapse:collapse;width:100%}
+table.grid th,table.grid td{border:1px solid var(--line);padding:0;text-align:center}
+table.grid th{background:var(--jade-soft);color:var(--jade);font-weight:700;font-size:.85rem;padding:9px 6px}
+table.grid td.k{background:var(--paper-2);font-weight:700;color:var(--jade);font-size:1rem;padding:9px 6px}
+table.grid td button{width:100%;border:none;background:none;padding:8px 4px;cursor:pointer;font-family:inherit}
+table.grid td button:hover{background:var(--jade-soft)}
+table.grid td button span{font-family:'Andika',sans-serif;font-size:1.25rem;font-weight:700;
+  color:var(--ink);display:block}
+table.grid td button small{color:var(--muted);font-size:.72rem}
+table.grid td button.on{background:var(--jade)}
+table.grid td button.on span,table.grid td button.on small{color:#fff}
+
+.fam{display:grid;gap:8px}
+.famrow{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:start;
+  background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.famrow .tag{font-family:'Andika',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;
+  background:var(--jade-2);border-radius:7px;text-align:center;padding:5px 0}
+.famrow .items{display:flex;flex-wrap:wrap;gap:6px}
+.famrow .spk{font-size:.82rem;padding:3px 9px;background:#fff;border:1px dashed var(--line)}
+.famrow .spk:hover{background:var(--jade-soft)}
+.trap{border-left:4px solid var(--seal)}
+.trap h3{color:var(--seal)}
+
+.opts{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.seg button{border:none;background:none;padding:7px 13px;cursor:pointer;
+  font-family:'Noto Sans Thai Looped',sans-serif;font-size:.83rem;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--jade);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--jade);outline-offset:-2px}
+.duel{border:1px solid var(--gold);color:#8a6a13;background:#FBF3DE;border-radius:8px;
+  padding:7px 14px;cursor:pointer;font-weight:700;font-size:.83rem;font-family:inherit}
+.duel:hover{background:#F6E9C6}
+
+.stage{background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:22px 18px 24px;position:relative;overflow:hidden}
+.meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:6px}
+.meta .streak{color:var(--gold);font-weight:700}
+.cue{text-align:center;font-size:2.5rem;font-weight:700;font-family:'Mali',sans-serif;
+  color:var(--ink);line-height:1.35;margin:6px 0 4px}
+.cue small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-size:.8rem;
+  color:var(--muted);font-weight:400}
+.earbtn{display:block;margin:4px auto 0;width:104px;height:104px;border-radius:50%;
+  border:3px solid var(--jade);background:var(--jade-soft);color:var(--jade);
+  font-size:2.6rem;cursor:pointer;transition:.15s}
+.earbtn:hover{background:#C9E2D6}
+.earbtn.ring{animation:pulse 1s ease-out}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(35,89,74,.45)}100%{box-shadow:0 0 0 22px rgba(35,89,74,0)}}
+
+.staff{position:relative;height:88px;max-width:340px;margin:12px auto 18px;
+  border-top:2px solid var(--staff);border-bottom:2px solid var(--staff)}
+.staff::before,.staff::after{content:"";position:absolute;left:0;right:0;height:0}
+.staff::before{top:33.3%;border-top:1px dashed var(--staff)}
+.staff::after{top:66.6%;border-top:2px solid var(--staff)}
+.staff .ans{position:absolute;inset:0;display:grid;place-items:center;
+  font-family:'Andika',sans-serif;font-size:2.6rem;font-weight:700;color:var(--jade);letter-spacing:.03em}
+.staff .ans.blank{color:#C9CFC9;font-size:2rem}
+.staff .ans.bad{color:var(--seal);text-decoration:line-through}
+
+.choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.choices button{min-width:78px;padding:11px 16px;cursor:pointer;font-family:'Andika',sans-serif;
+  font-size:1.35rem;font-weight:700;background:#fff;color:var(--ink);border:2px solid var(--jade-2);transition:.12s}
+.choices.cloud button{border-radius:40% 60% 55% 45%/60% 45% 55% 40%}
+.choices.pill button{border-radius:999px}
+.choices button:hover:not(:disabled){background:var(--jade-soft)}
+.choices button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.choices button.right{background:var(--jade);border-color:var(--jade);color:#fff}
+.choices button.wrong{background:#F7E3E1;border-color:var(--seal);color:var(--seal)}
+.choices button:disabled{cursor:default;opacity:.55}
+.choices button.right:disabled,.choices button.wrong:disabled{opacity:1}
+
+.typebox{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.typebox input{width:170px;padding:10px 14px;text-align:center;font-family:'Andika',sans-serif;
+  font-size:1.3rem;font-weight:700;border:2px solid var(--jade-2);border-radius:8px;background:#fff;color:var(--ink)}
+.typebox input:focus{outline:none;border-color:var(--gold)}
+.gobtn{padding:10px 20px;border:none;border-radius:8px;background:var(--jade);color:#fff;
+  font-family:'Noto Sans Thai Looped',sans-serif;font-weight:700;cursor:pointer;font-size:.9rem}
+.uhelp{text-align:center;font-size:.76rem;color:var(--muted);margin-top:8px}
+
+.fb{margin-top:14px;text-align:center;font-size:.9rem;min-height:46px}
+.fb .ok{color:var(--jade);font-weight:700}
+.fb .no{color:var(--seal);font-weight:700}
+.fb .why{display:block;color:var(--muted);font-size:.82rem;margin-top:2px}
+.exword{display:inline-flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:999px;
+  padding:6px 14px;font-family:inherit;font-size:.85rem;color:var(--ink)}
+.exword:hover{background:var(--jade-soft)}
+.exword .hz{font-size:1.3rem;font-weight:700}
+.exword .pn{font-family:'Andika',sans-serif;color:var(--jade);font-weight:700}
+
+.seal{position:absolute;top:14px;right:16px;width:62px;height:62px;border:3px solid var(--seal);
+  border-radius:8px;color:var(--seal);display:grid;place-items:center;font-size:2rem;font-weight:700;
+  transform:rotate(-14deg) scale(2.4);opacity:0;pointer-events:none}
+.seal.hit{animation:stamp .55s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes stamp{0%{opacity:0;transform:rotate(-14deg) scale(2.4)}
+  35%{opacity:.95;transform:rotate(-14deg) scale(1)}100%{opacity:.85;transform:rotate(-14deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.seal.hit{animation:none;opacity:.85;transform:rotate(-14deg) scale(1)}
+  .earbtn.ring{animation:none}}
+
+.done{background:var(--jade-soft);border:1px solid var(--jade-2);border-radius:12px;
+  padding:20px;text-align:center;margin-top:16px}
+.done h3{font-family:'Mali',sans-serif;color:var(--jade);font-size:1.1rem;margin-bottom:6px}
+.done p{font-size:.88rem}
+.done button{margin-top:12px;padding:9px 22px;border:none;border-radius:8px;background:var(--jade);
+  color:#fff;font-family:inherit;font-weight:700;cursor:pointer}
+
+.sheet{background:#fff;border:2px solid var(--ink);border-radius:6px;padding:18px 16px;margin-bottom:22px}
+.sheet h3{text-align:center;font-family:'Mali',sans-serif;font-size:1.05rem;border:2px solid var(--ink);
+  border-radius:999px;padding:4px 18px;display:inline-block;margin-bottom:4px}
+.sheet .head{text-align:center;margin-bottom:12px}
+.sheet .head p{font-size:.85rem;color:var(--muted)}
+.bank{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  border-bottom:1px dashed var(--line);padding-bottom:12px;margin-bottom:14px}
+.bank button{font-family:'Andika',sans-serif;font-weight:700;font-size:.95rem;
+  border:1.5px solid var(--ink);padding:2px 10px;background:#fff;cursor:pointer}
+.bank button:hover{background:var(--jade-soft)}
+.bank.cloud button{border-radius:40% 60% 55% 45%/60% 45% 55% 40%}
+.bank.pill button{border-radius:999px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px 14px}
+.blank{display:flex;align-items:center;gap:5px;padding:2px 0}
+.blank input{width:70px;padding:4px 6px;text-align:center;font-family:'Andika',sans-serif;
+  font-size:1rem;font-weight:700;color:var(--jade);border:none;border-bottom:2px dotted var(--ink);background:transparent}
+.blank input:focus{outline:none;border-bottom-color:var(--jade);background:var(--jade-soft)}
+.blank input.right{color:var(--jade);border-bottom-color:var(--jade)}
+.blank input.wrong{color:var(--seal);border-bottom-color:var(--seal);background:#FBEDEB}
+.blank .th{font-size:.9rem}
+.blank .mini{border:none;background:none;cursor:pointer;font-size:.8rem;opacity:.4;padding:2px}
+.blank .mini:hover{opacity:1}
+.sheetbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.sheetbar button{padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.85rem;
+  font-family:inherit;border:1px solid var(--jade);background:#fff;color:var(--jade)}
+.sheetbar button.solid{background:var(--jade);color:#fff}
+.sheetbar .score{font-size:.86rem;color:var(--muted);margin-left:auto}
+.note{font-size:.8rem;color:var(--muted);border-left:3px solid var(--gold);padding:6px 10px;
+  background:#FCF7E9;border-radius:0 6px 6px 0;margin-bottom:14px}
+footer{text-align:center;font-size:.75rem;color:var(--muted);padding:20px}
+
+
+/* ===== เกมฝึกจำ ===== */
+.gmeta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  font-size:.85rem;color:var(--muted);margin-bottom:12px}
+.gmeta .gerr{color:var(--seal);font-weight:700}
+.gwrap{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 14px 20px}
+.ghead{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:14px}
+
+/* ถาดตัวอักษร */
+.tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:52px;
+  background:var(--paper-2);border:1px dashed var(--line);border-radius:10px;padding:10px;margin-bottom:16px}
+.tray:empty::after{content:"ถาดว่างแล้ว";color:var(--muted);font-size:.82rem}
+.tile{font-family:'Andika',sans-serif;font-weight:700;font-size:1.15rem;color:var(--ink);
+  background:#fff;border:2px solid var(--jade-2);border-radius:10px;padding:7px 14px;
+  cursor:grab;user-select:none;touch-action:none;transition:.12s}
+.tile:hover{background:var(--jade-soft)}
+.tile.sel{background:var(--gold);border-color:#8a6a13;color:#fff;transform:scale(1.06)}
+.tile.locked{cursor:default;background:var(--jade);border-color:var(--jade);color:#fff}
+.ghost{position:fixed;left:0;top:0;z-index:99;pointer-events:none;opacity:.92;
+  will-change:transform;box-shadow:0 6px 18px rgba(0,0,0,.22);transition:none!important}
+.zone.hot{background:var(--gold)!important;border-color:#8a6a13!important}
+.shake{animation:shk .35s}
+@keyframes shk{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+
+/* ตาราง 3x3 แบบลาก */
+table.dgrid{border-collapse:collapse;width:100%;max-width:520px;margin:0 auto}
+table.dgrid th{background:var(--jade-soft);color:var(--jade);font-size:.85rem;font-weight:700;
+  padding:8px 4px;border:1px solid var(--line)}
+table.dgrid td{border:1px solid var(--line);padding:5px;text-align:center}
+table.dgrid td.zone{height:58px;background:var(--paper-2);cursor:pointer}
+table.dgrid td.zone .hintv{font-size:.7rem;color:var(--muted);display:block}
+
+/* กล่องตระกูล */
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.bucket{border:2px dashed var(--jade-2);border-radius:12px;padding:10px;min-height:96px;
+  background:var(--paper-2);cursor:pointer}
+.bucket h4{font-size:.82rem;color:var(--jade);text-align:center;margin-bottom:8px;font-weight:700}
+.bucket .in{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+
+/* ลากเติมใบงาน */
+.dblanks{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px 14px}
+.dblank{display:flex;align-items:center;gap:7px}
+.dblank .slot{width:78px;height:40px;border:none;border-bottom:2px dotted var(--ink);
+  display:grid;place-items:center;cursor:pointer;background:var(--paper-2);border-radius:6px 6px 0 0}
+.dblank .slot.zone{transition:.12s}
+.dblank .th{font-size:.9rem}
+
+/* จับคู่พลิกการ์ด */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:9px;max-width:560px;margin:0 auto}
+.mcard{aspect-ratio:1/1.12;border-radius:10px;border:2px solid var(--jade-2);background:var(--jade);
+  color:#fff;display:grid;place-items:center;cursor:pointer;font-size:1.35rem;font-weight:700;
+  user-select:none;transition:.15s;padding:4px;text-align:center;line-height:1.2}
+.mcard.open{background:#fff;color:var(--ink);border-color:var(--gold)}
+.mcard.gone{background:var(--jade-soft);color:var(--jade);border-color:var(--jade-soft);
+  border-style:dashed;cursor:default}
+.mcard .py{font-family:'Andika',sans-serif;font-size:1.4rem}
+.mcard .thword{font-family:'Noto Sans Thai Looped',sans-serif;font-size:1rem}
+.gdone{background:var(--jade-soft);border:1px solid var(--jade-2);border-radius:12px;
+  padding:18px;text-align:center;margin-top:14px}
+.gdone h3{font-family:'Mali',sans-serif;color:var(--jade);font-size:1.05rem;margin-bottom:4px}
+
+
+/* ===== เทียบเสียงคล้าย ===== */
+.cmpcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.cmptop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.side{display:flex;align-items:center;gap:7px;background:var(--jade-soft);border:2px solid var(--jade-2);
+  border-radius:10px;padding:6px 13px;cursor:pointer;font-family:inherit;font-size:.86rem;color:var(--ink);transition:.12s}
+.side:hover{background:#C9E2D6}
+.side.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+.side b{font-family:'Andika',sans-serif;font-size:1.3rem;color:var(--jade)}
+.side.on b{color:#fff}
+.vs{font-family:'Mali',sans-serif;color:var(--seal);font-weight:700;font-size:.9rem}
+.abab{margin-left:auto;border:1px solid var(--gold);background:#FBF3DE;color:#8a6a13;
+  border-radius:999px;padding:6px 14px;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:700}
+.abab:hover{background:#F6E9C6}
+.cmptip{font-size:.84rem;color:var(--muted);border-left:3px solid var(--jade-soft);padding-left:10px;margin-bottom:10px}
+.cmptip b{color:var(--jade)}
+.words{display:flex;gap:8px;flex-wrap:wrap}
+.wbtn{display:inline-flex;align-items:center;gap:7px;background:var(--paper-2);border:1px solid var(--line);
+  border-radius:999px;padding:5px 13px;cursor:pointer;font-family:inherit;font-size:.83rem;color:var(--ink)}
+.wbtn:hover{background:var(--jade-soft)}
+.wbtn .hz{font-size:1.25rem;font-weight:700}
+.wbtn .pn{font-family:'Andika',sans-serif;color:var(--jade);font-weight:700}
+
+.eartrain{background:var(--jade);color:#fff;border-radius:14px;padding:18px 16px;margin-bottom:18px;text-align:center}
+.eartrain h3{font-family:'Mali',sans-serif;font-size:1rem;margin-bottom:4px}
+.eartrain p{font-size:.82rem;opacity:.8;margin-bottom:14px}
+.eartrain .play{width:88px;height:88px;border-radius:50%;border:3px solid #fff;background:rgba(255,255,255,.14);
+  color:#fff;font-size:2.2rem;cursor:pointer;margin-bottom:14px}
+.eartrain .play:hover{background:rgba(255,255,255,.26)}
+.eartrain .picks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.eartrain .picks button{min-width:96px;padding:11px 18px;border-radius:10px;border:2px solid #fff;
+  background:transparent;color:#fff;font-family:'Andika',sans-serif;font-size:1.3rem;font-weight:700;cursor:pointer}
+.eartrain .picks button:hover:not(:disabled){background:rgba(255,255,255,.2)}
+.eartrain .picks button.right{background:#fff;color:var(--jade)}
+.eartrain .picks button.wrong{background:var(--seal);border-color:var(--seal)}
+.eartrain .efb{min-height:44px;margin-top:12px;font-size:.86rem}
+.eartrain .efb .sm{display:block;opacity:.8;font-size:.8rem}
+.eartrain .bar{display:flex;justify-content:center;gap:16px;font-size:.8rem;opacity:.85;margin-bottom:10px}
+.startear{padding:10px 24px;border:2px solid #fff;background:#fff;color:var(--jade);
+  border-radius:10px;font-family:inherit;font-weight:700;cursor:pointer}
+.rulebox{background:#FCF7E9;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;
+  padding:12px 14px;margin-bottom:12px;font-size:.86rem}
+.rulebox h4{color:#8a6a13;font-size:.9rem;margin-bottom:6px}
+
+
+/* ===== ฝึกออกเสียง ===== */
+.saycard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 16px 20px;text-align:center}
+.saynav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.saynav button{border:1px solid var(--line);background:var(--paper-2);border-radius:8px;
+  padding:5px 14px;cursor:pointer;font-family:inherit;font-size:.85rem;color:var(--jade);font-weight:700}
+.saynav button:hover{background:var(--jade-soft)}
+.saynav .pos{font-size:.82rem;color:var(--muted)}
+.saytarget{font-family:'Andika',sans-serif;font-size:3rem;font-weight:700;color:var(--jade);line-height:1.1}
+.saytarget .th{display:block;font-family:'Mali',sans-serif;font-size:1.1rem;color:var(--ink)}
+.saytarget .hz{display:block;font-size:2.2rem;color:var(--ink);margin-bottom:2px}
+.saytip{font-size:.85rem;color:var(--muted);max-width:520px;margin:10px auto 4px;
+  border-left:3px solid var(--jade-soft);padding-left:10px;text-align:left}
+.saytip b{color:var(--jade)}
+.saybtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.saybtns button{border:2px solid var(--jade-2);background:#fff;color:var(--ink);border-radius:10px;
+  padding:9px 15px;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;transition:.12s}
+.saybtns button:hover:not(:disabled){background:var(--jade-soft)}
+.saybtns button:disabled{opacity:.4;cursor:default}
+.saybtns button.mic{border-color:var(--seal);color:var(--seal)}
+.saybtns button.mic.recording{background:var(--seal);color:#fff;animation:rec 1s infinite}
+@keyframes rec{50%{box-shadow:0 0 0 10px rgba(180,54,44,.18)}}
+@media (prefers-reduced-motion:reduce){.saybtns button.mic.recording{animation:none}}
+.sayfb{margin-top:14px;font-size:.87rem;min-height:40px}
+.sayfb .good{color:var(--jade);font-weight:700}
+.sayfb .bad{color:var(--seal);font-weight:700}
+.sayfb .sm{display:block;color:var(--muted);font-size:.8rem;margin-top:3px}
+.saynote{font-size:.8rem;color:var(--muted);border-left:3px solid var(--gold);
+  background:#FCF7E9;border-radius:0 6px 6px 0;padding:8px 12px;margin-bottom:14px}
+
+
+/* ===== โหมดไร้คำไทย ===== */
+.purebox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 16px 24px;text-align:center;position:relative}
+.puremeta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:8px}
+.puremeta .st{color:var(--gold);font-weight:700}
+.bigplay{width:100px;height:100px;border-radius:50%;border:3px solid var(--jade);background:var(--jade-soft);
+  color:var(--jade);font-size:2.6rem;cursor:pointer;margin:4px auto 6px;display:block}
+.bigplay:hover{background:#C9E2D6}
+.bigplay.ring{animation:pulse 1s ease-out}
+.pureq{font-size:.84rem;color:var(--muted);margin-bottom:14px}
+.pureshow{font-family:'Andika',sans-serif;font-size:3.2rem;font-weight:700;color:var(--jade);margin:8px 0 2px}
+.rowlab{font-size:.75rem;color:var(--muted);margin:12px 0 6px;letter-spacing:.04em}
+.prow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.prow button{min-width:70px;padding:10px 15px;border:2px solid var(--jade-2);background:#fff;
+  border-radius:10px;font-family:'Andika',sans-serif;font-size:1.25rem;font-weight:700;color:var(--ink);cursor:pointer}
+.prow button:hover:not(:disabled){background:var(--jade-soft)}
+.prow button.pick{background:var(--gold);border-color:#8a6a13;color:#fff}
+.prow button.right{background:var(--jade);border-color:var(--jade);color:#fff}
+.prow button.wrong{background:#F7E3E1;border-color:var(--seal);color:var(--seal)}
+.prow button:disabled{cursor:default}
+.prow.hz button{font-family:'Noto Sans Thai Looped',sans-serif;font-size:1.9rem;min-width:78px}
+.pureinput{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.pureinput input{width:190px;padding:11px 14px;text-align:center;font-family:'Andika',sans-serif;
+  font-size:1.4rem;font-weight:700;border:2px solid var(--jade-2);border-radius:10px;background:#fff;color:var(--ink)}
+.pureinput input:focus{outline:none;border-color:var(--gold)}
+.purefb{margin-top:16px;font-size:.9rem;min-height:52px}
+.purefb .ok{color:var(--jade);font-weight:700;font-size:1.05rem}
+.purefb .no{color:var(--seal);font-weight:700;font-size:1.05rem}
+.purefb .card{display:inline-flex;align-items:center;gap:9px;margin-top:8px;background:var(--paper-2);
+  border:1px solid var(--line);border-radius:999px;padding:6px 15px;cursor:pointer;font-size:.86rem}
+.purefb .card:hover{background:var(--jade-soft)}
+.purefb .card .hz{font-size:1.5rem;font-weight:700}
+.purefb .card .pn{font-family:'Andika',sans-serif;color:var(--jade);font-weight:700;font-size:1.05rem}
+.selfgrade{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.selfgrade button{padding:9px 18px;border-radius:10px;border:2px solid var(--jade-2);background:#fff;
+  cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600}
+.selfgrade button:hover{background:var(--jade-soft)}
+
+
+/* ===== ใบงานแบบลากวาง ===== */
+.bank{min-height:56px}
+.bank.zone.hot{background:var(--jade-soft)!important;border-color:var(--jade-2)!important}
+.stile{font-family:'Andika',sans-serif;font-weight:700;font-size:1rem;color:var(--ink);
+  background:#fff;border:2px solid var(--ink);padding:4px 12px;cursor:grab;user-select:none;
+  touch-action:none;transition:.12s;display:inline-block}
+.bank.cloud .stile{border-radius:40% 60% 55% 45%/60% 45% 55% 40%}
+.bank.pill .stile{border-radius:999px}
+.stile:hover{background:var(--jade-soft)}
+.stile.sel{background:var(--gold);border-color:#8a6a13;color:#fff;transform:scale(1.08)}
+.stile.inslot{border-color:var(--jade-2);border-radius:8px;color:var(--jade)}
+.stile.okmark{background:var(--jade);border-color:var(--jade);color:#fff}
+.stile.badmark{background:#F7E3E1;border-color:var(--seal);color:var(--seal)}
+.srow{display:flex;align-items:center;gap:6px;padding:3px 0}
+.slot{min-width:80px;height:38px;border-bottom:2px dotted var(--ink);display:grid;place-items:center;
+  cursor:pointer;background:var(--paper-2);border-radius:6px 6px 0 0;transition:.12s}
+.slot.zone.hot{background:var(--gold)}
+.slot.badzone{background:#F7E3E1;border-bottom-color:var(--seal)}
+.slot.okzone{background:var(--jade-soft);border-bottom-color:var(--jade)}
+.srow .th{font-size:.9rem}
+.srow .mini{border:none;background:none;cursor:pointer;font-size:.8rem;opacity:.4;padding:2px}
+.srow .mini:hover{opacity:1}
+.dnhint{font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:10px}
+
+
+/* กันการลากแล้วเกิดแถบไฮไลต์เลือกข้อความ */
+.bank,.cols,.srow,.slot,.tray,.buckets,.bucket,.dblanks,.dblank,.mgrid,.mcard,
+table.dgrid,.gwrap,.stile,.tile,.prow,.saytarget,.cue,.staff,.choices,.side,.wbtn,.spk{
+  -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+}
+.stile,.tile,.mcard{-webkit-tap-highlight-color:transparent}
+.ghost{-webkit-user-select:none;user-select:none}
+
+
+/* ===== เห็นตัวอักษร → เลือกเสียง ===== */
+.soundopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;max-width:520px;margin:14px auto 0}
+.sopt{border:2px solid var(--jade-2);border-radius:12px;padding:10px 8px;background:#fff;
+  display:flex;flex-direction:column;align-items:center;gap:8px;transition:.12s}
+.sopt .n{font-family:'Andika',sans-serif;font-size:.78rem;color:var(--muted);font-weight:700}
+.sopt .lst{width:56px;height:56px;border-radius:50%;border:2px solid var(--jade);
+  background:var(--jade-soft);color:var(--jade);font-size:1.5rem;cursor:pointer}
+.sopt .lst:hover{background:#C9E2D6}
+.sopt .lst.ring{animation:pulse 1s ease-out}
+.sopt .pk{border:1.5px solid var(--jade-2);background:#fff;color:var(--jade);border-radius:999px;
+  padding:5px 16px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700}
+.sopt .pk:hover:not(:disabled){background:var(--jade-soft)}
+.sopt .pk:disabled{opacity:.5;cursor:default}
+.sopt .rev{font-family:'Andika',sans-serif;font-size:1.05rem;font-weight:700;color:var(--ink);min-height:0}
+.sopt.right{border-color:var(--jade);background:var(--jade-soft)}
+.sopt.wrong{border-color:var(--seal);background:#F7E3E1}
+
+
+/* ===== ตารางตรวจเสียง ===== */
+.audit{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 8px;margin-top:10px}
+.auditgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:4px}
+.arow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:8px;cursor:pointer;
+  background:none;border:none;font-family:inherit;text-align:left;width:100%}
+.arow:hover{background:var(--jade-soft)}
+.arow .p{font-family:'Andika',sans-serif;font-weight:700;font-size:1.05rem;color:var(--jade);min-width:40px}
+.arow .t{font-size:.86rem;flex:1}
+.arow .s{opacity:.45;font-size:.8rem}
+.arow.warn{background:#FCF7E9}
+.arow.warn .t::after{content:" ⚠";color:var(--gold)}
+
+@media print{
+  .cover,nav,.sheetbar,.note,footer,.audiobar,#voicewarn,.mini,.bank,.dnhint{display:none!important}
+  .slot{background:none!important}
+  .stile{border:none!important;background:none!important;color:#000!important}
+  .pane{display:none!important}
+  #pane-sheet{display:block!important}
+  body{background:#fff}
+  .wrap{padding:0;max-width:none}
+  .sheet{page-break-after:always}
+  .blank input{border-bottom:2px dotted #000;color:#000}
+}
+@media (max-width:520px){
+  .cue{font-size:2rem}.cover .big{font-size:1.8rem}
+  .choices button{min-width:66px;font-size:1.15rem;padding:9px 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="big">拼音</div>
+  <div class="cover-txt">
+    <h1>ใบงานพยัญชนะ–สระ ฉบับฝึกเอง</h1>
+    <p>声母 23 · 韵母 36 — แตะอะไรก็ได้ในหน้านี้เพื่อฟังเสียง</p>
+  </div>
+  <div class="chip">
+    <b id="chip-set">ยังไม่เริ่ม</b>
+    <b id="chip-best">ดีที่สุด —</b>
+  </div>
+</div>
+
+<nav>
+  <button class="on" data-p="rule">กฎลัด + ฟังเสียง</button>
+  <button data-p="drill">การ์ดฝึก</button>
+  <button data-p="game">เกมฝึกจำ</button>
+  <button data-p="cmp">เทียบเสียงคล้าย</button>
+  <button data-p="say">ฝึกออกเสียง</button>
+  <button data-p="pure">โหมดไร้คำไทย</button>
+  <button data-p="sheet">ใบงานจริง</button>
+</nav>
+
+<div class="wrap">
+
+<div id="voicewarn"></div>
+
+<div class="audiobar">
+  <span class="sw">🔊 เสียง</span>
+  <label>เสียงพูด <select id="vsel"></select></label>
+  <label>ความเร็ว <input type="range" id="vrate" min="0.5" max="1.2" step="0.05" value="0.8"><span id="vrateval" class="py">0.80</span></label>
+  <label><input type="checkbox" id="vauto" checked> อ่านให้อัตโนมัติ</label>
+</div>
+
+<!-- ============ กฎลัด ============ -->
+<section class="pane on" id="pane-rule">
+  <p class="lead" style="margin-bottom:16px">ทุกปุ่มในหน้านี้กดฟังได้ — ฟังพร้อมอ่านคำไทยไปด้วย สมองจะผูกเสียงกับตัวอักษรเร็วกว่าท่องเงียบๆ</p>
+
+  <h2 class="sec"><span class="no">1</span>พยัญชนะ 23 ตัว — จำแค่ 4 กฎ</h2>
+
+  <div class="rule">
+    <h3>กฎ ก · ลงท้าย “-ัว” → ริมฝีปาก 4 ตัว</h3>
+    <div class="pairs" id="g-lip"></div>
+    <p class="hint">ตัวไทยตรงกับตัวโรมันเลย: ป–b, พ–p, ม–m, ฟ–f</p>
+  </div>
+
+  <div class="rule">
+    <h3>กฎ ข · ลงท้าย “เ-อ” → 7 ตัวนี้</h3>
+    <div class="pairs" id="g-eo"></div>
+    <p class="hint">ฟังเทียบเป็นคู่: เตอ–เธอ (d–t), เกอ–เคอ (g–k) เสียงแรกไม่พ่นลม เสียงหลังพ่นลม</p>
+  </div>
+
+  <div class="rule">
+    <h3>กฎ ค · ตารางหัวใจ 3×3 — ตารางเดียวได้ 9 ตัว</h3>
+    <table class="grid">
+      <tr><th></th><th>ลงท้าย -ี</th><th>ลงท้าย -รือ</th><th>ลงท้าย -ือ</th></tr>
+      <tr><td class="k">จ</td><td data-k="j"></td><td data-k="zh"></td><td data-k="z"></td></tr>
+      <tr><td class="k">ช</td><td data-k="q"></td><td data-k="ch"></td><td data-k="c"></td></tr>
+      <tr><td class="k">ซ</td><td data-k="x"></td><td data-k="sh"></td><td data-k="s"></td></tr>
+    </table>
+    <p class="hint"><b>จำสองอย่างพอ</b> — แถว: จ=j/zh/z · ช=q/ch/c · ซ=x/sh/s &nbsp;|&nbsp; หลัก: มี “ร” = มี h ต่อท้าย</p>
+  </div>
+
+  <div class="rule">
+    <h3>กฎ ง · เหลืออีก 3 ตัว จำแยก</h3>
+    <div class="pairs" id="g-rest"></div>
+    <p class="hint">ยรือ ต่อท้ายหลัก “-รือ” พอดี: จรือ ชรือ ซรือ <b>ยรือ</b> = zh ch sh <b>r</b></p>
+  </div>
+
+  <h2 class="sec"><span class="no">2</span>สระ 36 ตัว — ดูตัวขึ้นต้นก่อนเสมอ</h2>
+  <div class="rule">
+    <h3>ด่านแรก · ฟังตัวขึ้นต้น</h3>
+    <div class="pairs">
+      <span class="spk" style="cursor:default">มีเสียง <b>ว</b> (วา อัว อวน อวง ไอว อุย) → ขึ้นด้วย <b>u</b></span>
+      <span class="spk" style="cursor:default">มีเสียง <b>อี/เอีย/อิ</b> → ขึ้นด้วย <b>i</b></span>
+      <span class="spk" style="cursor:default">มีเสียง <b>อวี/เยว</b> → ขึ้นด้วย <b>ü</b></span>
+    </div>
+  </div>
+  <div class="fam" id="fam"></div>
+
+  <h2 class="sec"><span class="no">3</span>ตารางตรวจเสียงทั้ง 59 ตัว</h2>
+  <p class="lead">กดฟังทีละตัวเทียบกับคำอ่านไทย ตัวที่มี ⚠ คือตัวที่เสียงยืนเดี่ยวกับคำอ่านไทยไม่ตรงกันโดยธรรมชาติ กดดูคำอธิบาย</p>
+  <div class="audit"><div class="auditgrid" id="auditI"></div></div>
+  <div class="audit"><div class="auditgrid" id="auditF"></div></div>
+  <div class="cmptip" id="auditNote" style="margin-top:8px"></div>
+
+  <div class="rule trap" style="margin-top:14px">
+    <h3>5 คู่หลอก — กดฟังสลับไปมาจนแยกออก</h3>
+    <div class="pairs" id="traps"></div>
+    <p class="hint">ทั้ง 5 คู่นี้อยู่ในใบงานจริงทั้งคู่ ฟังเทียบทีละคู่ดีกว่าจำเป็นตัวเดี่ยว</p>
+  </div>
+</section>
+
+<!-- ============ การ์ดฝึก ============ -->
+<section class="pane" id="pane-drill">
+  <div class="opts">
+    <div class="seg" id="seg-set">
+      <button class="on" data-v="ini">พยัญชนะ</button>
+      <button data-v="fin">สระ</button>
+      <button data-v="all">รวมทั้งหมด</button>
+    </div>
+    <div class="seg" id="seg-mode">
+      <button class="on" data-v="mc">เห็นคำไทย</button>
+      <button data-v="listen">ฟังเสียง</button>
+      <button data-v="rev">เห็นพินอิน</button>
+      <button data-v="type">พิมพ์เอง</button>
+    </div>
+    <button class="duel" id="btn-duel">ท้าดวล 10 ข้อ</button>
+  </div>
+
+  <div class="stage">
+    <div class="seal" id="seal">对</div>
+    <div class="meta">
+      <span id="m-left">—</span>
+      <span class="streak" id="m-streak">ถูกติดกัน 0</span>
+    </div>
+    <div id="cuewrap"><div class="cue" id="cue">พร้อมแล้ว<small>เลือกชุดด้านบนเพื่อเริ่ม</small></div></div>
+    <div class="staff"><div class="ans blank" id="ans">?</div></div>
+    <div id="answer-area"></div>
+    <div class="uhelp" id="uhelp"></div>
+    <div class="fb" id="fb"></div>
+  </div>
+  <div id="done-box"></div>
+</section>
+
+
+<!-- ============ เกมฝึกจำ ============ -->
+<section class="pane" id="pane-game">
+  <div class="opts">
+    <div class="seg" id="seg-game">
+      <button class="on" data-v="match">จับคู่พลิกการ์ด</button>
+      <button data-v="grid">ลากลงตาราง 3×3</button>
+      <button data-v="bucket">ลากจัดตระกูลสระ</button>
+      <button data-v="fill">ลากเติมใบงาน</button>
+    </div>
+    <div class="seg" id="seg-gset">
+      <button class="on" data-v="ini">พยัญชนะ</button>
+      <button data-v="fin">สระ</button>
+    </div>
+    <button class="duel" id="g-again" type="button">เริ่มรอบใหม่</button>
+  </div>
+  <div class="gmeta"><span id="g-info">—</span><span class="gerr" id="g-err"></span></div>
+  <div id="gamebox"></div>
+</section>
+
+
+<!-- ============ เทียบเสียงคล้าย ============ -->
+<section class="pane" id="pane-cmp">
+  <div class="eartrain" id="ear-panel"></div>
+
+  <div class="opts">
+    <div class="seg" id="seg-cat">
+      <button class="on" data-v="asp">พ่นลม</button>
+      <button data-v="retro">ม้วนลิ้น</button>
+      <button data-v="pal">เพดานปาก</button>
+      <button data-v="ini2">พยัญชนะอื่น</button>
+      <button data-v="nasal">-n / -ng</button>
+      <button data-v="uu">สระ ü</button>
+      <button data-v="misc">สระคู่คล้าย</button>
+    </div>
+  </div>
+
+  <div id="cathead"></div>
+  <div id="cmplist"></div>
+</section>
+
+
+<!-- ============ ฝึกออกเสียง ============ -->
+<section class="pane" id="pane-say">
+  <div class="saynote" id="say-note"></div>
+  <div class="opts">
+    <div class="seg" id="seg-sayset">
+      <button class="on" data-v="ini">พยัญชนะ 23</button>
+      <button data-v="fin">สระ 36</button>
+      <button data-v="word">คำจริง</button>
+    </div>
+    <button class="duel" id="say-shuffle" type="button">สลับลำดับ</button>
+  </div>
+  <div id="saybox"></div>
+</section>
+
+
+<!-- ============ โหมดไร้คำไทย ============ -->
+<section class="pane" id="pane-pure">
+  <div class="note">
+    ทั้งแท็บนี้<b>ไม่มีคำอ่านไทยเลย</b> — ฝึกเฉพาะพยัญชนะ 23 และสระ 36 จากใบงานสองหน้านั้น
+    เพื่อให้สมองผูกเสียงกับพินอินโดยตรง ไม่ต้องแปลผ่าน "จรือ" หรือ "เอวียน" อีก
+  </div>
+  <div class="opts">
+    <div class="seg" id="seg-pureset">
+      <button class="on" data-v="ini">พยัญชนะ</button>
+      <button data-v="fin">สระ</button>
+      <button data-v="all">รวม</button>
+    </div>
+    <div class="seg" id="seg-pure">
+      <button class="on" data-v="dict">ฟัง → พิมพ์</button>
+      <button data-v="pick">ฟัง → เลือก</button>
+      <button data-v="hear">เห็นตัวอักษร → เลือกเสียง</button>
+      <button data-v="read">เห็นพินอิน → อ่านออกเสียง</button>
+    </div>
+  </div>
+  <div id="purebox"></div>
+</section>
+
+<!-- ============ ใบงานจริง ============ -->
+<section class="pane" id="pane-sheet">
+  <div class="sheetbar">
+    <button class="solid" onclick="checkSheet()">ตรวจคำตอบ</button>
+    <button onclick="revealSheet()">ดูเฉลย</button>
+    <button onclick="clearSheet()">ล้างคำตอบ</button>
+    <button onclick="shuffleBanks()">สลับถาด</button>
+    <button onclick="window.print()">พิมพ์ใบงาน</button>
+    <span class="score" id="sheet-score"></span>
+  </div>
+  <div class="note">
+    <b>ลากตัวอักษรจากถาดด้านบนมาวางในช่อง</b> หรือแตะตัวอักษรหนึ่งครั้งแล้วแตะช่องที่ต้องการ (สะดวกกว่าบนมือถือ) ·
+    วางผิดช่องแล้วลากกลับถาดได้ · <b>วางผิดช่องจะขึ้นสีแดงทันทีแล้วเด้งกลับถาด</b> วางถูกจะขึ้นเขียวพร้อมอ่านออกเสียงให้ · ตอนสั่งพิมพ์ ถาดและปุ่มจะไม่ติดออกไป
+  </div>
+
+  <div class="sheet">
+    <div class="head"><h3>ใบงานพยัญชนะ – สระ</h3>
+      <p>เลือกพยัญชนะพินอินเติมลงในช่องว่างให้ถูกต้อง</p></div>
+    <div class="bank cloud" id="bank-ini"></div>
+    <div class="cols" id="ws1"></div>
+  </div>
+
+  <div class="sheet">
+    <div class="head"><h3>ใบงานพยัญชนะ – สระ</h3>
+      <p>เลือกสระพินอินเติมลงในช่องว่างให้ถูกต้อง</p></div>
+    <div class="bank pill" id="bank-fin"></div>
+    <div class="cols" id="ws2"></div>
+  </div>
+</section>
+
+</div>
+<footer>ทำให้ลูกสาว · เสียงมาจากตัวเครื่อง ไม่ต้องต่อเน็ต</footer>
+
+<script>
+/* ---------- ข้อมูล: [พินอิน, คำอ่านไทย, กฎที่ใช้, ตัวออกเสียงเดี่ยว, ตัวอย่างคำ, พินอินตัวอย่าง, ความหมาย] ---------- */
+const INI=[
+['b','ปัว','ริมฝีปาก','波','爸','bà','พ่อ'],
+['p','พัว','ริมฝีปาก','坡','爬','pá','ปีน'],
+['m','มัว','ริมฝีปาก','摸','妈','mā','แม่'],
+['f','ฟัว','ริมฝีปาก','佛','饭','fàn','ข้าว'],
+['d','เตอ','กลุ่ม เ-อ','德','大','dà','ใหญ่'],
+['t','เธอ','กลุ่ม เ-อ','特','他','tā','เขา'],
+['n','เนอ','กลุ่ม เ-อ','讷','你','nǐ','คุณ'],
+['l','เลอ','กลุ่ม เ-อ','勒','来','lái','มา'],
+['g','เกอ','กลุ่ม เ-อ','哥','狗','gǒu','หมา'],
+['k','เคอ','กลุ่ม เ-อ','科','看','kàn','ดู'],
+['h','เฮอ','กลุ่ม เ-อ','喝','好','hǎo','ดี'],
+['j','จี','ตาราง 3×3 แถว จ','基','家','jiā','บ้าน'],
+['q','ชี','ตาราง 3×3 แถว ช','期','去','qù','ไป'],
+['x','ซี','ตาราง 3×3 แถว ซ','西','学','xué','เรียน'],
+['zh','จรือ','มี ร = มี h ต่อท้าย','知','这','zhè','นี่'],
+['ch','ชรือ','มี ร = มี h ต่อท้าย','吃','车','chē','รถ'],
+['sh','ซรือ','มี ร = มี h ต่อท้าย','诗','书','shū','หนังสือ'],
+['r','ยรือ','จำแยก','日','人','rén','คน'],
+['z','จือ','หลัก -ือ','资','走','zǒu','เดิน'],
+['c','ชือ','หลัก -ือ','词','菜','cài','ผัก'],
+['s','ซือ','หลัก -ือ','思','三','sān','สาม'],
+['y','อี','จำแยก','衣','有','yǒu','มี'],
+['w','อู','จำแยก','乌','我','wǒ','ฉัน']];
+
+const FIN=[
+['a','อา','สระเดี่ยว','阿','爸','bà','พ่อ'],
+['o','ออ','สระเดี่ยว','噢','摸','mō','คลำ'],
+['e','เออ','สระเดี่ยว','鹅','哥','gē','พี่ชาย'],
+['i','อี','สระเดี่ยว','衣','七','qī','เจ็ด'],
+['u','อู','สระเดี่ยว','乌','不','bù','ไม่'],
+['ü','อวี','สระเดี่ยว','迂','女','nǚ','ผู้หญิง'],
+['er','เออร์','สระเดี่ยว','儿','二','èr','สอง'],
+['ai','อาย','ตระกูล a/o/e','哀','买','mǎi','ซื้อ'],
+['ei','เอย','ตระกูล a/o/e','诶','美','měi','สวย'],
+['ao','เอา','ตระกูล a/o/e','熬','好','hǎo','ดี'],
+['ou','โอว','ตระกูล a/o/e','欧','狗','gǒu','หมา'],
+['an','อัน','ตระกูล a/o/e','安','看','kàn','ดู'],
+['en','เอิน','ตระกูล a/o/e','恩','门','mén','ประตู'],
+['ang','อัง','ตระกูล a/o/e','肮','忙','máng','ยุ่ง'],
+['eng','เอิง','ตระกูล a/o/e','鞥','灯','dēng','โคมไฟ'],
+['ong','อง','ตระกูล a/o/e · ไม่มีเสียงเดี่ยวในภาษาจีน ต้องฟังจากคำ','','中','zhōng','กลาง'],
+['ia','เอีย','ตระกูล i- · คู่หลอกกับ ie','呀','家','jiā','บ้าน'],
+['ie','อีเย','ตระกูล i- · คู่หลอกกับ ia','耶','谢','xiè','ขอบคุณ'],
+['iao','เอียว','ตระกูล i-','腰','小','xiǎo','เล็ก'],
+['iou','อิว','รูปเต็ม iou · ยืนเดี่ยวอ่าน you (โยว) · มีพยัญชนะนำย่อเป็น iu เช่น liù','忧','六','liù','หก'],
+['ian','เอียน','ตระกูล i-','烟','天','tiān','ฟ้า'],
+['in','อิน','ตระกูล i-','因','心','xīn','ใจ'],
+['iang','เอียง','ตระกูล i-','央','想','xiǎng','คิด'],
+['ing','อิง','ตระกูล i-','英','听','tīng','ฟัง'],
+['iong','อี-ยง','ตระกูล i-','雍','熊','xióng','หมี'],
+['ua','วา','ตระกูล u- · คู่หลอกกับ uo','蛙','花','huā','ดอกไม้'],
+['uo','อัว','ตระกูล u- · คู่หลอกกับ ua','窝','多','duō','มาก'],
+['uai','ไอว','ตระกูล u- · คู่หลอกกับ iou','歪','快','kuài','เร็ว'],
+['ui','อุย','รูปเต็ม uei · ยืนเดี่ยวอ่าน wei (เวย) · มีพยัญชนะนำย่อเป็น ui เช่น guī','威','水','shuǐ','น้ำ'],
+['uan','อวน','ตระกูล u- · คู่หลอกกับ üan','弯','换','huàn','เปลี่ยน'],
+['un','อุน','รูปเต็ม uen · ยืนเดี่ยวอ่าน wen (เวิน) · มีพยัญชนะนำย่อเป็น un เช่น chūn','温','春','chūn','ฤดูใบไม้ผลิ'],
+['uang','อวง','ตระกูล u-','汪','黄','huáng','เหลือง'],
+['ueng','เวิง','ตระกูล u-','翁','翁','wēng','ผู้เฒ่า'],
+['üe','เยว','ตระกูล ü-','约','学','xué','เรียน'],
+['üan','เอวียน','ตระกูล ü- · คู่หลอกกับ uan','冤','远','yuǎn','ไกล'],
+['ün','อวิน','ตระกูล ü- · คู่หลอกกับ un','晕','云','yún','เมฆ']];
+
+const WS1=[['ชือ','c'],['เลอ','l'],['ปัว','b'],['เฮอ','h'],['ซือ','s'],['จือ','z'],['อู','w'],['อี','y'],
+['มัว','m'],['เนอ','n'],['เตอ','d'],['เคอ','k'],['ซี','x'],['ซรือ','sh'],['ฟัว','f'],['ยรือ','r'],
+['เธอ','t'],['พัว','p'],['จี','j'],['เกอ','g'],['ชี','q'],['จรือ','zh'],['ชรือ','ch']];
+const WS2=[['อี','i'],['วา','ua'],['เอา','ao'],['เออร์','er'],['อุน','un'],['อิว','iou'],['อู','u'],['อวง','uang'],['อิน','in'],
+['อวี','ü'],['เอียว','iao'],['เอย','ei'],['อี-ยง','iong'],['เวิง','ueng'],['อีเย','ie'],['ไอว','uai'],['อาย','ai'],['เอียน','ian'],
+['อัน','an'],['เยว','üe'],['เอิน','en'],['เอวียน','üan'],['อา','a'],['อิง','ing'],['อุย','ui'],['เอีย','ia'],['ออ','o'],
+['เออ','e'],['อง','ong'],['อวิน','ün'],['เอิง','eng'],['อัว','uo'],['โอว','ou'],['อวน','uan'],['เอียง','iang'],['อัง','ang']];
+
+const $=s=>document.querySelector(s);
+const norm=s=>String(s).trim().toLowerCase().replace(/v/g,'ü').replace(/u:/g,'ü');
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const byKey=k=>INI.concat(FIN).find(x=>x[0]===k);
+
+/* ---------------- เครื่องยนต์เสียง ---------------- */
+let voices=[], voice=null, rate=0.8, unlocked=false;
+const synth=window.speechSynthesis;
+
+function loadVoices(){
+  if(!synth) return;
+  voices=synth.getVoices().filter(v=>/^zh/i.test(v.lang));
+  const sel=$('#vsel');
+  if(!voices.length){
+    sel.innerHTML='<option>ไม่พบเสียงภาษาจีน</option>';
+    $('#voicewarn').style.display='block';
+    $('#voicewarn').innerHTML='เครื่องนี้ยังไม่มีเสียงอ่านภาษาจีน — เปิดใน <b>Safari บน iPhone/iPad/Mac</b> หรือ <b>Chrome</b> จะได้เสียงเลย '+
+      'ถ้าใช้ Windows ให้ไปที่ Settings → Time&nbsp;&&nbsp;language → Speech แล้วเพิ่มเสียง 中文 (Chinese) หนึ่งครั้ง จากนั้นเปิดไฟล์นี้ใหม่';
+    return;
+  }
+  $('#voicewarn').style.display='none';
+  sel.innerHTML=voices.map((v,i)=>'<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join('');
+  const pref=voices.findIndex(v=>/zh[-_]?CN|Mandarin|Tingting|Ting-Ting|Yaoyao|Huihui/i.test(v.lang+v.name));
+  sel.value=String(pref>=0?pref:0);
+  voice=voices[+sel.value];
+}
+if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+$('#vsel').onchange=e=>{ voice=voices[+e.target.value]||null; };
+$('#vrate').oninput=e=>{ rate=+e.target.value; $('#vrateval').textContent=rate.toFixed(2); };
+
+function say(text){
+  if(!synth||!text) return;
+  unlocked=true;
+  try{ synth.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN'; u.rate=rate; u.pitch=1;
+  if(voice) u.voice=voice;
+  synth.speak(u);
+}
+/* พูดตัวเดี่ยว ถ้าไม่มีตัวเดี่ยว (eng/ong) ใช้คำตัวอย่างแทน */
+const sayItem=it=>say(it[3]||it[4]);
+const sayEx=it=>say(it[4]);
+
+/* ---------------- สร้างปุ่มฟังในแท็บกฎลัด ---------------- */
+function spk(it,label){
+  const b=document.createElement('button');
+  b.className='spk'; b.type='button';
+  b.innerHTML=(label||it[1])+' → <b>'+it[0]+'</b> <span class="ic">🔊</span>';
+  b.onclick=()=>{ sayItem(it); flash(b); };
+  return b;
+}
+function flash(el){ el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),450); }
+function fill(sel,keys){
+  const box=$(sel);
+  keys.forEach(k=>box.appendChild(spk(byKey(k))));
+}
+fill('#g-lip',['b','p','m','f']);
+fill('#g-eo',['d','t','n','l','g','k','h']);
+fill('#g-rest',['r','y','w']);
+
+document.querySelectorAll('table.grid td[data-k]').forEach(td=>{
+  const it=byKey(td.dataset.k);
+  const b=document.createElement('button');
+  b.type='button';
+  b.innerHTML='<span class="py">'+it[0]+'</span><small>'+it[1]+' 🔊</small>';
+  b.onclick=()=>{ sayItem(it); flash(b); };
+  td.appendChild(b);
+});
+
+const FAMS=[
+ ['เดี่ยว',['a','o','e','i','u','ü','er']],
+ ['a/o/e<br>ผสม',['ai','ei','ao','ou','an','en','ang','eng','ong']],
+ ['i-',['ia','ie','iao','iou','ian','in','iang','ing','iong']],
+ ['u-',['ua','uo','uai','ui','uan','un','uang','ueng']],
+ ['ü-',['üe','üan','ün']]
+];
+$('#fam').innerHTML=FAMS.map(f=>'<div class="famrow"><div class="tag">'+f[0]+'</div><div class="items" data-f="'+f[1].join(',')+'"></div></div>').join('');
+document.querySelectorAll('.famrow .items').forEach(box=>{
+  box.dataset.f.split(',').forEach(k=>{
+    const it=byKey(k);
+    const b=document.createElement('button');
+    b.className='spk'; b.type='button';
+    b.innerHTML='<b>'+it[0]+'</b> '+it[1];
+    b.onclick=()=>{ sayItem(it); flash(b); };
+    box.appendChild(b);
+  });
+});
+
+/* ---- ตารางตรวจเสียง 59 ตัว ---- */
+const ODD=['iou','ui','un','ong'];
+function buildAudit(sel,arr){
+  const box=$(sel); box.innerHTML='';
+  arr.forEach(it=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='arow'+(ODD.includes(it[0])?' warn':'');
+    b.innerHTML='<span class="p">'+it[0]+'</span><span class="t">'+it[1]+'</span><span class="s">🔊</span>';
+    b.onclick=()=>{
+      sayItem(it);
+      $('#auditNote').innerHTML = ODD.includes(it[0])
+        ? '<b>'+it[0]+'</b> — '+it[2]
+        : '<b>'+it[0]+'</b> ('+it[1]+') · ตัวอย่างคำ '+it[4]+' '+it[5]+' '+it[6];
+    };
+    box.appendChild(b);
+  });
+}
+buildAudit('#auditI',INI);
+buildAudit('#auditF',FIN);
+
+const TRAPS=[['ia','ie'],['un','ün'],['iou','uai'],['uan','üan'],['ua','uo']];
+TRAPS.forEach(pr=>{
+  const A=byKey(pr[0]), B=byKey(pr[1]);
+  const b=document.createElement('button');
+  b.className='spk'; b.type='button';
+  b.innerHTML=A[1]+'=<b>'+A[0]+'</b> ≠ '+B[1]+'=<b>'+B[0]+'</b> <span class="ic">🔊🔊</span>';
+  b.onclick=()=>{
+    flash(b); sayItem(A);
+    setTimeout(()=>sayItem(B), Math.round(1300/rate));
+  };
+  $('#traps').appendChild(b);
+});
+
+/* ---------------- การ์ดฝึก ---------------- */
+let setKey='ini', mode='mc', deck=[], cur=null, streak=0, best=0, duel=null, locked=false;
+const pool=()=> setKey==='ini'?INI : setKey==='fin'?FIN : INI.concat(FIN);
+
+function newDeck(limit){
+  deck=shuffle(pool().slice());
+  if(limit) deck=deck.slice(0,limit);
+  streak=0; $('#done-box').innerHTML=''; next();
+}
+
+function next(){
+  locked=false; $('#fb').innerHTML=''; $('#seal').className='seal';
+  $('#m-streak').textContent='ถูกติดกัน '+streak;
+  $('#m-left').textContent='เหลือ '+deck.length+' ใบ';
+  $('#chip-set').textContent = duel ? ('ดวล '+(duel.total-deck.length+1)+'/'+duel.total)
+    : (setKey==='ini'?'พยัญชนะ':setKey==='fin'?'สระ':'รวม')+' · เหลือ '+deck.length;
+  if(!deck.length){ finish(); return; }
+  cur=deck.shift();
+  $('#ans').className='ans blank'; $('#ans').textContent='?';
+
+  if(mode==='listen'){
+    $('#cuewrap').innerHTML='<button class="earbtn" id="ear" type="button" aria-label="ฟังเสียงอีกครั้ง">🔊</button>'+
+      '<div class="cue"><small>ฟังแล้วเลือกพินอินที่ตรงกัน — กดวงกลมเพื่อฟังซ้ำ</small></div>';
+    $('#ear').onclick=()=>{ sayItem(cur); $('#ear').classList.remove('ring'); void $('#ear').offsetWidth; $('#ear').classList.add('ring'); };
+    if($('#vauto').checked && unlocked) setTimeout(()=>$('#ear').click(),250);
+    renderMC();
+  }else if(mode==='rev'){
+    $('#cuewrap').innerHTML='<div class="cue"><span class="py">'+cur[0]+'</span><small>ตัวนี้อ่านว่าอะไร</small></div>';
+    renderMC();
+  }else{
+    $('#cuewrap').innerHTML='<div class="cue">('+cur[1]+')<small>อ่านว่าอย่างนี้ — พินอินคือตัวไหน</small></div>';
+    if($('#vauto').checked && unlocked && mode==='mc') setTimeout(()=>sayItem(cur),200);
+    mode==='type' ? renderType() : renderMC();
+  }
+}
+
+function renderMC(){
+  $('#uhelp').textContent = mode==='rev' ? 'เลือกคำอ่านไทยที่ตรงกับตัวอักษรนี้' : '';
+  const rev = mode==='rev';
+  const others=shuffle(pool().filter(x=> rev ? x[1]!==cur[1] : x[0]!==cur[0])).slice(0,3);
+  const opts=shuffle(others.concat([cur]));
+  const cls=setKey==='fin'?'pill':'cloud';
+  $('#answer-area').innerHTML='<div class="choices '+cls+'" id="ch">'+
+    opts.map(o=> rev
+      ? '<button style="font-family:\'Noto Sans Thai Looped\',sans-serif;font-size:1.05rem" data-v="'+o[1]+'">'+o[1]+'</button>'
+      : '<button class="py" data-v="'+o[0]+'">'+o[0]+'</button>').join('')+'</div>';
+  $('#ch').querySelectorAll('button').forEach(b=>{ b.onclick=()=>judge(b.dataset.v,b); });
+}
+
+function renderType(){
+  $('#uhelp').textContent='พิมพ์ v แทน ü ได้ · กด Enter เพื่อตรวจ';
+  $('#answer-area').innerHTML='<div class="typebox"><input id="ti" class="py" autocomplete="off" '+
+    'autocapitalize="off" spellcheck="false" placeholder="พิมพ์…"><button class="gobtn" id="tgo" type="button">ตรวจ</button></div>';
+  const inp=$('#ti'); inp.focus();
+  const fire=()=>{ if(!locked) judge(norm(inp.value),null); };
+  $('#tgo').onclick=fire;
+  inp.onkeydown=e=>{ if(e.key==='Enter'){ locked?next():fire(); } };
+}
+
+function judge(val,btn){
+  if(locked) return; locked=true;
+  const key = mode==='rev' ? cur[1] : cur[0];
+  const ok = val===key;
+  const a=$('#ans');
+  a.className='ans'+(ok?'':' bad');
+  a.textContent = ok?key:(val||'—');
+  if(mode==='rev') a.style.fontFamily="'Noto Sans Thai Looped',sans-serif";
+  else a.style.fontFamily='';
+
+  if(mode!=='type'){
+    $('#ch').querySelectorAll('button').forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.v===key) b.classList.add('right');
+      else if(b===btn) b.classList.add('wrong');
+    });
+  }else{ const i=$('#ti'); if(i) i.disabled=true; }
+
+  if(ok){
+    streak++; if(streak>best){ best=streak; $('#chip-best').textContent='ดีที่สุด '+best; }
+    $('#seal').className='seal hit';
+    if(duel) duel.score++;
+    $('#fb').innerHTML='<span class="ok">ถูกต้อง — ('+cur[1]+') = '+cur[0]+'</span><span class="why">'+cur[2]+'</span>';
+  }else{
+    streak=0;
+    $('#fb').innerHTML='<span class="no">('+cur[1]+') = '+cur[0]+'</span><span class="why">'+cur[2]+' — ใบนี้จะกลับมาถามอีกครั้ง</span>';
+    if(!duel) deck.splice(Math.min(3,deck.length),0,cur);
+  }
+  $('#m-streak').textContent='ถูกติดกัน '+streak;
+
+  /* ฟังเสียงเฉลย + คำตัวอย่างจริง */
+  const it=cur;
+  $('#fb').insertAdjacentHTML('beforeend',
+    '<div><button class="exword" id="exb" type="button">🔊 <span class="hz">'+it[4]+'</span>'+
+    '<span class="pn">'+it[5]+'</span><span>'+it[6]+'</span></button></div>'+
+    '<div style="margin-top:10px"><button id="nextbtn" class="gobtn" type="button">ใบต่อไป</button></div>');
+  $('#exb').onclick=()=>sayEx(it);
+  const nb=$('#nextbtn'); nb.onclick=next; nb.focus();
+  if($('#vauto').checked && unlocked && mode!=='listen') setTimeout(()=>sayItem(it),120);
+  if($('#vauto').checked && unlocked && mode==='listen' && !ok) setTimeout(()=>sayItem(it),120);
+}
+
+function finish(){
+  $('#answer-area').innerHTML=''; $('#uhelp').textContent='';
+  $('#cuewrap').innerHTML='<div class="cue">ครบแล้ว<small>หมดกอง = ตอบถูกทุกใบอย่างน้อยหนึ่งครั้ง</small></div>';
+  $('#ans').className='ans blank'; $('#ans').textContent='✓';
+  const msg = duel ? 'ดวล 10 ข้อ ได้ '+duel.score+'/'+duel.total+' — ให้พ่อลองทำบ้าง'
+    : 'ผ่านครบทั้งกองแล้ว ลองสลับไปโหมด “ฟังเสียง” หรือ “พิมพ์เอง” จะยากขึ้นอีกขั้น';
+  $('#done-box').innerHTML='<div class="done"><h3>จบกอง</h3><p>'+msg+'</p><button id="again" type="button">เริ่มกองใหม่</button></div>';
+  $('#again').onclick=()=>{ duel=null; newDeck(); };
+}
+
+$('#seg-set').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-set').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); setKey=b.dataset.v; duel=null; newDeck(); };
+});
+$('#seg-mode').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-mode').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); mode=b.dataset.v; duel=null; newDeck(); };
+});
+$('#btn-duel').onclick=()=>{ duel={score:0,total:10}; newDeck(10); };
+
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); $('#pane-'+b.dataset.p).classList.add('on');
+    if(synth) try{ synth.cancel(); }catch(e){}
+  };
+});
+
+/* ---------------- ใบงานจริง (ลากวาง) ---------------- */
+function buildSheetDnD(bankSel, colSel, data, arr){
+  const bk=$(bankSel), box=$(colSel);
+  bk.innerHTML=''; box.innerHTML='';
+  bk.classList.add('zone'); bindZone(bk);
+
+  shuffle(arr.slice()).forEach(it=>{
+    const t=document.createElement('span');
+    t.className='stile'; t.textContent=it[0]; t.dataset.k=it[0];
+    bindTile(t, sheetDrop);
+    bk.appendChild(t);
+  });
+
+  data.forEach(d=>{
+    const it=byKey(d[1]);
+    const row=document.createElement('div');
+    row.className='srow';
+    row.innerHTML='<div class="slot" data-a="'+d[1]+'"></div><span class="th">('+d[0]+')</span>'+
+                  '<button class="mini" type="button" title="ฟังเสียง">🔊</button>';
+    bindZone(row.querySelector('.slot'));
+    row.querySelector('.mini').onclick=()=>sayItem(it);
+    box.appendChild(row);
+  });
+}
+function bankOf(el){ return el.closest('.sheet').querySelector('.bank'); }
+function sheetDrop(tile, zone){
+  const from=tile.parentElement;
+  if(zone.classList.contains('bank')){
+    if(from && from.classList.contains('slot')) delete from.dataset.filled;
+    tile.classList.remove('inslot','okmark','badmark');
+    zone.appendChild(tile); return;
+  }
+  if(!zone.classList.contains('slot')) return;
+  if(zone.dataset.filled){ nope(tile); nope(zone); return; }
+  if(from && from.classList.contains('slot')){ delete from.dataset.filled; from.classList.remove('okzone','badzone'); }
+  zone.dataset.filled='1';
+  tile.classList.remove('okmark','badmark');
+  tile.classList.add('inslot');
+  zone.appendChild(tile);
+
+  if(tile.dataset.k===zone.dataset.a){
+    tile.classList.add('okmark'); zone.classList.add('okzone');
+    sayItem(byKey(tile.dataset.k));
+  }else{
+    /* วางผิด: แดงทันที สั่น แล้วเด้งกลับถาดให้ลองใหม่ */
+    tile.classList.add('badmark'); zone.classList.add('badzone');
+    nope(tile); nope(zone);
+    setTimeout(()=>{
+      if(tile.parentElement===zone){
+        delete zone.dataset.filled; zone.classList.remove('badzone');
+        tile.className='stile';
+        bankOf(zone).appendChild(tile);
+      }
+    },800);
+  }
+}
+function checkSheet(){
+  let ok=0, filled=0, total=0; const bad=[];
+  document.querySelectorAll('#pane-sheet .slot').forEach(s=>{
+    total++;
+    const t=s.querySelector('.stile');
+    if(!t) return;
+    filled++;
+    t.classList.remove('okmark','badmark');
+    if(t.dataset.k===s.dataset.a){ ok++; t.classList.add('okmark'); }
+    else { t.classList.add('badmark'); nope(t); bad.push([t,s]); }
+  });
+  $('#sheet-score').textContent='ถูก '+ok+' / '+total+' ช่อง'+(filled<total?' (ยังว่าง '+(total-filled)+')':'');
+  if(bad.length) setTimeout(()=>{
+    bad.forEach(([t,s])=>{ delete s.dataset.filled; t.classList.remove('inslot','badmark'); bankOf(s).appendChild(t); });
+  },1500);
+}
+function revealSheet(){
+  document.querySelectorAll('#pane-sheet .sheet').forEach(sheet=>{
+    const bk=sheet.querySelector('.bank');
+    sheet.querySelectorAll('.slot').forEach(s=>{
+      const want=s.dataset.a;
+      let t=sheet.querySelector('.stile[data-k="'+CSS.escape(want)+'"]');
+      if(!t) return;
+      const from=t.parentElement;
+      if(from && from.classList.contains('slot') && from!==s) delete from.dataset.filled;
+      s.dataset.filled='1'; s.classList.remove('badzone'); s.classList.add('okzone');
+      t.className='stile inslot okmark';
+      s.appendChild(t);
+    });
+    void bk;
+  });
+  $('#sheet-score').textContent='แสดงเฉลยทั้งหมดแล้ว';
+}
+function clearSheet(){
+  document.querySelectorAll('#pane-sheet .sheet').forEach(sheet=>{
+    const bk=sheet.querySelector('.bank');
+    sheet.querySelectorAll('.slot').forEach(s=>{
+      const t=s.querySelector('.stile');
+      if(t){ t.className='stile'; bk.appendChild(t); }
+      delete s.dataset.filled; s.classList.remove('okzone','badzone');
+    });
+    shuffle([...bk.querySelectorAll('.stile')]).forEach(t=>bk.appendChild(t));
+  });
+  $('#sheet-score').textContent='';
+}
+function shuffleBanks(){
+  document.querySelectorAll('#pane-sheet .bank').forEach(bk=>{
+    shuffle([...bk.querySelectorAll('.stile')]).forEach(t=>bk.appendChild(t));
+  });
+}
+buildSheetDnD('#bank-ini','#ws1',WS1,INI);
+buildSheetDnD('#bank-fin','#ws2',WS2,FIN);
+
+newDeck();
+
+/* ================= เครื่องยนต์ลาก/แตะวาง ================= */
+let dragEl=null, ghost=null, sx=0, sy=0, moved=false, selEl=null, curHandler=null, lastHot=null;
+let rafOn=false, lx=0, ly=0;
+function moveGhost(){
+  rafOn=false;
+  if(!ghost) return;
+  ghost.style.transform='translate3d('+lx+'px,'+ly+'px,0) translate(-50%,-50%) rotate(-4deg)';
+  hot(zoneUnder(lx,ly));
+}
+
+function zoneUnder(x,y){ const e=document.elementFromPoint(x,y); return e?e.closest('.zone'):null; }
+function hot(z){ if(lastHot&&lastHot!==z) lastHot.classList.remove('hot'); if(z) z.classList.add('hot'); lastHot=z; }
+function killGhost(){ if(ghost){ ghost.remove(); ghost=null; } hot(null); }
+function clearSel(){ if(selEl) selEl.classList.remove('sel'); selEl=null; }
+
+function bindTile(el, handler){
+  el.classList.add('tile');
+  el.setAttribute('draggable','false');
+  el.addEventListener('dragstart', e=>e.preventDefault());
+  el.addEventListener('pointerdown', e=>{
+    if(el.classList.contains('locked')) return;
+    e.preventDefault();                       /* กันไม่ให้เบราว์เซอร์เริ่มเลือกข้อความ */
+    dragEl=el; curHandler=handler; sx=e.clientX; sy=e.clientY; moved=false;
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  el.addEventListener('pointermove', e=>{
+    if(dragEl!==el) return;
+    lx=e.clientX; ly=e.clientY;
+    if(!moved && Math.hypot(lx-sx, ly-sy)>7){
+      moved=true; clearSel();
+      const sel=window.getSelection && window.getSelection();
+      if(sel && sel.removeAllRanges) sel.removeAllRanges();
+      ghost=el.cloneNode(true);
+      ghost.className=(el.classList.contains('stile')?'stile ghost':'tile ghost');
+      document.body.appendChild(ghost);
+      moveGhost();
+    }
+    /* วาดแค่เฟรมละครั้ง ไม่ใช่ทุก event — ลดอาการหน่วง */
+    if(moved && !rafOn){ rafOn=true; requestAnimationFrame(moveGhost); }
+  });
+  el.addEventListener('pointerup', e=>{
+    if(dragEl!==el) return;
+    if(moved){
+      const z=zoneUnder(e.clientX,e.clientY); killGhost();
+      if(z) handler(el,z);
+    }else{
+      if(selEl===el) clearSel();
+      else{ clearSel(); selEl=el; el.classList.add('sel'); curHandler=handler; }
+    }
+    dragEl=null; moved=false;
+  });
+  el.addEventListener('pointercancel', ()=>{ killGhost(); dragEl=null; moved=false; });
+  /* กันไม่ให้คลิกบนตัวอักษรทะลุไปหาโซนที่ครอบอยู่ (ถาด) จนยกเลิกการเลือกทันที */
+  el.addEventListener('click', e=>e.stopPropagation());
+}
+function bindZone(el){
+  el.classList.add('zone');
+  el.addEventListener('click', ()=>{
+    if(selEl && curHandler){ const s=selEl; clearSel(); curHandler(s, el); }
+  });
+}
+function nope(el){ el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),360); }
+
+/* ================= สถานะเกม ================= */
+let game='match', gset='ini', gErr=0, gT0=0, gLeft=0;
+
+function gInfo(txt){ $('#g-info').textContent=txt; }
+function gErrShow(){ $('#g-err').textContent = gErr? ('พลาด '+gErr+' ครั้ง') : ''; }
+function gStart(){ gErr=0; gT0=Date.now(); gErrShow(); }
+function gWin(msg){
+  const sec=Math.round((Date.now()-gT0)/1000);
+  $('#gamebox').insertAdjacentHTML('beforeend',
+    '<div class="gdone"><h3>สำเร็จ</h3><p>'+msg+' · ใช้เวลา '+sec+' วินาที · พลาด '+gErr+' ครั้ง</p>'+
+    '<button class="gobtn" style="margin-top:10px" onclick="renderGame()" type="button">เล่นอีกรอบ</button></div>');
+}
+
+/* ---------- เกม 1 : จับคู่พลิกการ์ด ---------- */
+function gameMatch(){
+  const src = gset==='fin'?FIN:INI;
+  const items = shuffle(src.slice()).slice(0,8);
+  const cards = shuffle(items.map(it=>({it,f:'th'})).concat(items.map(it=>({it,f:'py'}))));
+  gLeft=8;
+  gInfo('พลิกหาคู่ · คำอ่านไทย ↔ พินอิน · เหลือ 8 คู่');
+  $('#gamebox').innerHTML='<div class="gwrap"><div class="ghead">พลิกทีละ 2 ใบ ถ้าตรงกันการ์ดจะจางลงและอ่านออกเสียงให้</div>'+
+    '<div class="mgrid" id="mg"></div></div>';
+  const mg=$('#mg');
+  let open=[], busy=false;
+  cards.forEach((c,i)=>{
+    const d=document.createElement('div');
+    d.className='mcard'; d.textContent='拼';
+    d.onclick=()=>{
+      if(busy||d.classList.contains('open')||d.classList.contains('gone')) return;
+      d.classList.add('open');
+      d.innerHTML = c.f==='py' ? '<span class="py">'+c.it[0]+'</span>' : '<span class="thword">'+c.it[1]+'</span>';
+      open.push({d,c});
+      if(open.length===2){
+        busy=true;
+        const [a,b]=open;
+        if(a.c.it[0]===b.c.it[0] && a.c.f!==b.c.f){
+          sayItem(a.c.it);
+          setTimeout(()=>{
+            a.d.className='mcard gone'; b.d.className='mcard gone';
+            open=[]; busy=false; gLeft--;
+            gInfo('พลิกหาคู่ · เหลือ '+gLeft+' คู่');
+            if(!gLeft) gWin('จับคู่ครบ 8 คู่');
+          },520);
+        }else{
+          gErr++; gErrShow(); nope(a.d); nope(b.d);
+          setTimeout(()=>{
+            a.d.className='mcard'; a.d.textContent='拼';
+            b.d.className='mcard'; b.d.textContent='拼';
+            open=[]; busy=false;
+          },850);
+        }
+      }
+    };
+    mg.appendChild(d);
+  });
+}
+
+/* ---------- เกม 2 : ลากลงตาราง 3×3 ---------- */
+const G33=[['จ',['j','zh','z']],['ช',['q','ch','c']],['ซ',['x','sh','s']]];
+function gameGrid(){
+  const keys=shuffle(['j','q','x','zh','ch','sh','z','c','s']);
+  gLeft=9;
+  gInfo('ลากตัวอักษรลงช่องให้ถูกแถวถูกหลัก · เหลือ 9 ตัว');
+  let html='<div class="gwrap"><div class="ghead">แถวคือตัวไทยตัวหน้า · หลักคือเสียงท้าย — ลากหรือแตะเลือกแล้วแตะช่อง</div>'+
+    '<div class="tray" id="tray"></div><table class="dgrid"><tr><th></th><th>ลงท้าย -ี</th><th>ลงท้าย -รือ</th><th>ลงท้าย -ือ</th></tr>';
+  G33.forEach((row,ri)=>{
+    html+='<tr><th>'+row[0]+'</th>';
+    row[1].forEach((k,ci)=>{ html+='<td class="zone" data-a="'+k+'"><span class="hintv">'+byKey(k)[1]+'</span></td>'; });
+    html+='</tr>';
+  });
+  html+='</table></div>';
+  $('#gamebox').innerHTML=html;
+  const tray=$('#tray');
+  keys.forEach(k=>{
+    const t=document.createElement('div'); t.className='py'; t.textContent=k; t.dataset.k=k;
+    bindTile(t, place); tray.appendChild(t);
+  });
+  document.querySelectorAll('#gamebox td.zone').forEach(bindZone);
+  function place(tile, z){
+    if(z.dataset.filled) return;
+    if(tile.dataset.k===z.dataset.a){
+      z.dataset.filled='1'; z.classList.remove('zone','hot');
+      z.innerHTML='';
+      tile.classList.add('locked'); z.appendChild(tile);
+      sayItem(byKey(tile.dataset.k));
+      gLeft--; gInfo('ลากลงตาราง · เหลือ '+gLeft+' ตัว');
+      if(!gLeft) gWin('เติมตาราง 3×3 ครบ');
+    }else{ gErr++; gErrShow(); nope(tile); nope(z); }
+  }
+}
+
+/* ---------- เกม 3 : ลากจัดตระกูลสระ ---------- */
+const FAMDEF=[['สระเดี่ยว',['a','o','e','i','u','ü','er']],
+ ['ตระกูล a/o/e',['ai','ei','ao','ou','an','en','ang','eng','ong']],
+ ['ตระกูล i-',['ia','ie','iao','iou','ian','in','iang','ing','iong']],
+ ['ตระกูล u-',['ua','uo','uai','ui','uan','un','uang','ueng']],
+ ['ตระกูล ü-',['üe','üan','ün']]];
+function famOf(k){ return FAMDEF.findIndex(f=>f[1].includes(k)); }
+function gameBucket(full){
+  const all=FIN.map(x=>x[0]);
+  const keys=shuffle(all.slice()).slice(0, full?36:12);
+  gLeft=keys.length;
+  gInfo('ลากสระเข้ากล่องตระกูลให้ถูก · เหลือ '+gLeft+' ตัว');
+  $('#gamebox').innerHTML='<div class="gwrap"><div class="ghead">ฟังตัวขึ้นต้นก่อน: มีเสียง ว → u- · มีเสียง อี/เอีย → i- · อวี/เยว → ü-'+
+    ' &nbsp;|&nbsp; <button class="gobtn" style="padding:4px 12px;font-size:.78rem" id="fullbtn" type="button">'+
+    (full?'กลับไป 12 ตัว':'เอาให้ครบ 36 ตัว')+'</button></div>'+
+    '<div class="tray" id="tray"></div><div class="buckets" id="bks"></div></div>';
+  $('#fullbtn').onclick=()=>{ gStart(); gameBucket(!full); };
+  const bks=$('#bks');
+  FAMDEF.forEach((f,i)=>{
+    const d=document.createElement('div');
+    d.className='bucket'; d.dataset.i=i;
+    d.innerHTML='<h4>'+f[0]+'</h4><div class="in"></div>';
+    bindZone(d); bks.appendChild(d);
+  });
+  const tray=$('#tray');
+  keys.forEach(k=>{
+    const t=document.createElement('div'); t.className='py'; t.textContent=k; t.dataset.k=k;
+    bindTile(t, place); tray.appendChild(t);
+  });
+  function place(tile,z){
+    const b=z.closest('.bucket'); if(!b) return;
+    if(famOf(tile.dataset.k)===+b.dataset.i){
+      tile.classList.add('locked'); b.querySelector('.in').appendChild(tile);
+      sayItem(byKey(tile.dataset.k));
+      gLeft--; gInfo('ลากเข้ากล่อง · เหลือ '+gLeft+' ตัว');
+      if(!gLeft) gWin('จัดตระกูลครบ '+keys.length+' ตัว');
+    }else{ gErr++; gErrShow(); nope(tile); nope(b); }
+  }
+}
+
+/* ---------- เกม 4 : ลากเติมใบงาน ---------- */
+function gameFill(){
+  const src = gset==='fin'?WS2:WS1;
+  const rows = shuffle(src.slice()).slice(0,12);
+  gLeft=12;
+  gInfo('ลากพินอินไปวางหน้าคำอ่านไทยให้ถูก · เหลือ 12 ช่อง');
+  $('#gamebox').innerHTML='<div class="gwrap"><div class="ghead">เหมือนใบงานจริง แต่ลากวางแทนการเขียน — ถาดมีเท่าจำนวนช่องพอดี</div>'+
+    '<div class="tray" id="tray"></div><div class="dblanks" id="dbl"></div></div>';
+  const dbl=$('#dbl');
+  rows.forEach((r,i)=>{
+    const d=document.createElement('div');
+    d.className='dblank';
+    d.innerHTML='<div class="slot" data-a="'+r[1]+'"></div><span class="th">('+r[0]+')</span>';
+    bindZone(d.querySelector('.slot'));
+    dbl.appendChild(d);
+  });
+  const tray=$('#tray');
+  shuffle(rows.map(r=>r[1])).forEach(k=>{
+    const t=document.createElement('div'); t.className='py'; t.textContent=k; t.dataset.k=k;
+    bindTile(t, place); tray.appendChild(t);
+  });
+  function place(tile,z){
+    if(z.dataset.filled) return;
+    if(tile.dataset.k===z.dataset.a){
+      z.dataset.filled='1'; z.classList.remove('zone','hot');
+      tile.classList.add('locked'); z.appendChild(tile);
+      sayItem(byKey(tile.dataset.k));
+      gLeft--; gInfo('ลากเติมใบงาน · เหลือ '+gLeft+' ช่อง');
+      if(!gLeft) gWin('เติมครบ 12 ช่อง');
+    }else{ gErr++; gErrShow(); nope(tile); nope(z); }
+  }
+}
+
+function renderGame(){
+  clearSel(); killGhost(); gStart();
+  const gs=$('#seg-gset');
+  gs.style.display = (game==='grid'||game==='bucket') ? 'none' : 'flex';
+  if(game==='match') gameMatch();
+  else if(game==='grid') gameGrid();
+  else if(game==='bucket') gameBucket(false);
+  else gameFill();
+}
+$('#seg-game').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-game').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); game=b.dataset.v; renderGame(); };
+});
+$('#seg-gset').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-gset').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); gset=b.dataset.v; renderGame(); };
+});
+$('#g-again').onclick=renderGame;
+renderGame();
+
+/* ================= เทียบเสียงคล้าย ================= */
+const PAIRS=[
+/* --- พ่นลม vs ไม่พ่นลม --- */
+{c:'asp',a:'b',b:'p',ta:'ปัว',tb:'พัว',
+ tip:'<b>b</b> ไม่พ่นลม เหมือน <b>ป</b> · <b>p</b> พ่นลมแรง เหมือน <b>พ</b> — เอากระดาษบางไว้หน้าปาก ออกเสียง p กระดาษต้องขยับ ออกเสียง b ต้องไม่ขยับ',
+ wa:['爸','bà','พ่อ'],wb:['怕','pà','กลัว']},
+{c:'asp',a:'d',b:'t',ta:'เตอ',tb:'เธอ',
+ tip:'<b>d</b> = <b>ต</b> ไม่พ่นลม · <b>t</b> = <b>ท</b> พ่นลม ปลายลิ้นแตะเหงือกหลังฟันหน้าเหมือนกันทั้งคู่',
+ wa:['肚','dù','ท้อง'],wb:['兔','tù','กระต่าย']},
+{c:'asp',a:'g',b:'k',ta:'เกอ',tb:'เคอ',
+ tip:'<b>g</b> = <b>ก</b> · <b>k</b> = <b>ค</b> โคนลิ้นดันเพดานอ่อนตำแหน่งเดียวกัน ต่างกันแค่ลม',
+ wa:['该','gāi','ควร'],wb:['开','kāi','เปิด']},
+{c:'asp',a:'j',b:'q',ta:'จี',tb:'ชี',
+ tip:'ทั้งคู่ยิ้มกว้าง ลิ้นแบนติดเพดานแข็ง · <b>j</b> ไม่พ่นลม <b>q</b> พ่นลม — q ไม่ใช่ "ค" แต่เป็น "ช" ที่ยิ้ม',
+ wa:['鸡','jī','ไก่'],wb:['七','qī','เจ็ด']},
+{c:'asp',a:'zh',b:'ch',ta:'จรือ',tb:'ชรือ',
+ tip:'ม้วนปลายลิ้นขึ้นทั้งคู่ · <b>zh</b> ไม่พ่นลม <b>ch</b> พ่นลม',
+ wa:['只','zhī','เพียง'],wb:['吃','chī','กิน']},
+{c:'asp',a:'z',b:'c',ta:'จือ',tb:'ชือ',
+ tip:'ปลายลิ้นแตะหลังฟันหน้า · <b>z</b> ไม่พ่นลม <b>c</b> พ่นลมแรงมาก คล้ายเสียง "ทซ"',
+ wa:['早','zǎo','เช้า'],wb:['草','cǎo','หญ้า']},
+
+/* --- ม้วนลิ้น vs ไม่ม้วนลิ้น (ไทยไม่มีเสียงม้วนลิ้น) --- */
+{c:'retro',a:'zh',b:'z',ta:'จรือ',tb:'จือ',
+ tip:'<b>zh</b> ม้วนปลายลิ้นขึ้นแตะกลางเพดาน · <b>z</b> ปลายลิ้นอยู่ต่ำ แตะหลังฟันหน้า — ลองพูดสลับช้าๆ แล้วจับความรู้สึกที่ปลายลิ้น',
+ wa:['张','zhāng','กาง'],wb:['脏','zāng','สกปรก']},
+{c:'retro',a:'ch',b:'c',ta:'ชรือ',tb:'ชือ',
+ tip:'คู่พ่นลมของ zh/z — <b>ch</b> ลิ้นม้วน <b>c</b> ลิ้นราบ',
+ wa:['长','cháng','ยาว'],wb:['藏','cáng','ซ่อน']},
+{c:'retro',a:'sh',b:'s',ta:'ซรือ',tb:'ซือ',
+ tip:'<b>sh</b> เสียงลมออกใต้ลิ้นที่ม้วน ฟังทึบกว่า · <b>s</b> เสียงแหลมใส เหมือน <b>ส</b> ไทย',
+ wa:['山','shān','ภูเขา'],wb:['三','sān','สาม']},
+{c:'retro',a:'r',b:'l',ta:'ยรือ',tb:'เลอ',
+ tip:'<b>r</b> ม้วนลิ้นแต่ไม่แตะเพดาน ไม่ใช่ "ร" รัวของไทย ใกล้ "ย" ที่ม้วนลิ้น · <b>l</b> ปลายลิ้นแตะเหงือกแน่น',
+ wa:['热','rè','ร้อน'],wb:['乐','lè','สนุก']},
+
+/* --- ม้วนลิ้น/ปลายลิ้น vs เพดานปาก --- */
+{c:'pal',a:'zh',b:'j',ta:'จรือ',tb:'จี',
+ tip:'<b>zh</b> ลิ้นม้วน ปากห่อ · <b>j</b> ลิ้นแบน ปากยิ้มกว้าง — ดูปากในกระจกจะเห็นชัดกว่าฟัง',
+ wa:['知','zhī','รู้'],wb:['鸡','jī','ไก่']},
+{c:'pal',a:'ch',b:'q',ta:'ชรือ',tb:'ชี',
+ tip:'ทั้งคู่พ่นลม แต่ <b>ch</b> ปากห่อลิ้นม้วน · <b>q</b> ปากยิ้มลิ้นแบน',
+ wa:['出','chū','ออก'],wb:['去','qù','ไป']},
+{c:'pal',a:'sh',b:'x',ta:'ซรือ',tb:'ซี',
+ tip:'<b>sh</b> ทึบ ปากห่อ · <b>x</b> ใส ปากยิ้ม เหมือนเป่าลมผ่านฟันขณะยิ้ม',
+ wa:['书','shū','หนังสือ'],wb:['需','xū','ต้องการ']},
+{c:'pal',a:'z',b:'j',ta:'จือ',tb:'จี',
+ tip:'ตำแหน่งลิ้นใกล้กันมาก · <b>z</b> ปลายลิ้นหลังฟัน ปากเฉย · <b>j</b> ลิ้นแบนติดเพดาน ปากยิ้ม',
+ wa:['字','zì','อักษร'],wb:['记','jì','จำ']},
+{c:'pal',a:'c',b:'q',ta:'ชือ',tb:'ชี',
+ tip:'คู่พ่นลมของ z/j',
+ wa:['次','cì','ครั้ง'],wb:['气','qì','อากาศ']},
+{c:'pal',a:'s',b:'x',ta:'ซือ',tb:'ซี',
+ tip:'<b>s</b> ปากเฉย เสียงเหมือน ส · <b>x</b> ปากยิ้ม เสียงบางกว่าและสูงกว่า',
+ wa:['四','sì','สี่'],wb:['西','xī','ตะวันตก']},
+
+/* --- พยัญชนะอื่นที่มักสับสน --- */
+{c:'ini2',a:'n',b:'l',ta:'เนอ',tb:'เลอ',
+ tip:'<b>n</b> ลมออกทางจมูก บีบจมูกแล้วเสียงจะเปลี่ยน · <b>l</b> ลมออกข้างลิ้น บีบจมูกแล้วเสียงไม่เปลี่ยน',
+ wa:['那','nà','นั่น'],wb:['辣','là','เผ็ด']},
+{c:'ini2',a:'f',b:'h',ta:'ฟัว',tb:'เฮอ',
+ tip:'<b>f</b> ฟันบนแตะริมฝีปากล่าง · <b>h</b> ลมออกจากลำคอ ไม่ใช้ปากเลย',
+ wa:['饭','fàn','ข้าว'],wb:['汉','hàn','ชาวฮั่น']},
+{c:'ini2',a:'r',b:'y',ta:'ยรือ',tb:'อี',
+ tip:'<b>r</b> ปลายลิ้นม้วนขึ้น มีเสียงกึกก้องในปาก · <b>y</b> ลิ้นแบน เหมือน <b>ย</b> ไทยตรงๆ',
+ wa:['然','rán','เช่นนั้น'],wb:['言','yán','คำพูด']},
+
+/* --- -n vs -ng --- */
+{c:'nasal',a:'an',b:'ang',ta:'อัน',tb:'อัง',
+ tip:'<b>-n</b> ปลายลิ้นแตะเหงือก ปากเกือบปิด · <b>-ng</b> โคนลิ้นยกขึ้น ปากค้างเปิด ลิ้นไม่แตะอะไรเลย',
+ wa:['关','guān','ปิด'],wb:['光','guāng','แสง']},
+{c:'nasal',a:'en',b:'eng',ta:'เอิน',tb:'เอิง',
+ tip:'สังเกตตอนจบเสียง — ถ้าลิ้นแตะเหงือก = n ถ้าไม่แตะ = ng',
+ wa:['真','zhēn','จริง'],wb:['争','zhēng','แย่ง']},
+{c:'nasal',a:'in',b:'ing',ta:'อิน',tb:'อิง',
+ tip:'คู่นี้ไทยแยกได้ง่ายที่สุด เพราะไทยมีทั้ง -น และ -ง',
+ wa:['心','xīn','ใจ'],wb:['星','xīng','ดาว']},
+{c:'nasal',a:'ian',b:'iang',ta:'เอียน',tb:'เอียง',
+ tip:'ระวัง <b>ian</b> อ่านใกล้ "เอียน" ไม่ใช่ "อียาน"',
+ wa:['显','xiǎn','ปรากฏ'],wb:['想','xiǎng','คิด']},
+{c:'nasal',a:'uan',b:'uang',ta:'อวน',tb:'อวง',
+ tip:'ปากห่อขึ้นต้นทั้งคู่ ต่างกันแค่ตอนจบ',
+ wa:['完','wán','เสร็จ'],wb:['王','wáng','ราชา']},
+
+/* --- สระ ü ที่ไทยไม่มี --- */
+{c:'uu',a:'i',b:'ü',ta:'อี',tb:'อวี',
+ tip:'ออกเสียง <b>i</b> (อี) ค้างไว้ แล้ว<b>ห่อปากเป็นวงกลม</b> โดยไม่ขยับลิ้น จะได้ <b>ü</b> ทันที — ลิ้นเหมือนเดิม เปลี่ยนแค่ปาก',
+ wa:['鸡','jī','ไก่'],wb:['居','jū','อยู่']},
+{c:'uu',a:'u',b:'ü',ta:'อู',tb:'อวี',
+ tip:'<b>u</b> ลิ้นถอยหลัง · <b>ü</b> ลิ้นอยู่หน้า ปากห่อเท่ากันทั้งคู่ — ต่างกันที่ลิ้น ไม่ใช่ปาก',
+ wa:['路','lù','ถนน'],wb:['绿','lǜ','เขียว']},
+{c:'uu',a:'ie',b:'üe',ta:'อีเย',tb:'เยว',
+ tip:'<b>ie</b> ปากยิ้ม · <b>üe</b> ปากห่อตอนเริ่ม แล้วค่อยอ้า',
+ wa:['谢','xiè','ขอบคุณ'],wb:['学','xué','เรียน']},
+{c:'uu',a:'uan',b:'üan',ta:'อวน',tb:'เอวียน',
+ tip:'<b>uan</b> = "อวาน" ปากห่อกลม · <b>üan</b> = "เอวียน" มีเสียง อี แทรกกลาง',
+ wa:['转','zhuǎn','หมุน'],wb:['卷','juǎn','ม้วน']},
+{c:'uu',a:'un',b:'ün',ta:'อุน',tb:'อวิน',
+ tip:'คู่นี้<b>ไม่มีคำที่ต่างกันแค่สระ</b> เพราะ ün ตามหลังได้แค่ j q x y เท่านั้น — ใช้กฎแทนการฟัง',
+ wa:['论','lùn','ถกเถียง'],wb:['军','jūn','ทหาร']},
+
+/* --- สระคู่คล้ายอื่น --- */
+{c:'misc',a:'ia',b:'ie',ta:'เอีย',tb:'อีเย',
+ tip:'<b>ia</b> จบด้วยเสียง อา อ้าปากกว้าง · <b>ie</b> จบด้วยเสียง เอ ปากแบนกว่า',
+ wa:['家','jiā','บ้าน'],wb:['街','jiē','ถนน']},
+{c:'misc',a:'ua',b:'uo',ta:'วา',tb:'อัว',
+ tip:'<b>ua</b> = "วา" อ้าปาก · <b>uo</b> = "วอ" ปากห่อค้างไว้',
+ wa:['花','huā','ดอกไม้'],wb:['火','huǒ','ไฟ']},
+{c:'misc',a:'ai',b:'ei',ta:'อาย',tb:'เอย',
+ tip:'<b>ai</b> เริ่มจาก อา · <b>ei</b> เริ่มจาก เอ ปากแคบกว่า',
+ wa:['买','mǎi','ซื้อ'],wb:['美','měi','สวย']},
+{c:'misc',a:'ao',b:'ou',ta:'เอา',tb:'โอว',
+ tip:'<b>ao</b> เริ่มอ้าปากกว้างแล้วห่อ · <b>ou</b> ห่อปากตั้งแต่ต้น',
+ wa:['好','hǎo','ดี'],wb:['吼','hǒu','คำราม']},
+{c:'misc',a:'er',b:'e',ta:'เออร์',tb:'เออ',
+ tip:'<b>er</b> ม้วนปลายลิ้นขึ้นตอนท้าย · <b>e</b> ลิ้นอยู่นิ่ง',
+ wa:['二','èr','สอง'],wb:['饿','è','หิว']},
+{c:'misc',a:'iou',b:'uai',ta:'อิว',tb:'ไอว',
+ tip:'สองตัวนี้คำอ่านไทยคล้ายกันจนสลับกันบ่อย แต่เสียงจริงต่างกันมาก · <b>iou</b> เริ่มด้วย อี · <b>uai</b> เริ่มด้วย ว',
+ wa:['六','liù','หก'],wb:['快','kuài','เร็ว']}
+];
+
+const CATNAME={asp:'พ่นลม vs ไม่พ่นลม',retro:'ม้วนลิ้น vs ไม่ม้วนลิ้น',pal:'ม้วนลิ้น/ปลายลิ้น vs เพดานปาก',
+ ini2:'พยัญชนะอื่นที่มักสับสน',nasal:'ลงท้าย -n vs -ng',uu:'สระ ü ที่ภาษาไทยไม่มี',misc:'สระคู่คล้ายอื่น'};
+const CATHEAD={
+ asp:'<h4>ไทยมีเสียงนี้อยู่แล้ว</h4>ทุกคู่ในหมวดนี้ตรงกับ ป/พ ต/ท ก/ค ของไทยพอดี ฝึกเร็วที่สุด ใช้กระดาษบางทดสอบลมได้',
+ retro:'<h4>หมวดที่ยากที่สุดสำหรับคนไทย</h4>ภาษาไทยไม่มีเสียงม้วนลิ้น สมองจะได้ยินเป็นตัวเดียวกันตอนแรก ต้องฟังสลับซ้ำๆ หลายวัน ไม่ใช่หลายนาที',
+ pal:'<h4>ดูปากช่วยได้มากกว่าฟัง</h4>zh ch sh ปากห่อ · j q x ปากยิ้มกว้าง · z c s ปากเฉยๆ ถ้ายังแยกไม่ออกให้ส่องกระจกออกเสียงเอง',
+ ini2:'<h4>คู่ที่พลาดเพราะเผลอ</h4>ไม่ยากเชิงเสียง แต่ตอนอ่านเร็วมักหลุด',
+ nasal:'<h4>สังเกตปลายลิ้นตอนจบเสียง</h4>-n ลิ้นแตะเหงือก · -ng ลิ้นไม่แตะอะไร ปากค้างเปิด',
+ uu:'<h4>เคล็ดเดียวที่ต้องจำ</h4>ออกเสียง อี ค้างไว้ แล้วห่อปากโดยไม่ขยับลิ้น = ü ทำได้ครั้งเดียวจะได้ตลอดชีวิต',
+ misc:'<h4>สลับกันเพราะคำอ่านไทยคล้าย</h4>ไม่ใช่เพราะเสียงคล้าย — ฟังเสียงจริงแล้วจะเห็นว่าต่างกันชัด'};
+
+let cat='asp';
+
+function playAB(pr,useWord){
+  const A = useWord ? pr.wa[0] : (byKey(pr.a)[3]||pr.wa[0]);
+  const B = useWord ? pr.wb[0] : (byKey(pr.b)[3]||pr.wb[0]);
+  say(A);
+  const gap=Math.round(1250/rate);
+  setTimeout(()=>say(B),gap);
+  setTimeout(()=>say(A),gap*2);
+  setTimeout(()=>say(B),gap*3);
+}
+
+function renderCmp(){
+  $('#cathead').innerHTML='<div class="rulebox">'+CATHEAD[cat]+'</div>';
+  const list=PAIRS.filter(p=>p.c===cat);
+  const box=$('#cmplist'); box.innerHTML='';
+  list.forEach(pr=>{
+    const d=document.createElement('div');
+    d.className='cmpcard';
+    d.innerHTML=
+      '<div class="cmptop">'+
+        '<button class="side sa" type="button"><b>'+pr.a+'</b> '+pr.ta+' 🔊</button>'+
+        '<span class="vs">ต่างกันอย่างไร</span>'+
+        '<button class="side sb" type="button"><b>'+pr.b+'</b> '+pr.tb+' 🔊</button>'+
+        '<button class="abab ab1" type="button">สลับเสียงตัวอักษร</button>'+
+        '<button class="abab ab2" type="button">สลับคำจริง</button>'+
+      '</div>'+
+      '<div class="cmptip">'+pr.tip+'</div>'+
+      '<div class="words">'+
+        '<button class="wbtn wa" type="button">🔊 <span class="hz">'+pr.wa[0]+'</span><span class="pn">'+pr.wa[1]+'</span><span>'+pr.wa[2]+'</span></button>'+
+        '<button class="wbtn wb" type="button">🔊 <span class="hz">'+pr.wb[0]+'</span><span class="pn">'+pr.wb[1]+'</span><span>'+pr.wb[2]+'</span></button>'+
+      '</div>';
+    d.querySelector('.sa').onclick=e=>{ sayItem(byKey(pr.a)); flash(e.currentTarget); };
+    d.querySelector('.sb').onclick=e=>{ sayItem(byKey(pr.b)); flash(e.currentTarget); };
+    d.querySelector('.ab1').onclick=()=>playAB(pr,false);
+    d.querySelector('.ab2').onclick=()=>playAB(pr,true);
+    d.querySelector('.wa').onclick=()=>say(pr.wa[0]);
+    d.querySelector('.wb').onclick=()=>say(pr.wb[0]);
+    box.appendChild(d);
+  });
+  renderEarIdle();
+}
+
+/* ---- แบบฝึกแยกเสียง (ABX) ---- */
+let ear=null;
+function renderEarIdle(){
+  $('#ear-panel').innerHTML=
+    '<h3>แบบฝึกแยกเสียง · หมวด '+CATNAME[cat]+'</h3>'+
+    '<p>ฟังคำที่สุ่มมา 10 ครั้ง แล้วเลือกว่าเป็นตัวไหน — ไม่มีคำไทยใบ้ ต้องใช้หูจริง</p>'+
+    '<button class="startear" id="ear-start" type="button">เริ่ม 10 ข้อ</button>';
+  $('#ear-start').onclick=startEar;
+}
+function startEar(){
+  const list=PAIRS.filter(p=>p.c===cat);
+  ear={list:list,n:0,total:10,score:0,cur:null,side:0,locked:false};
+  earRound();
+}
+function earRound(){
+  if(ear.n>=ear.total){
+    const pct=Math.round(ear.score/ear.total*100);
+    $('#ear-panel').innerHTML='<h3>ได้ '+ear.score+' / '+ear.total+' ('+pct+'%)</h3>'+
+      '<p>'+(pct>=80?'หูแยกเสียงหมวดนี้ได้แล้ว ลองหมวดที่ยากขึ้น':'ยังต้องฟังสลับ A-B-A-B ในการ์ดด้านล่างอีกหน่อย แล้วกลับมาลองใหม่')+'</p>'+
+      '<button class="startear" id="ear-start" type="button">เล่นอีกรอบ</button>';
+    $('#ear-start').onclick=startEar;
+    ear=null; return;
+  }
+  ear.n++; ear.locked=false;
+  ear.cur=ear.list[(Math.random()*ear.list.length)|0];
+  ear.side=Math.random()<0.5?0:1;
+  const pr=ear.cur;
+  $('#ear-panel').innerHTML=
+    '<div class="bar"><span>ข้อ '+ear.n+' / '+ear.total+'</span><span>ถูก '+ear.score+'</span></div>'+
+    '<button class="play" id="eplay" type="button" aria-label="ฟังอีกครั้ง">🔊</button>'+
+    '<div class="picks" id="epicks">'+
+      '<button data-s="0" type="button">'+pr.a+'</button>'+
+      '<button data-s="1" type="button">'+pr.b+'</button>'+
+    '</div><div class="efb" id="efb"></div>';
+  const w = ear.side===0?pr.wa:pr.wb;
+  const snd = byKey(ear.side===0?pr.a:pr.b);
+  $('#eplay').onclick=()=>sayItem(snd);
+  if($('#vauto').checked && unlocked) setTimeout(()=>sayItem(snd),260);
+  $('#epicks').querySelectorAll('button').forEach(b=>{
+    b.onclick=()=>{
+      if(ear.locked) return; ear.locked=true;
+      const ok = (+b.dataset.s)===ear.side;
+      if(ok) ear.score++;
+      $('#epicks').querySelectorAll('button').forEach(x=>{
+        x.disabled=true;
+        if((+x.dataset.s)===ear.side) x.classList.add('right');
+        else if(x===b) x.classList.add('wrong');
+      });
+      const right = ear.side===0?pr.a:pr.b;
+      $('#efb').innerHTML=(ok?'ถูกต้อง':'ที่ได้ยินคือ '+right)+
+        '<span class="sm">ตัวอย่างคำ: '+w[0]+' '+w[1]+' — '+w[2]+'</span>'+
+        '<div style="margin-top:10px"><button class="startear" id="enext" type="button">ข้อต่อไป</button></div>';
+      $('#enext').onclick=earRound;
+      $('#enext').focus();
+    };
+  });
+}
+
+$('#seg-cat').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-cat').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); cat=b.dataset.v; ear=null; renderCmp(); };
+});
+renderCmp();
+
+/* ================= ฝึกออกเสียง ================= */
+const MOUTH={
+ b:'ปิดริมฝีปากแล้วปล่อย <b>ไม่ให้มีลม</b> — ทดสอบด้วยกระดาษบางหน้าปาก กระดาษต้องนิ่ง',
+ p:'ปิดริมฝีปากแล้วปล่อยพร้อม<b>ลมแรง</b> กระดาษหน้าปากต้องกระพือ',
+ m:'ปิดปาก ปล่อยลมออกทางจมูก บีบจมูกแล้วเสียงจะดับ',
+ f:'ฟันบนแตะริมฝีปากล่างเบาๆ แล้วเป่าลมผ่าน',
+ d:'ปลายลิ้นแตะเหงือกหลังฟันบน ปล่อยแบบไม่มีลม',
+ t:'ตำแหน่งเดียวกับ d แต่ปล่อยลมแรง',
+ n:'ปลายลิ้นแตะเหงือก ลมออกทางจมูก',
+ l:'ปลายลิ้นแตะเหงือกแน่น ลมออกข้างลิ้น ลากเสียงยาวได้',
+ g:'โคนลิ้นดันเพดานอ่อน ปล่อยแบบไม่มีลม',
+ k:'ตำแหน่งเดียวกับ g แต่พ่นลมแรง',
+ h:'ลมออกจากลำคอ ปากแทบไม่ขยับ ไม่ใช่ "ฮ" ที่ใช้ริมฝีปาก',
+ j:'<b>ยิ้มกว้าง</b> ลิ้นแบนดันเพดานแข็ง ไม่มีลม',
+ q:'ยิ้มกว้างเหมือน j แต่พ่นลมแรง ไม่ใช่เสียง "ค"',
+ x:'ยิ้มกว้าง เป่าลมบางๆ ผ่านลิ้นที่แบนติดเพดาน',
+ zh:'<b>ม้วนปลายลิ้นขึ้น</b>แตะกลางเพดาน ปากห่อเล็กน้อย ไม่มีลม',
+ ch:'ม้วนลิ้นเหมือน zh แล้วพ่นลมแรง',
+ sh:'ม้วนลิ้นค้างไว้ เป่าลมออกใต้ลิ้น เสียงจะทึบกว่า s',
+ r:'ม้วนลิ้นขึ้นแต่<b>ไม่แตะเพดาน</b> เสียงก้องในปาก ไม่ใช่ "ร" รัวของไทย',
+ z:'ปลายลิ้นแตะหลังฟันหน้าบน ปล่อยแบบไม่มีลม ปากเฉยๆ',
+ c:'ตำแหน่งเดียวกับ z แต่พ่นลมแรงมาก ใกล้เสียง "ทซ"',
+ s:'ปลายลิ้นใกล้หลังฟันหน้า เป่าลมบางๆ เหมือน <b>ส</b> ไทย',
+ y:'ลิ้นแบนอยู่หน้าปาก ยิ้ม เหมือน <b>ย</b> ไทย',
+ w:'ห่อปากกลม เหมือน <b>ว</b> ไทย',
+ 'ü':'ออกเสียง <b>อี</b> ค้างไว้ แล้ว<b>ห่อปาก</b>เป็นวงกลมโดยไม่ขยับลิ้นเลย',
+ i:'ยิ้มกว้าง ลิ้นยกสูงอยู่หน้าปาก',
+ u:'ห่อปากกลมเล็ก ลิ้นถอยไปหลัง',
+ e:'ปากครึ่งเปิด ลิ้นอยู่กลาง ไม่ห่อปาก ไม่ยิ้ม',
+ er:'ออกเสียง e แล้ว<b>ม้วนปลายลิ้นขึ้น</b>ตอนท้าย',
+ an:'จบด้วยปลายลิ้นแตะเหงือก ปากเกือบปิด',
+ ang:'จบด้วยโคนลิ้นยก <b>ปากค้างเปิด ลิ้นไม่แตะอะไร</b>',
+ en:'สั้น จบด้วยลิ้นแตะเหงือก',
+ eng:'จบด้วยโคนลิ้นยก ปากค้างเปิด',
+ ong:'ห่อปากตลอด จบด้วยโคนลิ้นยก',
+ 'üe':'เริ่มด้วยปากห่อแบบ ü แล้วอ้าออกเป็น e',
+ 'üan':'เริ่มห่อปาก มีเสียง อี แทรกกลาง จบด้วยลิ้นแตะเหงือก',
+ 'ün':'ปากห่อแบบ ü จบด้วยลิ้นแตะเหงือก — เจอเฉพาะหลัง j q x y',
+ iou:'เริ่มด้วย อี แล้วห่อปากปิดท้าย',
+ uai:'เริ่มด้วยปากห่อ แล้วอ้ากว้าง จบที่ อี'
+};
+function mouthTip(it){
+  if(MOUTH[it[0]]) return MOUTH[it[0]];
+  if(/^i/.test(it[0])) return 'เริ่มจากเสียง <b>อี</b> แล้วเลื่อนไปเสียงถัดไปให้ต่อเนื่อง ปากยิ้มตั้งแต่ต้น';
+  if(/^u/.test(it[0])) return 'เริ่มจาก<b>ห่อปาก</b>เป็นเสียง ว แล้วเลื่อนไปเสียงถัดไป';
+  if(/^ü/.test(it[0])) return 'ห่อปากแบบ <b>ü</b> ตั้งแต่ต้น ลิ้นอยู่หน้า';
+  return 'ออกเสียงตามคำอ่านไทย แล้วเทียบกับต้นแบบ';
+}
+
+let sayset='ini', sayIdx=0, sayList=[], recorder=null, recStream=null, myURL=null, myAudio=null;
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+
+function sayListBuild(){
+  if(sayset==='ini') sayList=INI.slice();
+  else if(sayset==='fin') sayList=FIN.slice();
+  else sayList=INI.concat(FIN).filter((v,i,a)=>a.findIndex(x=>x[4]===v[4])===i);
+  sayIdx=0;
+}
+function sayNote(){
+  const parts=[];
+  parts.push(navigator.mediaDevices?'ปุ่ม 🎙 จะขอใช้ไมโครโฟนครั้งแรกครั้งเดียว เสียงที่อัดอยู่ในเครื่องเท่านั้น ไม่ถูกส่งไปไหน':'เครื่องนี้อัดเสียงไม่ได้ — ลองเปิดไฟล์ผ่าน https หรือเปิดจากเบราว์เซอร์อื่น');
+  parts.push(SR?'ปุ่ม 🤖 ให้เครื่องตรวจ ใช้ได้ (ต้องต่อเน็ตและใช้ Chrome/Safari)':'เครื่องนี้ไม่มีระบบฟังตรวจอัตโนมัติ ใช้วิธีอัดแล้วฟังเทียบแทน ซึ่งได้ผลดีกว่าเสียอีก');
+  $('#say-note').innerHTML=parts.join(' · ');
+}
+function renderSay(){
+  stopRec(true);
+  const it=sayList[sayIdx];
+  const isWord = sayset==='word';
+  const target = isWord
+    ? '<span class="hz">'+it[4]+'</span><span class="py">'+it[5]+'</span><span class="th">'+it[6]+'</span>'
+    : '<span class="py">'+it[0]+'</span><span class="th">('+it[1]+')</span>';
+  $('#saybox').innerHTML=
+    '<div class="saycard">'+
+      '<div class="saynav"><button id="sprev" type="button">◀ ก่อนหน้า</button>'+
+      '<span class="pos">'+(sayIdx+1)+' / '+sayList.length+'</span>'+
+      '<button id="snext" type="button">ถัดไป ▶</button></div>'+
+      '<div class="saytarget">'+target+'</div>'+
+      '<div class="saytip">'+(isWord?'อ่านคำนี้ให้ครบทั้งเสียงและวรรณยุกต์ แล้วอัดเทียบกับต้นแบบ':mouthTip(it))+'</div>'+
+      '<div class="saybtns">'+
+        '<button id="s-model" type="button">🔊 ฟังต้นแบบ</button>'+
+        '<button id="s-slow" type="button">🐢 ช้าลง</button>'+
+        '<button id="s-rec" class="mic" type="button">🎙 อัดเสียง</button>'+
+        '<button id="s-play" type="button" disabled>▶ ฟังเสียงเรา</button>'+
+        '<button id="s-cmp" type="button" disabled>⇄ เทียบ ต้นแบบ→เรา</button>'+
+        (SR?'<button id="s-asr" type="button">🤖 ให้เครื่องตรวจ</button>':'')+
+      '</div>'+
+      '<div class="sayfb" id="sayfb"></div>'+
+    '</div>';
+
+  const model = isWord ? it[4] : (it[3]||it[4]);
+  $('#sprev').onclick=()=>{ sayIdx=(sayIdx-1+sayList.length)%sayList.length; renderSay(); };
+  $('#snext').onclick=()=>{ sayIdx=(sayIdx+1)%sayList.length; renderSay(); };
+  $('#s-model').onclick=()=>say(model);
+  $('#s-slow').onclick=()=>{ const r=rate; rate=0.5; say(model); setTimeout(()=>rate=r,60); };
+  $('#s-rec').onclick=()=>recorder?stopRec():startRec();
+  $('#s-play').onclick=()=>{ if(myAudio){ myAudio.currentTime=0; myAudio.play(); } };
+  $('#s-cmp').onclick=()=>{
+    say(model);
+    const wait=Math.round(1500/rate);
+    setTimeout(()=>{ if(myAudio){ myAudio.currentTime=0; myAudio.play(); } },wait);
+  };
+  if(SR) $('#s-asr').onclick=()=>runASR(it,isWord);
+  if(myURL){ $('#s-play').disabled=false; $('#s-cmp').disabled=false; }
+  if($('#vauto').checked && unlocked) setTimeout(()=>say(model),220);
+}
+
+async function startRec(){
+  if(!navigator.mediaDevices) return;
+  try{
+    recStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(e){
+    $('#sayfb').innerHTML='<span class="bad">เปิดไมโครโฟนไม่ได้</span><span class="sm">กดอนุญาตไมโครโฟนในเบราว์เซอร์ก่อน</span>';
+    return;
+  }
+  const chunks=[];
+  recorder=new MediaRecorder(recStream);
+  recorder.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+  recorder.onstop=()=>{
+    if(recStream){ recStream.getTracks().forEach(t=>t.stop()); recStream=null; }
+    if(!chunks.length){ recorder=null; return; }
+    if(myURL) URL.revokeObjectURL(myURL);
+    myURL=URL.createObjectURL(new Blob(chunks,{type:recorder.mimeType||'audio/webm'}));
+    myAudio=new Audio(myURL);
+    recorder=null;
+    const pb=$('#s-play'), cb=$('#s-cmp'), rb=$('#s-rec');
+    if(pb) pb.disabled=false; if(cb) cb.disabled=false;
+    if(rb){ rb.classList.remove('recording'); rb.textContent='🎙 อัดใหม่'; }
+    $('#sayfb').innerHTML='<span class="good">อัดเสร็จแล้ว</span><span class="sm">กด ⇄ เทียบ ต้นแบบ→เรา แล้วฟังว่าต่างกันตรงไหน ฟังซ้ำ 3 รอบก่อนตัดสิน</span>';
+  };
+  recorder.start();
+  const rb=$('#s-rec'); rb.classList.add('recording'); rb.textContent='⏹ หยุดอัด';
+  $('#sayfb').innerHTML='<span class="bad">กำลังอัด…</span><span class="sm">พูดให้ชัด แล้วกดหยุด (หยุดเองใน 4 วินาที)</span>';
+  setTimeout(()=>{ if(recorder && recorder.state==='recording') stopRec(); },4000);
+}
+function stopRec(silent){
+  if(recorder && recorder.state==='recording'){ try{ recorder.stop(); }catch(e){} }
+  else if(recStream){ recStream.getTracks().forEach(t=>t.stop()); recStream=null; recorder=null; }
+  if(silent){ recorder=null; }
+}
+
+function runASR(it,isWord){
+  const want = isWord ? it[4] : it[4];
+  const rec=new SR();
+  rec.lang='zh-CN'; rec.interimResults=false; rec.maxAlternatives=3;
+  $('#sayfb').innerHTML='<span class="bad">กำลังฟัง…</span><span class="sm">พูดคำว่า '+want+' ('+it[5]+') ให้ชัด</span>';
+  rec.onresult=e=>{
+    const alts=[...e.results[0]].map(r=>r.transcript.replace(/[\s。，、！？]/g,''));
+    const hit=alts.some(t=>t.includes(want));
+    $('#sayfb').innerHTML = hit
+      ? '<span class="good">เครื่องได้ยินว่า '+want+' ถูกต้อง</span><span class="sm">อ่านออกเสียงชัดพอที่คนจีนจะเข้าใจแล้ว</span>'
+      : '<span class="bad">เครื่องได้ยินเป็น "'+alts[0]+'" ไม่ใช่ '+want+'</span><span class="sm">ลองฟังต้นแบบช้าๆ อีกครั้ง แล้วดูคำอธิบายปากด้านบน — บางครั้งเป็นวรรณยุกต์ไม่ใช่ตัวอักษร</span>';
+  };
+  rec.onerror=e=>{ $('#sayfb').innerHTML='<span class="bad">ฟังไม่สำเร็จ ('+e.error+')</span><span class="sm">ต้องต่ออินเทอร์เน็ตและอนุญาตไมโครโฟน</span>'; };
+  try{ rec.start(); }catch(e){}
+}
+
+$('#seg-sayset').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-sayset').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); sayset=b.dataset.v; sayListBuild(); renderSay(); };
+});
+$('#say-shuffle').onclick=()=>{ sayList=shuffle(sayList); sayIdx=0; renderSay(); };
+sayNote(); sayListBuild(); renderSay();
+
+/* ================= โหมดไร้คำไทย ================= */
+/* {hz, py(มีวรรณยุกต์), w(พินอินไม่มีวรรณยุกต์ ตามที่เขียนจริง), i(พยัญชนะต้น), f(สระ), m(ความหมาย), alt} */
+const SYL=[
+{hz:'爸',py:'bà',w:'ba',i:'b',f:'a',m:'พ่อ'},
+{hz:'怕',py:'pà',w:'pa',i:'p',f:'a',m:'กลัว'},
+{hz:'妈',py:'mā',w:'ma',i:'m',f:'a',m:'แม่'},
+{hz:'饭',py:'fàn',w:'fan',i:'f',f:'an',m:'ข้าว'},
+{hz:'大',py:'dà',w:'da',i:'d',f:'a',m:'ใหญ่'},
+{hz:'兔',py:'tù',w:'tu',i:'t',f:'u',m:'กระต่าย'},
+{hz:'门',py:'mén',w:'men',i:'m',f:'en',m:'ประตู'},
+{hz:'来',py:'lái',w:'lai',i:'l',f:'ai',m:'มา'},
+{hz:'哥',py:'gē',w:'ge',i:'g',f:'e',m:'พี่ชาย'},
+{hz:'看',py:'kàn',w:'kan',i:'k',f:'an',m:'ดู'},
+{hz:'好',py:'hǎo',w:'hao',i:'h',f:'ao',m:'ดี'},
+{hz:'家',py:'jiā',w:'jia',i:'j',f:'ia',m:'บ้าน'},
+{hz:'七',py:'qī',w:'qi',i:'q',f:'i',m:'เจ็ด'},
+{hz:'小',py:'xiǎo',w:'xiao',i:'x',f:'iao',m:'เล็ก'},
+{hz:'知',py:'zhī',w:'zhi',i:'zh',f:'i',m:'รู้'},
+{hz:'吃',py:'chī',w:'chi',i:'ch',f:'i',m:'กิน'},
+{hz:'书',py:'shū',w:'shu',i:'sh',f:'u',m:'หนังสือ'},
+{hz:'人',py:'rén',w:'ren',i:'r',f:'en',m:'คน'},
+{hz:'走',py:'zǒu',w:'zou',i:'z',f:'ou',m:'เดิน'},
+{hz:'菜',py:'cài',w:'cai',i:'c',f:'ai',m:'ผัก'},
+{hz:'三',py:'sān',w:'san',i:'s',f:'an',m:'สาม'},
+{hz:'山',py:'shān',w:'shan',i:'sh',f:'an',m:'ภูเขา'},
+{hz:'张',py:'zhāng',w:'zhang',i:'zh',f:'ang',m:'กาง'},
+{hz:'长',py:'cháng',w:'chang',i:'ch',f:'ang',m:'ยาว'},
+{hz:'心',py:'xīn',w:'xin',i:'x',f:'in',m:'ใจ'},
+{hz:'星',py:'xīng',w:'xing',i:'x',f:'ing',m:'ดาว'},
+{hz:'听',py:'tīng',w:'ting',i:'t',f:'ing',m:'ฟัง'},
+{hz:'天',py:'tiān',w:'tian',i:'t',f:'ian',m:'ฟ้า'},
+{hz:'想',py:'xiǎng',w:'xiang',i:'x',f:'iang',m:'คิด'},
+{hz:'熊',py:'xióng',w:'xiong',i:'x',f:'iong',m:'หมี'},
+{hz:'六',py:'liù',w:'liu',i:'l',f:'iou',m:'หก'},
+{hz:'谢',py:'xiè',w:'xie',i:'x',f:'ie',m:'ขอบคุณ'},
+{hz:'花',py:'huā',w:'hua',i:'h',f:'ua',m:'ดอกไม้'},
+{hz:'多',py:'duō',w:'duo',i:'d',f:'uo',m:'มาก'},
+{hz:'快',py:'kuài',w:'kuai',i:'k',f:'uai',m:'เร็ว'},
+{hz:'水',py:'shuǐ',w:'shui',i:'sh',f:'ui',m:'น้ำ'},
+{hz:'关',py:'guān',w:'guan',i:'g',f:'uan',m:'ปิด'},
+{hz:'春',py:'chūn',w:'chun',i:'ch',f:'un',m:'ฤดูใบไม้ผลิ'},
+{hz:'黄',py:'huáng',w:'huang',i:'h',f:'uang',m:'เหลือง'},
+{hz:'中',py:'zhōng',w:'zhong',i:'zh',f:'ong',m:'กลาง'},
+{hz:'争',py:'zhēng',w:'zhēng'.replace('ē','e'),i:'zh',f:'eng',m:'แย่ง'},
+{hz:'买',py:'mǎi',w:'mai',i:'m',f:'ai',m:'ซื้อ'},
+{hz:'美',py:'měi',w:'mei',i:'m',f:'ei',m:'สวย'},
+{hz:'女',py:'nǚ',w:'nü',i:'n',f:'ü',m:'ผู้หญิง'},
+{hz:'绿',py:'lǜ',w:'lü',i:'l',f:'ü',m:'สีเขียว'},
+{hz:'居',py:'jū',w:'ju',i:'j',f:'ü',m:'อาศัย',alt:['jü']},
+{hz:'去',py:'qù',w:'qu',i:'q',f:'ü',m:'ไป',alt:['qü']},
+{hz:'学',py:'xué',w:'xue',i:'x',f:'üe',m:'เรียน',alt:['xüe']},
+{hz:'四',py:'sì',w:'si',i:'s',f:'i',m:'สี่'},
+{hz:'西',py:'xī',w:'xi',i:'x',f:'i',m:'ตะวันตก'},
+{hz:'那',py:'nà',w:'na',i:'n',f:'a',m:'นั่น'},
+{hz:'热',py:'rè',w:'re',i:'r',f:'e',m:'ร้อน'}
+];
+const flat=s=>s.toLowerCase().trim().replace(/\s/g,'').replace(/[üv]/g,'v');
+function sylOK(s,val){ return [s.w].concat(s.alt||[]).some(t=>flat(t)===flat(val)); }
+
+let pure='dict', pset='ini', pQ=null, pStreak=0, pDone=0, pLock=false, hearOpts=[];
+
+/* โหมดที่ต้องฟังใช้ได้เฉพาะตัวที่มีเสียงเดี่ยวจริง (ong ไม่มีพยางค์เดี่ยวในภาษาจีน) */
+function ppool(){
+  const a = pset==='ini'?INI.slice() : pset==='fin'?FIN.slice() : INI.concat(FIN);
+  return pure==='read' ? a : a.filter(x=>x[3]);
+}
+function pNext(){
+  pLock=false;
+  const a=ppool();
+  pQ=a[(Math.random()*a.length)|0];
+  renderPure();
+}
+function pHead(){
+  return '<div class="puremeta"><span>ทำแล้ว '+pDone+' ข้อ</span><span class="st">ถูกติดกัน '+pStreak+'</span></div>';
+}
+function pCard(it){
+  return '<button class="card" type="button" onclick="say(\''+it[4]+'\')">🔊 <span class="hz">'+it[4]+'</span>'+
+    '<span class="pn">'+it[5]+'</span><span>'+it[6]+'</span></button>';
+}
+function pScore(ok){ pDone++; pStreak = ok ? pStreak+1 : 0; }
+function pAfter(){ return '<div style="margin-top:12px"><button class="gobtn" id="pnext" type="button">ข้อต่อไป</button></div>'; }
+function bindNext(){ const b=$('#pnext'); if(b){ b.onclick=pNext; b.focus(); } }
+
+function renderPure(){
+  const it=pQ, box=$('#purebox');
+
+  if(pure==='read'){
+    box.innerHTML='<div class="purebox">'+pHead()+
+      '<div class="pureq">อ่านออกเสียงตัวนี้ดังๆ ก่อน แล้วค่อยกดฟังเฉลย</div>'+
+      '<div class="pureshow">'+it[0]+'</div>'+
+      '<div class="selfgrade"><button id="reveal" type="button">🔊 ฟังเฉลย</button></div>'+
+      '<div class="purefb" id="pfb"></div></div>';
+    $('#reveal').onclick=()=>{
+      sayItem(it);
+      $('#pfb').innerHTML='<div>'+pCard(it)+'</div>'+
+        '<div class="selfgrade"><button id="gy" type="button">อ่านถูก</button><button id="gn" type="button">อ่านผิด</button></div>';
+      $('#gy').onclick=()=>{ pScore(true); pNext(); };
+      $('#gn').onclick=()=>{ pScore(false); pNext(); };
+    };
+    return;
+  }
+
+  let body='';
+  if(pure==='dict'){
+    body='<div class="pureq">ฟังแล้วพิมพ์พินอินของเสียงนี้ (พิมพ์ v แทน ü ได้)</div>'+
+      '<div class="pureinput"><input id="pin" class="py" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="…">'+
+      '<button class="gobtn" id="pgo" type="button">ตรวจ</button></div>';
+  }else if(pure==='hear'){
+    const a=ppool();
+    hearOpts=shuffle([it].concat(shuffle(a.filter(x=>x[0]!==it[0])).slice(0,3)));
+    body='<div class="pureq">ตัวอักษรนี้ออกเสียงว่าอะไร — แตะ 🔊 ฟังทีละข้อ แล้วกดเลือกข้อที่ใช่</div>'+
+      '<div class="pureshow">'+it[0]+'</div>'+
+      '<div class="soundopts" id="so">'+
+      hearOpts.map((o,i)=>'<div class="sopt" data-v="'+o[0]+'">'+
+        '<span class="n">ข้อ '+(i+1)+'</span>'+
+        '<button class="lst" data-i="'+i+'" type="button" aria-label="ฟังเสียงข้อ '+(i+1)+'">🔊</button>'+
+        '<button class="pk" data-v="'+o[0]+'" type="button">เลือก</button>'+
+        '<span class="rev"></span></div>').join('')+'</div>';
+  }else{
+    const a=ppool();
+    const opts=shuffle([it].concat(shuffle(a.filter(x=>x[0]!==it[0])).slice(0,3)));
+    body='<div class="pureq">ฟังแล้วเลือกพินอินที่ตรงกับเสียง</div>'+
+      '<div class="prow" id="rp">'+opts.map(o=>'<button data-v="'+o[0]+'" type="button">'+o[0]+'</button>').join('')+'</div>';
+  }
+
+  const topPlay = pure==='hear' ? '' :
+    '<button class="bigplay" id="pplay" type="button" aria-label="ฟังอีกครั้ง">🔊</button>';
+  box.innerHTML='<div class="purebox">'+pHead()+topPlay+body+'<div class="purefb" id="pfb"></div></div>';
+
+  if(pure!=='hear'){
+    const play=()=>{ sayItem(it); const e=$('#pplay'); e.classList.remove('ring'); void e.offsetWidth; e.classList.add('ring'); };
+    $('#pplay').onclick=play;
+    if($('#vauto').checked && unlocked) setTimeout(play,240);
+  }
+
+  const done=(ok,got)=>{
+    pLock=true; pScore(ok);
+    $('#pfb').innerHTML=(ok?'<span class="ok">ถูกต้อง · '+it[0]+'</span>'
+                          :'<span class="no">คำตอบคือ '+it[0]+(got?' (ตอบ '+got+')':'')+'</span>')+
+      '<div>'+pCard(it)+'</div>'+pAfter();
+    bindNext();
+  };
+
+  if(pure==='hear'){
+    $('#so').querySelectorAll('.lst').forEach(b=>{
+      b.onclick=()=>{ sayItem(hearOpts[+b.dataset.i]);
+        b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring'); };
+    });
+    $('#so').querySelectorAll('.pk').forEach(b=>{
+      b.onclick=()=>{
+        if(pLock) return;
+        const ok=b.dataset.v===it[0];
+        $('#so').querySelectorAll('.sopt').forEach(c=>{
+          c.querySelector('.pk').disabled=true;
+          c.querySelector('.rev').textContent=c.dataset.v;
+          if(c.dataset.v===it[0]) c.classList.add('right');
+          else if(c.contains(b)) c.classList.add('wrong');
+        });
+        done(ok);
+      };
+    });
+    return;
+  }
+  if(pure==='dict'){
+    const inp=$('#pin'); inp.focus();
+    const fire=()=>{ if(pLock) return; const v=norm(inp.value); inp.disabled=true; done(v===it[0], v); };
+    $('#pgo').onclick=fire;
+    inp.onkeydown=e=>{ if(e.key==='Enter'){ pLock?pNext():fire(); } };
+  }else{
+    $('#rp').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      if(pLock) return;
+      const ok=b.dataset.v===it[0];
+      $('#rp').querySelectorAll('button').forEach(x=>{
+        x.disabled=true;
+        if(x.dataset.v===it[0]) x.classList.add('right');
+        else if(x===b) x.classList.add('wrong');
+      });
+      done(ok);
+    });
+  }
+}
+
+$('#seg-pureset').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-pureset').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); pset=b.dataset.v; pStreak=0; pDone=0; pNext(); };
+});
+$('#seg-pure').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{ $('#seg-pure').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); pure=b.dataset.v; pStreak=0; pDone=0; pNext(); };
+});
+pNext();
+
+
+
+
+
+</script>
+</body>
+</html>
