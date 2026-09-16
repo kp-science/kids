@@ -373,7 +373,7 @@ const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>
 
 const $ = s => document.querySelector(s);
 const rank = g => { const i = ORDER.indexOf(g); return i<0 ? 99 : i; };
-let filter = 'all', term = '';
+let filter = 'all', subf = null, term = '';
 
 /* คำทักทายตามช่วงเวลา */
 (function(){
@@ -389,18 +389,21 @@ function groups(){
 }
 
 /* ---- เปิดแฟ้มวิชา: จำไว้ในที่อยู่หน้าเว็บ (#วิชา) ปุ่มย้อนกลับของเบราว์เซอร์จึงใช้ได้ ---- */
+/* ที่อยู่หน้า: #วิชา หรือ #วิชา/แฟ้มย่อย */
 function fromHash(){
-  const g = decodeURIComponent(location.hash.slice(1));
-  return MATERIALS.some(x => x.g===g) ? g : 'all';
+  const [g, sb] = decodeURIComponent(location.hash.slice(1)).split('/');
+  if(!MATERIALS.some(x => x.g===g)) return ['all', null];
+  return [g, sb && MATERIALS.some(x => x.g===g && x.sub===sb) ? sb : null];
 }
-function openFolder(g){
-  filter = g; term = ''; $('#q').value = '';
-  const h = g==='all' ? location.pathname : '#'+encodeURIComponent(g);
-  if(location.hash !== (g==='all' ? '' : h)) history.pushState(null, '', h);
+function hashOf(g, sb){ return g==='all' ? '' : '#'+encodeURIComponent(g)+(sb ? '/'+encodeURIComponent(sb) : ''); }
+function openFolder(g, sb=null){
+  filter = g; subf = sb; term = ''; $('#q').value = '';
+  const h = hashOf(g, sb);
+  if(location.hash !== h) history.pushState(null, '', h || location.pathname);
   render();
   if(g!=='all') window.scrollTo({ top: $('#chips').getBoundingClientRect().top + scrollY - 8, behavior:'smooth' });
 }
-window.addEventListener('popstate', () => { filter = fromHash(); render(); });
+window.addEventListener('popstate', () => { [filter, subf] = fromHash(); render(); });
 
 function renderChips(){
   const gs = groups();
@@ -426,6 +429,18 @@ function card(x, showSub){
     : '<div class="card soon" style="'+vars(s)+'">'+inner+'</div>';
 }
 
+/* แฟ้มย่อย เช่น เกมฝึกสมอง / เกมท้าทาย */
+function subFolder(g, name, items){
+  const sg = SUBGROUPS[name] || sub(g), show = items.slice(0,3);
+  return '<button type="button" class="folder" data-g="'+esc(g)+'" data-sub="'+esc(name)+'" style="'+vars(sg)+'" aria-label="เปิดแฟ้ม'+esc(name)+'">'+
+    '<span class="paper"></span>'+(items.length>1?'<span class="paper p2"></span>':'')+
+    '<div class="front"><div class="fhead"><span class="fic">'+(sg.e||'📁')+'</span>'+
+      '<div><h3>'+esc(name)+'</h3><span class="fcount">📄 '+items.length+' เรื่อง</span></div></div>'+
+    (sg.note ? '<p style="margin-top:8px;font-weight:600;color:var(--cd)">'+esc(sg.note)+'</p>' : '')+
+    '<ul class="flist">'+show.map(x => '<li><i>'+esc(x.icon||sg.e)+'</i><span>'+esc(x.t)+'</span></li>').join('')+
+      (items.length>3 ? '<li class="more"><i>➕</i>และอีก '+(items.length-3)+' เรื่อง</li>' : '')+'</ul>'+
+    '<span class="go">เปิดแฟ้ม 📂</span></div></button>';
+}
 function subsHTML(items){
   const subs = [...new Set(items.map(x => x.sub).filter(Boolean))];
   if(!subs.length) return '<div class="grid">'+items.map(x => card(x)).join('')+'</div>';
@@ -470,12 +485,26 @@ function render(){
     return;
   }
 
-  /* ในแฟ้ม: การ์ดของวิชานั้น */
+  /* ในแฟ้ม: ถ้ามีแฟ้มย่อย แสดงแฟ้มย่อยก่อน · เปิดแฟ้มย่อยแล้วค่อยเห็นการ์ด */
   const s = sub(filter), items = MATERIALS.filter(x => x.g===filter);
+  const subs = [...new Set(items.map(x => x.sub).filter(Boolean))];
+  if(subf){
+    const sg = SUBGROUPS[subf] || s, list = items.filter(x => x.sub===subf);
+    $('#list').innerHTML = '<section class="group" style="'+vars(sg)+'"><div class="crumb">'+
+        '<button type="button" class="backbtn" id="back">‹ '+esc(filter)+'</button>'+
+        '<div class="ghead"><span class="gi">'+(sg.e||s.e)+'</span><h2>'+esc(subf)+'</h2></div></div>'+
+      '<div class="grid">'+list.map(x => card(x)).join('')+'</div></section>';
+    $('#back').onclick = () => openFolder(filter);
+    return;
+  }
+  const loose = items.filter(x => !x.sub);
   $('#list').innerHTML = '<section class="group" style="'+vars(s)+'"><div class="crumb">'+
       '<button type="button" class="backbtn" id="back">‹ ทุกวิชา</button>'+
       '<div class="ghead"><span class="gi">'+s.e+'</span><h2>'+esc(filter)+'</h2></div></div>'+
-    subsHTML(items)+'</section>';
+    (subs.length ? '<div class="folders">'+subs.map(n => subFolder(filter, n, items.filter(x => x.sub===n))).join('')+'</div>' : '')+
+    (loose.length ? '<div class="grid"'+(subs.length?' style="margin-top:22px"':'')+'>'+loose.map(x => card(x)).join('')+'</div>' : '')+
+    '</section>';
+  $('#list').querySelectorAll('.folder[data-sub]').forEach(b => b.onclick = () => openFolder(b.dataset.g, b.dataset.sub));
   $('#back').onclick = () => openFolder('all');
 }
 
@@ -494,13 +523,18 @@ $('#q').addEventListener('input', e => { term = e.target.value; render(); });
 })();
 
 /* เปิดหน้าแรก: ตามที่อยู่ #วิชา หรือถ้าเพิ่งกลับมาจากแบบฝึก ให้เปิดแฟ้มวิชาของแบบฝึกนั้น */
-filter = fromHash();
+[filter, subf] = fromHash();
 if(filter==='all' && document.referrer){
   try{
     const from = new URL(document.referrer);
     if(from.origin===location.origin){
-      const m = MATERIALS.find(x => x.url && from.pathname.endsWith('/'+x.url.split('#')[0]));
-      if(m){ filter = m.g; history.replaceState(null, '', '#'+encodeURIComponent(m.g)); }
+      const same = MATERIALS.filter(x => x.url && from.pathname.endsWith('/'+x.url.split('#')[0]));
+      if(same.length){
+        filter = same[0].g;
+        const sb = [...new Set(same.map(x => x.sub))];
+        subf = sb.length===1 && sb[0] ? sb[0] : null;   /* ไฟล์เดียวมีหลายแฟ้มย่อย (เช่นหน้าเกม) ให้กลับไปแฟ้มหลัก */
+        history.replaceState(null, '', hashOf(filter, subf));
+      }
     }
   }catch(e){}
 }
