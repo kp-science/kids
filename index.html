@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ห้องเรียน">
-<meta name="theme-color" content="#23594A">
+<meta name="theme-color" content="#7CC8F2">
 <meta name="robots" content="noindex, nofollow">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -17,118 +17,213 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&family=Andika:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#FBFAF6; --paper-2:#F2F0E8;
-  --jade:#23594A; --jade-2:#3F8A72; --jade-soft:#DDEBE4;
-  --ink:#1B2420; --muted:#6B7A74; --line:#D6D9D0;
-  --gold:#C79A2E; --seal:#B4362C;
+  --ink:#2A2440; --muted:#6E6886; --paper:#FFF9EE; --card:#FFFFFF; --line:#EFE4D2;
+  --sky1:#7CC8F2; --sky2:#C9ECFF; --sun:#FFC83D;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);
-  font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;font-size:15px;line-height:1.7;
+  font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;font-size:16px;line-height:1.6;
   -webkit-text-size-adjust:100%}
 a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
 
-header{background:var(--jade);color:#fff;padding:26px 20px 22px;
-  padding-top:calc(26px + env(safe-area-inset-top));border-bottom:4px solid #174236}
-.hwrap{max-width:960px;margin:0 auto}
-header h1{font-family:'Mali',sans-serif;font-size:1.5rem;font-weight:700;line-height:1.35}
-header p{font-size:.85rem;opacity:.78;margin-top:2px}
-.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.tools input{flex:1 1 240px;min-width:0;padding:10px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.3);
-  background:rgba(255,255,255,.14);color:#fff;font-family:inherit;font-size:.92rem}
-.tools input::placeholder{color:rgba(255,255,255,.65)}
-.tools input:focus{outline:2px solid var(--gold);background:rgba(255,255,255,.2)}
+/* ---------------- ฉากท้องฟ้าด้านบน ---------------- */
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 100%);
+  padding:calc(22px + env(safe-area-inset-top)) 18px 0}
+.scene{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cloud{animation:drift 38s linear infinite}
+.cloud.c2{animation-duration:52s;animation-delay:-20s}
+.cloud.c3{animation-duration:46s;animation-delay:-33s}
+@keyframes drift{from{transform:translateX(-260px)}to{transform:translateX(1460px)}}
+.sunrays{transform-origin:1060px 62px;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.cloud,.sunrays,.bob{animation:none!important}}
 
-.wrap{max-width:960px;margin:0 auto;padding:20px 18px 70px}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 15px;
-  cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;color:var(--muted);transition:.12s}
-.chip:hover{background:var(--jade-soft)}
-.chip.on{background:var(--jade);border-color:var(--jade);color:#fff}
-.chip .ct{opacity:.6;font-size:.78rem;margin-left:4px}
+.hin{position:relative;max-width:980px;margin:0 auto;padding-bottom:118px}
+.hello{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);border-radius:999px;
+  padding:4px 14px 4px 6px;font-weight:600;font-size:.9rem;box-shadow:0 3px 0 rgba(42,36,64,.12)}
+.hello .face{font-size:1.4rem}
+.hero h1{font-family:'Mali',sans-serif;font-weight:700;font-size:2.4rem;line-height:1.25;margin-top:10px;color:#fff;
+  text-shadow:0 3px 0 #3A8FC4, 0 6px 14px rgba(20,70,110,.25)}
+.hero h1 .bob{display:inline-block;animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(6deg)}}
+.hero p.sub{color:#1F4E6E;font-weight:600;margin-top:2px;font-size:1rem}
+.search{margin-top:14px;max-width:460px;position:relative}
+.search input{width:100%;padding:11px 16px 11px 44px;border-radius:999px;border:3px solid #fff;
+  background:rgba(255,255,255,.92);font-family:inherit;font-size:1rem;color:var(--ink);
+  box-shadow:0 4px 0 rgba(42,36,64,.12)}
+.search input:focus{outline:none;border-color:var(--sun)}
+.search::before{content:"🔎";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:1.05rem}
 
-.group{margin-bottom:28px}
-.group h2{font-family:'Mali',sans-serif;font-size:1.05rem;color:var(--jade);
-  display:flex;align-items:center;gap:9px;margin-bottom:12px}
-.group h2::after{content:"";flex:1;height:1px;background:var(--line)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+/* ---------------- ปุ่มเลือกวิชา ---------------- */
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 60px;position:relative}
+.picker{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;margin:-58px 0 18px;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch}
+.picker::-webkit-scrollbar{display:none}
+.pick{flex:0 0 auto;width:96px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  background:none;border:none;padding:0}
+.pick .bub{width:78px;height:78px;border-radius:26px;display:grid;place-items:center;font-size:2.3rem;
+  background:var(--c);border:4px solid #fff;box-shadow:0 5px 0 var(--cd), 0 8px 18px rgba(42,36,64,.15);
+  transition:transform .15s}
+.pick .nm{font-weight:700;font-size:.86rem;line-height:1.25;text-align:center;background:#fff;border-radius:999px;
+  padding:1px 10px;box-shadow:0 2px 0 var(--line)}
+.pick .ct{display:block;font-size:.72rem;color:var(--muted);font-weight:600}
+.pick:hover .bub{transform:translateY(-3px) rotate(-4deg)}
+.pick:active .bub{transform:translateY(3px);box-shadow:0 2px 0 var(--cd)}
+.pick.on .bub{outline:4px solid var(--cd);outline-offset:3px}
+.pick.on .nm{background:var(--cd);color:#fff;box-shadow:none}
+.pick.on .ct{color:rgba(255,255,255,.85)}
 
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;
-  display:flex;flex-direction:column;gap:8px;transition:.15s;position:relative;overflow:hidden}
-.card:hover{border-color:var(--jade-2);transform:translateY(-2px);box-shadow:0 6px 18px rgba(27,36,32,.09)}
-.card .mark{width:44px;height:44px;border-radius:11px;background:var(--jade-soft);color:var(--jade);
-  display:grid;place-items:center;font-size:1.4rem;font-weight:700;flex-shrink:0}
-.card h3{font-size:1rem;font-weight:700;line-height:1.4}
-.card p{font-size:.84rem;color:var(--muted);flex:1}
-.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
-.tags span{font-size:.72rem;border:1px solid var(--jade-soft);background:var(--jade-soft);
-  color:var(--jade);border-radius:999px;padding:2px 9px;font-weight:600}
-.card .go{font-size:.82rem;color:var(--jade);font-weight:700;margin-top:4px}
-.card.soon{opacity:.6}
-.card.soon .go{color:var(--muted)}
+/* ---------------- กลุ่มวิชา ---------------- */
+.group{margin-top:22px}
+.ghead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ghead .gi{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;
+  background:var(--c);box-shadow:0 3px 0 var(--cd);transform:rotate(-6deg)}
+.ghead h2{font-family:'Mali',sans-serif;font-size:1.45rem;color:var(--cd);line-height:1.2}
+.ghead::after{content:"";flex:1;height:4px;border-radius:4px;
+  background:repeating-linear-gradient(90deg,var(--c) 0 12px,transparent 12px 20px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
 
-.empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:.9rem}
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border-radius:24px;
+  border:3px solid var(--c);box-shadow:0 6px 0 var(--cd);overflow:hidden;transition:transform .15s, box-shadow .15s}
+.card:hover{transform:translateY(-4px) rotate(-.5deg);box-shadow:0 10px 0 var(--cd)}
+.card:active{transform:translateY(3px);box-shadow:0 2px 0 var(--cd)}
+.card .top{position:relative;height:74px;background:var(--c);
+  background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.35) 0 10px,transparent 11px),
+    radial-gradient(circle at 70% 70%,rgba(255,255,255,.25) 0 16px,transparent 17px),
+    radial-gradient(circle at 90% 20%,rgba(255,255,255,.3) 0 6px,transparent 7px)}
+.card .sticker{position:absolute;left:18px;bottom:-30px;width:70px;height:70px;border-radius:22px;background:#fff;
+  display:grid;place-items:center;font-size:2.2rem;font-weight:700;color:var(--cd);font-family:'Mali',sans-serif;
+  border:3px solid var(--c);box-shadow:0 4px 0 var(--cd);transform:rotate(-5deg)}
+.card .subj{position:absolute;left:100px;top:14px;background:rgba(255,255,255,.9);color:var(--cd);font-weight:700;font-size:.82rem;
+  border-radius:999px;padding:2px 11px}
+.card .level{position:absolute;right:14px;top:12px;background:#fff;color:var(--cd);font-weight:700;font-size:.8rem;
+  border-radius:999px;padding:2px 11px}
+.card .body{padding:38px 18px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-family:'Mali',sans-serif;font-size:1.2rem;line-height:1.3}
+.card p{font-size:.86rem;color:var(--muted);flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tags span{font-size:.74rem;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--cl);color:var(--cd)}
+.go{align-self:flex-start;margin-top:4px;background:var(--cd);color:#fff;font-weight:700;border-radius:999px;
+  padding:7px 18px;font-size:.95rem;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.card.soon{border-style:dashed;box-shadow:none;opacity:.75}
+.card.soon .go{background:#CFC8BC}
 
-details.howto{background:#fff;border:1px solid var(--line);border-radius:12px;padding:0;margin-top:26px;overflow:hidden}
-details.howto summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--jade);list-style:none}
+.empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:1rem}
+.empty b{display:block;font-size:3rem}
+
+/* ---------------- ส่วนผู้ปกครอง ---------------- */
+details.howto{background:#fff;border:2px dashed var(--line);border-radius:18px;margin-top:40px;overflow:hidden}
+details.howto summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted);list-style:none}
 details.howto summary::-webkit-details-marker{display:none}
-details.howto summary::before{content:"▸ ";transition:.15s;display:inline-block}
+details.howto summary::before{content:"▸ ";display:inline-block;transition:.15s}
 details.howto[open] summary::before{transform:rotate(90deg)}
-details.howto .body{padding:0 16px 16px;font-size:.86rem;color:var(--ink)}
+details.howto .body{padding:0 16px 16px;font-size:.86rem}
 details.howto ol{margin:8px 0 8px 20px}
 details.howto li{margin-bottom:6px}
-details.howto code{background:var(--paper-2);border:1px solid var(--line);border-radius:5px;
-  padding:1px 6px;font-family:'Andika',monospace;font-size:.85rem}
-footer{text-align:center;font-size:.76rem;color:var(--muted);padding:10px 18px 30px}
+details.howto code{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.85rem}
+footer{text-align:center;font-size:.8rem;color:var(--muted);padding:6px 18px 30px}
+footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4px}
 
-@media (max-width:520px){
-  header h1{font-size:1.25rem}
+@media (max-width:560px){
+  .hero h1{font-size:1.85rem}
+  .hin{padding-bottom:128px}
+  /* จอแคบ: ย่อฉากให้อยู่แถบล่าง ไม่ทับชื่อเว็บกับช่องค้นหา */
+  .scene{top:auto;height:150px}
+  .pick{width:84px}
+  .pick .bub{width:68px;height:68px;font-size:2rem;border-radius:22px}
   .grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="hwrap">
-    <h1>ห้องเรียนที่บ้าน</h1>
-    <p>สื่อฝึกทั้งหมดรวมไว้ที่เดียว เปิดได้ทั้งคอมและไอแพด</p>
-    <div class="tools">
-      <input id="q" type="search" placeholder="ค้นหา เช่น พินอิน ฟิสิกส์ คลื่น…" autocomplete="off">
-    </div>
+<header class="hero">
+  <!-- ภาพวาดฉากท้องฟ้า เนินหญ้า บ้าน และต้นไม้ -->
+  <svg class="scene" viewBox="0 0 1200 300" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+    <g class="sunrays" fill="#FFE08A">
+      <path d="M1060 -8 L1068 30 L1052 30Z"/><path d="M1060 132 L1068 94 L1052 94Z"/>
+      <path d="M990 62 L1028 54 L1028 70Z"/><path d="M1130 62 L1092 54 L1092 70Z"/>
+      <path d="M1010 12 L1036 40 L1026 48Z"/><path d="M1110 112 L1084 84 L1094 76Z"/>
+      <path d="M1110 12 L1094 48 L1084 40Z"/><path d="M1010 112 L1026 76 L1036 84Z"/>
+    </g>
+    <circle cx="1060" cy="62" r="32" fill="var(--sun)"/>
+    <circle cx="1050" cy="56" r="3.5" fill="#6B4A00"/><circle cx="1072" cy="56" r="3.5" fill="#6B4A00"/>
+    <path d="M1048 70 Q1061 80 1074 70" stroke="#6B4A00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="1042" cy="68" r="4" fill="#FF9E7A" opacity=".7"/><circle cx="1080" cy="68" r="4" fill="#FF9E7A" opacity=".7"/>
+
+    <g class="cloud" fill="#fff" opacity=".95">
+      <ellipse cx="120" cy="70" rx="46" ry="20"/><ellipse cx="90" cy="76" rx="30" ry="16"/><ellipse cx="152" cy="78" rx="32" ry="15"/>
+    </g>
+    <g class="cloud c2" fill="#fff" opacity=".85">
+      <ellipse cx="160" cy="130" rx="38" ry="16"/><ellipse cx="132" cy="136" rx="24" ry="12"/><ellipse cx="188" cy="137" rx="26" ry="12"/>
+    </g>
+    <g class="cloud c3" fill="#fff" opacity=".9">
+      <ellipse cx="100" cy="30" rx="30" ry="13"/><ellipse cx="124" cy="36" rx="22" ry="11"/>
+    </g>
+
+    <path d="M0 250 Q180 190 380 232 T760 222 T1200 212 V300 H0Z" fill="#8FD46B"/>
+    <path d="M0 275 Q240 232 520 266 T1000 252 T1200 262 V300 H0Z" fill="#6CC04A"/>
+
+    <!-- บ้าน -->
+    <g transform="translate(860 168)">
+      <rect x="0" y="34" width="84" height="58" rx="4" fill="#FFF3D6"/>
+      <path d="M-10 38 L42 -2 L94 38Z" fill="#F0685A"/>
+      <rect x="32" y="58" width="22" height="34" rx="3" fill="#B7794A"/>
+      <rect x="9" y="48" width="16" height="16" rx="2" fill="#9EDBFF"/>
+      <rect x="61" y="48" width="16" height="16" rx="2" fill="#9EDBFF"/>
+      <rect x="62" y="6" width="10" height="20" fill="#C96A5E"/>
+    </g>
+    <!-- ต้นไม้ -->
+    <g transform="translate(990 170)">
+      <rect x="18" y="44" width="12" height="40" rx="4" fill="#9A6A3F"/>
+      <circle cx="24" cy="34" r="30" fill="#3FAE5A"/><circle cx="8" cy="46" r="18" fill="#4DBE67"/><circle cx="42" cy="44" r="18" fill="#37A351"/>
+      <circle cx="14" cy="30" r="4" fill="#FF6B6B"/><circle cx="36" cy="22" r="4" fill="#FF6B6B"/><circle cx="30" cy="48" r="4" fill="#FF6B6B"/>
+    </g>
+    <!-- ดอกไม้ -->
+    <g fill="#FF7AB6"><circle cx="300" cy="262" r="6"/><circle cx="640" cy="258" r="6"/><circle cx="1140" cy="262" r="6"/></g>
+    <g fill="#FFD93D"><circle cx="300" cy="262" r="2.5"/><circle cx="640" cy="258" r="2.5"/><circle cx="1140" cy="262" r="2.5"/></g>
+    <g fill="#B18CFF"><circle cx="470" cy="276" r="5"/><circle cx="780" cy="282" r="5"/></g>
+  </svg>
+
+  <div class="hin">
+    <span class="hello"><span class="face" id="face">🌞</span><span id="greet">สวัสดีจ้า</span></span>
+    <h1>ห้องเรียนที่บ้าน <span class="bob">✏️</span></h1>
+    <p class="sub">วันนี้หนูอยากเรียนอะไรดี? แตะวิชาด้านล่างได้เลย</p>
+    <div class="search"><input id="q" type="search" placeholder="ค้นหา เช่น สระ บวกเลข พืช…" autocomplete="off"></div>
   </div>
 </header>
 
-<div class="wrap">
-  <div class="chips" id="chips"></div>
+<main class="wrap">
+  <div class="picker" id="chips" role="tablist" aria-label="เลือกวิชา"></div>
   <div id="list"></div>
 
   <details class="howto">
-    <summary>วิธีเพิ่มสื่อใหม่เข้าหน้านี้</summary>
+    <summary>สำหรับผู้ปกครอง · วิธีเพิ่มสื่อใหม่เข้าหน้านี้</summary>
     <div class="body">
       <ol>
-        <li>วางไฟล์ HTML ไว้ในโฟลเดอร์ของวิชานั้น เช่น <code>chinese/</code> หรือ <code>physics/</code></li>
+        <li>วางไฟล์ HTML ไว้ในโฟลเดอร์ของวิชานั้น เช่น <code>thai/</code> <code>math/</code> <code>science/</code> <code>chinese/</code></li>
         <li>เปิดไฟล์ <code>index.html</code> นี้ แล้วเลื่อนไปที่บรรทัด <code>const MATERIALS = [</code> ใกล้ท้ายไฟล์</li>
-        <li>คัดลอกบรรทัดของรายการเดิมหนึ่งบรรทัด วางต่อท้าย แล้วแก้ข้อความกับ <code>url</code> ให้ตรงกับไฟล์ใหม่</li>
+        <li>คัดลอกบรรทัดของรายการเดิมหนึ่งบรรทัด วางต่อท้าย แล้วแก้ข้อความกับ <code>url</code> ให้ตรงกับไฟล์ใหม่ — ถ้าใช้ชื่อวิชาใหม่ที่ยังไม่มี ให้เพิ่มสีและรูปใน <code>SUBJECTS</code> ด้วย</li>
         <li>บันทึกแล้ว push ขึ้น GitHub — หน้าเว็บจะอัปเดตเองภายในไม่กี่นาที</li>
       </ol>
-      <p><b>เพิ่มลงหน้าจอโฮมบนไอแพด:</b> เปิดหน้านี้ใน Safari → ปุ่มแชร์ → เพิ่มไปยังหน้าจอโฮม จะได้ไอคอนเปิดเต็มจอเหมือนแอป ไม่มีแถบเบราว์เซอร์มากวน</p>
+      <p><b>เพิ่มลงหน้าจอโฮมบนไอแพด:</b> เปิดหน้านี้ใน Safari → ปุ่มแชร์ → เพิ่มไปยังหน้าจอโฮม จะได้ไอคอนเปิดเต็มจอเหมือนแอป</p>
     </div>
   </details>
-</div>
+</main>
 
-<footer>ปรับปรุงล่าสุด <span id="stamp"></span></footer>
+<footer><span class="grass">🌷🌱🌼🌱🌷</span>ทำด้วยความรักให้ลูก</footer>
 
 <script>
 /* ============================================================
    แก้เฉพาะรายการด้านล่างนี้เวลาเพิ่มสื่อใหม่
    t    = ชื่อสื่อ
    d    = คำอธิบายสั้น
-   g    = กลุ่ม/วิชา (จะกลายเป็นปุ่มกรองอัตโนมัติ)
-   url  = ที่อยู่ไฟล์ ถ้ายังไม่มีให้ใส่ '' จะขึ้นว่า "เร็วๆ นี้"
+   g    = กลุ่ม/วิชา (จะกลายเป็นปุ่มเลือกวิชาอัตโนมัติ)
+   url  = ที่อยู่ไฟล์ ถ้ายังไม่มีให้ใส่ '' จะขึ้นว่า "เร็ว ๆ นี้"
    icon = ตัวอักษรหรืออิโมจิบนการ์ด
    tags = ป้ายกำกับ
    ============================================================ */
@@ -167,32 +262,62 @@ const MATERIALS = [
   ---------------------------------------------------------- */
 ];
 
+/* สีและรูปประจำวิชา  c = สีหลัก  d = สีเข้ม (ตัวหนังสือบนปุ่ม)  l = สีอ่อน  e = รูป */
+const SUBJECTS = {
+  'ภาษาไทย':     { c:'#FF9EC4', d:'#C2306F', l:'#FFE3EF', e:'📚' },
+  'คณิตศาสตร์':  { c:'#8EC5FF', d:'#2560B8', l:'#E2F0FF', e:'🔢' },
+  'วิทยาศาสตร์': { c:'#95E08A', d:'#23843B', l:'#E3F7DF', e:'🔬' },
+  'สังคมศึกษา':  { c:'#FFC58A', d:'#B85A12', l:'#FFEBD6', e:'🏡' },
+  'ภาษาอังกฤษ':  { c:'#C9A8FF', d:'#6E3CC0', l:'#EFE5FF', e:'🔤' },
+  'ภาษาจีน':     { c:'#FF9C8F', d:'#B83426', l:'#FFE4E0', e:'🏮' },
+};
+const ORDER = ['ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','สังคมศึกษา','ภาษาอังกฤษ','ภาษาจีน'];
+const ALL = { c:'#FFD66B', d:'#9A6A00', l:'#FFF3CC', e:'🌈' };
+const sub = g => SUBJECTS[g] || { c:'#9FE3DA', d:'#1F7A70', l:'#DDF6F2', e:'⭐' };
+const vars = s => '--c:'+s.c+';--cd:'+s.d+';--cl:'+s.l;
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
 const $ = s => document.querySelector(s);
 let filter = 'all', term = '';
+try{ const f = localStorage.getItem('kids-home-filter'); if(f) filter = f; }catch(e){}
+
+/* คำทักทายตามช่วงเวลา */
+(function(){
+  const h = new Date().getHours();
+  const [face, txt] = h < 12 ? ['🌞','อรุณสวัสดิ์จ้า'] : h < 17 ? ['🌤️','สวัสดีตอนบ่ายจ้า'] : ['🌙','สวัสดีตอนเย็นจ้า'];
+  $('#face').textContent = face; $('#greet').textContent = txt;
+})();
 
 function groups(){
   const m = new Map();
   MATERIALS.forEach(x => m.set(x.g, (m.get(x.g)||0)+1));
-  return [...m.entries()];
+  return [...m.entries()].sort((a,b) => (ORDER.indexOf(a[0])+99)%99 - (ORDER.indexOf(b[0])+99)%99);
 }
 function renderChips(){
   const gs = groups();
-  $('#chips').innerHTML =
-    '<button class="chip'+(filter==='all'?' on':'')+'" data-g="all">ทั้งหมด<span class="ct">'+MATERIALS.length+'</span></button>'+
-    gs.map(([g,n]) => '<button class="chip'+(filter===g?' on':'')+'" data-g="'+g+'">'+g+'<span class="ct">'+n+'</span></button>').join('');
-  $('#chips').querySelectorAll('.chip').forEach(b => b.onclick = () => { filter = b.dataset.g; render(); });
+  if(filter!=='all' && !gs.some(([g]) => g===filter)) filter = 'all';
+  const pick = (key, label, n, s) =>
+    '<button class="pick'+(filter===key?' on':'')+'" data-g="'+esc(key)+'" style="'+vars(s)+'" role="tab" aria-selected="'+(filter===key)+'">'+
+      '<span class="bub">'+s.e+'</span><span class="nm">'+esc(label)+'<span class="ct">'+n+' เรื่อง</span></span></button>';
+  $('#chips').innerHTML = pick('all','ทั้งหมด',MATERIALS.length,ALL) + gs.map(([g,n]) => pick(g,g,n,sub(g))).join('');
+  $('#chips').querySelectorAll('.pick').forEach(b => b.onclick = () => {
+    filter = b.dataset.g; try{ localStorage.setItem('kids-home-filter', filter); }catch(e){}
+    render();
+  });
 }
-function card(x){
-  const live = !!x.url;
+function card(x, showSub){
+  const s = sub(x.g), live = !!x.url;
+  const level = (x.tags||[]).find(t => /^ป\.\d/.test(t));
+  const tags = (x.tags||[]).filter(t => t!==level);
   const inner =
-    '<div class="mark">'+(x.icon||'✦')+'</div>'+
-    '<h3>'+x.t+'</h3>'+
-    '<p>'+(x.d||'')+'</p>'+
-    (x.tags&&x.tags.length ? '<div class="tags">'+x.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>' : '')+
-    '<div class="go">'+(live?'เปิดใช้งาน →':'เร็วๆ นี้')+'</div>';
+    '<div class="top">'+(showSub?'<span class="subj">'+s.e+' '+esc(x.g)+'</span>':'')+(level?'<span class="level">'+esc(level)+'</span>':'')+'<div class="sticker">'+esc(x.icon||s.e)+'</div></div>'+
+    '<div class="body"><h3>'+esc(x.t)+'</h3>'+
+    '<p>'+esc(x.d||'')+'</p>'+
+    (tags.length ? '<div class="tags">'+tags.map(t => '<span>'+esc(t)+'</span>').join('')+'</div>' : '')+
+    '<span class="go">'+(live?'เริ่มเลย ▶':'เร็ว ๆ นี้')+'</span></div>';
   return live
-    ? '<a class="card" href="'+x.url+'">'+inner+'</a>'
-    : '<div class="card soon">'+inner+'</div>';
+    ? '<a class="card" style="'+vars(s)+'" href="'+esc(x.url)+'">'+inner+'</a>'
+    : '<div class="card soon" style="'+vars(s)+'">'+inner+'</div>';
 }
 function render(){
   renderChips();
@@ -201,16 +326,24 @@ function render(){
     (filter==='all' || x.g===filter) &&
     (!t || (x.t+' '+(x.d||'')+' '+x.g+' '+(x.tags||[]).join(' ')).toLowerCase().includes(t))
   );
-  if(!hit.length){ $('#list').innerHTML = '<div class="empty">ไม่พบสื่อที่ตรงกับคำค้น</div>'; return; }
+  if(!hit.length){ $('#list').innerHTML = '<div class="empty"><b>🙈</b>หาไม่เจอเลย ลองคำอื่นดูนะ</div>'; return; }
 
+  /* หน้า "ทั้งหมด" รวมการ์ดทุกวิชาไว้ตารางเดียว เรียงตามวิชา · เลือกวิชาแล้วค่อยแสดงหัววิชา */
+  if(filter==='all'){
+    const rank = g => { const i = ORDER.indexOf(g); return i<0 ? 99 : i; };
+    $('#list').innerHTML = '<div class="grid">'+hit.slice().sort((a,b) => rank(a.g)-rank(b.g)).map(x => card(x,true)).join('')+'</div>';
+    return;
+  }
   const byG = new Map();
-  hit.forEach(x => { if(!byG.has(x.g)) byG.set(x.g, []); byG.get(x.g).push(x); });
-  $('#list').innerHTML = [...byG.entries()].map(([g, items]) =>
-    '<section class="group"><h2>'+g+'</h2><div class="grid">'+items.map(card).join('')+'</div></section>'
-  ).join('');
+  groups().forEach(([g]) => byG.set(g, []));
+  hit.forEach(x => byG.get(x.g).push(x));
+  $('#list').innerHTML = [...byG.entries()].filter(([,items]) => items.length).map(([g, items]) => {
+    const s = sub(g);
+    return '<section class="group" style="'+vars(s)+'"><div class="ghead"><span class="gi">'+s.e+'</span><h2>'+esc(g)+'</h2></div>'+
+      '<div class="grid">'+items.map(card).join('')+'</div></section>';
+  }).join('');
 }
-$('#q').addEventListener('input', e => { term = e.target.value; render(); });
-$('#stamp').textContent = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+$('#q').addEventListener('input', e => { term = e.target.value; if(term.trim()) filter = 'all'; render(); });
 render();
 </script>
 </body>
