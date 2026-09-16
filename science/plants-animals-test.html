@@ -263,6 +263,16 @@ let cur=0, ans={};      // ans[ลำดับข้อ] = ตัวเลือ
 /* ---- จำคำตอบไว้ในเครื่อง ปิดแล้วเปิดใหม่ยังอยู่ ---- */
 const KEY=id=>'kids-plants-animals-'+id;
 function load(){ try{ ans=JSON.parse(localStorage.getItem(KEY(TESTS[cur].id))||'{}')||{}; }catch(e){ ans={}; } }
+/* ลำดับตัวเลือกสุ่มใหม่ทุกครั้งที่เริ่มชุด และจำไว้ระหว่างทำ (เปิดหน้าใหม่ตำแหน่งไม่เปลี่ยนกลางคัน) */
+let ORD=[];
+function loadOrder(fresh){
+  const K=KEY(TESTS[cur].id)+'-order', qs=questions();
+  try{ ORD=fresh?null:JSON.parse(localStorage.getItem(K)||'null'); }catch(e){ ORD=null; }
+  if(!Array.isArray(ORD) || ORD.length!==qs.length){
+    ORD=qs.map(q=>{ const a=q[1].map((o,i)=>i); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; });
+    try{ localStorage.setItem(K, JSON.stringify(ORD)); }catch(e){}
+  }
+}
 function save(){ try{ localStorage.setItem(KEY(TESTS[cur].id), JSON.stringify(ans)); }catch(e){} }
 try{ const t=localStorage.getItem('kids-plants-animals-tab'); if(t!==null && TESTS[+t]) cur=+t; }catch(e){}
 try{ $('#autoread').checked = localStorage.getItem('kids-plants-animals-read')==='1'; }catch(e){}
@@ -281,7 +291,7 @@ function speak(text){
   if(thVoice) u.voice=thVoice;
   synth.speak(u);
 }
-const readQ=q=>speak(q[0]+' … '+q[1].map((o,i)=>TL[i]+' '+o[1]).join(' … '));
+const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+q[1][i][1]).join(' … '));
 
 function questions(){ return TESTS[cur].items.filter(x=>Array.isArray(x)); }
 
@@ -294,7 +304,7 @@ function renderTabs(){
 }
 
 function render(){
-  load(); renderTabs();
+  load(); loadOrder(!Object.keys(ans).length); renderTabs();
   const T=TESTS[cur];
   $('#tt').textContent=T.name+' · '+T.title;
   let n=0, h='', pi=0, pc=PARTC[0];
@@ -306,14 +316,14 @@ function render(){
        '<div class="qt">'+x[0]+'</div>'+(x[3]?'<div class="qe">'+x[3]+'</div>':'')+
        '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button></div>'+
        '<div class="opts'+(T.style==='list'?' list':'')+'">'+
-       x[1].map((o,i)=>'<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
-         '<span class="lt">'+TL[i]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
-         '<span class="lb">'+o[1]+'</span></button>').join('')+
+       ORD[k].map((i,pos)=>{ const o=x[1][i]; return '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
+         '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
+         '<span class="lb">'+o[1]+'</span></button>'; }).join('')+
        '</div><div class="fb"></div></div>';
   });
   $('#list').innerHTML=h;
   const Q=questions();
-  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k]));
+  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k],+b.dataset.k));
   $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k,+b.dataset.i,true));
   Object.keys(ans).forEach(k=>show(+k, ans[k]));
   updateScore(false);
@@ -323,15 +333,15 @@ function show(k,i){
   const q=questions()[k], el=$('#q'+k); if(!q||!el) return;
   const ok=i===q[2];
   el.classList.add(ok?'ok':'no');
-  el.querySelectorAll('.opt').forEach((b,j)=>{
-    b.disabled=true;
+  el.querySelectorAll('.opt').forEach(b=>{
+    const j=+b.dataset.i; b.disabled=true;
     if(j===q[2]) b.classList.add('right');
     else if(j===i) b.classList.add('wrong');
     else b.classList.add('dim');
   });
   const fb=el.querySelector('.fb');
   fb.className='fb '+(ok?'ok':'no');
-  fb.textContent= ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[q[2]]+'. '+q[1][q[2]][1];
+  fb.textContent= ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[ORD[k].indexOf(q[2])]+'. '+q[1][q[2]][1];
 }
 
 function pick(k,i,fresh){
@@ -341,7 +351,7 @@ function pick(k,i,fresh){
     const nx=$('#q'+(k+1));
     if(nx && ans[k+1]===undefined){
       setTimeout(()=>{ nx.scrollIntoView({behavior:'smooth',block:'center'});
-        if($('#autoread').checked) readQ(questions()[k+1]); },650);
+        if($('#autoread').checked) readQ(questions()[k+1],k+1); },650);
     }
   }
 }

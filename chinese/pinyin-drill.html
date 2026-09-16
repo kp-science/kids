@@ -727,7 +727,7 @@ h2.sec .no{width:32px;height:32px;border-radius:12px;background:#FFE7A3;color:#8
       <button class="on" data-v="dict">ฟัง → เรียงตัวอักษร</button>
       <button data-v="pick">ฟัง → เลือก</button>
       <button data-v="hear">เห็นตัวอักษร → เลือกเสียง</button>
-      <button data-v="read">เห็นพินอิน → อ่านออกเสียง</button>
+      <button data-v="read">เห็นพินอิน → ฟังว่าเสียงตรงไหม</button>
     </div>
   </div>
   <div id="purebox"></div>
@@ -1954,13 +1954,29 @@ let pure='dict', pset='ini', pQ=null, pStreak=0, pDone=0, pLock=false, hearOpts=
 /* โหมดที่ต้องฟังใช้ได้เฉพาะตัวที่มีเสียงเดี่ยวจริง (ong ไม่มีพยางค์เดี่ยวในภาษาจีน) */
 function ppool(){
   const a = pset==='ini'?INI.slice() : pset==='fin'?FIN.slice() : INI.concat(FIN);
-  return pure==='read' ? a : a.filter(x=>x[3]);
+  return a.filter(x=>x[3]);   /* ทุกโหมดต้องมีเสียงเดี่ยวให้ฟัง (ong ไม่มีพยางค์เดี่ยว) */
 }
 function pNext(){
   pLock=false;
   const a=ppool();
   pQ=a[(Math.random()*a.length)|0];
   renderPure();
+}
+/* เสียงที่มักสับสนกัน: จากคู่เทียบเสียงคล้าย + คู่หลอก + ตาราง 3×3 */
+let CONF=null;
+function confusable(it){
+  if(!CONF){
+    CONF={};
+    const add=(a,b)=>{ if(a===b) return; (CONF[a]=CONF[a]||new Set()).add(b); (CONF[b]=CONF[b]||new Set()).add(a); };
+    PAIRS.forEach(p=>add(p.a,p.b)); TRAPS.forEach(p=>add(p[0],p[1]));
+    [['j','zh','z'],['q','ch','c'],['x','sh','s'],['j','q','x'],['zh','ch','sh','r'],['z','c','s'],['b','p','m','f'],['d','t','n','l'],['g','k','h'],
+     ['an','ang','en','eng'],['in','ing'],['ian','iang'],['uan','uang'],['o','uo','ou'],['e','ei','er'],['ai','ei'],['ao','ou'],['i','ü','u'],['ie','üe'],['iao','ao']]
+      .forEach(g=>g.forEach(a=>g.forEach(b=>add(a,b))));
+  }
+  const ok=k=>{ const x=byKey(k); return x && x[3] && !twin(x,it) && x[0]!==it[0]; };
+  let c=[...(CONF[it[0]]||[])].filter(ok);
+  if(!c.length) c=ppool().map(x=>x[0]).filter(ok);
+  return c.length ? byKey(c[(Math.random()*c.length)|0]) : null;
 }
 function pHead(){
   return '<div class="puremeta"><span>ทำแล้ว '+pDone+' ข้อ</span><span class="st">ถูกติดกัน '+pStreak+'</span></div>';
@@ -1977,18 +1993,34 @@ function renderPure(){
   const it=pQ, box=$('#purebox');
 
   if(pure==='read'){
+    /* เล่นเสียงจริงหรือเสียงหลอกที่คล้ายกัน (สุ่ม 50/50) แล้วให้ตอบว่าตรงกับพินอินที่เห็นไหม */
+    const decoy = confusable(it), useReal = Math.random() < .5 || !decoy, heard = useReal ? it : decoy;
     box.innerHTML='<div class="purebox">'+pHead()+
-      '<div class="pureq">อ่านออกเสียงตัวนี้ดังๆ ก่อน แล้วค่อยกดฟังเฉลย</div>'+
+      '<div class="pureq">อ่านตัวนี้ในใจก่อน แล้วกด 🔊 ฟัง — เสียงที่ได้ยินตรงกับตัวนี้ไหม?</div>'+
       '<div class="pureshow">'+it[0]+'</div>'+
-      '<div class="selfgrade"><button id="reveal" type="button">🔊 ฟังเฉลย</button></div>'+
+      '<button class="bigplay" id="pplay" type="button" aria-label="ฟังเสียง">🔊</button>'+
+      '<div class="selfgrade"><button id="gy" type="button">✅ ตรงกัน</button><button id="gn" type="button">❌ ไม่ตรง</button></div>'+
       '<div class="purefb" id="pfb"></div></div>';
-    $('#reveal').onclick=()=>{
-      sayItem(it);
-      $('#pfb').innerHTML='<div>'+pCard(it)+'</div>'+
-        '<div class="selfgrade"><button id="gy" type="button">อ่านถูก</button><button id="gn" type="button">อ่านผิด</button></div>';
-      $('#gy').onclick=()=>{ pScore(true); pNext(); };
-      $('#gn').onclick=()=>{ pScore(false); pNext(); };
+    let heardOnce=false;
+    const play=()=>{ heardOnce=true; sayItem(heard); const e=$('#pplay'); e.classList.remove('ring'); void e.offsetWidth; e.classList.add('ring'); };
+    $('#pplay').onclick=play;
+    if($('#vauto').checked && unlocked) setTimeout(play,240);
+    const answer=(saysSame)=>{
+      if(pLock) return;
+      if(!heardOnce){ $('#pfb').innerHTML='<span class="no">กด 🔊 ฟังเสียงก่อนนะ</span>'; return; }
+      pLock=true;
+      const ok = saysSame===useReal; pScore(ok);
+      $('#gy').disabled=$('#gn').disabled=true;
+      $('#pfb').innerHTML=(ok?'<span class="ok">ถูกต้อง · </span>':'<span class="no">ยังไม่ใช่ · </span>')+
+        (useReal ? 'เสียงที่ได้ยินคือ <b class="py">'+it[0]+'</b> ตรงกับตัวที่เห็น'
+                 : 'เสียงที่ได้ยินคือ <b class="py">'+heard[0]+'</b> ไม่ใช่ <b class="py">'+it[0]+'</b>')+
+        (useReal ? '' : '<div class="selfgrade"><button type="button" id="ha">🔊 '+it[0]+'</button><button type="button" id="hb">🔊 '+heard[0]+'</button></div>')+
+        '<div>'+pCard(it)+'</div>'+pAfter();
+      if(!useReal){ $('#ha').onclick=()=>sayItem(it); $('#hb').onclick=()=>sayItem(heard); }
+      bindNext();
     };
+    $('#gy').onclick=()=>answer(true);
+    $('#gn').onclick=()=>answer(false);
     return;
   }
 

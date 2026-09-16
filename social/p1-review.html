@@ -471,10 +471,12 @@ RB.mc=function(b,bi){
   var h='<div class="blk">';
   b.items.forEach(function(it,k){
     var id='mc'+bi+'_'+k; CUR.total++;
+    /* สลับลำดับตัวเลือกทุกครั้งที่เปิดชุด คำตอบจะได้ไม่อยู่ตำแหน่งเดิม */
+    var order = shuffle(it.opts.map(function(o,oi){ return oi; }));
     h+='<div class="item" id="'+id+'"><div class="qt"><span class="n">'+(k+1)+'.</span><span>'+esc(it.q)+'</span>'+
-       spk(it.q+' … '+it.opts.map(function(o,oi){return TL[oi]+' '+o}).join(' … '))+'</div>';
-    it.opts.forEach(function(o,oi){
-      h+='<button class="opt" onclick="pickMC(\''+id+'\','+oi+','+it.a+')"><i>'+TL[oi]+'.</i>'+esc(o)+'</button>';
+       spk(it.q+' … '+order.map(function(oi,pos){return TL[pos]+' '+it.opts[oi]}).join(' … '))+'</div>';
+    order.forEach(function(oi,pos){
+      h+='<button class="opt" data-o="'+oi+'" onclick="pickMC(\''+id+'\','+oi+','+it.a+')"><i>'+TL[pos]+'.</i>'+esc(it.opts[oi])+'</button>';
     });
     h+='<div class="fb"></div></div>';
   });
@@ -482,11 +484,11 @@ RB.mc=function(b,bi){
 };
 function pickMC(id,oi,a){
   var el=document.getElementById(id); if(el.dataset.done) return; el.dataset.done=1;
-  var bs=el.querySelectorAll('.opt'); var ok=(oi===a);
-  bs[a].classList.add('good'); if(!ok) bs[oi].classList.add('bad');
+  var ok=(oi===a), right=el.querySelector('.opt[data-o="'+a+'"]');
+  right.classList.add('good'); if(!ok) el.querySelector('.opt[data-o="'+oi+'"]').classList.add('bad');
   el.classList.add(ok?'ok':'no');
   el.querySelector('.fb').className='fb '+(ok?'ok':'no');
-  el.querySelector('.fb').textContent= ok?praise():'✗ คำตอบที่ถูกคือข้อ '+TL[a];
+  el.querySelector('.fb').textContent= ok?praise():'✗ คำตอบที่ถูกคือข้อ '+right.querySelector('i').textContent.replace('.','')+' '+right.textContent.replace(/^[ก-ฮ]\./,'');
   mark(id,ok);
 }
 
@@ -723,13 +725,19 @@ RB.match=function(b,bi){
   return h+'</div>';
 };
 
+/* สลับคำให้ไม่ตรงกับคำตอบ ไม่อย่างนั้นเด็กแค่แตะตามลำดับก็ถูก */
+function mixed(words, a){
+  var w=words.slice();
+  for(var t=0;t<20;t++){ w=shuffle(words); if(norm(w.join(''))!==norm(a)) break; }
+  return w;
+}
 RB.order=function(b,bi){
   var h='<div class="blk">';
   b.items.forEach(function(it,k){
     var id='o'+bi+'_'+k; CUR.total++;
     h+='<div class="item" id="w'+id+'" data-a="'+esc(it.a)+'"><div class="slotline" id="s'+id+'"><em>แตะคำด้านล่างเรียงเป็นประโยค</em></div>'+
        '<div class="ordrow" id="r'+id+'" style="margin-top:8px">'+
-       shuffle(it.words).map(function(w){return '<button onclick="addWord(\''+id+'\',this)">'+esc(w)+'</button>'}).join('')+'</div>'+
+       mixed(it.words, it.a).map(function(w){return '<button onclick="addWord(\''+id+'\',this)">'+esc(w)+'</button>'}).join('')+'</div>'+
        '<button class="mini" onclick="resetOrder(\''+id+'\')">ล้างคำตอบ</button>'+
        '<button class="mini" onclick="checkOrder(\''+id+'\')">ตรวจคำตอบ</button><div class="fb"></div></div>';
   });
