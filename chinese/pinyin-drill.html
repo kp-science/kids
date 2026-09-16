@@ -2,7 +2,9 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
 <title>拼音 ฝึกพยัญชนะ–สระพินอิน (มีเสียง)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +24,12 @@ body{background:var(--paper);color:var(--ink);
 .han{font-family:'Noto Sans Thai Looped',sans-serif}
 
 .cover{background:var(--jade);color:#fff;padding:18px 20px 16px;
+  padding-top:calc(18px + env(safe-area-inset-top));
   display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:4px solid #174236}
+.home{flex-basis:100%;display:inline-flex;align-items:center;align-self:flex-start;gap:4px;width:max-content;
+  color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;padding:6px 14px;margin-bottom:-4px;
+  border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.12)}
+.home:hover{background:rgba(255,255,255,.22)}
 .cover .big{font-size:2.4rem;line-height:1;font-weight:700;letter-spacing:.08em;opacity:.95}
 .cover-txt h1{font-family:'Mali',sans-serif;font-size:1.15rem;font-weight:700;line-height:1.4}
 .cover-txt p{font-size:.82rem;opacity:.75;line-height:1.4}
@@ -472,6 +479,7 @@ table.dgrid,.gwrap,.stile,.tile,.prow,.saytarget,.cue,.staff,.choices,.side,.wbt
 <body>
 
 <div class="cover">
+  <a class="home" href="../">← หน้ารวม</a>
   <div class="big">拼音</div>
   <div class="cover-txt">
     <h1>ใบงานพยัญชนะ–สระ ฉบับฝึกเอง</h1>
@@ -802,7 +810,11 @@ function loadVoices(){
   }
   $('#voicewarn').style.display='none';
   sel.innerHTML=voices.map((v,i)=>'<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join('');
-  const pref=voices.findIndex(v=>/zh[-_]?CN|Mandarin|Tingting|Ting-Ting|Yaoyao|Huihui/i.test(v.lang+v.name));
+  /* เลือกเสียงมาตรฐานก่อน — Eddy/Flo/Grandma ฯลฯ เป็นเสียงแนวสนุกของ Apple ไม่เหมาะเป็นต้นแบบ */
+  const FUN=/Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley/i;
+  let pref=-1;
+  [/Tingting|Ting-Ting|Yaoyao|Huihui|Xiaoxiao|Yunxi/i, /zh[-_]?CN|Mandarin/i, /./].some(re=>
+    (pref=voices.findIndex(v=>re.test(v.lang+' '+v.name) && !FUN.test(v.name)))>=0);
   sel.value=String(pref>=0?pref:0);
   voice=voices[+sel.value];
 }
