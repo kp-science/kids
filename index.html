@@ -42,7 +42,7 @@ button{font:inherit;color:inherit}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.cloud,.sunrays,.bob{animation:none!important}}
 
-.hin{position:relative;max-width:980px;margin:0 auto;padding-bottom:118px}
+.hin{position:relative;max-width:980px;margin:0 auto;padding-bottom:170px}
 .hello{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);border-radius:999px;
   padding:4px 14px 4px 6px;font-weight:600;font-size:.9rem;box-shadow:0 3px 0 rgba(42,36,64,.12)}
 .hello .face{font-size:1.4rem}
@@ -59,7 +59,7 @@ button{font:inherit;color:inherit}
 .search::before{content:"🔎";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:1.05rem}
 
 /* ---------------- น้องบนหน้าแรก ขยับดุ๊กดิ๊ก ---------------- */
-.kid{position:absolute;right:max(3%,calc((100% - 980px)/2));bottom:62px;width:210px;z-index:2;cursor:pointer;
+.kid{position:absolute;right:max(4%,calc((100% - 980px)/2 + 20px));bottom:40px;width:165px;z-index:2;cursor:pointer;
   -webkit-tap-highlight-color:transparent}
 .kid .body{animation:wiggle 2.8s ease-in-out infinite;transform-origin:50% 100%}
 .kid img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-select:none;user-select:none;
@@ -67,7 +67,7 @@ button{font:inherit;color:inherit}
 .kid.jump .body{animation:jump .7s cubic-bezier(.3,1.6,.5,1)}
 @keyframes wiggle{0%,100%{transform:translateY(0) rotate(-3deg)}25%{transform:translateY(-8px) rotate(2deg)}50%{transform:translateY(0) rotate(4deg)}75%{transform:translateY(-6px) rotate(-2deg)}}
 @keyframes jump{0%{transform:translateY(0) scale(1,1)}20%{transform:translateY(4px) scale(1.06,.92)}50%{transform:translateY(-38px) scale(.96,1.06) rotate(6deg)}80%{transform:translateY(0) scale(1.04,.96)}100%{transform:none}}
-.kid .bubble{position:absolute;left:-118px;top:18px;background:#fff;color:var(--ink);font-family:'Mali',sans-serif;font-weight:700;font-size:.95rem;
+.kid .bubble{position:absolute;left:-128px;top:30px;background:#fff;color:var(--ink);font-family:'Mali',sans-serif;font-weight:700;font-size:.95rem;
   padding:8px 14px;border-radius:18px;box-shadow:0 6px 16px rgba(30,80,120,.18);white-space:nowrap;animation:popin .5s ease-out both,floatb 3.4s ease-in-out .5s infinite}
 .kid .bubble::after{content:"";position:absolute;right:-8px;top:50%;margin-top:-8px;border:8px solid transparent;border-left-color:#fff;border-right:0}
 @keyframes popin{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
@@ -78,10 +78,10 @@ button{font:inherit;color:inherit}
 .kid .fx:nth-of-type(3){left:46%;top:6%;animation-delay:2.4s}
 @keyframes rise{0%{transform:translateY(10px) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(-70px) scale(1.1) rotate(20deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){.kid .body,.kid .bubble,.kid .fx{animation:none!important}.kid .fx{display:none}}
-@media (max-width:900px){.kid{width:180px}}
+@media (max-width:900px){.kid{width:152px}}
 @media (max-width:560px){
-  .kid{width:112px;right:10px;bottom:66px}
-  .kid .bubble{left:auto;right:104px;top:56px;font-size:.78rem;padding:5px 10px}
+  .kid{width:92px;right:12px;bottom:62px}
+  .kid .bubble{left:auto;right:84px;top:30px;font-size:.78rem;padding:5px 10px}
   .kid .fx{font-size:1rem}
 }
 
@@ -184,7 +184,7 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
 
 @media (max-width:560px){
   .hero h1{font-size:1.85rem}
-  .hin{padding-bottom:196px}
+  .hin{padding-bottom:252px}
   /* จอแคบ: ย่อฉากให้อยู่แถบล่าง ไม่ทับชื่อเว็บกับช่องค้นหา */
   .scene{top:auto;height:150px}
   .pick{width:84px}
@@ -251,7 +251,7 @@ footer .grass{font-size:1.3rem;letter-spacing:6px;display:block;margin-bottom:4p
   </div>
   <div class="kid" id="kid" role="img" aria-label="น้องโบกมือทักทาย">
     <span class="bubble" id="bubble">มาเรียนกันเถอะ!</span>
-    <div class="body"><img src="img/kid.webp" alt="" width="520" height="596"></div>
+    <div class="body"><img src="img/kid.webp" alt="" width="440" height="827"></div>
     <span class="fx">💖</span><span class="fx">⭐</span><span class="fx">✨</span>
   </div>
 </header>
@@ -452,7 +452,7 @@ $('#q').addEventListener('input', e => { term = e.target.value; render(); });
 /* แตะน้องแล้วกระโดดดึ๋ง พร้อมเปลี่ยนคำพูด */
 (function(){
   const kid = $('#kid'), bubble = $('#bubble');
-  const LINES = ['มาเรียนกันเถอะ!','วันนี้สู้ ๆ นะ!','เก่งที่สุดเลย!','เล่นเกมกันไหม?','ทำได้แน่นอน!','ยิ้มหน่อยนะ 😊'];
+  const LINES = ['มาเรียนกันเถอะ!','ส่งหัวใจให้นะ 💖','วันนี้สู้ ๆ นะ!','เก่งที่สุดเลย!','เล่นเกมกันไหม?','ทำได้แน่นอน!'];
   let i = 0;
   kid.addEventListener('click', () => {
     kid.classList.remove('jump'); void kid.offsetWidth; kid.classList.add('jump');
