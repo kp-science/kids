@@ -488,7 +488,7 @@ table.dgrid,.gwrap,.stile,.tile,.prow,.saytarget,.cue,.staff,.choices,.side,.wbt
 /* ================= ธีมเด็ก: โคมแดง เมฆทอง ================= */
 body{background:#FFF9EE}
 .cover{position:relative;overflow:hidden;border-bottom:none;padding-bottom:26px;
-  background:linear-gradient(135deg,#E0463A 0%,#B83426 60%,#8E2419 100%)}
+  background:linear-gradient(135deg,#F2786B 0%,#E0574A 55%,#C9443A 100%)}
 .cover::before{content:"🏮";position:absolute;right:18px;top:calc(8px + env(safe-area-inset-top));font-size:2.6rem;
   animation:lantern 3.2s ease-in-out infinite;transform-origin:50% 0}
 .cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14px;
@@ -496,19 +496,19 @@ body{background:#FFF9EE}
 @keyframes lantern{50%{transform:rotate(8deg)}}
 @media (prefers-reduced-motion:reduce){.cover::before{animation:none}}
 .cover .big{width:84px;height:84px;border-radius:26px;background:#FFD66B;color:#B83426;display:grid;place-items:center;
-  font-size:2.1rem;letter-spacing:0;box-shadow:0 5px 0 #8E2419;transform:rotate(-6deg);opacity:1}
-.cover-txt h1{font-size:1.45rem;text-shadow:0 2px 0 #8E2419}
+  font-size:2.1rem;letter-spacing:0;box-shadow:0 8px 18px rgba(0,0,0,.18);transform:rotate(-6deg);opacity:1}
+.cover-txt h1{font-size:1.45rem;text-shadow:0 2px 8px rgba(0,0,0,.2)}
 .cover-txt p{opacity:.92}
-.chip b{background:#FFD66B;color:#8E2419;border:none;box-shadow:0 3px 0 #8E2419}
-.home{background:#fff;color:#B83426;border:none;box-shadow:0 3px 0 #8E2419;font-weight:700}
+.chip b{background:rgba(255,255,255,.95);color:#B83426;border:none;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.home{background:#fff;color:#B83426;border:none;box-shadow:0 3px 10px rgba(0,0,0,.15);font-weight:700}
 .cover .home{position:absolute;left:16px;top:calc(12px + env(safe-area-inset-top));flex-basis:auto;margin:0}
 .cover{padding-top:calc(60px + env(safe-area-inset-top))}
 .home:hover{background:#FFF0E0}
 
 nav{background:#FFF9EE;border-bottom:none;gap:8px;padding:10px 14px 6px}
-nav button{border:3px solid #FFC2B8;border-radius:999px;padding:7px 14px;background:#fff;color:#8E2419;
-  box-shadow:0 3px 0 #FFC2B8}
-nav button.on{background:#B83426;border-color:#B83426;color:#fff;box-shadow:0 3px 0 #8E2419}
+nav button{border:none;border-radius:999px;padding:8px 15px;background:#fff;color:#8E2419;
+  box-shadow:0 3px 12px rgba(58,51,80,.10)}
+nav button.on{background:#E0574A;color:#fff;box-shadow:0 4px 14px rgba(184,52,38,.3)}
 nav button[data-p="rule"]::before{content:"📖 "}
 nav button[data-p="drill"]::before{content:"🃏 "}
 nav button[data-p="game"]::before{content:"🎮 "}
@@ -518,12 +518,12 @@ nav button[data-p="pure"]::before{content:"🔤 "}
 nav button[data-p="sheet"]::before{content:"📝 "}
 
 h2.sec{font-size:1.25rem}
-h2.sec .no{width:32px;height:32px;border-radius:12px;background:#FFB400;color:#fff;transform:rotate(-6deg);box-shadow:0 3px 0 #C98A00}
-.rule{border:3px solid #FFD2C8;border-radius:20px;box-shadow:0 4px 0 #FFD2C8}
+h2.sec .no{width:32px;height:32px;border-radius:12px;background:#FFE7A3;color:#8A6100}
+.rule{border:none;border-radius:22px;box-shadow:0 6px 18px rgba(58,51,80,.07)}
 .rule h3{font-family:'Mali',sans-serif;font-size:1rem}
-.audiobar{border:3px solid #FFE08A;border-radius:18px;box-shadow:0 4px 0 #FFE08A;background:#FFFDF3}
-.rulebox{border-radius:6px 18px 18px 18px;background:#FFF6BF;border-left:none;box-shadow:0 4px 0 #F2C94C}
-.tile{border-radius:14px;box-shadow:0 3px 0 #FFC2B8}
+.audiobar{border:none;border-radius:20px;box-shadow:0 6px 18px rgba(58,51,80,.07);background:#fff}
+.rulebox{border-radius:18px;background:#FFF9DB;border-left:none;box-shadow:0 8px 20px rgba(160,120,20,.10)}
+.tile{border-radius:14px;box-shadow:0 3px 8px rgba(58,51,80,.08)}
 .sslot{border-radius:12px 12px 0 0}
 </style>
 </head>

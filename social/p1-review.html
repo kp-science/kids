@@ -190,122 +190,136 @@ a.back{text-decoration:none;color:inherit;display:inline-block}
 @keyframes shk{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 @media(max-width:480px){.slot{min-width:72px}.mrow .slot{min-width:120px}.numpad .tile{min-width:33px;font-size:16px}}
 
-/* ================= ธีมเด็ก: สีสัน ภาพ และสติกเกอร์ ================= */
-body{background:#FFF9EE;font-family:'Noto Sans Thai Looped','Sarabun',sans-serif}
-body::before{opacity:.45;background-image:radial-gradient(circle at 2px 2px,var(--bd) 2px,transparent 0);background-size:30px 30px}
-.top{background:rgba(255,255,255,.94);border-bottom:3px solid var(--bd)}
-.back{border-color:var(--ac);color:var(--ac);box-shadow:0 3px 0 var(--ac);border-radius:999px}
-.top .tt{color:var(--ac)}
-.pill{background:var(--ac);box-shadow:0 2px 0 rgba(0,0,0,.15)}
-.pbar{height:8px;background:var(--tn)}
-.pbar>i{display:block;height:100%;width:0;border-radius:0 99px 99px 0;transition:width .35s;
-  background:repeating-linear-gradient(45deg,var(--ac) 0 10px,var(--bd) 10px 20px)}
+/* ================= ธีมเด็ก: กล่องลอย สีพาสเทล สบายตา ================= */
+:root{--ok:#2F9E5B;--okbg:#EAF8EF;--no:#D2693C;--nobg:#FFF3EC;--ink:#3A3350;--mute:#8C849E;--paper:#FFFBF4}
+body{background:var(--paper);font-family:'Noto Sans Thai Looped','Sarabun',sans-serif;color:var(--ink)}
+body::before{display:none}
+/* ฉากลอยด้านหลัง */
+.deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.deco i{position:absolute;border-radius:50%;opacity:.55;animation:floaty 14s ease-in-out infinite}
+.deco i:nth-child(1){width:220px;height:220px;background:#FFE3EC;left:-60px;top:12%}
+.deco i:nth-child(2){width:160px;height:160px;background:#E3F1FF;right:-40px;top:30%;animation-delay:-4s}
+.deco i:nth-child(3){width:260px;height:260px;background:#E6F8EE;left:-90px;top:62%;animation-delay:-8s}
+.deco i:nth-child(4){width:180px;height:180px;background:#FFF1D6;right:-50px;top:78%;animation-delay:-2s}
+.deco b{position:absolute;font-size:22px;opacity:.5;animation:twinkle 5s ease-in-out infinite}
+.deco b:nth-of-type(1){left:8%;top:22%}.deco b:nth-of-type(2){right:10%;top:48%;animation-delay:-2s}
+.deco b:nth-of-type(3){left:12%;top:74%;animation-delay:-3.5s}.deco b:nth-of-type(4){right:14%;top:12%;animation-delay:-1s}
+@keyframes floaty{50%{transform:translateY(-22px) scale(1.04)}}
+@keyframes twinkle{50%{transform:scale(1.25) rotate(15deg);opacity:.8}}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.deco i,.deco b,.shero .sun,.float{animation:none!important}}
 
-/* ---- ป้ายหัวหน้าวิชา: ท้องฟ้า + เนินหญ้า ---- */
-.shero{position:relative;overflow:hidden;margin:16px 0 8px;border-radius:28px;padding:18px 20px 70px;
-  background:linear-gradient(180deg,#7CC8F2,#D2F0FF);border:3px solid var(--ac);box-shadow:0 6px 0 var(--ac)}
+.top{background:rgba(255,251,244,.92);border-bottom:none;box-shadow:0 4px 18px rgba(58,51,80,.06)}
+.back{border:none;background:#fff;color:var(--ac);border-radius:999px;box-shadow:0 3px 12px rgba(58,51,80,.12);font-weight:700}
+.top .tt{color:var(--ink)}
+.pill{background:#fff;color:var(--ac);box-shadow:0 3px 12px rgba(58,51,80,.12);font-weight:700}
+.pbar{height:6px;background:transparent}
+.pbar>i{display:block;height:100%;width:0;border-radius:0 99px 99px 0;transition:width .4s;
+  background:linear-gradient(90deg,#FF9EC4,#FFC58A,#FFE08A,#95E08A,#8EC5FF,#C9A8FF)}
+
+/* ---- ป้ายหัววิชา ---- */
+.shero{position:relative;overflow:hidden;margin:18px 0 10px;border-radius:30px;padding:20px 22px 74px;border:none;
+  background:linear-gradient(180deg,#9AD7F7,#DDF3FF);box-shadow:0 12px 30px rgba(58,51,80,.10)}
 .shero svg{position:absolute;left:0;bottom:0;width:100%;height:84px}
 .shero .row{position:relative;display:flex;align-items:center;gap:14px}
-.shero .emo{width:74px;height:74px;border-radius:24px;background:#fff;display:grid;place-items:center;font-size:2.6rem;
-  box-shadow:0 5px 0 var(--ac);transform:rotate(-6deg);flex:none}
-.shero h2{margin:0;font-size:32px;line-height:1.2;color:#fff;text-shadow:0 3px 0 var(--ac)}
-.shero p{margin:2px 0 0;color:#1F4E6E;font-weight:600;font-size:15.5px}
-.shero .sun{position:absolute;right:16px;top:12px;font-size:2.4rem;animation:sway 4s ease-in-out infinite}
-@keyframes sway{50%{transform:rotate(14deg) scale(1.06)}}
-@media (prefers-reduced-motion:reduce){.shero .sun{animation:none}}
+.shero .emo{width:76px;height:76px;border-radius:26px;background:#fff;display:grid;place-items:center;font-size:2.6rem;
+  box-shadow:0 8px 18px rgba(58,51,80,.14);flex:none;animation:bob 3.5s ease-in-out infinite}
+.shero h2{margin:0;font-size:31px;line-height:1.2;color:#fff;text-shadow:0 2px 8px rgba(30,80,120,.35)}
+.shero p{margin:3px 0 0;color:#2D5B78;font-weight:600;font-size:15.5px}
+.shero .sun{position:absolute;right:18px;top:14px;font-size:2.3rem;animation:bob 4s ease-in-out infinite}
 
-/* ---- รายการชุด: การ์ดสีรุ้ง ---- */
+/* ---- รายการชุด ---- */
 .sets{gap:14px}
-.set{border:3px solid var(--sc);border-radius:22px;box-shadow:0 5px 0 var(--scd);padding:12px 14px;background:#fff}
-.set:active{transform:translateY(4px);box-shadow:0 1px 0 var(--scd)}
-.setn{width:52px;height:52px;border-radius:18px;background:var(--sc);border:none;font-size:1.7rem;color:#fff;
-  box-shadow:0 3px 0 var(--scd);transform:rotate(-5deg);position:relative}
-.setn b{position:absolute;right:-8px;bottom:-8px;background:#fff;color:var(--scd);border:2px solid var(--sc);border-radius:99px;
-  min-width:24px;height:24px;font-size:13px;display:grid;place-items:center;font-family:'Mali',cursive}
+.set{border:none;border-radius:24px;background:#fff;padding:13px 16px;box-shadow:0 8px 22px rgba(58,51,80,.08);transition:transform .15s,box-shadow .15s}
+.set:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(58,51,80,.12)}
+.set:active{transform:translateY(1px)}
+.setn{width:54px;height:54px;border-radius:18px;background:var(--scl);border:none;font-size:1.7rem;color:var(--scd);position:relative;flex:none}
+.setn b{position:absolute;right:-7px;bottom:-7px;background:var(--sc);color:#fff;border:3px solid #fff;border-radius:99px;
+  min-width:26px;height:26px;font-size:13px;display:grid;place-items:center;font-family:'Mali',cursive}
 .set .t b{font-family:'Mali',cursive;font-size:19px;color:var(--ink)}
-.set .arw{color:var(--scd);font-weight:700}
-.score{background:#FFF3C4;color:#8A6100;border:2px solid #F2C94C}
+.set .t i{color:var(--mute)}
+.set .arw{width:34px;height:34px;border-radius:50%;background:var(--scl);color:var(--scd);display:grid;place-items:center;font-size:20px}
+.score{background:#FFF6D6;color:#8A6100;border:none}
 
-/* ---- หัวชุดแบบฝึก ---- */
-.ttl.band{display:flex;align-items:center;gap:12px;background:var(--tn);border:3px solid var(--bd);border-radius:24px;
-  padding:12px 16px;margin:16px 0 6px}
-.ttl.band .emo{font-size:2.4rem;flex:none;transform:rotate(-6deg)}
-.ttl.band h2{color:var(--ac)}
+/* ---- หัวชุด ---- */
+.ttl.band{display:flex;align-items:center;gap:14px;background:#fff;border:none;border-radius:26px;padding:14px 18px;margin:18px 0 8px;
+  box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.ttl.band .emo{width:58px;height:58px;border-radius:20px;background:var(--tn);display:grid;place-items:center;font-size:2rem;flex:none}
+.ttl.band h2{color:var(--ink)}
 
-/* ---- คำชี้แจง: ริบบิ้นสี ---- */
-.instr{background:var(--ac);color:#fff;border:none;border-radius:999px;padding:7px 8px 7px 8px;margin:26px 0 12px;
-  box-shadow:0 4px 0 rgba(0,0,0,.14);font-family:'Mali',cursive;font-weight:600}
-.instr .ie{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.25rem;flex:none}
+/* ---- แต่ละหมวดใช้สีพาสเทลของตัวเอง (--k กลาง / --kl อ่อน / --kd เข้ม) ---- */
+.bz{--k:#8EC5FF;--kl:#EEF6FF;--kd:#2F6DB0}
+.instr{background:var(--kl);color:var(--kd);border:none;border-radius:20px;padding:8px 10px 8px 8px;margin:28px 0 12px;
+  font-family:'Mali',cursive;font-weight:600;box-shadow:none}
+.instr .ie{width:40px;height:40px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:1.3rem;flex:none;
+  box-shadow:0 3px 10px rgba(58,51,80,.08)}
 .instr>span:not(.ie){flex:1}
-.instr .spk{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.95)}
+.instr .spk{border:none;background:#fff;box-shadow:0 2px 8px rgba(58,51,80,.08)}
 
-/* ---- กล่องจำให้ได้: กระดาษโน้ต ---- */
-.box{background:#FFF6BF;border:none;border-radius:6px 22px 22px 22px;padding:14px 16px;margin:18px 4px;transform:rotate(-.6deg);
-  box-shadow:0 5px 0 #F2C94C, 0 8px 16px rgba(0,0,0,.06);position:relative}
-.box::before{content:"📌";position:absolute;top:-14px;left:14px;font-size:1.4rem}
+.box{background:#FFF9DB;border:none;border-radius:20px;padding:16px 18px 14px;margin:22px 6px;transform:rotate(-.8deg);
+  box-shadow:0 10px 24px rgba(160,120,20,.12);position:relative}
+.box::before{content:"";position:absolute;top:-10px;left:50%;width:90px;height:22px;margin-left:-45px;border-radius:4px;
+  background:rgba(255,190,120,.55);transform:rotate(2deg)}
 .box .bt{color:#9A6A00;font-size:20px}
 .box .bt::before{content:"💡 "}
 
-/* ---- ข้อสอบแต่ละข้อ ---- */
-.item{border:2.5px solid var(--bd);border-radius:20px;box-shadow:0 4px 0 var(--bd);padding:12px 14px;margin-bottom:14px}
-.item.ok{border-color:#58B368;background:#F1FAF0;box-shadow:0 4px 0 #58B368}
-.item.no{border-color:#E57373;background:#FFF3F3;box-shadow:0 4px 0 #E57373}
-.qt .n{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;
-  font-size:15px;font-weight:700;margin-top:1px}
-.opt{border:2.5px solid var(--bd);border-radius:16px;padding:9px 12px;display:flex;align-items:center;gap:6px;
-  box-shadow:0 3px 0 var(--tn);font-weight:600}
-.opt i{width:30px;height:30px;border-radius:50%;background:var(--tn);color:var(--ac);display:grid;place-items:center;margin-right:6px;flex:none}
-.opt:hover{background:var(--tn)}
-.opt.good{border-color:#58B368;background:#E3F5E1}
-.opt.good i{background:#58B368;color:#fff}
-.opt.bad{border-color:#E57373;background:#FFE6E6}
-.opt.bad i{background:#E57373;color:#fff}
-.tfb button{border-radius:16px;font-size:18px;padding:9px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
-.tfb button:first-child{border-color:#8FD19A;background:#F0FAF1}
-.tfb button:last-child{border-color:#F4A3A3;background:#FFF2F2}
-.tfb button.good{border-color:#58B368;background:#C9EDCB}
-.tfb button.bad{border-color:#E57373;background:#FFD2D2}
-
-.fb{font-family:'Mali',cursive;font-size:17px}
-.fb.ok{color:#2E8B3E}
+.item{background:#fff;border:none;border-radius:22px;padding:13px 15px;margin-bottom:14px;
+  box-shadow:0 6px 18px rgba(58,51,80,.07);transition:box-shadow .2s,background .2s}
+.item.ok{background:#fff;box-shadow:0 0 0 3px #BDEBCB, 0 6px 18px rgba(58,51,80,.07)}
+.item.no{background:#fff;box-shadow:0 0 0 3px #FFD9C6, 0 6px 18px rgba(58,51,80,.07)}
+.qt .n{width:30px;height:30px;border-radius:11px;background:var(--kl);color:var(--kd);display:grid;place-items:center;
+  font-size:15px;font-weight:700;margin-top:1px;flex:none}
+.spk{border:none;background:var(--kl);border-radius:12px}
+.opt{border:2px solid #F0ECF5;border-radius:16px;padding:9px 12px;display:flex;align-items:center;gap:6px;font-weight:600;background:#FDFCFF}
+.opt i{width:30px;height:30px;border-radius:50%;background:var(--kl);color:var(--kd);display:grid;place-items:center;margin-right:6px;flex:none}
+.opt:hover{border-color:var(--k);background:#fff}
+.opt.good{border-color:#9EDDB2;background:#EFFAF2}
+.opt.good i{background:#5BC07D;color:#fff}
+.opt.bad{border-color:#FFCBB3;background:#FFF5EF}
+.opt.bad i{background:#F29B72;color:#fff}
+.tfb button{border:2px solid #F0ECF5;border-radius:16px;font-size:18px;padding:9px;background:#FDFCFF}
+.tfb button.good{border-color:#9EDDB2;background:#EFFAF2}
+.tfb button.bad{border-color:#FFCBB3;background:#FFF5EF}
+.fb{font-family:'Mali',cursive;font-size:16.5px}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
 
 /* ---- ลากวาง ---- */
-.tray{background:#FFFDF6;border:3px dashed var(--bd);border-radius:20px}
-.tile{background:var(--tn);border:2.5px solid var(--ac);color:var(--ac);border-radius:14px;box-shadow:0 3px 0 var(--bd)}
-.tile.sel{background:var(--ac);color:#fff}
-.slot{background:#fff;border-color:var(--bd);border-radius:14px}
-.numpad .tile{color:#fff;border-color:transparent;box-shadow:0 3px 0 rgba(0,0,0,.18)}
-.numpad .tile:nth-of-type(6n+1){background:#FF7AA8}
-.numpad .tile:nth-of-type(6n+2){background:#FF9F43}
-.numpad .tile:nth-of-type(6n+3){background:#F6B800}
-.numpad .tile:nth-of-type(6n+4){background:#3DBE6B}
-.numpad .tile:nth-of-type(6n+5){background:#3AA0F0}
-.numpad .tile:nth-of-type(6n){background:#9B6BFF}
-.numpad .tile.sel{outline:3px solid var(--ink);transform:scale(1.12)}
-.calcgrid .item{box-shadow:0 3px 0 var(--bd)}
-.calcgrid .item b{color:var(--ac)}
-.slotline{border-color:var(--bd);background:#fff;border-radius:16px}
-.ordrow button{background:var(--tn);border:2.5px solid var(--ac);color:var(--ac);font-weight:700;border-radius:14px;box-shadow:0 3px 0 var(--bd)}
-.mini{border-radius:999px;border-color:var(--bd)}
-
-/* ---- แผนภูมิ ---- */
-.pic{border:3px solid var(--bd);border-radius:22px}
-.pic .pt{background:var(--ac);color:#fff}
-.pic .pr:nth-child(odd){background:var(--tn)}
-.cntrow .sy{background:var(--tn);border-radius:14px;padding:6px 10px}
-.bank span{background:var(--tn);border-color:var(--bd);font-weight:600}
-textarea.free{border-color:var(--bd);background:#FFFEF8;border-radius:16px}
+.tray{background:rgba(255,255,255,.96);border:none;border-radius:22px;box-shadow:0 8px 24px rgba(58,51,80,.10)}
+.tile{background:var(--kl);border:2px solid var(--k);color:var(--kd);border-radius:14px;box-shadow:0 3px 8px rgba(58,51,80,.08)}
+.tile.sel{background:var(--kd);border-color:var(--kd);color:#fff}
+.slot{background:#FBFAFE;border:2.5px dashed var(--k);border-radius:14px}
+.slot.hot,.slot.focus{background:#FFF6CC;border-color:#F2C94C}
+.slot.ok{border:2.5px solid #9EDDB2;background:#EFFAF2;color:var(--ok)}
+.slot.no{border:2.5px solid #FFCBB3;background:#FFF5EF;color:var(--no)}
+.numpad .tile{border:none;color:#4A4060;box-shadow:0 2px 6px rgba(58,51,80,.1)}
+.numpad .tile:nth-of-type(6n+1){background:#FFD6E5}
+.numpad .tile:nth-of-type(6n+2){background:#FFE2C7}
+.numpad .tile:nth-of-type(6n+3){background:#FFF0B3}
+.numpad .tile:nth-of-type(6n+4){background:#D5F3DF}
+.numpad .tile:nth-of-type(6n+5){background:#D6EBFF}
+.numpad .tile:nth-of-type(6n){background:#E6DBFF}
+.numpad .tile.sel{outline:3px solid var(--ac);transform:scale(1.12)}
+.calcgrid .item b{color:var(--kd)}
+.slotline{border:2.5px dashed var(--k);background:#FBFAFE;border-radius:16px}
+.ordrow button{background:var(--kl);border:2px solid var(--k);color:var(--kd);font-weight:700;border-radius:14px}
+.mini{border:none;background:var(--kl);color:var(--kd);border-radius:999px;font-weight:600}
+.pic{border:none;border-radius:22px;box-shadow:0 6px 18px rgba(58,51,80,.07)}
+.pic .pt{background:var(--kl);color:var(--kd);border-bottom:none}
+.pic .pr{border-bottom:1px dashed #F0ECF5}
+.cntrow .sy{background:var(--kl);border-radius:14px;padding:6px 10px}
+.bank span{background:var(--kl);border:none;color:var(--kd);font-weight:600}
+textarea.free{border:2px dashed #E6E0EE;background:#FDFCFF;border-radius:16px}
 
 /* ---- สรุปคะแนน ---- */
-.result{border:4px solid var(--ac);border-radius:28px;box-shadow:0 7px 0 var(--ac);
-  background:#fff radial-gradient(circle at 12% 20%,var(--tn) 0 26px,transparent 27px),
-             radial-gradient(circle at 88% 30%,var(--tn) 0 18px,transparent 19px)}
+.result{border:none;border-radius:30px;background:#fff;box-shadow:0 16px 40px rgba(58,51,80,.14)}
 .result .stars{font-size:44px;letter-spacing:6px;line-height:1.2}
-.result .cheer{font-size:40px}
-.btn{border-color:var(--ac);border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
-.btn.gh{color:var(--ac)}
-@media(max-width:480px){.shero h2{font-size:26px}.shero .emo{width:62px;height:62px;font-size:2.2rem}}
+.result .cheer{font-size:40px;animation:bob 2.5s ease-in-out infinite}
+.result .big{color:var(--ac)}
+.btn{border:none;border-radius:999px;background:var(--ac);box-shadow:0 6px 16px rgba(58,51,80,.18)}
+.btn.gh{background:#fff;color:var(--ac)}
+@media(max-width:480px){.shero h2{font-size:25px}.shero .emo{width:62px;height:62px;font-size:2.2rem}.deco b{display:none}}
 </style></head><body>
+<div class="deco" aria-hidden="true"><i></i><i></i><i></i><i></i><b>⭐</b><b>☁️</b><b>✨</b><b>🌸</b></div>
 <div class="top" id="top"></div>
 <div class="wrap" id="app"></div>
 <script>
@@ -323,7 +337,12 @@ function setVars(s){var r=document.documentElement.style;
 
 
 /* ================= ธีมเด็ก ================= */
-var RAINBOW=[['#FF8FB8','#C2306F'],['#FFB35C','#B85A12'],['#F6C945','#8A6100'],['#6FD08C','#23843B'],['#6FB8F5','#2560B8'],['#B08CFF','#6E3CC0']];
+var RAINBOW=[['#F79BC0','#B33A6E','#FFEFF5'],['#FFB38A','#B4551C','#FFF2EA'],['#F2C94C','#8A6100','#FFF8E1'],['#7ED9B0','#1F7F58','#EAFAF2'],['#8EC5FF','#2F6DB0','#EEF6FF'],['#B9A2F5','#5E3FB8','#F4EFFF']];
+/* สีพาสเทลหมุนเวียนต่อหมวด: [กลาง, อ่อน, เข้ม] */
+var ZONES=[['#8EC5FF','#EEF6FF','#2F6DB0'],['#FFB38A','#FFF2EA','#B4551C'],['#7ED9B0','#EAFAF2','#1F7F58'],
+           ['#B9A2F5','#F4EFFF','#5E3FB8'],['#F79BC0','#FFEFF5','#B33A6E'],['#F2C94C','#FFF8E1','#8A6100']];
+function zoneVars(z){ return '--k:'+z[0]+';--kl:'+z[1]+';--kd:'+z[2]; }
+
 /* อิโมจิประจำชุดจากชื่อเรื่อง */
 var TOPIC=[[/ทบทวน/,'⭐'],[/สระ/,'🔤'],[/วรรณยุกต์/,'🎵'],[/ประโยค/,'🧩'],[/จำนวน/,'🔢'],[/โจทย์/,'🤔'],[/บวก|ลบ/,'➕'],[/แผนภูมิ/,'📊'],
   [/น้ำหนัก/,'⚖️'],[/ภายนอก/,'🙋'],[/ภายใน/,'🫀'],[/ประสาท/,'👀'],[/ดูแล/,'🪥'],[/พืช|สัตว์/,'🌱'],[/หลักธรรม/,'🙏'],
@@ -392,7 +411,7 @@ function openSub(i){
   s.pages.forEach(function(p,j){
     var sc=PROG[key(i,j)];
     var rc=RAINBOW[j%RAINBOW.length];
-    h+='<div class="set" style="--sc:'+rc[0]+';--scd:'+rc[1]+'" onclick="openSet('+i+','+j+')"><div class="setn">'+topicEmoji(p.title)+'<b>'+(j+1)+'</b></div>'+
+    h+='<div class="set" style="--sc:'+rc[0]+';--scd:'+rc[1]+';--scl:'+rc[2]+'" onclick="openSet('+i+','+j+')"><div class="setn">'+topicEmoji(p.title)+'<b>'+(j+1)+'</b></div>'+
        '<div class="t"><b>'+esc(p.title)+'</b><i>'+esc(p.sub)+'</i></div>'+
        (sc!==undefined?'<span class="score">⭐ '+sc+'%</span>':'<span class="arw">›</span>')+'</div>';
   });
@@ -405,7 +424,11 @@ function openSet(i,j){
   top_.innerHTML='<div class="in"><button class="back" onclick="openSub('+i+')">‹ ชุด</button>'+
                  '<div class="tt">'+esc(p.title)+'</div><span class="pill" id="prog">0 / 0</span></div><div class="pbar"><i></i></div>';
   var h='<div class="ttl band"><span class="emo">'+topicEmoji(p.title)+'</span><div><h2>'+esc(p.title)+'</h2><p>'+esc(s.name)+' · '+esc(p.sub)+'</p></div></div>';
-  p.blocks.forEach(function(b,bi){ h+= (RB[b.t]||function(){return''})(b,bi,p.blocks[bi+1]); });
+  var zi=-1;
+  p.blocks.forEach(function(b,bi){
+    if(b.t==='instr'||zi<0) zi++;
+    h+='<div class="bz" style="'+zoneVars(ZONES[zi%ZONES.length])+'">'+(RB[b.t]||function(){return''})(b,bi,p.blocks[bi+1])+'</div>';
+  });
   h+='<div id="result" class="hide"></div>';
   app.innerHTML=h; SEL=FOC=null; setupNumpad();
   document.getElementById('prog').textContent='0 / '+CUR.total;

@@ -99,42 +99,51 @@ button{font:inherit;color:inherit;cursor:pointer}
   .qt{font-size:1.02rem}
 }
 
-/* ================= ธีมเด็ก: สีสัน ================= */
-body{background:#FFF9EE}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.5;
-  background-image:radial-gradient(circle at 2px 2px,#CDEBC4 2px,transparent 0);background-size:30px 30px}
-.top{background:rgba(255,255,255,.95);border-bottom:3px solid #95E08A}
-.back{border-color:var(--leaf);color:var(--leaf);border-radius:999px;box-shadow:0 3px 0 var(--leaf)}
-.top .tt{color:var(--leaf)}
-.hero{position:relative;overflow:hidden;border-radius:28px;margin-top:6px;padding:20px 18px 78px;
-  background:linear-gradient(180deg,#7CC8F2,#D2F0FF);border:3px solid var(--leaf);box-shadow:0 6px 0 var(--leaf)}
+/* ================= ธีมเด็ก: กล่องลอย สีพาสเทล สบายตา ================= */
+body{background:#FFFBF4;color:#3A3350}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle at 0% 15%,#FFE3EC 0 120px,transparent 121px),
+             radial-gradient(circle at 100% 40%,#E3F1FF 0 100px,transparent 101px),
+             radial-gradient(circle at 0% 75%,#E6F8EE 0 140px,transparent 141px),
+             radial-gradient(circle at 100% 92%,#FFF1D6 0 110px,transparent 111px)}
+.top{background:rgba(255,251,244,.92);border-bottom:none;box-shadow:0 4px 18px rgba(58,51,80,.06)}
+.back{border:none;background:#fff;color:var(--leaf);border-radius:999px;box-shadow:0 3px 12px rgba(58,51,80,.12)}
+.top .tt{color:#3A3350}
+.score{background:#fff;color:var(--leaf);box-shadow:0 3px 12px rgba(58,51,80,.12)}
+.hero{position:relative;overflow:hidden;border-radius:30px;margin-top:8px;padding:20px 18px 80px;border:none;
+  background:linear-gradient(180deg,#9AD7F7,#DDF3FF);box-shadow:0 12px 30px rgba(58,51,80,.10)}
 .hero svg{position:absolute;left:0;bottom:0;width:100%;height:90px}
-.hero h1{position:relative;color:#fff;text-shadow:0 3px 0 var(--leaf)}
-.hero p{position:relative;color:#1F4E6E;font-weight:600}
-.hero .deco{position:relative;font-size:2.4rem;letter-spacing:6px;display:block;margin-bottom:2px}
-.tabs button{border:3px solid #95E08A;box-shadow:0 3px 0 #95E08A;padding:7px 18px}
-.tabs button.on{background:var(--leaf);border-color:var(--leaf);box-shadow:0 3px 0 #1B5E37}
-.part{background:var(--pc);box-shadow:0 4px 0 var(--pcd);border-radius:999px;padding:9px 18px;font-size:1.15rem;
+.hero h1{position:relative;color:#fff;text-shadow:0 2px 8px rgba(30,80,120,.35)}
+.hero p{position:relative;color:#2D5B78;font-weight:600}
+.hero .deco{position:relative;font-size:2.3rem;letter-spacing:6px;display:block;margin-bottom:2px}
+.tabs button{border:none;background:#fff;box-shadow:0 4px 14px rgba(58,51,80,.10);padding:8px 20px;color:#3A3350}
+.tabs button.on{background:var(--leaf);color:#fff}
+.tools .btn.gh{border:none;box-shadow:0 3px 12px rgba(58,51,80,.10)}
+.part{background:var(--pl);color:var(--pcd);box-shadow:none;border-radius:20px;padding:8px 14px 8px 8px;font-size:1.12rem;
   display:flex;align-items:center;gap:10px}
-.part .pe{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.3rem}
-.q{border:3px solid var(--pcl);box-shadow:0 5px 0 var(--pcl);border-radius:22px}
-.q.ok{border-color:#58B368;box-shadow:0 5px 0 #58B368;background:#F6FCF5}
-.q.no{border-color:#E57373;box-shadow:0 5px 0 #E57373;background:#FFF6F6}
-.num{background:var(--pc);box-shadow:0 3px 0 var(--pcd);transform:rotate(-6deg);border-radius:14px}
-.opt{border-width:3px;box-shadow:0 4px 0 var(--oc);border-color:var(--oc);background:var(--ob)}
-.opt .lt{border-color:var(--od);color:#fff;background:var(--od)}
-.opts .opt:nth-child(1){--oc:#FFC2D8;--ob:#FFF4F8;--od:#E0518A}
-.opts .opt:nth-child(2){--oc:#B9DBFF;--ob:#F3F9FF;--od:#3A86D8}
-.opts .opt:nth-child(3){--oc:#FFE08A;--ob:#FFFBEA;--od:#D49B00}
+.part .pe{width:40px;height:40px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:1.3rem;
+  box-shadow:0 3px 10px rgba(58,51,80,.08)}
+.q{border:none;border-radius:24px;background:#fff;box-shadow:0 6px 18px rgba(58,51,80,.07)}
+.q.ok{border:none;background:#fff;box-shadow:0 0 0 3px #BDEBCB, 0 6px 18px rgba(58,51,80,.07)}
+.q.no{border:none;background:#fff;box-shadow:0 0 0 3px #FFD9C6, 0 6px 18px rgba(58,51,80,.07)}
+.num{background:var(--pl);color:var(--pcd);border-radius:13px}
+.spk{border:none;background:var(--pl)}
+.opt{border:2px solid transparent;background:var(--ob);box-shadow:none}
+.opt .lt{border:none;color:#fff;background:var(--od)}
+.opts .opt:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
+.opts .opt:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
+.opts .opt:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
 .opt:not([disabled]):hover{background:#fff;border-color:var(--od)}
-.opt.right{border-color:#58B368;background:#E3F5E1;box-shadow:0 4px 0 #58B368}
-.opt.right .lt{background:#58B368;border-color:#58B368}
-.opt.wrong{border-color:#E57373;background:#FFE6E6;box-shadow:0 4px 0 #E57373}
-.opt.wrong .lt{background:#E57373;border-color:#E57373}
+.opt.right{border-color:#9EDDB2;background:#EFFAF2;box-shadow:none}
+.opt.right .lt{background:#5BC07D}
+.opt.wrong{border-color:#FFCBB3;background:#FFF5EF;box-shadow:none}
+.opt.wrong .lt{background:#F29B72}
+.opt.dim{opacity:.5}
 .fb{font-family:'Mali',sans-serif;font-size:1.05rem}
-.result{border:4px solid var(--leaf);box-shadow:0 7px 0 var(--leaf);border-radius:28px}
+.fb.ok{color:#2F9E5B} .fb.no{color:#D2693C}
+.result{border:none;border-radius:30px;box-shadow:0 16px 40px rgba(58,51,80,.14)}
 .result .cheer{font-size:2.6rem}
-.btn{border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.btn{border:none;border-radius:999px;box-shadow:0 6px 16px rgba(58,51,80,.16)}
 </style>
 </head>
 <body>
@@ -246,7 +255,7 @@ const TESTS = [
 
 const TL=['ก','ข','ค'];
 /* สีประจำตอน: [สีหลัก, สีเข้ม, สีอ่อน, รูป] */
-const PARTC=[['#3DAA5C','#23843B','#C9ECC3','🌱'],['#D98A2B','#9A5A12','#FFE0B8','🌵'],['#3A86D8','#2560B8','#C8E0FF','🐾']];
+const PARTC=[['#7ED9B0','#1F7F58','#EAFAF2','🌱'],['#FFB38A','#B4551C','#FFF2EA','🌵'],['#8EC5FF','#2F6DB0','#EEF6FF','🐾']];
 const PRAISE=['✓ ถูกต้อง เก่งมาก! 🎉','✓ สุดยอดเลย! ⭐','✓ ถูกต้อง! 👏','✓ เยี่ยมมาก! 🌈','✓ ใช่แล้ว! 😄'];
 const $=s=>document.querySelector(s);
 let cur=0, ans={};      // ans[ลำดับข้อ] = ตัวเลือกที่แตะ
@@ -289,7 +298,7 @@ function render(){
   const T=TESTS[cur];
   $('#tt').textContent=T.name+' · '+T.title;
   let n=0, h='', pi=0, pc=PARTC[0];
-  const pcv=()=>'--pc:'+pc[0]+';--pcd:'+pc[1]+';--pcl:'+pc[2];
+  const pcv=()=>'--pc:'+pc[0]+';--pcd:'+pc[1]+';--pl:'+pc[2];
   T.items.forEach(x=>{
     if(!Array.isArray(x)){ pc=PARTC[pi++%PARTC.length]; h+='<div class="part" style="'+pcv()+'"><span class="pe">'+pc[3]+'</span>'+x.part+'</div>'; return; }
     const k=n++;
