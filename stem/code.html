@@ -109,6 +109,36 @@ body.quizmode .main{display:none}
 .qlist{text-align:left;margin-top:12px;display:grid;gap:6px}
 .qlist div{background:#FBF8F2;border-radius:12px;padding:6px 10px;font-size:.9rem}
 @media (max-width:520px){ .qopts{grid-template-columns:1fr} }
+/* ================= รู้จักบล็อก ================= */
+.mbtn.guide{background:#E3F4FC;color:var(--kd)}
+.mbtn.guide.on{border-color:var(--kd)}
+#guide{display:none;max-width:1100px;margin:0 auto;padding:12px 12px 40px}
+body.guidemode #guide{display:block}
+body.guidemode .main{display:none}
+.gcatbox{border-radius:22px;padding:12px 14px;margin-top:12px}
+.gcatbox h3{font-size:1.05rem}
+.gcatbox p{font-size:.88rem;color:#5E5873}
+.gchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px}
+.gchip{background:#fff;border-radius:16px;padding:8px 12px;text-align:left;border-left:7px solid var(--c);box-shadow:0 3px 10px rgba(58,51,80,.07);line-height:1.35}
+.gchip b{display:block;color:var(--c);font-family:'Mali',sans-serif}
+.gchip small{display:block;color:var(--mute);font-size:.8rem;font-weight:600}
+.gtop{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.gtop .gnav{margin-left:auto;display:flex;align-items:center;gap:6px;font-weight:700;color:var(--mute)}
+.gdet{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:12px;align-items:start}
+.gcat{font-weight:700;font-size:.85rem}
+.gdet h2{display:flex;align-items:center;gap:8px;font-size:1.35rem}
+.gdet h2 .spk{margin-left:auto;width:40px;height:40px;border-radius:14px;background:#fff;flex:none;font-size:1.1rem}
+#gblk{height:130px;border-radius:16px;overflow:hidden;background:#FFFDF8;margin:8px 0}
+.gsec{background:#fff;border-radius:14px;padding:8px 12px;margin-top:8px}
+.gsec b{font-family:'Mali',sans-serif}
+.glike{background:#FFF9DB;border-radius:14px;padding:8px 12px;margin-top:8px;font-weight:600}
+.gtip{background:#fff;border-radius:14px;padding:8px 12px;margin-top:8px;font-size:.92rem}
+.gsay{background:#EFFAF2;border-radius:14px;padding:8px 12px;margin-top:6px;font-weight:600}
+.gex{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:10px;margin-top:10px;align-items:start}
+#gexws{height:300px;border-radius:16px;overflow:hidden;background:#FFFDF8;border:2px dashed #EDE7F5}
+.gex .row{justify-content:center}
+@media (max-width:900px){ .gdet{grid-template-columns:1fr} }
+@media (max-width:600px){ .gex{grid-template-columns:1fr} }
 /* ================= โหมดสอน ================= */
 .btn.tut{background:#FFB400;color:#4A3500}
 .coach{position:fixed;left:12px;right:96px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;max-width:620px;background:#fff;border-radius:22px;
@@ -146,6 +176,7 @@ body.quizmode .main{display:none}
   <div class="missions" id="missions"></div>
 </div>
 <section id="quiz"></section>
+<section id="guide"></section>
 <div class="main">
   <div class="side">
     <section class="card">
@@ -455,17 +486,21 @@ function drawMissions(){
   const all = [{ id:'free', title:'สร้างอิสระ' }].concat(MISSIONS);
   $('#missions').innerHTML = all.map((m,i) => {
     const s = SAVE.stars[m.id]||0;
-    return '<button type="button" class="mbtn'+(m.id===cur && !document.body.classList.contains('quizmode')?' on':'')+(s?' done':'')+'" data-id="'+m.id+'">'+(m.id==='free'?'🎨 ':i+'. ')+m.title+
+    return '<button type="button" class="mbtn'+(m.id===cur && !document.body.classList.contains('quizmode') && !document.body.classList.contains('guidemode')?' on':'')+(s?' done':'')+'" data-id="'+m.id+'">'+(m.id==='free'?'🎨 ':i+'. ')+m.title+
       (m.id==='free' ? '' : '<small>'+'⭐'.repeat(s)+'☆'.repeat(3-s)+'</small>')+'</button>';
   }).join('');
   $('#missions').insertAdjacentHTML('beforeend', '<button type="button" class="mbtn quiz'+(document.body.classList.contains('quizmode')?' on':'')+'" id="quizBtn">📝 แบบทดสอบ<small>'+quizStarsText()+'</small></button>');
-  $('#missions').querySelectorAll('.mbtn[data-id]').forEach(b => b.onclick = () => { closeQuiz(); openMission(b.dataset.id); });
-  $('#quizBtn').onclick = openQuiz;
+  $('#missions').insertAdjacentHTML('afterbegin', '<button type="button" class="mbtn guide'+(document.body.classList.contains('guidemode')?' on':'')+'" id="guideBtn">📖 รู้จักบล็อก<small>'+GUIDE.length+' บล็อก</small></button>');
+  $('#missions').querySelectorAll('.mbtn[data-id]').forEach(b => b.onclick = () => { closeQuiz(); closeGuide(); openMission(b.dataset.id); });
+  $('#quizBtn').onclick = () => { closeGuide(); openQuiz(); };
+  $('#guideBtn').onclick = () => openGuide();
 }
 function drawGoal(){
   const m = MISSIONS.find(x => x.id===cur);
   if(!m){
-    $('#goal').innerHTML = '<h3>🎨 สร้างอิสระ</h3><p>ลองต่อบล็อกสร้างอะไรก็ได้ เช่น ไฟกะพริบ เพลง หรือเกมกดปุ่ม · ถ้าอยากฝึกทีละขั้น เลือกภารกิจ 1–8 ด้านบน</p>';
+    $('#goal').innerHTML = '<h3>🎨 สร้างอิสระ</h3><p>ลองต่อบล็อกสร้างอะไรก็ได้ เช่น ไฟกะพริบ เพลง หรือเกมกดปุ่ม · ถ้าอยากฝึกทีละขั้น เลือกภารกิจ 1–8 ด้านบน</p>'+
+      '<div class="row"><button class="btn" type="button" id="freeGuide">📖 รู้จักบล็อก: แต่ละบล็อกทำอะไร</button></div>';
+    $('#freeGuide').onclick = () => openGuide();
     return;
   }
   $('#goal').innerHTML = '<h3>🎯 '+m.title+'<button class="spk" type="button" id="say" aria-label="ฟังโจทย์">🔊</button></h3><p>'+m.goal+'</p>'+
@@ -926,6 +961,311 @@ function finishQuiz(){
   $('#qagain').onclick = () => startQuiz(QZ.level);
   $('#qhome').onclick = () => { QZ=null; quizHome(); };
   drawMissions();
+}
+
+/* ============================================================
+   รู้จักบล็อก · บล็อกนี้คืออะไร ทำหน้าที่อะไร + ตัวอย่างที่กดรันบนบอร์ดเล็กได้
+   ============================================================ */
+const plotB = (x,y,t='mb_plot') => B(t,{ inputs:{ X:numIn(x), Y:numIn(y) } });
+const pauseB = ms => B('mb_pause',{ inputs:{ MS:numIn(ms) } });
+const toneB = (n,beat='1') => B('mb_tone',{ fields:{ NOTE:n, BEAT:beat } });
+const randIn = (a,b) => ({ block:B('mb_random',{ inputs:{ A:numIn(a), B:numIn(b) } }) });
+const cmpIn = (op,a,b) => ({ block:B('logic_compare',{ fields:{ OP:op }, inputs:{ A:a, B:b } }) });
+const pressIn = btn => ({ block:B('mb_pressed',{ fields:{ BTN:btn } }) });
+const ifB = (cond, then, els) => B('controls_if', Object.assign(els ? { extraState:{ hasElse:true } } : {}, { inputs:Object.assign({ IF0:cond, DO0:chain(then) }, els ? { ELSE:chain(els) } : {}) }));
+const setIn = (id, inp) => B('variables_set',{ fields:{ VAR:{ id } }, inputs:{ VALUE:inp } });
+
+const GCATS = [
+  { id:'event', name:'🟢 เริ่ม',      color:C.event, bg:'#EAF7EC', about:'บอกว่าโปรแกรมจะเริ่มทำงาน "เมื่อไร" · บล็อกคำสั่งต้องอยู่ข้างในบล็อกกลุ่มนี้ถึงจะทำงาน' },
+  { id:'led',   name:'💡 จอไฟ',      color:C.led,   bg:'#EDF1FF', about:'สั่งไฟ 25 ดวงบนบอร์ด ให้เป็นรูป ตัวเลข ตัวอักษร หรือเปิดปิดทีละดวง' },
+  { id:'sound', name:'🎵 เสียง',      color:C.sound, bg:'#FCEDF3', about:'ให้ลำโพงบนบอร์ดเล่นโน้ตดนตรี' },
+  { id:'loop',  name:'🔁 รอ·ทำซ้ำ',  color:C.loop,  bg:'#E7F6F8', about:'หยุดรอให้เรามองทัน และทำคำสั่งเดิมหลายรอบโดยไม่ต้องต่อบล็อกซ้ำ' },
+  { id:'logic', name:'🔀 เงื่อนไข',   color:C.logic, bg:'#EDF2F7', about:'ให้บอร์ด "เลือก" ว่าจะทำอะไร ตามสิ่งที่เกิดขึ้น เช่น ถ้ากดปุ่มอยู่…' },
+  { id:'math',  name:'🔢 ตัวเลข',    color:C.math,  bg:'#EEEFF8', about:'ตัวเลข การบวก ลบ คูณ หาร และการสุ่มเลข' },
+  { id:'var',   name:'📦 ตัวแปร',    color:'#A55B80', bg:'#F7EEF3', about:'กล่องเก็บตัวเลขที่ตั้งชื่อเองได้ ใส่เลข เปลี่ยนเลข แล้วเปิดดูได้ตลอด' },
+];
+/* block = บล็อกที่โชว์ · ex = โปรแกรมตัวอย่าง · say = ตัวอย่างนี้ทำอะไร */
+const GUIDE = [
+  { id:'on_start', type:'mb_on_start', cat:'event', label:'เมื่อเริ่มทำงาน', sum:'ทำครั้งเดียวตอนกด ▶',
+    does:'บล็อกหัวโปรแกรม บล็อกที่อยู่ข้างในจะทำ 1 รอบตอนกด ▶ รันโปรแกรม โดยทำจากบนลงล่าง',
+    like:'เสียงนกหวีดเริ่มเกม 🏁 ดังแล้วทุกคนเริ่มเล่นพร้อมกัน',
+    tip:'บล็อกคำสั่งที่ลอยอยู่นอกบล็อกเริ่ม จะจางลงและไม่ทำงาน',
+    block:B('mb_on_start'),
+    ex:{ blocks:[ hat('mb_on_start',[ icon('HAPPY'), pauseB(600), icon('HEART') ]) ] },
+    say:'กด ▶ แล้วบอร์ดจะยิ้ม 😊 รอครู่หนึ่ง แล้วเปลี่ยนเป็นหัวใจ ❤️ แล้วจบ' },
+  { id:'forever', type:'mb_forever', cat:'event', label:'ทำตลอดไป', sum:'วนซ้ำไม่มีวันจบ',
+    does:'ทำบล็อกข้างในวนซ้ำไปเรื่อย ๆ ไม่มีวันจบ จนกว่าจะกด ⏹ หยุด',
+    like:'หัวใจของเราที่เต้นตลอดเวลา 💓 ไม่เคยหยุด',
+    tip:'เหมาะกับงานที่ต้องคอยเช็กตลอด เช่น ดูว่ากดปุ่มค้างอยู่ไหม',
+    block:B('mb_forever'),
+    ex:{ blocks:[ hat('mb_forever',[ icon('HEART'), icon('SMALL') ]) ] },
+    say:'หัวใจใหญ่สลับหัวใจเล็กไปเรื่อย ๆ ไม่หยุดเอง ต้องกด ⏹ หยุด' },
+  { id:'on_button', type:'mb_on_button', cat:'event', label:'เมื่อกดปุ่ม A / B', sum:'รอให้กดปุ่มก่อนจึงทำ',
+    does:'รอให้กดปุ่ม A หรือ B บนบอร์ดก่อน แล้วจึงทำบล็อกข้างใน กดกี่ครั้งก็ทำกี่ครั้ง',
+    like:'กริ่งประตู 🔔 กดเมื่อไรก็ดังเมื่อนั้น',
+    tip:'แตะที่ตัว A ในบล็อกเพื่อเปลี่ยนเป็น B · ต้องกด ▶ รันก่อน ปุ่มถึงจะใช้ได้',
+    block:B('mb_on_button',{ fields:{ BTN:'A' } }),
+    ex:{ blocks:[ onBtn('A',[ icon('HAPPY') ]), onBtn('B',[ icon('SAD') ],150) ] },
+    say:'กด ▶ แล้วลองกดปุ่ม A จะยิ้ม 😊 กดปุ่ม B จะเศร้า 😢' },
+
+  { id:'show_icon', type:'mb_show_icon', cat:'led', label:'แสดงรูป', sum:'เปิดไฟเป็นรูปภาพ',
+    does:'เปิดไฟหลายดวงพร้อมกันให้เป็นรูปที่เลือก เช่น หัวใจ หน้ายิ้ม ลูกศร',
+    like:'ติดสติกเกอร์รูปภาพลงบนจอ ✨',
+    tip:'แตะที่ชื่อรูปในบล็อกเพื่อเลือกรูปอื่น มีให้เลือก 12 รูป',
+    block:icon('HEART'),
+    ex:{ blocks:[ hat('mb_on_start',[ icon('UP'), icon('RIGHT'), icon('DOWN'), icon('LEFT') ]) ] },
+    say:'ลูกศรหมุนไปรอบ ๆ ขึ้น → ขวา → ลง → ซ้าย' },
+  { id:'show_number', type:'mb_show_number', cat:'led', label:'แสดงตัวเลข', sum:'โชว์ตัวเลขบนจอ',
+    does:'แสดงตัวเลขบนจอ ถ้าเลขมีหลายหลัก จะขึ้นทีละหลัก',
+    like:'ป้ายคะแนนในสนามฟุตบอล ⚽',
+    tip:'ช่องตัวเลขเอาบล็อก สุ่มเลข บวกเลข หรือตัวแปร มาเสียบแทนได้',
+    block:shownum(numIn(7)),
+    ex:{ blocks:[ hat('mb_on_start',[ shownum(numIn(3)), shownum(numIn(2)), shownum(numIn(1)), icon('YES') ]) ] },
+    say:'นับถอยหลัง 3 → 2 → 1 แล้วขึ้นเครื่องหมายถูก ✔️' },
+  { id:'show_text', type:'mb_show_text', cat:'led', label:'แสดงข้อความ', sum:'โชว์ตัวอักษรทีละตัว',
+    does:'แสดงตัวอักษรภาษาอังกฤษหรือตัวเลขทีละตัว',
+    like:'ป้ายไฟหน้าร้านที่ขึ้นตัวหนังสือทีละตัว 🏪',
+    tip:'ภาษาไทยยังแสดงไม่ได้ ใช้ A–Z กับ 0–9 · ข้อความสั้น ๆ อ่านง่ายที่สุด',
+    block:B('mb_show_text',{ inputs:{ T:{ shadow:{ type:'text', fields:{ TEXT:'HI' } } } } }),
+    ex:{ blocks:[ hat('mb_on_start',[ B('mb_show_text',{ inputs:{ T:{ shadow:{ type:'text', fields:{ TEXT:'HI' } } } } }), icon('HAPPY') ]) ] },
+    say:'จอขึ้นตัว H แล้วตัว I (อ่านว่า ไฮ แปลว่า สวัสดี) แล้วยิ้ม 😊' },
+  { id:'plot', type:'mb_plot', cat:'led', label:'เปิดไฟ x y', sum:'เปิดไฟทีละดวง',
+    does:'เปิดไฟ 1 ดวงตรงตำแหน่งที่บอก · x คือหลัก (0 ซ้ายสุด → 4 ขวาสุด) · y คือแถว (0 บนสุด → 4 ล่างสุด)',
+    like:'บอกที่นั่งในโรงหนัง 🎬 "หลักที่เท่าไร แถวที่เท่าไร"',
+    tip:'มุมซ้ายบนคือ x 0 y 0 · ตรงกลางจอพอดีคือ x 2 y 2',
+    block:plotB(2,2),
+    ex:{ blocks:[ hat('mb_on_start',[ plotB(0,0), pauseB(300), plotB(4,0), pauseB(300), plotB(2,2), pauseB(300), plotB(0,4), pauseB(300), plotB(4,4) ]) ] },
+    say:'ไฟติดทีละดวงที่ 4 มุมกับตรงกลาง กลายเป็นลูกเต๋าหน้า 5 🎲' },
+  { id:'unplot', type:'mb_unplot', cat:'led', label:'ปิดไฟ x y', sum:'ดับไฟทีละดวง',
+    does:'ดับไฟ 1 ดวงตรงตำแหน่งที่บอก ดวงอื่นยังติดอยู่เหมือนเดิม',
+    like:'ใช้ยางลบ ลบแค่จุดเดียว ✏️',
+    tip:'ถ้าอยากดับทุกดวงพร้อมกัน ใช้ "ล้างจอ" ง่ายกว่า',
+    block:plotB(2,2,'mb_unplot'),
+    ex:{ blocks:[ hat('mb_on_start',[ icon('SQUARE'), pauseB(500), plotB(0,0,'mb_unplot'), pauseB(400), plotB(4,0,'mb_unplot'), pauseB(400), plotB(4,4,'mb_unplot'), pauseB(400), plotB(0,4,'mb_unplot') ]) ] },
+    say:'ขึ้นรูปสี่เหลี่ยม แล้วมุมทั้ง 4 ค่อย ๆ ดับทีละมุม' },
+  { id:'clear', type:'mb_clear', cat:'led', label:'ล้างจอ', sum:'ดับไฟทุกดวง',
+    does:'ดับไฟทุกดวงบนจอ ให้จอว่างเปล่า',
+    like:'ลบกระดานให้สะอาดก่อนเขียนใหม่ 🧽',
+    tip:'ใช้คู่กับ "หยุดรอ" ทำไฟกะพริบได้',
+    block:B('mb_clear'),
+    ex:{ blocks:[ hat('mb_on_start',[ repeat(3,[ icon('HEART'), pauseB(300), B('mb_clear'), pauseB(300) ]) ]) ] },
+    say:'หัวใจกะพริบ ติด–ดับ ติด–ดับ 3 ครั้ง' },
+
+  { id:'tone', type:'mb_tone', cat:'sound', label:'เล่นโน้ต', sum:'เล่นเสียงดนตรี 1 ตัว',
+    does:'เล่นเสียงโน้ตดนตรี 1 ตัว เลือกได้ตั้งแต่ โด เร มี ฟา ซอล ลา ที ถึง โดสูง และเลือกได้ว่ายาวกี่จังหวะ',
+    like:'กดคีย์เปียโน 1 ครั้ง 🎹',
+    tip:'½ จังหวะ = สั้นเร็ว · 2 จังหวะ = ยาวลากเสียง · อย่าลืมเปิดเสียงไอแพด',
+    block:toneB('C4'),
+    ex:{ blocks:[ hat('mb_on_start',[ toneB('C4'), toneB('E4'), toneB('G4'), toneB('C5','2') ]) ] },
+    say:'เล่น โด มี ซอล โดสูง (ตัวสุดท้ายลากยาว) เหมือนเสียงแตรเปิดงาน 🎺' },
+
+  { id:'pause', type:'mb_pause', cat:'loop', label:'หยุดรอ', sum:'รอสักครู่ก่อนทำต่อ',
+    does:'ให้บอร์ดหยุดนิ่งตามเวลาที่บอก แล้วจึงทำบล็อกถัดไป · 1000 มิลลิวินาที = 1 วินาที',
+    like:'พูดว่า "รอแป๊บนะ" ⏳',
+    tip:'ถ้าไม่ใส่หยุดรอ บางอย่างจะเร็วจนมองไม่ทัน',
+    block:pauseB(500),
+    ex:{ blocks:[ hat('mb_on_start',[ plotB(2,2), pauseB(1000), icon('SMALL'), pauseB(1000), icon('HEART') ]) ] },
+    say:'จุดเล็ก → รอ 1 วินาที → หัวใจเล็ก → รอ 1 วินาที → หัวใจใหญ่ เหมือนลูกโป่งค่อย ๆ พอง 🎈' },
+  { id:'repeat', type:'controls_repeat_ext', cat:'loop', label:'ทำซ้ำ … ครั้ง', sum:'ทำเรื่องเดิมหลายรอบ',
+    does:'ทำบล็อกที่อยู่ในปาก (ช่องรูปตัว C) ซ้ำตามจำนวนครั้งที่บอก ครบแล้วจึงไปทำบล็อกถัดไป',
+    like:'ครูบอกว่า "ตบมือ 3 ครั้ง" 👏👏👏',
+    tip:'ช่วยให้ไม่ต้องต่อบล็อกเดิมซ้ำ ๆ · ใส่ทำซ้ำไว้ในทำซ้ำก็ได้',
+    block:B('controls_repeat_ext',{ inputs:{ TIMES:numIn(3) } }),
+    ex:{ blocks:[ hat('mb_on_start',[ repeat(4,[ toneB('G4','0.5'), icon('SMALL'), toneB('C5','0.5'), icon('HEART') ]), icon('HAPPY') ]) ] },
+    say:'หัวใจเต้นพร้อมเสียงตึก-ตัก 4 รอบ แล้วจบด้วยหน้ายิ้ม 😊' },
+
+  { id:'if', type:'controls_if', cat:'logic', label:'ถ้า … แล้วทำ', sum:'ทำเฉพาะตอนเงื่อนไขจริง',
+    does:'ตรวจเงื่อนไขก่อน ถ้าจริง จึงทำบล็อกข้างใน ถ้าไม่จริง ข้ามไปเลย',
+    like:'"ถ้าฝนตก ให้กางร่ม" ☂️ ถ้าฝนไม่ตก ก็ไม่ต้องกาง',
+    tip:'ช่องเงื่อนไขรูปหกเหลี่ยม ใส่บล็อกเปรียบเทียบ หรือ "ปุ่ม A ถูกกดอยู่"',
+    block:B('controls_if'),
+    ex:{ blocks:[ onBtn('A',[ B('mb_clear'), pauseB(200), ifB(cmpIn('EQ', randIn(1,2), numIn(1)), [ icon('HEART') ]) ]) ] },
+    say:'กดปุ่ม A หลาย ๆ ครั้ง บางครั้งได้หัวใจ ❤️ บางครั้งจอว่าง (เพราะสุ่มได้ 2 เงื่อนไขไม่จริง)' },
+  { id:'if_else', type:'controls_if', cat:'logic', label:'ถ้า … ไม่เช่นนั้น', sum:'เลือกทำ 1 ใน 2 ทาง',
+    does:'ตรวจเงื่อนไข ถ้าจริง ทำส่วนบน · ถ้าไม่จริง ทำส่วน "ไม่เช่นนั้น" ข้างล่าง ได้ทำอย่างใดอย่างหนึ่งเสมอ',
+    like:'โยนเหรียญ 🪙 ออกหัวก็ได้อย่างหนึ่ง ออกก้อยก็ได้อีกอย่าง',
+    tip:'ใช้ตอนที่ทั้งสองทางต้องมีอะไรเกิดขึ้น เช่น ชนะ = ยิ้ม แพ้ = เศร้า',
+    block:B('controls_if',{ extraState:{ hasElse:true } }),
+    ex:{ blocks:[ onBtn('A',[ B('mb_clear'), pauseB(200), ifB(cmpIn('EQ', randIn(1,2), numIn(1)), [ icon('YES') ], [ icon('NO') ]) ]) ] },
+    say:'กดปุ่ม A เหมือนโยนเหรียญ ได้ ✔️ บ้าง ❌ บ้าง' },
+  { id:'compare', type:'logic_compare', cat:'logic', label:'เปรียบเทียบ = < >', sum:'เทียบเลข 2 ตัว',
+    does:'เทียบตัวเลข 2 ตัว ได้คำตอบว่า จริง หรือ ไม่จริง · = เท่ากับ · ≠ ไม่เท่ากับ · < น้อยกว่า · > มากกว่า',
+    like:'ตาชั่ง ⚖️ ที่บอกว่าข้างไหนมากกว่า',
+    tip:'แตะที่เครื่องหมายเพื่อเปลี่ยน · ต้องเอาไปเสียบในช่องของ "ถ้า"',
+    block:B('logic_compare',{ fields:{ OP:'GT' }, inputs:{ A:numIn(7), B:numIn(5) } }),
+    ex:{ vars:[{ name:'x', id:'gx' }], blocks:[ onBtn('A',[ setIn('gx', randIn(1,10)), shownum(varGet('gx')), ifB(cmpIn('GT', varGet('gx'), numIn(5)), [ icon('HAPPY') ], [ icon('SAD') ]) ]) ] },
+    say:'กดปุ่ม A สุ่มเลข 1–10 ขึ้นจอ ถ้ามากกว่า 5 ยิ้ม 😊 ถ้าไม่ใช่ เศร้า 😢' },
+  { id:'operation', type:'logic_operation', cat:'logic', label:'และ / หรือ', sum:'รวม 2 เงื่อนไข',
+    does:'รวม 2 เงื่อนไขเข้าด้วยกัน · "และ" จริงเมื่อจริงทั้งคู่ · "หรือ" จริงเมื่อจริงอย่างน้อย 1 อย่าง',
+    like:'"กินข้าวเสร็จ และ แปรงฟันแล้ว ถึงไปนอนได้" 🛏️',
+    tip:'แตะที่คำว่า และ เพื่อเปลี่ยนเป็น หรือ',
+    block:B('logic_operation',{ fields:{ OP:'AND' } }),
+    ex:{ blocks:[ hat('mb_forever',[ ifB({ block:B('logic_operation',{ fields:{ OP:'AND' }, inputs:{ A:pressIn('A'), B:pressIn('B') } }) }, [ icon('HEART') ], [ B('mb_clear') ]) ]) ] },
+    say:'กด ▶ แล้วใช้ 2 นิ้วกดปุ่ม A กับ B ค้างไว้พร้อมกัน หัวใจจึงจะขึ้น · กดปุ่มเดียวไม่ขึ้น' },
+  { id:'negate', type:'logic_negate', cat:'logic', label:'ไม่', sum:'กลับจริงเป็นไม่จริง',
+    does:'กลับคำตอบ จริง กลายเป็น ไม่จริง · ไม่จริง กลายเป็น จริง',
+    like:'เกม "ทำตรงข้าม" 🙃 ครูบอกยืน เราต้องนั่ง',
+    tip:'ใช้บอกว่า "ถ้า ไม่ได้ กดปุ่ม…" ได้',
+    block:B('logic_negate'),
+    ex:{ blocks:[ hat('mb_forever',[ ifB({ block:B('logic_negate',{ inputs:{ BOOL:pressIn('A') } }) }, [ icon('SMALL') ], [ icon('HEART') ]) ]) ] },
+    say:'ถ้า ไม่ได้ กดปุ่ม A จะเป็นหัวใจเล็ก 💗 · กดปุ่ม A ค้างไว้ จะกลายเป็นหัวใจใหญ่ ❤️' },
+  { id:'boolean', type:'logic_boolean', cat:'logic', label:'จริง / เท็จ', sum:'คำตอบสำเร็จรูป',
+    does:'บล็อกคำตอบสำเร็จรูป "จริง" หรือ "เท็จ" (เท็จ = ไม่จริง) เสียบในช่องเงื่อนไขได้ตรง ๆ',
+    like:'สวิตช์ไฟ 💡 เปิด หรือ ปิด มีแค่ 2 แบบ',
+    tip:'ใช้ทดลองว่าส่วนไหนของ "ถ้า" จะทำงาน',
+    block:B('logic_boolean',{ fields:{ BOOL:'TRUE' } }),
+    ex:{ blocks:[ hat('mb_on_start',[ ifB({ block:B('logic_boolean',{ fields:{ BOOL:'TRUE' } }) }, [ icon('YES') ], [ icon('NO') ]) ]) ] },
+    say:'เงื่อนไขเป็น จริง จึงขึ้น ✔️ · กด "เอาไปลองต่อเอง" แล้วแตะเปลี่ยนเป็น เท็จ ดูสิ' },
+  { id:'pressed', type:'mb_pressed', cat:'logic', label:'ปุ่ม … ถูกกดอยู่', sum:'เช็กว่านิ้วกดค้างไหม',
+    does:'เช็กว่าตอนนี้กำลังกดปุ่มค้างอยู่หรือเปล่า ได้คำตอบ จริง หรือ ไม่จริง',
+    like:'ถามว่า "ตอนนี้ยังจับมือกันอยู่ไหม" ✋',
+    tip:'ต่างจาก "เมื่อกดปุ่ม" ตรงที่ต้องใช้คู่กับ "ถ้า" ข้างใน "ทำตลอดไป" เพื่อคอยเช็กตลอดเวลา',
+    block:B('mb_pressed',{ fields:{ BTN:'A' } }),
+    ex:{ blocks:[ hat('mb_forever',[ ifB(pressIn('B'), [ icon('DIAMOND'), toneB('C5','0.5') ], [ B('mb_clear') ]) ]) ] },
+    say:'กด ▶ แล้วกดปุ่ม B ค้างไว้ จะมีเพชร 🔷 และเสียงดังต่อเนื่อง · ปล่อยนิ้วแล้วหายไป' },
+
+  { id:'number', type:'math_number', cat:'math', label:'ตัวเลข', sum:'การ์ดตัวเลข 1 ใบ',
+    does:'บล็อกที่เก็บตัวเลข 1 ตัว เอาไปเสียบในช่องที่ต้องการตัวเลข',
+    like:'การ์ดตัวเลข 🔢',
+    tip:'แตะที่ตัวเลขในบล็อกเพื่อเปลี่ยนเลข',
+    block:B('math_number',{ fields:{ NUM:5 } }),
+    ex:{ blocks:[ hat('mb_on_start',[ shownum(numIn(2)), shownum(numIn(4)), shownum(numIn(6)), shownum(numIn(8)) ]) ] },
+    say:'นับทีละ 2 ขึ้นจอ 2 → 4 → 6 → 8' },
+  { id:'arith', type:'math_arithmetic', cat:'math', label:'บวก ลบ คูณ หาร', sum:'คิดเลขให้',
+    does:'คำนวณเลข 2 ตัว ได้ผลลัพธ์เป็นตัวเลขใหม่ · แตะเครื่องหมายเพื่อเลือก + − × ÷',
+    like:'เครื่องคิดเลข 🧮',
+    tip:'เสียบไว้ในบล็อกอื่นได้ เช่น แสดงตัวเลข (3 + 4)',
+    block:B('math_arithmetic',{ fields:{ OP:'ADD' }, inputs:{ A:numIn(3), B:numIn(4) } }),
+    ex:{ blocks:[ hat('mb_on_start',[ shownum({ block:B('math_arithmetic',{ fields:{ OP:'ADD' }, inputs:{ A:numIn(3), B:numIn(4) } }) }), pauseB(500),
+      shownum({ block:B('math_arithmetic',{ fields:{ OP:'MULTIPLY' }, inputs:{ A:numIn(2), B:numIn(5) } }) }) ]) ] },
+    say:'จอแสดง 7 (จาก 3 + 4) แล้วแสดง 10 (จาก 2 × 5)' },
+  { id:'random', type:'mb_random', cat:'math', label:'สุ่มเลข … ถึง …', sum:'ให้บอร์ดเลือกเลขเอง',
+    does:'ให้บอร์ดเลือกตัวเลขมาเอง 1 ตัว ในช่วงที่บอก เราเดาไม่ได้ว่าจะได้เลขอะไร',
+    like:'ทอยลูกเต๋า 🎲',
+    tip:'สุ่มเลข 1 ถึง 2 ใช้แทนการโยนเหรียญได้',
+    block:B('mb_random',{ inputs:{ A:numIn(1), B:numIn(6) } }),
+    ex:{ blocks:[ onBtn('A',[ shownum(randIn(1,6)) ]) ] },
+    say:'กด ▶ แล้วกดปุ่ม A ทีไร ได้เลข 1–6 แบบเดาไม่ได้' },
+
+  { id:'var_set', type:'variables_set', cat:'var', label:'ตั้งค่า … เป็น', sum:'ใส่เลขลงกล่อง',
+    does:'ใส่ตัวเลขลงในกล่องตัวแปร เลขเก่าในกล่องจะหายไป แทนที่ด้วยเลขใหม่',
+    like:'เขียนคะแนนใหม่ลงกระดาน ✍️ ลบของเก่าออกก่อน',
+    tip:'มักใช้ใน "เมื่อเริ่มทำงาน" เพื่อตั้งค่าเริ่มต้น เช่น คะแนน = 0 · ต้องกด "สร้างตัวแปร…" ในหมวด 📦 ก่อน',
+    block:setIn('gl', numIn(3)),
+    ex:{ vars:[{ name:'ชีวิต', id:'gl' }], blocks:[ hat('mb_on_start',[ setIn('gl', numIn(3)), shownum(varGet('gl')), icon('HEART') ]) ] },
+    say:'ตั้งกล่อง "ชีวิต" เป็น 3 แล้วจอแสดงเลข 3 ตามด้วยหัวใจ ❤️' },
+  { id:'var_change', type:'math_change', cat:'var', label:'เปลี่ยนค่า … ทีละ', sum:'เพิ่ม/ลดเลขในกล่อง',
+    does:'บวกเพิ่มเข้าไปในกล่องตัวแปร · ใส่ 1 = เพิ่มขึ้น 1 · ใส่ -1 = ลดลง 1',
+    like:'หยอดเหรียญเพิ่มในกระปุกออมสิน 🐷',
+    tip:'ต่างจาก "ตั้งค่า" ตรงที่ไม่ลบของเดิม แต่เพิ่มต่อจากเดิม',
+    block:vchg('gx', 1),
+    ex:{ vars:[{ name:'x', id:'gx' }], blocks:[ hat('mb_on_start',[ vset('gx',0), repeat(3,[ vchg('gx',1), shownum(varGet('gx')) ]) ]) ] },
+    say:'x เริ่มที่ 0 แล้วเพิ่มทีละ 1 จอแสดง 1 → 2 → 3' },
+  { id:'var_get', type:'variables_get', cat:'var', label:'บล็อกชื่อตัวแปร', sum:'เปิดกล่องเอาเลขมาใช้',
+    does:'บล็อกที่มีชื่อตัวแปร จะ "เปิดกล่อง" เอาตัวเลขข้างในออกมาใช้ เสียบได้ทุกช่องที่ต้องการตัวเลข',
+    like:'เปิดกระปุกดูว่ามีเงินอยู่กี่บาท 💰',
+    tip:'เสียบใน แสดงตัวเลข · เปิดไฟ x y · หรือใช้เปรียบเทียบก็ได้',
+    block:{ type:'variables_get', fields:{ VAR:{ id:'gs' } } },
+    ex:{ vars:[{ name:'ดาว', id:'gs' }], blocks:[ hat('mb_on_start',[ vset('gs',0), shownum(varGet('gs')) ]),
+      onBtn('A',[ vchg('gs',1), shownum(varGet('gs')) ],130), onBtn('B',[ vchg('gs',-1), shownum(varGet('gs')) ],260) ] },
+    say:'กด ▶ แล้วกดปุ่ม A ดาวเพิ่ม · กดปุ่ม B ดาวลด · จอแสดงจำนวนดาวที่อยู่ในกล่อง' },
+];
+const GVARS = [{ name:'x', id:'gx' },{ name:'ชีวิต', id:'gl' },{ name:'ดาว', id:'gs' }];
+
+let GI = -1, gm = null, gws = [];
+function guideIdOf(b){
+  if(!b) return null;
+  if(b.type==='controls_if') return b.getInput('ELSE') ? 'if_else' : 'if';
+  const g = GUIDE.find(x => x.type===b.type); return g ? g.id : null;
+}
+Blockly.ContextMenuRegistry.registry.register({
+  id:'kidsGuide', scopeType:Blockly.ContextMenuRegistry.ScopeType.BLOCK, weight:-10,
+  displayText:'📖 บล็อกนี้ทำอะไร',
+  preconditionFn: s => guideIdOf(s.block) ? 'enabled' : 'hidden',
+  callback: s => openGuide(guideIdOf(s.block)),
+});
+function guideStop(){ if(gm){ gm.stop(); gm=null; } }
+function guideDispose(){ guideStop(); gws.forEach(w => w.dispose()); gws = []; }
+function openGuide(id){
+  if(live){ live.stop(); live=null; setRunning(false); renderLeds(Array(25).fill(0)); }
+  stopTutorial(); closeQuiz();
+  document.body.classList.add('guidemode'); drawMissions();
+  const k = GUIDE.findIndex(x => x.id===id);
+  if(k>=0) guideDetail(k); else guideHome();
+}
+function closeGuide(){
+  if(!document.body.classList.contains('guidemode')) return;
+  guideDispose(); document.body.classList.remove('guidemode'); setTimeout(()=>Blockly.svgResize(ws), 50);
+}
+function guideHome(){
+  guideDispose(); GI = -1;
+  $('#guide').innerHTML = '<div class="qcard"><div class="gtop"><h2 style="flex:1">📖 รู้จักบล็อก</h2><button class="btn" type="button" id="gback">‹ กลับไปต่อบล็อก</button></div>'+
+    '<p class="sub">แตะบล็อกเพื่อดูว่าทำหน้าที่อะไร พร้อมตัวอย่างที่กดรันดูได้ · ระหว่างต่อบล็อก แตะค้างที่บล็อก (หรือคลิกขวา) แล้วเลือก "📖 บล็อกนี้ทำอะไร" ก็ได้</p>'+
+    GCATS.map(c => '<div class="gcatbox" style="background:'+c.bg+'"><h3 style="color:'+c.color+'">'+c.name+'</h3><p>'+c.about+'</p><div class="gchips">'+
+      GUIDE.filter(g => g.cat===c.id).map(g => '<button type="button" class="gchip" style="--c:'+c.color+'" data-g="'+g.id+'"><b>'+g.label+'</b><small>'+g.sum+'</small></button>').join('')+
+      '</div></div>').join('')+'</div>';
+  $('#gback').onclick = () => { closeGuide(); drawMissions(); };
+  $('#guide').querySelectorAll('.gchip').forEach(b => b.onclick = () => guideDetail(GUIDE.findIndex(g => g.id===b.dataset.g)));
+  window.scrollTo(0,0);
+}
+function guideWs(el, blocks, vars, maxScale){
+  const w = Blockly.inject(el, { readOnly:true, renderer:'zelos', theme, sounds:false, zoom:{ controls:false, wheel:false, startScale:.8 }, move:{ scrollbars:maxScale<=1, drag:true, wheel:true } });
+  Blockly.serialization.workspaces.load({ blocks:{ languageVersion:0, blocks }, variables:(vars||GVARS).map(v=>({ name:v.name, id:v.id })) }, w);
+  gws.push(w);
+  setTimeout(() => { Blockly.svgResize(w); w.zoomToFit(); w.setScale(Math.min(maxScale, Math.max(.6, w.getScale()*.92))); w.scrollCenter(); }, 40);
+  return w;
+}
+function guideDetail(k){
+  guideDispose(); GI = k;
+  const g = GUIDE[k], c = GCATS.find(x => x.id===g.cat);
+  $('#guide').innerHTML = '<div class="gtop"><button class="btn" type="button" id="gall">‹ บล็อกทั้งหมด</button>'+
+      '<span class="gnav"><button class="btn" type="button" id="gprev" aria-label="บล็อกก่อนหน้า">◀</button>'+(k+1)+' / '+GUIDE.length+'<button class="btn" type="button" id="gnext" aria-label="บล็อกถัดไป">▶</button></span></div>'+
+    '<div class="gdet"><div class="qcard" style="background:'+c.bg+'">'+
+      '<div class="gcat" style="color:'+c.color+'">'+c.name+'</div><h2>'+g.label+'<button class="spk" type="button" id="gsay" aria-label="ฟัง">🔊</button></h2>'+
+      '<div id="gblk"></div>'+
+      '<div class="gsec"><b>ทำหน้าที่อะไร</b><br>'+g.does+'</div>'+
+      '<div class="glike">🌟 เปรียบเหมือน '+g.like+'</div>'+
+      '<div class="gtip">💡 <b>เคล็ดลับ</b> '+g.tip+'</div></div>'+
+    '<div class="qcard"><h3>🧪 ตัวอย่างการใช้</h3><div class="gsay">'+g.say+'</div>'+
+      '<div class="gex"><div id="gexws"></div><div>'+
+        '<div class="board"><div class="face"><button class="bbtn" id="gA" type="button">A</button><div class="leds" id="gleds">'+'<i class="led"></i>'.repeat(25)+'</div><button class="bbtn" id="gB" type="button">B</button></div>'+
+        '<div class="label">บอร์ดทดลอง</div></div>'+
+        '<div class="row"><button class="btn run" id="grun" type="button">▶ ลองรัน</button><button class="btn stop" id="gstop" type="button" disabled>⏹ หยุด</button></div>'+
+        '<div class="status" id="gstatus">กด ▶ ลองรัน ดูผลบนบอร์ด</div></div></div>'+
+      '<div class="row"><button class="btn check" id="gtake" type="button">📥 เอาไปลองต่อเอง</button></div></div></div>';
+  const leds = [...$('#gleds').children], draw = a => a.forEach((on,i) => leds[i].classList.toggle('on', !!on));
+  const gst = t => { $('#gstatus').textContent = t; }, gset = on => { $('#grun').disabled = on; $('#gstop').disabled = !on; };
+  guideWs('gblk', [Object.assign({ x:10, y:10 }, g.block)], g.ex.vars, 1.3);
+  guideWs('gexws', g.ex.blocks, g.ex.vars, 1);
+  $('#gall').onclick = guideHome;
+  $('#gprev').onclick = () => guideDetail((k-1+GUIDE.length)%GUIDE.length);
+  $('#gnext').onclick = () => guideDetail((k+1)%GUIDE.length);
+  $('#gsay').onclick = () => speak(clean(g.label+' '+g.does+' เปรียบเหมือน '+g.like));
+  $('#grun').onclick = async () => {
+    guideStop();
+    const H = new Blockly.Workspace();
+    Blockly.serialization.workspaces.load({ blocks:{ languageVersion:0, blocks:g.ex.blocks }, variables:(g.ex.vars||[]).map(v=>({ name:v.name, id:v.id })) }, H);
+    const { code } = buildCode(H); H.dispose();
+    const m = gm = makeMachine({ render:draw, limit:Infinity });
+    gset(true); gst('กำลังรัน…');
+    try{ await m.run(code); }catch(e){ console.error(e); gst('โปรแกรมมีปัญหา'); }
+    if(gm!==m || m.stopped) return;
+    if(Object.keys(m.handlers).length) gst('ลองกดปุ่ม A หรือ B บนบอร์ดได้');
+    else { gset(false); gst('รันจบแล้ว ✨'); }
+  };
+  $('#gstop').onclick = () => { guideStop(); gset(false); draw(Array(25).fill(0)); gst('หยุดแล้ว'); };
+  [['gA','A'],['gB','B']].forEach(([id,btn]) => {
+    const el = $('#'+id);
+    const on = e => { e.preventDefault(); el.classList.add('down'); if(gm){ gm.down[btn]=true; gm.press(btn); } else gst('กด ▶ ลองรัน ก่อน แล้วค่อยกดปุ่มนะ'); };
+    const off = () => { el.classList.remove('down'); if(gm) gm.down[btn]=false; };
+    el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointerleave', off); el.addEventListener('pointercancel', off);
+  });
+  $('#gtake').onclick = () => {
+    closeGuide(); openMission('free');
+    if(ws.getTopBlocks(false).length && !confirm('เอาตัวอย่างไปแทนบล็อกในสร้างอิสระ? (บล็อกเดิมจะหายไป)')) return;
+    loadBlocks(g.ex.blocks, g.ex.vars); status('โหลดตัวอย่างแล้ว ลองกด ▶ หรือแก้บล็อกดูนะ');
+  };
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 
 let first='heart'; try{ first = localStorage.getItem('kids-code-last') || 'heart'; }catch(e){}

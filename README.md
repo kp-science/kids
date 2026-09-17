@@ -20,7 +20,7 @@ science/plants-animals-test.html   แบบทดสอบพืชและส
 chinese/pinyin-drill.html   ฝึกพินอิน
 brain/games.html            เกมฝึกสมอง 6 + เกมท้าทาย 6 (เปิดตรงด้วย #memory #sudoku ฯลฯ)
 brain/craft.html            บล็อกคราฟต์: สร้างตามแบบ ตอบโจทย์เลขก่อนวางบล็อก
-stem/code.html              ห้องทดลองโค้ดบล็อก (Blockly 12 จาก jsDelivr): บอร์ดจำลอง 8 ภารกิจ โหมดสอน แบบทดสอบ
+stem/code.html              ห้องทดลองโค้ดบล็อก (Blockly 12 จาก jsDelivr): บอร์ดจำลอง 8 ภารกิจ โหมดสอน แบบทดสอบ · 📖 รู้จักบล็อก (GUIDE 25 บล็อก + ตัวอย่างรันได้, เมนูแตะค้าง)
 ```
 
 ## หลักที่ใช้กับทุกสื่อ
