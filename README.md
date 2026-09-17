@@ -21,7 +21,7 @@ science/plants-animals-test.html   แบบทดสอบพืชและส
 chinese/pinyin-drill.html   ฝึกพินอิน
 brain/games.html            เกมฝึกสมอง 6 + เกมท้าทาย 6 (เปิดตรงด้วย #memory #sudoku ฯลฯ)
 brain/craft.html            บล็อกคราฟต์: สร้างตามแบบ ตอบโจทย์เลขก่อนวางบล็อก
-brain/treasure.html         ล่าขุมทรัพย์พ่อแม่ลูก 3 มิติ · ด่านอยู่ใน brain/treasure-levels.js (เพิ่มด่าน = เพิ่ม object) · โมเดลใน brain/treasure-models.js
+brain/treasure.html         ล่าขุมทรัพย์พ่อแม่ลูก 3 มิติ · ด่านอยู่ใน brain/treasure-levels.js (เพิ่มด่าน = เพิ่ม object) · โมเดลใน brain/treasure-models.js · ตัวเกม brain/treasure-game.js (โหมด walk/brain สร้างคำใบ้ทิศทาง/แผนที่/ตัดตัวเลือกจากตำแหน่งของเอง)
 stem/code.html              ห้องทดลองโค้ดบล็อก (Blockly 12 จาก jsDelivr): บอร์ดจำลอง 8 ภารกิจ โหมดสอน แบบทดสอบ · 📖 รู้จักบล็อก (GUIDE 25 บล็อก + ตัวอย่างรันได้, เมนูแตะค้าง)
 stem/stem3d.js + stem.css    ชุดกลางกิจกรรม STEM 3 มิติ (Three.js 0.170 จาก jsDelivr): ฉาก หมุน/ซูม แตะเลือก เสียง อ่านออกเสียง แบบทดสอบ
 stem/circuit.html           ต่อวงจรไฟฟ้า 6 ด่าน + แบบทดสอบ

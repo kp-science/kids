@@ -188,3 +188,19 @@ export const MODELS = {
 
 /* ของที่เจอในจุดที่ว่าง (สุ่มให้ขำ ๆ) */
 export const EMPTY_FINDS = ['🧦','🐭','🕸️','🍪','🦗','🧩','🪶','🍂','🐞','🫧','🥄','🧸'];
+
+/* อีโมจิแทนของแต่ละโมเดล (ใช้วาดแผนที่ขุมทรัพย์) · ในด่านใส่ e:'...' ทับได้ */
+export const MODEL_EMOJI = {
+  bed:'🛏️', sofa:'🛋️', table:'🟫', chair:'🪑', tub:'🛁', sink:'🚰', shelf:'📚', board:'🟩', tv:'📺', bench:'🪑', fire:'🔥', mast:'⛵', stool:'🪑',
+  box:'📦', jar:'🫙', cabinet:'🚪', drawers:'🗄️', rug:'🟪', oven:'♨️', mailbox:'📫', schooldesk:'🪑', doghouse:'🏠', tent:'⛺', dollhouse:'🏠',
+  tree:'🌳', pine:'🌲', palm:'🌴', bush:'🌿', hay:'🌾', scarecrow:'🧍', pillow:'☁️', cushion:'💗', lamp:'💡', teddy:'🧸', plant:'🪴', flowerpot:'🌷',
+  book:'📕', duck:'🦆', bucket:'🪣', cup:'🥤', bottle:'🧴', towel:'🧻', watering:'🚿', rock:'🪨', wheelbarrow:'🛒', sandcastle:'🏰', shell:'🐚',
+  umbrella:'⛱️', ball:'⚽', pumpkin:'🎃', nest:'🪺', rope:'🪢', cannon:'💣', anchor:'⚓', beanbag:'🟠', globe:'🌍', backpack:'🎒', blocks:'🧱',
+  train:'🚂', horse:'🐴', drum:'🥁', mushroom:'🍄', lantern:'🏮', log:'🪵', basket:'🧺', clock:'⏰', giftbox:'🎁', crate:'📦',
+};
+/* วิธีค้นของแต่ละโมเดล (ใช้สร้างคำใบ้ตัดตัวเลือก) */
+export const MODEL_ACTION = {
+  lid:['box','jar','giftbox','crate','drum','schooldesk','doghouse'],
+  door:['cabinet','oven','mailbox','tent','dollhouse'],
+  drawer:['drawers'], flip:['rug'], shake:['tree','pine','palm','bush','hay','scarecrow'],
+};
