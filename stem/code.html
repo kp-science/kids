@@ -63,6 +63,30 @@ h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700}
 .blocklyTreeRow{border-radius:12px!important;margin:3px 6px!important;height:auto!important;padding:6px 8px!important}
 .blocklyTreeLabel{font-family:'Noto Sans Thai Looped',sans-serif!important;font-weight:700!important;font-size:14px!important}
 
+
+/* ================= โหมดสอน ================= */
+.btn.tut{background:#FFB400;color:#4A3500}
+.coach{position:fixed;left:12px;right:96px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;max-width:620px;background:#fff;border-radius:22px;
+  box-shadow:0 14px 40px rgba(58,51,80,.28);border:3px solid #FFB400;padding:10px 12px;animation:cin .35s ease-out}
+@keyframes cin{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.coach .ch{display:flex;align-items:center;gap:8px}
+.coach .ch b{font-family:'Mali',sans-serif;font-size:.95rem;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.coach .dots{display:flex;gap:4px}
+.coach .dots i{width:8px;height:8px;border-radius:50%;background:#EDE6D6}
+.coach .dots i.on{background:#FFB400}.coach .dots i.done{background:#7ED9B0}
+.coach .ib{width:34px;height:34px;border-radius:12px;background:#FFF4D1;font-size:1rem;flex:none}
+.coach .cbody{display:flex;gap:10px;align-items:flex-start;margin-top:6px}
+.coach .cemo{font-size:2rem;line-height:1;flex:none}
+.coach .ctext{font-size:1rem;font-weight:600;line-height:1.5}
+.coach .ctext small{display:block;color:var(--mute);font-weight:600;font-size:.8rem;margin-top:2px}
+.coach .cbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+.coach .cbtns button{border-radius:999px;padding:6px 14px;font-weight:700;font-size:.88rem;background:#F4F0FA;color:#5E3FB8}
+.coach .cbtns .go{background:#FFB400;color:#4A3500}
+.coach.intro{border-color:#7ED9B0}
+.coach.good{border-color:#2F9E5B;background:#EFFAF2}
+.coach-hl{outline:4px solid #FFB400!important;outline-offset:2px;border-radius:12px;animation:hl 1s ease-in-out infinite}
+@keyframes hl{50%{outline-color:#FFE08A}}
+@media (max-width:600px){ .coach{left:8px;right:8px;bottom:8px} }
 @media (max-width:900px){
   .main{grid-template-columns:1fr;height:auto}
   .side{flex-direction:row;flex-wrap:wrap;overflow:visible}
@@ -300,6 +324,7 @@ $('#run').onclick = async () => {
   if(live) live.stop();
   const { code, empty } = buildCode();
   if(empty){ status('ยังไม่มีบล็อกเริ่ม ลองลากบล็อกจากหมวด 🟢 เริ่ม มาก่อนนะ'); return; }
+  COACH.ran = true; coachUpdate();
   const m = live = makeMachine({ render:renderLeds, limit:Infinity });
   setRunning(true); status('กำลังรัน… ลองกดปุ่ม A หรือ B บนบอร์ดได้');
   try{ await m.run(code); }catch(e){ showError(e); }
@@ -308,7 +333,7 @@ $('#run').onclick = async () => {
 $('#stop').onclick = () => { if(live){ live.stop(); live=null; } setRunning(false); renderLeds(Array(25).fill(0)); status('หยุดแล้ว'); };
 [['btnA','A'],['btnB','B']].forEach(([id,btn]) => {
   const el = document.getElementById(id);
-  const on = e => { e.preventDefault(); el.classList.add('down'); if(live){ live.down[btn]=true; live.press(btn); } };
+  const on = e => { e.preventDefault(); el.classList.add('down'); if(live){ live.down[btn]=true; live.press(btn); COACH['press'+btn]++; setTimeout(coachUpdate, 700); } else status('กด ▶ รันโปรแกรม ก่อน แล้วค่อยกดปุ่มนะ'); };
   const off = () => { el.classList.remove('down'); if(live) live.down[btn]=false; };
   el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointerleave', off); el.addEventListener('pointercancel', off);
 });
@@ -391,7 +416,7 @@ function drawGoal(){
     return;
   }
   $('#goal').innerHTML = '<h3>🎯 '+m.title+'<button class="spk" type="button" id="say" aria-label="ฟังโจทย์">🔊</button></h3><p>'+m.goal+'</p>'+
-    '<div class="row"><button class="btn check" id="check" type="button">✅ ตรวจภารกิจ</button><button class="btn" id="hintBtn" type="button">💡 คำใบ้</button>'+
+    '<div class="row"><button class="btn tut" id="tutBtn" type="button">📘 สอนทีละขั้น</button><button class="btn check" id="check" type="button">✅ ตรวจภารกิจ</button><button class="btn" id="hintBtn" type="button">💡 คำใบ้</button>'+
     '<button class="btn" id="solBtn" type="button">👀 ดูเฉลย</button></div><div class="hint" id="hint">'+m.hint+'</div><div class="result" id="result"></div>';
   $('#say').onclick = () => speak(m.goal);
   $('#hintBtn').onclick = () => $('#hint').classList.toggle('on');
@@ -400,6 +425,7 @@ function drawGoal(){
     shownSolution = true; loadBlocks(m.solution, m.vars); status('โหลดเฉลยแล้ว ลองกด ▶ ดูผล');
   };
   $('#check').onclick = () => checkMission(m);
+  $('#tutBtn').onclick = () => startTutorial(m.id, true);
 }
 function loadBlocks(blocks, vars){
   ws.clear();
@@ -420,6 +446,9 @@ function openMission(id){
   ws.clear();
   try{ const saved = JSON.parse(localStorage.getItem('kids-code-ws-'+id)||'null'); if(saved) Blockly.serialization.workspaces.load(saved, ws); }catch(e){}
   drawMissions(); drawGoal(); status('ต่อบล็อกด้านขวา แล้วกด ▶');
+  stopTutorial();
+  /* ภารกิจที่ยังไม่เคยทำและยังไม่มีบล็อก เปิดโหมดสอนให้อัตโนมัติครั้งแรก */
+  if(id!=='free' && !SAVE.stars[id] && !ws.getTopBlocks(false).length && !(SAVE.tut||{})[id]) setTimeout(() => startTutorial(id, false), 350);
   const b = $('#missions').querySelector('.mbtn.on'); if(b) b.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' });
 }
 async function checkMission(m){
@@ -432,6 +461,7 @@ async function checkMission(m){
   if(res[0]){
     const stars = shownSolution ? 1 : tries>=2 ? 2 : 3;
     const was = SAVE.stars[m.id]||0; SAVE.stars[m.id] = Math.max(was, stars); persist();
+    COACH.passed = true; setTimeout(coachUpdate, 300);
     r.className='result ok'; r.textContent='🎉 ผ่านภารกิจ! ได้ '+'⭐'.repeat(stars)+(shownSolution?' (ดูเฉลย)':'');
     beep(660,120); setTimeout(()=>beep(990,160),120); speak('ผ่านภารกิจแล้ว เก่งมาก');
     if(window.KP) KP.log({ kind:'game', page:'code', item:'code-'+m.id, title:'โค้ดบล็อก · '+m.title, stars, mistakes:tries });
@@ -441,6 +471,215 @@ async function checkMission(m){
     if(tries>=2) $('#hint').classList.add('on');
   }
 }
+
+
+/* ============================================================
+   โหมดสอนทีละขั้น
+   ขั้นแนะนำ (intro) = การ์ดอธิบายแนวคิด กดเข้าใจแล้วไปต่อ
+   ขั้นลงมือ = cond() เป็นจริงเมื่อเด็กทำถูก แล้วไปขั้นถัดไปเอง · auto() = ปุ่ม "ทำให้ดู"
+   ============================================================ */
+const COACH = { ran:false, pressA:0, pressB:0, passed:false };
+const all = t => ws.getAllBlocks(false).filter(b => b.type===t && b.isEnabled());
+const ancestor = (b, t, test) => { let x=b.getSurroundParent(); while(x){ if(x.type===t && (!test || test(x))) return x; x=x.getSurroundParent(); } return null; };
+const under = (t, parentT, test) => all(t).filter(b => ancestor(b, parentT, test));
+const btnIs = v => h => h.getFieldValue('BTN')===v;
+const numOf = (b, input) => { const t=b.getInputTargetBlock(input); return t && t.type==='math_number' ? Number(t.getFieldValue('NUM')) : null; };
+const typeOf = (b, input) => { const t=b.getInputTargetBlock(input); return t ? t.type : null; };
+const chainOf = (h, input='DO') => { const a=[]; let x=h.getInputTargetBlock(input); while(x){ a.push(x); x=x.getNextBlock(); } return a; };
+function hatOf(type, fields){
+  let h = all(type).find(b => !fields || Object.entries(fields).every(([k,v]) => b.getFieldValue(k)===v));
+  if(!h){ h = Blockly.serialization.blocks.append({ type, fields, x:40, y:30 + ws.getTopBlocks(false).length*150 }, ws); }
+  return h;
+}
+function put(parent, input, json){
+  const blk = Blockly.serialization.blocks.append(json, ws), conn = parent.getInput(input).connection;
+  let last = conn.targetBlock();
+  if(!last) conn.connect(blk.previousConnection);
+  else { while(last.getNextBlock()) last = last.getNextBlock(); last.nextConnection.connect(blk.previousConnection); }
+  return blk;
+}
+function plug(parent, input, json){ const blk = Blockly.serialization.blocks.append(json, ws); parent.getInput(input).connection.connect(blk.outputConnection); return blk; }
+const setNum = (b, input, n) => { const t=b.getInputTargetBlock(input); if(t && t.type==='math_number') t.setFieldValue(n,'NUM'); else plug(b, input, { type:'math_number', fields:{ NUM:n } }); };
+function variable(name){ const vm = ws.getVariableMap(); return vm.getVariable(name) || vm.createVariable(name); }
+const firstVar = () => ws.getVariableMap().getAllVariables()[0];
+const N = n => ({ shadow:{ type:'math_number', fields:{ NUM:n } } });
+
+const I = (title, text, emo) => ({ intro:true, title, text, emo });
+const S = (text, o) => Object.assign({ text }, o);
+const RUN = S('กดปุ่ม ▶ รันโปรแกรม แล้วดูที่บอร์ด', { hl:'#run', emo:'▶️', cond:() => COACH.ran });
+const CHECK = S('ถ้าบอร์ดทำงานถูกแล้ว กด ✅ ตรวจภารกิจ', { hl:'#check', emo:'✅', cond:() => COACH.passed });
+const START = S('แตะหมวด 🟢 เริ่ม แล้วลาก "เมื่อเริ่มทำงาน" มาวางในพื้นที่สีขาว', { hl:'เริ่ม', emo:'🟢', cond:() => all('mb_on_start').length>0, auto:() => hatOf('mb_on_start') });
+
+const LESSONS = {
+  heart:[
+    I('โปรแกรมคืออะไร', 'โปรแกรมคือ "ชุดคำสั่ง" ที่เราเรียงให้เครื่องทำตาม บอร์ดจะทำทีละบล็อก จากบนลงล่าง เหมือนทำตามสูตรทำขนม', '📜'),
+    START,
+    S('แตะหมวด 💡 จอไฟ แล้วลาก "แสดงรูป" ไปต่อใต้ "เมื่อเริ่มทำงาน" ให้ติดกันพอดี', { hl:'จอไฟ', emo:'💡', small:'วางใกล้ ๆ แล้วบล็อกจะดูดติดกันเอง',
+      cond:() => under('mb_show_icon','mb_on_start').length>0, auto:() => put(hatOf('mb_on_start'),'DO',{ type:'mb_show_icon' }) }),
+    S('แตะที่ช่องรูปในบล็อก แล้วเลือก ❤️ หัวใจ', { emo:'❤️', cond:() => under('mb_show_icon','mb_on_start').some(b => b.getFieldValue('ICON')==='HEART'),
+      auto:() => { const b = under('mb_show_icon','mb_on_start')[0]; if(b) b.setFieldValue('HEART','ICON'); } }),
+    RUN, CHECK ],
+  beat:[
+    I('ทำซ้ำ', 'ถ้าอยากทำเรื่องเดิมหลายรอบ ไม่ต้องต่อบล็อกซ้ำ ๆ ใช้บล็อก "ทำซ้ำ" แทน เหมือนครูบอกว่า "ตบมือ 3 ครั้ง" 👏👏👏', '🔁'),
+    START,
+    S('แตะหมวด 🔁 รอ·ทำซ้ำ แล้วลาก "ทำซ้ำ 3 ครั้ง" ไปต่อใต้ "เมื่อเริ่มทำงาน"', { hl:'ทำซ้ำ', emo:'🔁',
+      cond:() => under('controls_repeat_ext','mb_on_start').some(b => numOf(b,'TIMES')>=3),
+      auto:() => { const r = under('controls_repeat_ext','mb_on_start')[0] || put(hatOf('mb_on_start'),'DO',{ type:'controls_repeat_ext', inputs:{ TIMES:N(3) } }); setNum(r,'TIMES',3); } }),
+    S('ลาก "แสดงรูป" ไปใส่ในปากของ "ทำซ้ำ" แล้วเลือก ❤️ หัวใจ', { hl:'จอไฟ', emo:'❤️', small:'ปากของทำซ้ำ คือช่องว่างด้านในที่มีรูปตัว C',
+      cond:() => under('mb_show_icon','controls_repeat_ext').some(b => b.getFieldValue('ICON')==='HEART'),
+      auto:() => put(under('controls_repeat_ext','mb_on_start')[0] || hatOf('mb_on_start'),'DO',{ type:'mb_show_icon', fields:{ ICON:'HEART' } }) }),
+    S('ลาก "แสดงรูป" อีกก้อนไปต่อใต้หัวใจ ในปากของ "ทำซ้ำ" แล้วเลือก 💗 หัวใจเล็ก', { hl:'จอไฟ', emo:'💗',
+      cond:() => under('mb_show_icon','controls_repeat_ext').some(b => b.getFieldValue('ICON')==='SMALL'),
+      auto:() => put(under('controls_repeat_ext','mb_on_start')[0],'DO',{ type:'mb_show_icon', fields:{ ICON:'SMALL' } }) }),
+    RUN, CHECK ],
+  count:[
+    I('ลำดับของคำสั่ง', 'บอร์ดทำตามบล็อกจากบนลงล่าง ถ้าสลับลำดับ ผลก็สลับด้วย เหมือนต้องใส่ถุงเท้าก่อนใส่รองเท้า 🧦👟', '⬇️'),
+    START,
+    S('แตะหมวด 💡 จอไฟ ลาก "แสดงตัวเลข" ไปต่อใต้ "เมื่อเริ่มทำงาน"', { hl:'จอไฟ', emo:'1️⃣',
+      cond:() => under('mb_show_number','mb_on_start').length>0, auto:() => put(hatOf('mb_on_start'),'DO',{ type:'mb_show_number', inputs:{ N:N(1) } }) }),
+    S('เพิ่ม "แสดงตัวเลข" ให้ครบ 5 ก้อนต่อกัน แล้วแตะที่ตัวเลขเพื่อแก้เป็น 1, 2, 3, 4, 5', { emo:'🔢', small:'เคล็ดลับ: แตะค้างที่บล็อก แล้วเลือก "ทำซ้ำ" เพื่อคัดลอกบล็อก',
+      cond:() => { const h=all('mb_on_start')[0]; if(!h) return false; const v=chainOf(h).filter(b=>b.type==='mb_show_number').map(b=>numOf(b,'N')); return v.join()==='1,2,3,4,5'; },
+      auto:() => { const h=hatOf('mb_on_start'); let list=chainOf(h).filter(b=>b.type==='mb_show_number'); while(list.length<5){ put(h,'DO',{ type:'mb_show_number', inputs:{ N:N(1) } }); list=chainOf(h).filter(b=>b.type==='mb_show_number'); } list.slice(0,5).forEach((b,i)=>setNum(b,'N',i+1)); } }),
+    RUN, CHECK ],
+  buttons:[
+    I('เหตุการณ์', 'บางคำสั่งไม่ได้ทำตอนเริ่ม แต่รอให้มีเหตุการณ์ก่อน เช่น "เมื่อกริ่งดัง ให้เข้าห้องเรียน" 🔔 บอร์ดก็รอ "เมื่อกดปุ่ม" ได้', '👆'),
+    S('แตะหมวด 🟢 เริ่ม แล้วลาก "เมื่อกดปุ่ม A" มาวาง', { hl:'เริ่ม', emo:'🅰️', cond:() => all('mb_on_button').some(btnIs('A')), auto:() => hatOf('mb_on_button',{ BTN:'A' }) }),
+    S('ลาก "แสดงรูป" ไปใส่ใน "เมื่อกดปุ่ม A" แล้วเลือก 😊 ยิ้ม', { hl:'จอไฟ', emo:'😊',
+      cond:() => under('mb_show_icon','mb_on_button',btnIs('A')).some(b => b.getFieldValue('ICON')==='HAPPY'),
+      auto:() => put(hatOf('mb_on_button',{ BTN:'A' }),'DO',{ type:'mb_show_icon', fields:{ ICON:'HAPPY' } }) }),
+    S('ลาก "เมื่อกดปุ่ม" มาอีกก้อน แล้วแตะที่ตัว A เพื่อเปลี่ยนเป็น B', { hl:'เริ่ม', emo:'🅱️', cond:() => all('mb_on_button').some(btnIs('B')), auto:() => hatOf('mb_on_button',{ BTN:'B' }) }),
+    S('ใส่ "แสดงรูป" ใน "เมื่อกดปุ่ม B" แล้วเลือก 😢 เศร้า', { hl:'จอไฟ', emo:'😢',
+      cond:() => under('mb_show_icon','mb_on_button',btnIs('B')).some(b => b.getFieldValue('ICON')==='SAD'),
+      auto:() => put(hatOf('mb_on_button',{ BTN:'B' }),'DO',{ type:'mb_show_icon', fields:{ ICON:'SAD' } }) }),
+    S('กด ▶ รันโปรแกรม แล้วลองกดปุ่ม A กับ B บนบอร์ด', { hl:'#btnA', emo:'🎮', cond:() => COACH.pressA>0 && COACH.pressB>0 }),
+    CHECK ],
+  dice:[
+    I('การสุ่ม', 'การสุ่มคือให้เครื่องเลือกให้เอง เราเดาไม่ได้ว่าจะออกอะไร เหมือนทอยลูกเต๋า 🎲', '🎲'),
+    S('แตะหมวด 🟢 เริ่ม แล้วลาก "เมื่อกดปุ่ม A" มาวาง', { hl:'เริ่ม', emo:'🅰️', cond:() => all('mb_on_button').some(btnIs('A')), auto:() => hatOf('mb_on_button',{ BTN:'A' }) }),
+    S('ลาก "แสดงตัวเลข" ไปใส่ใน "เมื่อกดปุ่ม A"', { hl:'จอไฟ', emo:'🔢',
+      cond:() => under('mb_show_number','mb_on_button',btnIs('A')).length>0, auto:() => put(hatOf('mb_on_button',{ BTN:'A' }),'DO',{ type:'mb_show_number', inputs:{ N:N(1) } }) }),
+    S('แตะหมวด 🔢 ตัวเลข ลาก "สุ่มเลข 1 ถึง 6" ไปเสียบทับช่องตัวเลขของ "แสดงตัวเลข"', { hl:'ตัวเลข', emo:'🎲',
+      cond:() => under('mb_show_number','mb_on_button',btnIs('A')).some(b => typeOf(b,'N')==='mb_random'),
+      auto:() => { const b=under('mb_show_number','mb_on_button',btnIs('A'))[0]; plug(b,'N',{ type:'mb_random', inputs:{ A:N(1), B:N(6) } }); } }),
+    S('ตรวจดูว่าบล็อกสุ่มเป็น 1 ถึง 6', { emo:'🔍',
+      cond:() => all('mb_random').some(r => numOf(r,'A')===1 && numOf(r,'B')===6),
+      auto:() => { const r=all('mb_random')[0]; if(r){ setNum(r,'A',1); setNum(r,'B',6); } } }),
+    S('กด ▶ รันโปรแกรม แล้วกดปุ่ม A 3 ครั้ง ดูว่าเลขเปลี่ยนไหม', { hl:'#btnA', emo:'🎮', cond:() => COACH.pressA>=3 }),
+    CHECK ],
+  score:[
+    I('ตัวแปร', 'ตัวแปรคือ "กล่องเก็บตัวเลข" ที่ตั้งชื่อได้ เช่น กล่องชื่อ คะแนน 📦 เราใส่เลข เปลี่ยนเลข แล้วเปิดดูได้ตลอด', '📦'),
+    S('แตะหมวด 📦 ตัวแปร กด "สร้างตัวแปร…" แล้วตั้งชื่อว่า คะแนน', { hl:'ตัวแปร', emo:'📦', cond:() => !!firstVar(), auto:() => variable('คะแนน') }),
+    START,
+    S('ลาก "ตั้งค่า … เป็น" ไปต่อใต้ "เมื่อเริ่มทำงาน" แล้วเอาเลข 0 จากหมวด 🔢 ตัวเลข มาเสียบ', { hl:'ตัวแปร', emo:'0️⃣',
+      cond:() => under('variables_set','mb_on_start').some(b => numOf(b,'VALUE')===0),
+      auto:() => { const v=firstVar()||variable('คะแนน'); let b=under('variables_set','mb_on_start')[0] || put(hatOf('mb_on_start'),'DO',{ type:'variables_set', fields:{ VAR:{ id:v.getId() } } }); setNum(b,'VALUE',0); } }),
+    S('ลาก "เมื่อกดปุ่ม A" มาวาง แล้วใส่ "เปลี่ยนค่า คะแนน ทีละ 1" (หมวด 📦) ไว้ข้างใน', { hl:'ตัวแปร', emo:'➕',
+      cond:() => under('math_change','mb_on_button',btnIs('A')).some(b => numOf(b,'DELTA')===1),
+      auto:() => { const v=firstVar()||variable('คะแนน'); put(hatOf('mb_on_button',{ BTN:'A' }),'DO',{ type:'math_change', fields:{ VAR:{ id:v.getId() } }, inputs:{ DELTA:N(1) } }); } }),
+    S('ต่อ "แสดงตัวเลข" ใต้ "เปลี่ยนค่า" แล้วลากบล็อกชื่อ คะแนน (หมวด 📦) ไปเสียบในช่องตัวเลข', { hl:'ตัวแปร', emo:'📺',
+      cond:() => under('mb_show_number','mb_on_button',btnIs('A')).some(b => typeOf(b,'N')==='variables_get'),
+      auto:() => { const v=firstVar(); let b=under('mb_show_number','mb_on_button',btnIs('A'))[0] || put(hatOf('mb_on_button',{ BTN:'A' }),'DO',{ type:'mb_show_number', inputs:{ N:N(0) } }); plug(b,'N',{ type:'variables_get', fields:{ VAR:{ id:v.getId() } } }); } }),
+    S('กด ▶ รันโปรแกรม แล้วกดปุ่ม A 3 ครั้ง ดูคะแนนเพิ่มขึ้น', { hl:'#btnA', emo:'🎮', cond:() => COACH.pressA>=3 }),
+    CHECK ],
+  song:[
+    I('เสียงและทำนอง', 'บอร์ดเล่นโน้ตได้ทีละตัว เอาโน้ตมาเรียงต่อกันก็กลายเป็นเพลง 🎵 ลองร้องตาม โด เร มี', '🎵'),
+    START,
+    S('แตะหมวด 🎵 เสียง แล้วลาก "เล่นโน้ต" มาต่อกัน 3 ก้อน ใต้ "เมื่อเริ่มทำงาน"', { hl:'เสียง', emo:'🎶',
+      cond:() => under('mb_tone','mb_on_start').length>=3,
+      auto:() => { const h=hatOf('mb_on_start'); while(under('mb_tone','mb_on_start').length<3) put(h,'DO',{ type:'mb_tone' }); } }),
+    S('แตะที่ชื่อโน้ต แล้วเลือกให้เป็น โด → เร → มี ตามลำดับ', { emo:'🎼',
+      cond:() => { const h=all('mb_on_start')[0]; return !!h && /C4,D4,E4/.test(chainOf(h).filter(b=>b.type==='mb_tone').map(b=>b.getFieldValue('NOTE')).join(',')); },
+      auto:() => { const h=hatOf('mb_on_start'); chainOf(h).filter(b=>b.type==='mb_tone').slice(0,3).forEach((b,i)=>b.setFieldValue(['C4','D4','E4'][i],'NOTE')); } }),
+    RUN, CHECK ],
+  runner:[
+    I('ตำแหน่ง x และ y', 'จอไฟมี 5 หลัก 5 แถว · x บอกหลัก (0 ซ้ายสุด → 4 ขวาสุด) · y บอกแถว (0 บนสุด → 4 ล่างสุด) เหมือนหาที่นั่งในโรงหนัง 🎬', '🗺️'),
+    S('แตะหมวด 📦 ตัวแปร กด "สร้างตัวแปร…" แล้วตั้งชื่อว่า x', { hl:'ตัวแปร', emo:'📦', cond:() => !!firstVar(), auto:() => variable('x') }),
+    START,
+    S('ใส่ "ตั้งค่า x เป็น 0" ใต้ "เมื่อเริ่มทำงาน" (เอาเลข 0 จากหมวดตัวเลขมาเสียบ)', { hl:'ตัวแปร', emo:'0️⃣',
+      cond:() => under('variables_set','mb_on_start').some(b => numOf(b,'VALUE')===0),
+      auto:() => { const v=firstVar()||variable('x'); let b=under('variables_set','mb_on_start')[0] || put(hatOf('mb_on_start'),'DO',{ type:'variables_set', fields:{ VAR:{ id:v.getId() } } }); setNum(b,'VALUE',0); } }),
+    S('ต่อ "ทำซ้ำ" ใต้บล็อกตั้งค่า แล้วแก้เป็น 5 ครั้ง', { hl:'ทำซ้ำ', emo:'🔁',
+      cond:() => under('controls_repeat_ext','mb_on_start').some(b => numOf(b,'TIMES')===5),
+      auto:() => { const r=under('controls_repeat_ext','mb_on_start')[0] || put(hatOf('mb_on_start'),'DO',{ type:'controls_repeat_ext', inputs:{ TIMES:N(5) } }); setNum(r,'TIMES',5); } }),
+    S('ใส่ "ล้างจอ" (หมวด 💡) ไว้ในปากของ "ทำซ้ำ"', { hl:'จอไฟ', emo:'🧽',
+      cond:() => under('mb_clear','controls_repeat_ext').length>0, auto:() => put(under('controls_repeat_ext','mb_on_start')[0],'DO',{ type:'mb_clear' }) }),
+    S('ต่อ "เปิดไฟ" ใต้ล้างจอ · เอาบล็อก x (หมวด 📦) เสียบช่อง x · ตั้ง y เป็น 2', { hl:'จอไฟ', emo:'💡',
+      cond:() => under('mb_plot','controls_repeat_ext').some(b => typeOf(b,'X')==='variables_get' && numOf(b,'Y')===2),
+      auto:() => { const v=firstVar(); let b=under('mb_plot','controls_repeat_ext')[0] || put(under('controls_repeat_ext','mb_on_start')[0],'DO',{ type:'mb_plot', inputs:{ X:N(0), Y:N(2) } }); plug(b,'X',{ type:'variables_get', fields:{ VAR:{ id:v.getId() } } }); setNum(b,'Y',2); } }),
+    S('ต่อ "หยุดรอ" แล้วต่อ "เปลี่ยนค่า x ทีละ 1" ไว้ท้ายสุดในปากของ "ทำซ้ำ"', { hl:'ตัวแปร', emo:'➡️',
+      cond:() => under('mb_pause','controls_repeat_ext').length>0 && under('math_change','controls_repeat_ext').some(b => numOf(b,'DELTA')===1),
+      auto:() => { const r=under('controls_repeat_ext','mb_on_start')[0], v=firstVar(); if(!under('mb_pause','controls_repeat_ext').length) put(r,'DO',{ type:'mb_pause', inputs:{ MS:N(300) } }); if(!under('math_change','controls_repeat_ext').length) put(r,'DO',{ type:'math_change', fields:{ VAR:{ id:v.getId() } }, inputs:{ DELTA:N(1) } }); } }),
+    RUN, CHECK ],
+};
+
+let TUT = null;   /* { id, steps, i } */
+const clean = t => t.replace(/[\u{1F000}-\u{1FFFF}\u{2190}-\u{27BF}\u{2B00}-\u{2BFF}️]/gu,'').replace(/[·"]/g,' ');
+function clearHL(){ document.querySelectorAll('.coach-hl').forEach(x => x.classList.remove('coach-hl')); }
+function highlight(h){
+  clearHL(); if(!h) return;
+  if(h.startsWith('#')){ const el=document.querySelector(h); if(el) el.classList.add('coach-hl'); return; }
+  document.querySelectorAll('.blocklyToolboxCategory, .blocklyTreeRow').forEach(el => {
+    const lb = el.querySelector('.blocklyTreeLabel, .blocklyToolboxCategoryLabel');
+    if(lb && lb.textContent.includes(h)){ (el.querySelector('.blocklyTreeRow')||el).classList.add('coach-hl'); }
+  });
+}
+function startTutorial(id, manual){
+  const steps = LESSONS[id]; if(!steps) return;
+  if(manual && ws.getTopBlocks(false).length && !confirm('เริ่มเรียนทีละขั้น จะล้างบล็อกที่ต่อไว้ ตกลงไหม?')) return;
+  if(live){ live.stop(); live=null; setRunning(false); renderLeds(Array(25).fill(0)); }
+  ws.clear(); ws.getVariableMap().clear();
+  Object.assign(COACH, { ran:false, pressA:0, pressB:0, passed:false });
+  SAVE.tut = SAVE.tut || {}; SAVE.tut[id] = 1; persist();
+  TUT = { id, steps, i:0, busy:false };
+  drawCoach();
+}
+function stopTutorial(){ TUT = null; clearHL(); const c=$('#coach'); if(c) c.remove(); }
+function drawCoach(){
+  let c = $('#coach'); if(!c){ c = document.createElement('div'); c.id='coach'; document.body.appendChild(c); }
+  const m = MISSIONS.find(x => x.id===TUT.id), st = TUT.steps[TUT.i];
+  if(!st){                                                    /* จบบทเรียน */
+    clearHL();
+    const idx = MISSIONS.findIndex(x => x.id===TUT.id), next = MISSIONS[idx+1];
+    c.className='coach good';
+    c.innerHTML='<div class="ch"><b>🎉 เรียนจบบท "'+m.title+'" แล้ว!</b><button class="ib" type="button" id="cx" aria-label="ปิด">✕</button></div>'+
+      '<div class="cbody"><span class="cemo">🏆</span><div class="ctext">เก่งมาก ทำได้ด้วยตัวเองแล้ว'+(next?' · ไปเรียนบทต่อไปกันเลยไหม':'')+'</div></div>'+
+      '<div class="cbtns">'+(next?'<button class="go" type="button" id="cnext">บทต่อไป: '+next.title+' ▶</button>':'')+'<button type="button" id="cclose">ปิด</button></div>';
+    $('#cx').onclick = $('#cclose').onclick = stopTutorial;
+    if(next) $('#cnext').onclick = () => { const seen=(SAVE.tut||{})[next.id]; openMission(next.id); if(seen) startTutorial(next.id, false); };
+    speak('เรียนจบบทนี้แล้ว เก่งมาก');
+    return;
+  }
+  const work = TUT.steps.filter(x => !x.intro);
+  const dots = TUT.steps.map((x,k) => '<i class="'+(k<TUT.i?'done':k===TUT.i?'on':'')+'"></i>').join('');
+  c.className = 'coach' + (st.intro ? ' intro' : '');
+  c.innerHTML = '<div class="ch"><b>📘 '+(st.intro ? 'รู้จัก: '+st.title : 'ขั้นที่ '+(work.indexOf(st)+1)+' / '+work.length)+'</b>'+
+      '<span class="dots">'+dots+'</span><button class="ib" type="button" id="csay" aria-label="ฟัง">🔊</button><button class="ib" type="button" id="cx" aria-label="ปิดโหมดสอน">✕</button></div>'+
+    '<div class="cbody"><span class="cemo">'+(st.emo||'👉')+'</span><div class="ctext">'+st.text+(st.small?'<small>'+st.small+'</small>':'')+'</div></div>'+
+    '<div class="cbtns">'+(st.intro ? '<button class="go" type="button" id="cgo">เข้าใจแล้ว เริ่มเลย ▶</button>'
+      : (st.auto ? '<button type="button" id="cauto">🪄 ทำให้ดู</button>' : ''))+'</div>';
+  $('#csay').onclick = () => speak(clean((st.intro?st.title+' ':'')+st.text));
+  $('#cx').onclick = stopTutorial;
+  if(st.intro) $('#cgo').onclick = () => { TUT.i++; drawCoach(); };
+  if(st.auto) $('#cauto').onclick = () => { try{ st.auto(); }catch(e){ console.error(e); } setTimeout(coachUpdate, 120); };
+  highlight(st.hl);
+  speak(clean((st.intro?st.title+' ':'')+st.text));
+  setTimeout(coachUpdate, 200);
+}
+let coachTimer = null;
+function coachUpdate(){
+  clearTimeout(coachTimer);
+  coachTimer = setTimeout(() => {
+    if(!TUT || TUT.busy) return;
+    const st = TUT.steps[TUT.i]; if(!st || st.intro) return;
+    let ok = false; try{ ok = !!st.cond(); }catch(e){}
+    if(!ok) return;
+    TUT.busy = true;
+    const c = $('#coach'); if(c){ c.classList.add('good'); const t=c.querySelector('.ctext'); if(t) t.innerHTML = '✅ เยี่ยมมาก! ทำถูกแล้ว'; }
+    beep(880,90); setTimeout(()=>beep(1175,120),90);
+    setTimeout(() => { if(!TUT) return; TUT.busy=false; TUT.i++; drawCoach(); }, 900);
+  }, 150);
+}
+ws.addChangeListener(e => { if(TUT && !e.isUiEvent) coachUpdate(); });
 
 let first='heart'; try{ first = localStorage.getItem('kids-code-last') || 'heart'; }catch(e){}
 cur = first; drawMissions(); openMission(first);
