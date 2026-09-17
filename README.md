@@ -15,6 +15,7 @@ parent.html                 สรุปผลสำหรับพ่อแม�
 img/kid.webp                รูปน้องบนหน้าแรก
 
 thai/ math/ science/ social/ english/
+thai/reading-reflect.html   อ่านเขียนสะท้อนคิด: คลัง 10 ทักษะ ~170 ข้อ, โหมดหน้าเดียว/ฝึกทีละเรื่อง/ชุดต้นฉบับ, ผจญภัยเกาะ 3 มิติ (thai/reading-island.js ใช้ stem/stem3d.js)
   p1-review.html            ทบทวนก่อนสอบ ป.1 (5 ไฟล์ใช้เอนจินเดียวกัน แก้เอนจินต้องแก้ทุกไฟล์)
 science/plants-animals-test.html   แบบทดสอบพืชและสัตว์ 40 + 20 ข้อ
 chinese/pinyin-drill.html   ฝึกพินอิน

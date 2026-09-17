@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>อ่านเขียนสะท้อนคิด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{ "imports": { "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ink:#3A3350;--mute:#8C849E;--paper:#FFFBF4;--ok:#2F9E5B;--okbg:#EFFAF2;--okln:#9EDDB2;--no:#B4592F;--nobg:#FFF3EC;--noln:#FFCBB3;--kd:#C2306F;--kl:#FFE3EF}
+html,body{min-height:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped',sans-serif;font-size:17px;line-height:1.6}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700;line-height:1.35}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:40;background:rgba(255,251,244,.95);box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{display:flex;align-items:center;gap:10px;padding:8px 12px;max-width:1200px;margin:0 auto}
+.pill{background:#fff;color:var(--kd);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.9rem;box-shadow:0 3px 12px rgba(58,51,80,.12);text-decoration:none;white-space:nowrap}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wrap{max-width:900px;margin:0 auto;padding:14px 12px 60px}
+.card{background:#fff;border-radius:24px;padding:16px;box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.sub{color:var(--mute);font-size:.92rem}
+.btn{border-radius:999px;padding:8px 16px;font-weight:700;background:#F4F0FA;color:#5E3FB8}
+.btn.go{background:var(--kd);color:#fff}
+.btn.ok{background:#2F9E5B;color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* หน้าแรก */
+.hero{text-align:center;padding:6px 4px 14px}
+.hero h1{font-size:1.9rem;color:var(--kd)}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.mode{border-radius:24px;padding:16px;text-align:left;box-shadow:0 8px 22px rgba(58,51,80,.08);border:3px solid transparent;display:flex;gap:12px;align-items:flex-start}
+.mode:hover{border-color:#fff}
+.mode .me{font-size:2.6rem;line-height:1}
+.mode b{font-family:'Mali',sans-serif;font-size:1.12rem;display:block}
+.mode small{display:block;color:#5E5873;font-size:.88rem;line-height:1.45}
+.mode .best{display:block;margin-top:4px;letter-spacing:2px;font-size:.9rem}
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.skill{border-radius:18px;padding:10px 8px;font-weight:700;font-size:.92rem;text-align:center;line-height:1.3}
+.skill span{display:block;font-size:1.7rem}
+.skill small{display:block;letter-spacing:1px;font-weight:600;font-size:.75rem}
+h2.sec{font-size:1.15rem;margin:18px 4px 8px}
+
+/* การ์ดคำถาม */
+.qc{border-radius:24px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(58,51,80,.06);position:relative}
+.qh{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.chip{background:#fff;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700;color:#5E5873}
+.qn{background:#fff;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;font-family:'Mali',sans-serif;font-weight:700;flex:none}
+.spk{margin-left:auto;width:40px;height:40px;border-radius:14px;background:#fff;flex:none;font-size:1.1rem}
+.qt{font-weight:700;font-size:1.12rem;word-spacing:.18em}
+.pic{background:#fff;border-radius:20px;text-align:center;padding:10px;margin:10px auto 4px;max-width:420px}
+.pic .em{font-size:3.4rem;line-height:1.2;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+.pic .em:nth-child(2){animation-delay:.3s}.pic .em:nth-child(3){animation-delay:.6s}.pic .em:nth-child(4){animation-delay:.9s}
+.pic .plus{font-size:2rem;color:var(--mute);vertical-align:middle;margin:0 6px}
+.pic .cap{display:block;font-weight:700;font-size:1rem;color:#5E5873;word-spacing:.18em}
+.pic .part{display:inline-block;text-align:center;vertical-align:middle}
+.pic .part small{display:block;font-weight:700;font-size:1rem}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
+.opt{background:#fff;border-radius:18px;border:3px solid transparent;padding:10px 12px;min-height:58px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.06rem;text-align:left;box-shadow:0 2px 8px rgba(58,51,80,.06);word-spacing:.12em}
+.opt .em{font-size:1.8rem;flex:none}
+.opt .lt{flex:none;width:28px;height:28px;border-radius:50%;background:#F4F0FA;display:grid;place-items:center;font-size:.85rem}
+.opt:not([disabled]):active{transform:scale(.98)}
+.right{border-color:var(--okln)!important;background:var(--okbg)!important}
+.wrong{border-color:var(--noln)!important;background:var(--nobg)!important}
+.dim{opacity:.5}
+.fb{display:none;margin-top:10px;border-radius:14px;padding:8px 12px;font-weight:600;background:#fff}
+.fb.ok{display:block;color:#236B40}
+.fb.no{display:block;color:#9A4A26}
+.hint{font-size:.85rem;color:var(--mute);margin-top:4px}
+
+/* นับตัวอักษร */
+.letters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#FFF9DB;border-radius:18px;padding:12px;margin-top:10px}
+.lt2{width:54px;height:62px;border-radius:14px;background:#fff;font-size:2.1rem;font-weight:700;box-shadow:0 3px 8px rgba(58,51,80,.08);border:3px solid transparent}
+.lt2.mk{border-color:#FFB400;background:#FFF1C9}
+.lt2.hit{border-color:var(--okln);background:var(--okbg)}
+/* วงล้อวัน */
+.wheel{position:relative;width:300px;height:300px;margin:12px auto 0}
+.wheel .d{position:absolute;width:78px;height:40px;margin:-20px 0 0 -37px;border-radius:999px;font-weight:700;font-size:.85rem;display:grid;place-items:center;color:#3A3350;box-shadow:0 3px 8px rgba(58,51,80,.1);transition:transform .3s}
+.wheel .d.today{outline:3px solid var(--ink);transform:scale(1.12)}
+.wheel .d.ans{outline:3px solid var(--ok);transform:scale(1.12)}
+.wheel .mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;font-weight:700;font-size:.85rem;color:var(--mute)}
+.wheel .mid b{display:block;font-size:2rem}
+/* เติมคำ */
+.sent{background:#fff;border-radius:18px;padding:14px;margin-top:10px;font-size:1.3rem;font-weight:700;text-align:center;word-spacing:.2em;line-height:2}
+.slot{display:inline-block;min-width:110px;border-bottom:4px dashed #C9B8E8;padding:0 8px;color:var(--kd);transition:.2s}
+.slot.right{border-bottom-color:var(--ok);border-radius:10px}
+.slot.wrong{border-bottom-color:var(--no);border-radius:10px}
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.wchip{background:#fff;border-radius:16px;padding:8px 18px;font-weight:700;font-size:1.2rem;box-shadow:0 3px 10px rgba(58,51,80,.1);border:3px solid transparent}
+.wchip.used{visibility:hidden}
+/* ประกอบคำ */
+.slots{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.bslot{min-width:76px;height:62px;border-radius:16px;border:3px dashed #C9B8E8;background:#fff;font-size:1.6rem;font-weight:700;display:grid;place-items:center;padding:0 10px}
+.bslot.fill{border-style:solid;border-color:#FFB400;background:#FFF6D6}
+/* เรียงลำดับ */
+.order{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.ocard{background:#fff;border-radius:18px;padding:12px 6px;text-align:center;font-weight:700;border:3px solid transparent;position:relative;box-shadow:0 2px 8px rgba(58,51,80,.06);font-size:.95rem}
+.ocard .em{font-size:2.6rem;display:block}
+.ocard .no{position:absolute;top:-10px;left:-6px;width:32px;height:32px;border-radius:50%;background:#FFB400;color:#fff;display:grid;place-items:center;font-family:'Mali',sans-serif}
+/* เรื่องอ่าน */
+.story{background:#fff;border-radius:20px;padding:12px 14px;margin-top:8px;border-left:8px solid #C9A8FF}
+.story .st{display:flex;align-items:center;gap:8px;font-family:'Mali',sans-serif;font-weight:700;color:#6E3CC0}
+.story .st .spk{background:#F4EFFF;width:auto;padding:0 12px;height:36px;font-size:.9rem;font-family:'Noto Sans Thai Looped',sans-serif}
+.story p{font-size:1.18rem;line-height:2;word-spacing:.22em;margin-top:4px}
+.story .w{border-radius:6px;transition:background .15s}
+.story .w.on{background:#FFE08A}
+
+/* โหมดหน้าเดียว */
+.pbar{position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:30;background:rgba(255,251,244,.95);padding:6px 0 8px}
+.prog{height:12px;border-radius:99px;background:#EFEAF5;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FF9EC4,#C9A8FF);transition:width .3s}
+.pbar .ptxt{display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;color:var(--mute);margin-top:2px}
+.done{text-align:center}
+.done .big{font-size:3rem}
+.done .stars{font-size:2.3rem;letter-spacing:6px}
+.done .score{font-family:'Mali',sans-serif;font-size:2.3rem;color:var(--kd)}
+.wlist{text-align:left;margin-top:10px;display:grid;gap:6px}
+.wlist div{background:var(--nobg);border-radius:12px;padding:6px 10px;font-size:.92rem}
+
+/* ผจญภัย 3 มิติ */
+.adv{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:12px;max-width:1300px;margin:0 auto;padding:12px}
+.stage{position:relative;border-radius:26px;overflow:hidden;background:linear-gradient(180deg,#CFEFFF 0%,#EAF8FF 60%,#FFF6E8 100%);box-shadow:0 8px 22px rgba(58,51,80,.08);height:calc(100vh - 90px - env(safe-area-inset-top));min-height:420px}
+.stage canvas{display:block;width:100%!important;height:100%!important;touch-action:none}
+.hud{position:absolute;left:10px;right:10px;top:10px;display:flex;gap:8px;align-items:flex-start;pointer-events:none}
+.hud .coins{background:#fff;border-radius:999px;padding:4px 14px;font-weight:700;box-shadow:0 3px 10px rgba(58,51,80,.12)}
+.hud .sp{flex:1}
+.hud button{pointer-events:auto;background:rgba(255,255,255,.92);border-radius:14px;padding:5px 10px;font-weight:700;font-size:.85rem;box-shadow:0 3px 10px rgba(58,51,80,.12)}
+.loading{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--mute);font-weight:700;padding:20px}
+.advq{min-width:0;max-height:calc(100vh - 90px - env(safe-area-inset-top));overflow:auto;border-radius:24px}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:12px;height:12px;border-radius:50%;background:#EDE6F2}
+.dots i.ok{background:#7ED9B0}.dots i.no{background:#FFB99A}.dots i.cur{background:#FFB400}
+.nextbtn{display:block;margin:12px auto 0;font-size:1.05rem;padding:10px 26px}
+.popmsg{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:90;background:#fff;border-radius:999px;padding:10px 20px;font-weight:700;box-shadow:0 10px 30px rgba(58,51,80,.25);transition:.35s;max-width:92vw;text-align:center}
+.popmsg.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:980px){
+  .adv{grid-template-columns:1fr}
+  .stage{height:42vh;min-height:300px}
+  .advq{max-height:none;overflow:visible}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .lt2{width:44px;height:52px;font-size:1.7rem}
+  .order{grid-template-columns:1fr}
+  .ocard{display:flex;align-items:center;gap:10px;text-align:left;padding:8px 12px}
+  .ocard .em{font-size:2rem;display:inline}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><a class="pill" href="../#ภาษาไทย" id="back">‹ หน้ารวม</a><div class="tt" id="title">📖 อ่านเขียนสะท้อนคิด</div><button class="pill" id="mute" type="button">🔊</button></div></div>
+
+<!-- หน้าแรก -->
+<section id="home" class="wrap">
+  <div class="hero"><h1>📖 อ่านเขียนสะท้อนคิด</h1><p class="sub">อ่าน คิด แล้วเลือกคำตอบ · สุ่มข้อใหม่ทุกครั้ง · มีข้อสอบให้ฝึกมากกว่า 170 ข้อ</p></div>
+  <div class="modes" id="modes"></div>
+  <h2 class="sec">🎯 ฝึกทีละเรื่อง</h2>
+  <div class="skills" id="skills"></div>
+</section>
+
+<!-- ผจญภัยเกาะนักอ่าน -->
+<section id="adv" hidden>
+  <div class="adv">
+    <div class="stage" id="stage"><div class="loading" id="loading">กำลังโหลดเกาะนักอ่าน… ⏳</div>
+      <div class="hud"><span class="coins" id="coins">⭐ 0</span><span class="sp"></span><button type="button" id="homeView">⟲ มุมเดิม</button></div></div>
+    <div class="advq" id="advq"></div>
+  </div>
+</section>
+
+<!-- ทำแบบหน้าเดียว -->
+<section id="page" class="wrap" hidden></section>
+
+<script>
+/* ============================================================
+   อ่านเขียนสะท้อนคิด ป.1
+   คลังข้อสอบ 10 แบบ · โหมดผจญภัย 3 มิติ (โหลด Three.js เมื่อเลือกเท่านั้น) · โหมดหน้าเดียว · ฝึกทีละเรื่อง · ชุดต้นฉบับ
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const R = n => Math.floor(Math.random()*n);
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=R(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pick = a => a[R(a.length)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const plain = s => String(s).replace(/<[^>]+>/g,'');
+
+/* ---------------- เสียง ---------------- */
+let muted = false, AC = null;
+try{ muted = localStorage.getItem('kids-brain-mute')==='1'; }catch(e){}
+$('#mute').textContent = muted ? '🔇' : '🔊';
+$('#mute').onclick = () => { muted = !muted; $('#mute').textContent = muted ? '🔇' : '🔊'; try{ localStorage.setItem('kids-brain-mute', muted?'1':'0'); }catch(e){} if(muted && window.speechSynthesis) speechSynthesis.cancel(); };
+function tone(f, ms, at=0, type='sine', vol=.07){
+  if(muted) return;
+  try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume();
+    const t = AC.currentTime+at, o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t+ms/1000); o.connect(g).connect(AC.destination); o.start(t); o.stop(t+ms/1000+.02); }catch(e){}
+}
+const sfx = { tap:() => tone(700, 60), ok:() => { tone(660, 120); tone(990, 180, .12); }, no:() => tone(250, 220, 0, 'triangle'), win:() => [523,659,784,1047].forEach((f,i) => tone(f, 220, i*.11)) };
+let thVoice = null;
+if(window.speechSynthesis){ const pv = () => { const v = speechSynthesis.getVoices().filter(x => /^th/i.test(x.lang)); thVoice = v.find(x => /Kanya|Narisa|Premwadee/i.test(x.name)) || v[0] || null; }; pv(); speechSynthesis.onvoiceschanged = pv; }
+const forSpeech = t => plain(t).replace(/[\u{1F000}-\u{1FFFF}\u{2190}-\u{27BF}\u{2B00}-\u{2BFF}️‍]/gu,'').replace(/_+|\.{3,}/g,' อะไร ').replace(/["“”()·]/g,' ').replace(/(\S) (?=\S)/g, '$1');
+function speak(t, rate=.9){ if(muted || !window.speechSynthesis) return null; try{ speechSynthesis.cancel(); }catch(e){} const u = new SpeechSynthesisUtterance(forSpeech(t)); u.lang = 'th-TH'; u.rate = rate; if(thVoice) u.voice = thVoice; speechSynthesis.speak(u); return u; }
+function pop(msg){ const d = document.createElement('div'); d.className = 'popmsg'; d.innerHTML = msg; document.body.appendChild(d); requestAnimationFrame(() => d.classList.add('on')); setTimeout(() => { d.classList.remove('on'); setTimeout(() => d.remove(), 400); }, 2000); }
+
+/* ============================================================
+   คลังข้อสอบ
+   ============================================================ */
+const SK = {
+  count:   { e:'🔤', n:'นับตัวอักษร',     c:'#FFE3EF' },
+  picture: { e:'🖼️', n:'ประโยคกับภาพ',    c:'#E2F0FF' },
+  job:     { e:'👩‍🚒', n:'อาชีพและหน้าที่', c:'#E3F7DF' },
+  day:     { e:'📅', n:'วันในสัปดาห์',     c:'#FFEBD6' },
+  manners: { e:'🙏', n:'มารยาทและคำพูด',   c:'#EFE5FF' },
+  qword:   { e:'❓', n:'คำแสดงคำถาม',     c:'#DDF6F2' },
+  word:    { e:'🧩', n:'ประกอบคำ',         c:'#FFF3CC' },
+  next:    { e:'🔮', n:'เหตุการณ์ต่อไป',   c:'#FFE4E0' },
+  compound:{ e:'➕', n:'คำประสม',          c:'#E3F4FC' },
+  story:   { e:'📚', n:'อ่านเรื่องแล้วตอบ', c:'#F4EFFF' },
+};
+
+/* 1) นับพยัญชนะ (สร้างใหม่ได้ไม่จำกัด ใช้ตัวที่หน้าตาคล้ายกันเป็นตัวหลอก) */
+const LOOKALIKE = [['ก','ถ','ภ','ฤ'],['ข','ช','ซ','ฃ'],['ค','ด','ต','ศ'],['บ','ป','ษ','ย'],['พ','ฟ','ผ','ฝ'],['ม','น','ห','ท'],['ง','ว','จ','ร'],['อ','ฮ','อ','ฮ'],['ล','ส','ฬ','ด']];
+function genCount(){
+  const grp = pick(LOOKALIKE), target = grp[0]===grp[2] ? pick(['อ','ฮ']) : grp[0];
+  const len = 7 + R(3), n = 2 + R(4), others = grp.filter(x => x!==target).concat(['ก','ข','ค','ง','จ','บ','ม','น'].filter(x => x!==target));
+  const letters = shuffle(Array(n).fill(target).concat(Array.from({ length:len-n }, () => pick(others))));
+  const ans = letters.filter(x => x===target).length;
+  const opts = shuffle([ans, ans+1, ans>2 ? ans-1 : ans+2]);
+  return { skill:'count', kind:'count', key:'c'+letters.join(''), target, letters, ans, opts,
+    q:'สังเกต พยัญชนะ แล้ว ตอบ ว่า มี "'+target+'" ทั้งหมด กี่ ตัว', why:'มี "'+target+'" ทั้งหมด '+ans+' ตัว ระวังตัวที่หน้าตาคล้ายกันนะ' };
+}
+
+/* 2) ประโยคกับภาพ [ภาพ, ถูก, ผิด, ผิด] */
+const PICTURE = [
+  ['👩🪴💧', 'แม่ รดน้ำ ต้นไม้', 'ต้นไม้ นอนหลับ', 'แม่ ว่ายน้ำ'],
+  ['👦⚽', 'พี่ เตะ ฟุตบอล', 'พี่ เตะ', 'พี่ อ่าน หนังสือ'],
+  ['👧📖', 'น้อง อ่าน หนังสือ', 'หนังสือ ร้องเพลง', 'น้อง เตะ ฟุตบอล'],
+  ['🐕🦴', 'สุนัข แทะ กระดูก', 'กระดูก วิ่ง เล่น', 'สุนัข บิน บน ท้องฟ้า'],
+  ['🧑‍🍳🍳', 'พ่อครัว ทอด ไข่', 'ไข่ ทอด พ่อครัว', 'พ่อครัว ขับ รถ'],
+  ['🐟🌊', 'ปลา ว่ายน้ำ', 'ปลา ปีน ต้นไม้', 'น้ำ ว่าย ปลา'],
+  ['👵🧶', 'ยาย ถัก ไหมพรม', 'ไหมพรม ถัก ยาย', 'ยาย ปั่น จักรยาน'],
+  ['🐦🌳', 'นก เกาะ อยู่ บน ต้นไม้', 'ต้นไม้ เกาะ นก', 'นก ว่ายน้ำ ใน ทะเล'],
+  ['👧🪥🦷', 'น้อง แปรงฟัน', 'ฟัน แปรง น้อง', 'น้อง หวี ผม'],
+  ['🐱🛏️😴', 'แมว นอน บน เตียง', 'เตียง นอน บน แมว', 'แมว กิน ปลา'],
+  ['🧒🎨🖌️', 'เด็ก ระบาย สี ภาพ', 'สี ระบาย เด็ก', 'เด็ก นอน หลับ'],
+  ['🐔🥚', 'แม่ไก่ ออก ไข่', 'ไข่ ออก แม่ไก่', 'แม่ไก่ ว่ายน้ำ'],
+  ['👩‍🏫🧑‍🎓📚', 'ครู สอน นักเรียน', 'กระดาน สอน ครู', 'ครู ขาย ผลไม้'],
+  ['👨‍🌾🌾', 'ชาวนา เกี่ยว ข้าว', 'ข้าว เกี่ยว ชาวนา', 'ชาวนา'],
+  ['🐒🍌', 'ลิง กิน กล้วย', 'กล้วย กิน ลิง', 'ลิง นอน'],
+  ['👦🪁🌬️', 'พี่ เล่น ว่าว', 'ว่าว เล่น พี่', 'พี่ ว่ายน้ำ'],
+];
+/* 3) อาชีพ [ภาพ, อาชีพ, หน้าที่] */
+const JOBS = [
+  ['👩‍🏫','ครู','สอนหนังสือ'], ['🧑‍⚕️','หมอ','ตรวจ และ รักษา คน ป่วย'], ['🩺🐶','สัตว์แพทย์','รักษา สัตว์'], ['👮','ตำรวจ','ดูแล ความ ปลอดภัย และ จับ ผู้ร้าย'],
+  ['🧑‍🚒','นักดับเพลิง','ดับ ไฟ'], ['🧑‍🌾','ชาวนา','ปลูก ข้าว'], ['🧑‍🍳','พ่อครัว','ทำ อาหาร'], ['📮','บุรุษไปรษณีย์','ส่ง จดหมาย และ พัสดุ'],
+  ['📺','ผู้ประกาศข่าว','บอก ข่าวสาร ให้ คน จำนวนมาก ทราบ'], ['🎣','ชาวประมง','จับ ปลา'], ['🧑‍✈️','นักบิน','ขับ เครื่องบิน'], ['💇','ช่างตัดผม','ตัด ผม'],
+  ['🪖','ทหาร','ปกป้อง ประเทศ'], ['🚌','คนขับรถเมล์','ขับ รถ รับส่ง ผู้โดยสาร'], ['👷','ช่างก่อสร้าง','สร้าง บ้าน และ อาคาร'], ['📚','บรรณารักษ์','ดูแล หนังสือ ใน ห้องสมุด'],
+];
+function genJob(){
+  const [a, b, c] = shuffle(JOBS), dir = R(2);
+  if(dir) return { skill:'job', kind:'mcq', key:'j1'+a[1], q:'ใคร มีหน้าที่ '+a[2], opts:[a,b,c].map(x => [x[0], x[1]]), why:a[1]+' มีหน้าที่ '+a[2] };
+  return { skill:'job', kind:'mcq', key:'j2'+a[1], q:a[1]+' '+a[0]+' มีหน้าที่ ทำ อะไร', opts:[a,b,c].map(x => ['', x[2]]), why:a[1]+' มีหน้าที่ '+a[2] };
+}
+/* 4) วันในสัปดาห์ */
+const DAYS = [['อาทิตย์','#FF8A8A'],['จันทร์','#FFE066'],['อังคาร','#F9A8D4'],['พุธ','#8CE99A'],['พฤหัสบดี','#FFC078'],['ศุกร์','#91D5FF'],['เสาร์','#C4B5FD']];
+function genDay(){
+  const today = R(7), dir = pick([-1, 1]), ans = (today+dir+7)%7;
+  const wrong = [(today-dir+7)%7, (today+2*dir+7)%7];
+  return { skill:'day', kind:'day', key:'d'+today+dir, today, ans, opts:shuffle([ans, ...wrong]),
+    q:'วันนี้ เป็น วัน'+DAYS[today][0]+' '+(dir<0 ? 'เมื่อวาน' : 'พรุ่งนี้')+' คือ วัน อะไร',
+    why:(dir<0 ? 'เมื่อวาน คือ วันก่อนหน้า วันนี้' : 'พรุ่งนี้ คือ วันถัดไป จาก วันนี้')+' → วัน'+DAYS[ans][0] };
+}
+/* 5) มารยาท [ภาพ, สถานการณ์, ถูก, ผิด, ผิด] */
+const MANNERS = [
+  ['🥛💥','เด็ก ทำ แก้วน้ำ ตก แตก เด็ก ควร พูด ว่า อะไร','ขอโทษ ครับ/ค่ะ','ไม่รู้ ว่า ใคร ทำ','ฉัน จะ ไป เล่น แล้ว'],
+  ['👵🍬','คุณยาย ให้ ขนม หนู ควร พูด ว่า อะไร','ขอบคุณ ครับ/ค่ะ','ไม่ อร่อย เลย','เอา อีก'],
+  ['👩‍🏫🌅','เจอ คุณครู ตอน เช้า ที่ โรงเรียน ควร ทำ อย่างไร','ไหว้ แล้ว พูด ว่า สวัสดี ครับ/ค่ะ','เดิน ผ่าน ไป เฉย ๆ','ตะโกน เรียก ครู'],
+  ['✏️','อยาก ยืม ดินสอ ของ เพื่อน ควร พูด ว่า อะไร','ขอ ยืม ดินสอ หน่อย ได้ ไหม','หยิบ ไป เลย ไม่ ต้อง บอก','เอา ดินสอ มา นี่'],
+  ['🤕','เพื่อน หกล้ม หนู ควร ทำ อย่างไร','ถาม ว่า เจ็บ ไหม แล้ว ช่วย พยุง','หัวเราะ เพื่อน','วิ่ง หนี ไป'],
+  ['🚶💥','เดิน ชน คุณป้า โดย ไม่ ตั้งใจ ควร พูด ว่า อะไร','ขอโทษ ครับ/ค่ะ','มอง ทาง บ้าง สิ','ไม่ พูด อะไร เลย'],
+  ['🚻','ระหว่าง เรียน อยาก ไป ห้องน้ำ ควร ทำ อย่างไร','ยกมือ ขออนุญาต คุณครู','ลุก เดิน ออก ไป เลย','นั่ง ร้องไห้'],
+  ['📓','ทำ การบ้าน ไม่ เสร็จ แล้ว คุณครู ถาม ควร ตอบ อย่างไร','บอก ความจริง แล้ว รีบ ทำ ให้ เสร็จ','โกหก ว่า หมา ฉีก การบ้าน','บอก ว่า เพื่อน ทำ หาย'],
+  ['🖍️','เพื่อน ไม่มี สี ระบาย ภาพ หนู ควร ทำ อย่างไร','แบ่ง สี ให้ เพื่อน ใช้','ซ่อน สี ไว้','บอก ว่า ไม่ ใช่ เรื่อง ของ ฉัน'],
+  ['📣','ได้ยิน คุณแม่ เรียก ควร ทำ อย่างไร','ขานรับ แล้ว รีบ ไป หา คุณแม่','ทำ เป็น ไม่ ได้ยิน','ตะโกน ว่า รอ ก่อน'],
+  ['👛','เก็บ กระเป๋าเงิน ได้ ใน โรงเรียน ควร ทำ อย่างไร','นำ ไป ให้ คุณครู','เก็บ ไว้ เอง','ทิ้ง ถังขยะ'],
+  ['📦','เพื่อน ช่วย ถือ ของ ให้ หนู ควร พูด ว่า อะไร','ขอบคุณ นะ','ถือ ดี ๆ นะ','ช้า จัง'],
+  ['🍡','ต่อแถว ซื้อ ขนม ควร ทำ อย่างไร','ยืน รอ ตาม คิว','แซง คิว เพื่อน','ผลัก คน ข้างหน้า'],
+  ['🗑️','กิน ขนม เสร็จ แล้ว มี ถุง ขนม เหลือ ควร ทำ อย่างไร','ทิ้ง ลง ถังขยะ','โยน ทิ้ง ที่ สนาม','ซ่อน ไว้ ใต้ โต๊ะ'],
+];
+/* 6) คำแสดงคำถาม [ก่อน, หลัง, ถูก, ผิด, ผิด] (ตัวหลอกเลือกให้เติมแล้วไม่เป็นประโยค) */
+const QWORD = [
+  ['คุณพ่อ กลับบ้าน ตั้งแต่','','เมื่อไร','อย่างไร','ที่ไหน'],
+  ['แมว ของ ฉัน ไป ซ่อน อยู่','','ที่ไหน','เมื่อไร','ใคร'],
+  ['','กิน ขนม ของ หนู','ใคร','ที่ไหน','เท่าไร'],
+  ['ใน ตะกร้า มี','','อะไร','เมื่อไร','อย่างไร'],
+  ['','น้อง ถึง ร้องไห้','ทำไม','ที่ไหน','ใคร'],
+  ['ดินสอ แท่ง นี้ ราคา','บาท','เท่าไร','ใคร','ที่ไหน'],
+  ['โรงเรียน จะ ปิดเทอม','','เมื่อไร','ใคร','อะไร'],
+  ['','เป็น คน วาด ภาพ นี้','ใคร','อะไร','ที่ไหน'],
+  ['พรุ่งนี้ เรา จะ ไป เที่ยว','','ที่ไหน','ใคร','เท่าไร'],
+  ['แม่ ซื้อ','มา ฝาก หนู','อะไร','ใคร','อย่างไร'],
+  ['ห้องเรียน ของ เรา มี นักเรียน','คน','กี่','ใคร','ที่ไหน'],
+  ['เรา จะ ข้าม ถนน ให้ ปลอดภัย ได้','','อย่างไร','ใคร','ทำไม'],
+  ['หนู ชอบ กิน ผลไม้','มาก ที่สุด','อะไร','ใคร','เมื่อไร'],
+];
+/* 7) ประกอบคำ [ภาพ, พยางค์] + ปริศนาคำ */
+const WORDS = [
+  ['👜',['กระ','เป๋า']], ['🐇',['กระ','ต่าย']], ['🍳',['กระ','ทะ']], ['🐿️',['กระ','รอก']], ['📄',['กระ','ดาษ']], ['🪞',['กระ','จก']],
+  ['👗',['กระ','โปรง']], ['🥢',['ตะ','เกียบ']], ['🧺',['ตะ','กร้า']], ['🥭',['มะ','ม่วง']], ['🥥',['มะ','พร้าว']], ['🌉',['สะ','พาน']],
+  ['🌊',['ทะ','เล']], ['⏰',['นา','ฬิ','กา']], ['🧸',['ตุ๊ก','ตา']], ['✏️',['ดิน','สอ']], ['🚪',['ประ','ตู']], ['🐊',['จระ','เข้']],
+];
+const RIDDLES = [
+  ['👜','คำ ใด ขึ้นต้น ด้วย "กระ" และ เป็น ของใช้ สำหรับ ใส่ สิ่งของ','กระเป๋า','กระทะ','กระดาน'],
+  ['🐇','คำ ใด ขึ้นต้น ด้วย "กระ" และ เป็น สัตว์ หู ยาว','กระต่าย','กระดาษ','กระจก'],
+  ['🪞','คำ ใด ขึ้นต้น ด้วย "กระ" และ ใช้ ส่อง ดู หน้า ตัวเอง','กระจก','กระทะ','กระรอก'],
+  ['🍳','คำ ใด ขึ้นต้น ด้วย "กระ" และ ใช้ ทอด ไข่','กระทะ','กระเป๋า','กระดุม'],
+  ['🥢','คำ ใด ขึ้นต้น ด้วย "ตะ" และ ใช้ คีบ อาหาร','ตะเกียบ','ตะกร้า','ตะปู'],
+  ['🥭','คำ ใด ขึ้นต้น ด้วย "มะ" เป็น ผลไม้ สุก แล้ว สี เหลือง รส หวาน','มะม่วง','มะนาว','มะเขือ'],
+];
+function genWord(){
+  if(R(3)===0){ const r = pick(RIDDLES); return { skill:'word', kind:'mcq', key:'r'+r[2], q:r[1], opts:[r[2],r[3],r[4]].map(t => ['', t]), why:'คำตอบ คือ '+r[2]+' '+r[0] }; }
+  const [pic, parts] = pick(WORDS);
+  const extra = shuffle(WORDS.flatMap(w => w[1]).filter(s => !parts.includes(s))).slice(0, parts.length===3 ? 2 : 3);
+  return { skill:'word', kind:'build', key:'b'+parts.join(''), pic, parts, tiles:shuffle(parts.concat(extra)), q:'ดู ภาพ แล้ว แตะ พยางค์ ตาม ลำดับ ให้ เป็น คำ ที่ ถูกต้อง', why:'ภาพ '+pic+' คือ คำ ว่า '+parts.join('') };
+}
+/* 8) เหตุการณ์ต่อไป [ภาพ, คำบรรยาย, ถูก, ผิด, ผิด] + เรียงลำดับ */
+const NEXT = [
+  ['👧🛟🤿','','ไป ว่ายน้ำ','ไป กินข้าว','ไป นอน'],
+  ['🌙🥱🛏️','ดึก แล้ว น้อง ง่วง มาก','ไป นอน','ไป ว่ายน้ำ','ไป โรงเรียน'],
+  ['🌧️☂️','ฝน เริ่ม ตก ขณะ เดิน กลับ บ้าน','กาง ร่ม','ใส่ แว่น กันแดด','ไป เล่น ว่าว'],
+  ['🎂🕯️🎉','เพื่อน ๆ ร้องเพลง วันเกิด จบ แล้ว','เป่า เทียน','แปรงฟัน','ไป นอน'],
+  ['🍽️','กิน ข้าว เย็น เสร็จ แล้ว','แปรงฟัน','ไป อาบน้ำ ใน ทะเล','กิน ข้าว อีก สาม จาน'],
+  ['🧊☀️','วาง น้ำแข็ง ไว้ กลาง แดด','น้ำแข็ง ละลาย','น้ำแข็ง ก้อน ใหญ่ ขึ้น','น้ำแข็ง บิน ได้'],
+  ['🥚','ไข่ เริ่ม มี รอย ร้าว','ลูกไก่ ออก จาก ไข่','ไข่ กลาย เป็น ปลา','ไข่ ลอย ขึ้น ฟ้า'],
+  ['⏰🌅🎒','ตอน เช้า วัน จันทร์','ไป โรงเรียน','ไป นอน','ออก ไป ดู ดาว'],
+  ['🤧🤒','น้อง จาม บ่อย และ ตัว ร้อน','ไป หา หมอ','ไป ว่ายน้ำ','กิน ไอศกรีม'],
+  ['⚽🪟💥','เตะ ลูกบอล โดน กระจก บ้าน เพื่อนบ้าน แตก','ไป ขอโทษ เจ้าของบ้าน','รีบ วิ่ง หนี','เตะ ลูกบอล อีก ครั้ง'],
+  ['🌱💧☀️','รด น้ำ ต้นไม้ ทุก วัน','ต้นไม้ เจริญเติบโต','ต้นไม้ เหี่ยว ตาย','ต้นไม้ เดิน ได้'],
+];
+const ORDERS = [
+  [['🥚','ไข่'],['🐣','ลูกไก่'],['🐔','ไก่']],
+  [['🌱','ต้นกล้า'],['🌿','ต้นเล็ก'],['🌳','ต้นไม้ใหญ่']],
+  [['⏰','ตื่นนอน'],['🪥','แปรงฟัน'],['🎒','ไป โรงเรียน']],
+  [['🛒','ซื้อ ของ'],['🍳','ทำ อาหาร'],['🍽️','กิน ข้าว']],
+  [['🧼','ถู สบู่'],['🚿','ล้าง น้ำ'],['🤲','เช็ด มือ ให้ แห้ง']],
+  [['🌅','ตอนเช้า'],['☀️','ตอนกลางวัน'],['🌙','ตอนกลางคืน']],
+  [['📖','อ่าน โจทย์'],['✏️','เขียน คำตอบ'],['✅','ตรวจ คำตอบ']],
+  [['🌰','เมล็ด'],['🌻','ดอก บาน'],['🍂','ดอก เหี่ยว']],
+];
+function genNext(){
+  if(R(3)===0){ const o = pick(ORDERS); return { skill:'next', kind:'order', key:'o'+o[0][1], items:o, q:'เรียง ลำดับ เหตุการณ์ ให้ ถูกต้อง แตะ ภาพ ที่ เกิด ก่อน ไป หลัง', why:'ลำดับ ที่ ถูก คือ '+o.map(x => x[0]+' '+x[1]).join(' → ') }; }
+  const n = pick(NEXT);
+  return { skill:'next', kind:'mcq', key:'n'+n[2], pic:n[0], cap:n[1], q:'จาก ภาพ เหตุการณ์ ใด น่าจะ เกิดขึ้น ต่อไป', opts:[n[2],n[3],n[4]].map(t => ['', t]), why:'เหตุการณ์ ต่อไป ที่ เหมาะสม คือ '+n[2] };
+}
+/* 9) คำประสม [ภาพ1, คำ1, ภาพ2, คำ2, ถูก, ผิด, ผิด] */
+const COMPOUND = [
+  ['🐴','ม้า','💧','น้ำ','ม้าน้ำ','ม้า','ม้าน้ำ อยู่ บน เกาะ'],
+  ['🚗','รถ','🔥','ไฟ','รถไฟ','รถ','รถ ไป ดับ ไฟ'],
+  ['🥚','ไข่','⭐','ดาว','ไข่ดาว','ดาวไข่','ไข่ อยู่ บน ดาว'],
+  ['🐟','ปลา','⭐','ดาว','ปลาดาว','ดาวปลา','ปลา มอง ดาว'],
+  ['👄','ปาก','🐦‍⬛','กา','ปากกา','กาปาก','ปาก ของ กา'],
+  ['🔥','ไฟ','🌤️','ฟ้า','ไฟฟ้า','ฟ้าไฟ','ไฟ อยู่ บน ฟ้า'],
+  ['👩','แม่','💧','น้ำ','แม่น้ำ','น้ำแม่','แม่ ดื่ม น้ำ'],
+  ['🗄️','ตู้','❄️','เย็น','ตู้เย็น','เย็นตู้','ตู้ ใบ นี้ เย็น'],
+  ['🐘','ช้าง','💧','น้ำ','ช้างน้ำ','น้ำช้าง','ช้าง อาบ น้ำ'],
+  ['🌼','ดอก','🪵','ไม้','ดอกไม้','ไม้','ดอก บาน บน ไม้'],
+  ['👶','ลูก','🐯','เสือ','ลูกเสือ','เสือ','ลูก วิ่ง หนี เสือ'],
+  ['🥛','นม','🐄','วัว','นมวัว','วัวนม ดื่ม น้ำ','วัว'],
+];
+/* 10) เรื่องอ่าน: ข้อสุดท้ายของแต่ละเรื่องเป็นคำถามสะท้อนคิด */
+const STORIES = [
+  { t:'ครอบครัว ของ พลอย', e:'🐾', text:'พ่อ ของ พลอย ชื่อ เพชร เป็น สัตวแพทย์ มีหน้าที่ รักษา สัตว์ พลอย ชอบ ช่วย พ่อ ดูแล สัตว์ โตขึ้น พลอย อยาก เป็น สัตวแพทย์ เหมือน พ่อ ส่วน แม่ ของ พลอย ชื่อ ทับทิม เป็น คุณครู สอน ชั้น ประถมศึกษา ปีที่ 1',
+    qs:[['พ่อ ของ พลอย ประกอบ อาชีพ อะไร','สัตวแพทย์','หมอ','ตำรวจ'], ['ใน อนาคต พลอย อยาก ประกอบ อาชีพ อะไร','สัตวแพทย์','ครู','พยาบาล'], ['แม่ ของ พลอย มีหน้าที่ ทำ อะไร','สอน หนังสือ','ดูแล สัตว์','จับ ผู้ร้าย'], ['พลอย ชอบ ช่วย พ่อ ดูแล สัตว์ แสดง ว่า พลอย เป็น เด็ก อย่างไร','รัก สัตว์ และ ชอบ ช่วยเหลือ','ขี้เกียจ','ไม่ ชอบ สัตว์']] },
+  { t:'แมว ของ ต้น', e:'🐈', text:'ต้น มี แมว ชื่อ ส้ม ขน ของ ส้ม เป็น สี ส้ม ส้ม ชอบ นอน บน เก้าอี้ ตัว โปรด ทุก เช้า ต้น ให้ อาหาร และ น้ำ แก่ ส้ม ก่อน ไป โรงเรียน',
+    qs:[['แมว ของ ต้น ชื่อ อะไร','ส้ม','ต้น','ขาว'], ['ส้ม ชอบ นอน ที่ไหน','บน เก้าอี้','ใต้ โต๊ะ','บน หลังคา'], ['ต้น ให้ อาหาร ส้ม เมื่อไร','ทุก เช้า ก่อน ไป โรงเรียน','ตอน กลางคืน','วัน อาทิตย์ เท่านั้น'], ['ต้น เป็น เจ้าของ แมว ที่ ดี เพราะ อะไร','ดูแล ให้ อาหาร และ น้ำ ทุก วัน','เล่น กับ แมว บาง วัน','ปล่อย ให้ แมว หิว']] },
+  { t:'มะลิ ไป ตลาด', e:'🧺', text:'วัน อาทิตย์ แม่ พา มะลิ ไป ตลาด แม่ ซื้อ ปลา และ ผักบุ้ง มะลิ ช่วย แม่ ถือ ตะกร้า กลับ บ้าน แม่ ยิ้ม แล้ว ชม ว่า มะลิ เป็น เด็ก ดี',
+    qs:[['แม่ พา มะลิ ไป ตลาด วัน อะไร','วัน อาทิตย์','วัน จันทร์','วัน เสาร์'], ['แม่ ซื้อ อะไร','ปลา และ ผักบุ้ง','ไก่ และ ไข่','ขนม และ ผลไม้'], ['มะลิ ช่วย แม่ อย่างไร','ถือ ตะกร้า','ทำ กับข้าว','ขับ รถ'], ['ตอน ที่ แม่ ชม มะลิ แม่ น่าจะ รู้สึก อย่างไร','ดีใจ และ ภูมิใจ','โกรธ','เสียใจ']] },
+  { t:'ร่ม ของ คุณครู', e:'☂️', text:'ตอน เย็น ฝน ตก หนัก ภูมิ ลืม เอา ร่ม มา โรงเรียน คุณครู จึง ให้ ภูมิ ยืม ร่ม ภูมิ ไหว้ ขอบคุณ คุณครู แล้ว เดิน กลับ บ้าน อย่าง ปลอดภัย',
+    qs:[['ภูมิ ลืม เอา อะไร มา โรงเรียน','ร่ม','กระเป๋า','รองเท้า'], ['ใคร ให้ ภูมิ ยืม ร่ม','คุณครู','คุณแม่','เพื่อน'], ['ภูมิ ทำ อย่างไร หลัง ได้ ยืม ร่ม','ไหว้ ขอบคุณ คุณครู','วิ่ง หนี','ร้องไห้'], ['ถ้า หนู เป็น ภูมิ วันรุ่งขึ้น ควร ทำ อย่างไร กับ ร่ม ของ คุณครู','นำ ไป คืน และ ขอบคุณ อีก ครั้ง','เก็บ ไว้ เป็น ของ ตัวเอง','ทิ้ง ไว้ ที่ บ้าน']] },
+  { t:'ต้นถั่ว ของ ข้าว', e:'🌱', text:'ข้าว ปลูก ถั่วเขียว ใน กระถาง ข้าว รด น้ำ ทุก วัน และ วาง กระถาง ไว้ ที่ มี แสงแดด ผ่าน ไป 3 วัน ถั่วเขียว งอก เป็น ต้น เล็ก ๆ ข้าว ดีใจ มาก',
+    qs:[['ข้าว ปลูก อะไร','ถั่วเขียว','ข้าวโพด','ดอกกุหลาบ'], ['ข้าว ดูแล ต้นถั่ว อย่างไร','รด น้ำ ทุก วัน และ วาง ไว้ ที่ มี แดด','ใส่ ไว้ ใน ตู้เย็น','ไม่ รด น้ำ เลย'], ['ผ่าน ไป กี่ วัน ถั่วเขียว จึง งอก','3 วัน','1 วัน','10 วัน'], ['ถ้า อยาก ให้ ต้นไม้ เติบโต ดี ควร ทำ อย่างไร','ดูแล รด น้ำ อย่าง สม่ำเสมอ','ปลูก แล้ว ลืม','เหยียบ ต้นไม้']] },
+  { t:'วันเกิด ของ ฟ้า', e:'🎂', text:'วันนี้ เป็น วันเกิด ของ ฟ้า ฟ้า อายุ 7 ขวบ เพื่อน ๆ ร้องเพลง อวยพร วันเกิด ฟ้า เป่า เทียน บน เค้ก แล้ว แบ่ง เค้ก ให้ เพื่อน ทุก คน',
+    qs:[['ฟ้า อายุ กี่ ขวบ','7 ขวบ','6 ขวบ','8 ขวบ'], ['เพื่อน ๆ ทำ อะไร ใน วันเกิด ของ ฟ้า','ร้องเพลง อวยพร','เล่น ฟุตบอล','นอน หลับ'], ['ฟ้า ทำ อะไร กับ เค้ก','แบ่ง ให้ เพื่อน ทุก คน','กิน คน เดียว','เก็บ ไว้ ไม่ ให้ ใคร'], ['จาก เรื่อง ฟ้า เป็น เด็ก อย่างไร','มี น้ำใจ รู้จัก แบ่งปัน','หวง ของ','ขี้โมโห']] },
+  { t:'บิว เก็บ ขยะ', e:'🗑️', text:'หลัง พัก เที่ยง บิว เห็น ขวด น้ำ ตก อยู่ ที่ สนาม บิว เก็บ ขวด ไป ทิ้ง ใน ถังขยะ สำหรับ ขวด พลาสติก คุณครู เห็น จึง ชม บิว หน้า เสาธง',
+    qs:[['บิว เห็น อะไร ตก อยู่ ที่ สนาม','ขวด น้ำ','ลูกบอล','ดินสอ'], ['บิว ทำ อย่างไร กับ สิ่ง ที่ เห็น','เก็บ ไป ทิ้ง ใน ถังขยะ','เตะ เล่น','เดิน ผ่าน ไป'], ['ใคร ชม บิว','คุณครู','คุณแม่','ตำรวจ'], ['สิ่ง ที่ บิว ทำ ช่วย ให้ เกิด อะไร','โรงเรียน สะอาด น่าอยู่','โรงเรียน สกปรก','ไม่ ช่วย อะไร เลย']] },
+];
+function storyQs(si){ const s = STORIES[si]; return s.qs.map((x,i) => ({ skill:'story', kind:'mcq', key:'s'+si+'-'+i, story:si, reflect:i===3, q:x[0], opts:[x[1],x[2],x[3]].map(t => ['', t]), why:(i===3 ? 'คิด จาก เรื่อง: ' : 'ใน เรื่อง บอก ว่า ')+x[1] })); }
+
+/* ---------------- ตัวสุ่มข้อ ไม่ให้ซ้ำในรอบเดียว ---------------- */
+function queue(arr){ let q = []; return () => { if(!q.length) q = shuffle(arr.map((_,i) => i)); return arr[q.pop()]; }; }
+const QP = queue(PICTURE), QM = queue(MANNERS), QW = queue(QWORD), QC = queue(COMPOUND), QN = queue(NEXT), QS = queue(STORIES.map((_,i) => i));
+const GEN = {
+  count:genCount,
+  picture:() => { const p = QP(); return { skill:'picture', kind:'mcq', key:'p'+p[1], pic:p[0], q:'ประโยค ใด มี ใจความ สมบูรณ์ และ เหมาะ กับ ภาพ', opts:[p[1],p[2],p[3]].map(t => ['', t]), why:'ประโยค ที่ บอก ว่า ใคร ทำ อะไร ตรง กับ ภาพ คือ "'+p[1]+'"' }; },
+  job:genJob, day:genDay,
+  manners:() => { const m = QM(); return { skill:'manners', kind:'mcq', key:'m'+m[1], pic:m[0], q:m[1], opts:[m[2],m[3],m[4]].map(t => ['', t]), why:'ควร '+m[2] }; },
+  qword:() => { const w = QW(); return { skill:'qword', kind:'fill', key:'q'+w[0]+w[1], before:w[0], after:w[1], ans:w[2], chips:shuffle([w[2],w[3],w[4]]), q:'เติม คำ ใน ประโยค ให้ เป็น คำถาม ที่ สมบูรณ์', why:'"'+(w[0]+' '+w[2]+' '+w[1]).trim()+'" เป็น คำถาม ที่ สมบูรณ์' }; },
+  word:genWord,
+  next:genNext,
+  compound:() => { const c = QC(); return { skill:'compound', kind:'mcq', key:'k'+c[4], comp:c, q:'นำ 2 คำ ใน ภาพ มา รวม กัน เป็น คำ ใหม่ 1 คำ ได้ คำ ว่า อะไร', opts:[c[4],c[5],c[6]].map(t => ['', t]), why:c[1]+' + '+c[3]+' = '+c[4]+' (เป็น คำ เดียว ที่ มี ความหมาย ใหม่)' }; },
+};
+function uniq(gen, used){ for(let i=0;i<30;i++){ const q = gen(); if(!used.has(q.key)){ used.add(q.key); return q; } } return gen(); }
+const ORDER9 = ['count','picture','job','day','manners','qword','word','next','compound'];
+function makeSet(kind){
+  const used = new Set(), out = [];
+  if(kind==='skill-story'){ for(let i=0;i<3;i++) out.push(...storyQs(QS())); return out; }
+  if(kind.startsWith('skill-')){ const s = kind.slice(6); for(let i=0;i<10;i++) out.push(uniq(GEN[s], used)); return out; }
+  const rounds = kind==='page24' ? 2 : 1;
+  for(let r=0;r<rounds;r++){ ORDER9.forEach(s => out.push(uniq(GEN[s], used))); }
+  for(let r=0;r<rounds;r++){ const si = QS(), qs = storyQs(si); out.push(qs[R(2)], qs[2], qs[3]); }
+  return out;
+}
+/* ชุดต้นฉบับ 12 ข้อ (แก้คำผิดแล้ว: "สระ กระ-" → "ขึ้นต้นด้วย กระ", "ม้านำ้" → "ม้าน้ำ") */
+function originalSet(){
+  const ol = ['ก','ข','ก','ค','ก','ง','ก'];
+  return [
+    { skill:'count', kind:'count', key:'o1', target:'ก', letters:ol, ans:4, opts:shuffle([3,4,5]), q:'สังเกต พยัญชนะ ที่ กำหนด แล้ว ตอบ ว่า มี พยัญชนะ "ก" ทั้งหมด กี่ ตัว', why:'มี "ก" ทั้งหมด 4 ตัว' },
+    { skill:'picture', kind:'mcq', key:'o2', pic:'👩🪴💧', q:'ประโยค ใด มี ใจความ สมบูรณ์ และ เหมาะ กับ ภาพ', opts:[['','แม่ รดน้ำ ต้นไม้'],['','ต้นไม้ นอนหลับ'],['','แม่ ว่ายน้ำ']], why:'ภาพ คือ แม่ กำลัง รดน้ำ ต้นไม้' },
+    { skill:'job', kind:'mcq', key:'o3', q:'ใคร มีหน้าที่ บอก ข่าวสาร ให้ คน จำนวนมาก ทราบ', opts:[['📺','ผู้ประกาศข่าว'],['🧑‍🌾','ชาวนา'],['🧑‍🍳','พ่อครัว']], why:'ผู้ประกาศข่าว บอก ข่าวสาร ให้ คน จำนวนมาก ทราบ' },
+    { skill:'day', kind:'day', key:'o4', today:5, ans:4, opts:shuffle([4,6,0]), q:'วันนี้ เป็น วันศุกร์ เมื่อวาน คือ วัน อะไร', why:'วันก่อน วันศุกร์ คือ วันพฤหัสบดี' },
+    { skill:'manners', kind:'mcq', key:'o5', pic:'🥛💥', q:'เด็ก ทำ แก้วน้ำ ตก แตก เด็ก ควร พูด ว่า อะไร', opts:[['','ขอโทษ ครับ/ค่ะ'],['','ไม่รู้ ว่า ใคร ทำ'],['','ฉัน จะ ไป เล่น แล้ว']], why:'ทำ ผิด ควร ขอโทษ' },
+    { skill:'qword', kind:'fill', key:'o6', before:'คุณพ่อ กลับบ้าน ตั้งแต่', after:'', ans:'เมื่อไร', chips:shuffle(['เมื่อไร','อย่างไร','ที่ไหน']), q:'เติม คำ ใน ประโยค ให้ เป็น คำถาม ที่ สมบูรณ์', why:'"ตั้งแต่ เมื่อไร" ถาม เรื่อง เวลา' },
+    { skill:'word', kind:'mcq', key:'o7', q:'คำ ใด ขึ้นต้น ด้วย "กระ" และ เป็น ของใช้ สำหรับ ใส่ สิ่งของ', opts:[['','กระเป๋า'],['','กระทะ'],['','กระดาน']], why:'กระเป๋า ใช้ ใส่ สิ่งของ' },
+    { skill:'next', kind:'mcq', key:'o8', pic:'👧🛟🤿', q:'จาก ภาพ เหตุการณ์ ใด น่าจะ เกิดขึ้น ต่อไป', opts:[['','ไป ว่ายน้ำ'],['','ไป กินข้าว'],['','ไป นอน']], why:'เด็ก ใส่ แว่น และ ห่วงยาง จะ ไป ว่ายน้ำ' },
+    { skill:'compound', kind:'mcq', key:'o9', comp:COMPOUND[0], q:'สังเกต คำ ข้อ ใด เป็น คำ ที่ มี ความหมาย สมบูรณ์', opts:[['','ม้าน้ำ'],['','ม้า'],['','ม้าน้ำ อยู่ บน เกาะ']], why:'ม้า + น้ำ = ม้าน้ำ' },
+    ...storyQs(0).slice(0, 3),
+  ];
+}
+
+/* ============================================================
+   วาดคำถาม · onAnswer(ok) เรียกครั้งเดียว
+   ============================================================ */
+const LETTERS = ['ก','ข','ค'];
+const graphemes = t => window.Intl && Intl.Segmenter ? [...new Intl.Segmenter('th', { granularity:'grapheme' }).segment(t)].map(x => x.segment) : Array.from(t);
+function head(q, n, total){
+  const s = SK[q.skill];
+  return '<div class="qh"><span class="qn">'+n+'</span><span class="chip">'+s.e+' '+s.n+(q.reflect ? ' · 💭 สะท้อนคิด' : '')+'</span><button class="spk" type="button" data-say aria-label="ฟังคำถาม">🔊</button></div>'+
+    '<div class="qt">'+esc(q.q)+'</div>';
+}
+function storyHTML(si, compact){
+  const s = STORIES[si];
+  return '<div class="story"><div class="st">'+s.e+' เรื่อง '+esc(s.t)+'<button class="spk" type="button" data-story="'+si+'">🔊 ฟังเรื่อง</button></div><p>'+s.text.split(' ').map(w => '<span class="w">'+esc(w)+'</span>').join(' ')+'</p></div>';
+}
+function readStory(btn){
+  const box = btn.closest('.story'), words = [...box.querySelectorAll('.w')], s = STORIES[+btn.dataset.story];
+  if(muted){ pop('เปิดเสียง 🔊 ก่อนนะ'); return; }
+  speak(s.text, .8);
+  words.forEach(w => w.classList.remove('on'));
+  let i = 0; clearTimeout(readStory.t);
+  const step = () => { words.forEach(w => w.classList.remove('on')); if(i >= words.length) return; words[i].classList.add('on'); const ms = 140 + words[i].textContent.length*95; i++; readStory.t = setTimeout(step, ms); };
+  step();
+}
+function renderQ(q, el, n, onAnswer, opt={}){
+  el.className = 'qc'; el.style.background = SK[q.skill].c;
+  let body = '';
+  if(q.story!==undefined && opt.showStory) body += storyHTML(q.story);
+  body += head(q, n);
+  let answered = false;
+  const finish = ok => {
+    if(answered) return; answered = true;
+    const fb = el.querySelector('.fb'); fb.className = 'fb '+(ok ? 'ok' : 'no');
+    fb.innerHTML = (ok ? '✅ ถูกต้อง! ' : '💡 ')+esc(q.why);
+    (ok ? sfx.ok : sfx.no)();
+    onAnswer(ok);
+  };
+  if(q.kind==='mcq'){
+    if(q.pic) body += '<div class="pic">'+graphemes(q.pic).map(e => '<span class="em">'+e+'</span>').join('')+(q.cap ? '<span class="cap">'+esc(q.cap)+'</span>' : '')+'</div>';
+    if(q.comp) body += '<div class="pic"><span class="part"><span class="em">'+q.comp[0]+'</span><small>'+q.comp[1]+'</small></span><span class="plus">➕</span><span class="part"><span class="em">'+q.comp[2]+'</span><small>'+q.comp[3]+'</small></span><span class="plus">=</span><span class="part"><span class="em">❓</span><small>&nbsp;</small></span></div>';
+    const order = shuffle(q.opts.map((_,i) => i));
+    body += '<div class="opts">'+order.map((i,k) => '<button type="button" class="opt" data-i="'+i+'">'+(q.opts[i][0] ? '<span class="em">'+q.opts[i][0]+'</span>' : '<span class="lt">'+LETTERS[k]+'</span>')+'<span>'+esc(q.opts[i][1])+'</span></button>').join('')+'</div>';
+  }
+  if(q.kind==='count'){
+    body += '<div class="letters">'+q.letters.map((l,i) => '<button type="button" class="lt2" data-l="'+i+'">'+l+'</button>').join('')+'</div><div class="hint">👆 แตะ ตัว "'+q.target+'" ให้ ครบ ช่วย นับ ได้</div>';
+    body += '<div class="opts">'+q.opts.map((v,k) => '<button type="button" class="opt" data-v="'+v+'"><span class="lt">'+LETTERS[k]+'</span><span>'+v+' ตัว</span></button>').join('')+'</div>';
+  }
+  if(q.kind==='day'){
+    body += '<div class="wheel">'+DAYS.map((d,i) => { const a = -Math.PI/2 + i*2*Math.PI/7; return '<div class="d'+(i===q.today?' today':'')+'" data-d="'+i+'" style="left:'+(150+118*Math.cos(a))+'px;top:'+(150+118*Math.sin(a))+'px;background:'+d[1]+'">'+d[0]+'</div>'; }).join('')+'<div class="mid"><b>📅</b>วันนี้ วัน'+DAYS[q.today][0]+'</div></div>';
+    body += '<div class="opts">'+q.opts.map((v,k) => '<button type="button" class="opt" data-v="'+v+'"><span class="lt" style="background:'+DAYS[v][1]+'">'+LETTERS[k]+'</span><span>วัน'+DAYS[v][0]+'</span></button>').join('')+'</div>';
+  }
+  if(q.kind==='fill'){
+    body += '<div class="sent">'+esc(q.before)+' <span class="slot">&nbsp;</span> '+esc(q.after)+' ?</div><div class="chips">'+q.chips.map(c => '<button type="button" class="wchip" data-c="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div><div class="hint" style="text-align:center">👆 แตะ คำ ที่ ถูก เพื่อ เติม ลง ในช่อง</div>';
+  }
+  if(q.kind==='build'){
+    body += '<div class="pic"><span class="em" style="font-size:4.2rem">'+q.pic+'</span></div><div class="slots">'+q.parts.map((_,i) => '<div class="bslot" data-s="'+i+'"></div>').join('')+'</div>'+
+      '<div class="chips">'+q.tiles.map((t,i) => '<button type="button" class="wchip" data-t="'+i+'">'+esc(t)+'</button>').join('')+'</div><div class="hint" style="text-align:center">👆 แตะ พยางค์ ตาม ลำดับ · แตะ ช่อง ที่ เติม แล้ว เพื่อ เอา ออก</div>';
+  }
+  if(q.kind==='order'){
+    body += '<div class="order">'+shuffle(q.items.map((_,i) => i)).map(i => '<button type="button" class="ocard" data-o="'+i+'"><span class="em">'+q.items[i][0]+'</span>'+esc(q.items[i][1])+'</button>').join('')+'</div>';
+  }
+  body += '<div class="fb"></div>';
+  el.innerHTML = body;
+  el.querySelector('[data-say]').onclick = () => speak(q.q + (q.kind==='fill' ? ' '+q.before+' เว้นว่าง '+q.after : ''));
+  const sb = el.querySelector('[data-story]'); if(sb) sb.onclick = () => readStory(sb);
+
+  if(q.kind==='mcq') el.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if(answered) return; const ok = b.dataset.i==='0';
+    el.querySelectorAll('.opt').forEach(x => { x.disabled = true; x.classList.add(x.dataset.i==='0' ? 'right' : x===b ? 'wrong' : 'dim'); });
+    finish(ok);
+  });
+  if(q.kind==='count'){
+    el.querySelectorAll('.lt2').forEach(b => b.onclick = () => { if(answered) return; b.classList.toggle('mk'); sfx.tap(); });
+    el.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+      if(answered) return; const ok = +b.dataset.v===q.ans;
+      el.querySelectorAll('.opt').forEach(x => { x.disabled = true; x.classList.add(+x.dataset.v===q.ans ? 'right' : x===b ? 'wrong' : 'dim'); });
+      el.querySelectorAll('.lt2').forEach(x => { x.classList.remove('mk'); if(x.textContent===q.target) x.classList.add('hit'); });
+      finish(ok);
+    });
+  }
+  if(q.kind==='day') el.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if(answered) return; const ok = +b.dataset.v===q.ans;
+    el.querySelectorAll('.opt').forEach(x => { x.disabled = true; x.classList.add(+x.dataset.v===q.ans ? 'right' : x===b ? 'wrong' : 'dim'); });
+    el.querySelector('.wheel .d[data-d="'+q.ans+'"]').classList.add('ans');
+    finish(ok);
+  });
+  if(q.kind==='fill') el.querySelectorAll('.wchip').forEach(b => b.onclick = () => {
+    if(answered) return; const slot = el.querySelector('.slot'), ok = b.dataset.c===q.ans;
+    slot.textContent = b.dataset.c; b.classList.add('used'); slot.classList.add(ok ? 'right' : 'wrong');
+    el.querySelectorAll('.wchip').forEach(x => x.disabled = true);
+    if(!ok) setTimeout(() => { slot.textContent = q.ans; slot.classList.remove('wrong'); slot.classList.add('right'); }, 1100);
+    finish(ok);
+  });
+  if(q.kind==='build'){
+    const filled = q.parts.map(() => null);
+    const draw = () => el.querySelectorAll('.bslot').forEach((s,i) => { s.textContent = filled[i]===null ? '' : q.tiles[filled[i]]; s.classList.toggle('fill', filled[i]!==null); });
+    el.querySelectorAll('.wchip').forEach(b => b.onclick = () => {
+      if(answered || b.classList.contains('used')) return;
+      const k = filled.indexOf(null); if(k<0) return;
+      filled[k] = +b.dataset.t; b.classList.add('used'); sfx.tap(); draw();
+      if(!filled.includes(null)){
+        const word = filled.map(i => q.tiles[i]).join(''), ok = word===q.parts.join('');
+        el.querySelectorAll('.bslot').forEach((s,i) => s.classList.add(ok ? 'right' : 'wrong'));
+        if(!ok) setTimeout(() => el.querySelectorAll('.bslot').forEach((s,i) => { s.textContent = q.parts[i]; s.classList.remove('wrong'); s.classList.add('right'); }), 1100);
+        if(ok) setTimeout(() => speak(q.parts.join('')), 400);
+        finish(ok);
+      }
+    });
+    el.querySelectorAll('.bslot').forEach((s,i) => s.onclick = () => {
+      if(answered || filled[i]===null) return;
+      el.querySelector('.wchip[data-t="'+filled[i]+'"]').classList.remove('used'); filled[i] = null;
+      for(let j=i;j<filled.length-1;j++){ filled[j] = filled[j+1]; } filled[filled.length-1] = null; draw();
+    });
+  }
+  if(q.kind==='order'){
+    const seq = [];
+    el.querySelectorAll('.ocard').forEach(b => b.onclick = () => {
+      if(answered) return;
+      const i = +b.dataset.o, at = seq.indexOf(i);
+      if(at >= 0){ if(at===seq.length-1){ seq.pop(); b.querySelector('.no').remove(); } return; }
+      seq.push(i); b.insertAdjacentHTML('beforeend', '<span class="no">'+seq.length+'</span>'); sfx.tap();
+      if(seq.length===q.items.length){
+        const ok = seq.every((v,k) => v===k);
+        el.querySelectorAll('.ocard').forEach(c => { const o = +c.dataset.o; c.classList.add(seq[o]===o ? 'right' : 'wrong'); });
+        if(!ok) setTimeout(() => el.querySelectorAll('.ocard').forEach(c => { c.querySelector('.no').textContent = +c.dataset.o+1; c.classList.remove('wrong'); c.classList.add('right'); }), 1200);
+        finish(ok);
+      }
+    });
+  }
+}
+
+/* ============================================================
+   บันทึกผล
+   ============================================================ */
+let SAVE = {}; try{ SAVE = JSON.parse(localStorage.getItem('kids-thai-reflect')||'{}')||{}; }catch(e){}
+SAVE.best = SAVE.best || {};
+const persist = () => { try{ localStorage.setItem('kids-thai-reflect', JSON.stringify(SAVE)); }catch(e){} };
+const starsOf = (r, t) => { const p = r/t; return p>=.9 ? 3 : p>=.7 ? 2 : p>=.5 ? 1 : 0; };
+const starTxt = n => '⭐'.repeat(n)+'☆'.repeat(3-n);
+function record(mode, title, right, total, wrong){
+  const s = starsOf(right, total);
+  SAVE.best[mode] = Math.max(SAVE.best[mode]||0, s); persist();
+  if(window.KP) KP.log({ kind:'test', page:'thai-reflect', subject:'ภาษาไทย', title:'อ่านเขียนสะท้อนคิด · '+title, score:right, total, stars:Math.max(1, s), wrong:wrong.slice(0, 10) });
+  return s;
+}
+function resultHTML(right, total, stars, wrong){
+  return '<div class="card done"><div class="big">'+(stars>=2 ? '🎉🏆🎉' : '🌈')+'</div><div class="stars">'+starTxt(stars)+'</div><div class="score">'+right+' / '+total+'</div>'+
+    '<p>'+(stars>=3 ? 'เก่งมาก อ่านเข้าใจ และคิดได้ดีมาก!' : stars>=2 ? 'เก่งมาก! ลองทำอีกรอบให้ได้ 3 ดาวนะ' : 'ค่อย ๆ อ่านทีละคำ แล้วลองใหม่นะ สู้ ๆ')+'</p>'+
+    (wrong.length ? '<div class="wlist"><b>ข้อที่ควรทบทวน</b>'+wrong.map(w => '<div>🔁 '+esc(w)+'</div>').join('')+'</div>' : '')+
+    '<div class="row" style="justify-content:center"><button class="btn go" type="button" data-again>เล่นอีกรอบ (สุ่มข้อใหม่)</button><button class="btn" type="button" data-home>กลับหน้าแรก</button></div></div>';
+}
+
+/* ============================================================
+   หน้าแรก / สลับหน้า
+   ============================================================ */
+const MODES = [
+  { id:'adv',    e:'🏝️', t:'ผจญภัยเกาะนักอ่าน', d:'3 มิติ · ตอบถูกแล้วพาตัวเองกระโดดไปทีละก้อนหิน จนถึงหีบสมบัติกลางเกาะ · 12 ด่าน', c:'#DDF6F2' },
+  { id:'page12', e:'📄', t:'ทำรวดเดียว 12 ข้อ', d:'ทุกข้ออยู่หน้าเดียว เลื่อนทำได้เลย · แบบเดียวกับข้อสอบที่โรงเรียน', c:'#FFE3EF' },
+  { id:'page24', e:'📚', t:'ทำรวดเดียว 24 ข้อ', d:'ชุดยาว ครบทุกเรื่อง 2 รอบ + อ่านเรื่อง 2 เรื่อง', c:'#EFE5FF' },
+  { id:'orig',   e:'📝', t:'ชุดต้นฉบับจากครู', d:'12 ข้อเดิมจากใบงาน (สลับตำแหน่งคำตอบ)', c:'#FFF3CC' },
+];
+function drawHome(){
+  $('#modes').innerHTML = MODES.map(m => '<button type="button" class="mode" data-m="'+m.id+'" style="background:'+m.c+'"><span class="me">'+m.e+'</span><span><b>'+m.t+'</b><small>'+m.d+'</small><span class="best">'+starTxt(SAVE.best[m.id]||0)+'</span></span></button>').join('');
+  $('#skills').innerHTML = Object.entries(SK).map(([k,s]) => '<button type="button" class="skill" data-m="skill-'+k+'" style="background:'+s.c+'"><span>'+s.e+'</span>'+s.n+'<small>'+starTxt(SAVE.best['skill-'+k]||0)+'</small></button>').join('');
+  document.querySelectorAll('[data-m]').forEach(b => b.onclick = () => go(b.dataset.m));
+}
+function go(mode){
+  if(speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
+  $('#home').hidden = mode!=='home'; $('#page').hidden = !(mode.startsWith('page') || mode==='orig' || mode.startsWith('skill-')); $('#adv').hidden = mode!=='adv';
+  history.replaceState(null, '', mode==='home' ? location.pathname : '#'+mode);
+  $('#back').href = mode==='home' ? '../#ภาษาไทย' : '#';
+  $('#back').textContent = mode==='home' ? '‹ หน้ารวม' : '‹ กลับ';
+  $('#back').onclick = mode==='home' ? null : (e => { e.preventDefault(); go('home'); });
+  window.scrollTo(0, 0);
+  if(mode==='home'){ $('#title').textContent = '📖 อ่านเขียนสะท้อนคิด'; drawHome(); if(window.ADV) ADV.pause(); return; }
+  if(mode==='adv'){ startAdventure(); return; }
+  startPage(mode);
+}
+
+/* ============================================================
+   โหมดหน้าเดียว
+   ============================================================ */
+function startPage(mode){
+  const qs = mode==='orig' ? originalSet() : makeSet(mode);
+  const title = mode==='orig' ? 'ชุดต้นฉบับ' : mode.startsWith('skill-') ? SK[mode.slice(6)].n : 'ทำรวดเดียว '+qs.length+' ข้อ';
+  $('#title').textContent = '📖 '+title;
+  const P = $('#page');
+  P.innerHTML = '<div class="pbar"><div class="prog"><i id="pbar"></i></div><div class="ptxt"><span id="ptxt">ตอบแล้ว 0 / '+qs.length+'</span><span id="pok">✓ 0</span></div></div><div id="plist"></div><div id="pend"></div>';
+  let answered = 0, right = 0, lastStory = -1; const wrong = [];
+  qs.forEach((q, i) => {
+    if(q.story!==undefined && q.story!==lastStory){ lastStory = q.story; const d = document.createElement('div'); d.innerHTML = storyHTML(q.story); d.firstChild.style.margin = '6px 0 12px'; $('#plist').appendChild(d.firstChild); }
+    const el = document.createElement('div'); $('#plist').appendChild(el);
+    renderQ(q, el, i+1, ok => {
+      answered++; if(ok) right++; else wrong.push(plain(q.q).replace(/ /g,''));
+      $('#pbar').style.width = Math.round(answered/qs.length*100)+'%'; $('#ptxt').textContent = 'ตอบแล้ว '+answered+' / '+qs.length; $('#pok').textContent = '✓ '+right;
+      if(answered===qs.length){
+        const s = record(mode, title, right, qs.length, wrong);
+        $('#pend').innerHTML = resultHTML(right, qs.length, s, wrong);
+        $('#pend [data-again]').onclick = () => go(mode); $('#pend [data-home]').onclick = () => go('home');
+        setTimeout(() => { sfx.win(); speak('ได้ '+right+' คะแนน จาก '+qs.length+' ข้อ'); $('#pend').scrollIntoView({ behavior:'smooth', block:'center' }); }, 900);
+      }
+    });
+  });
+  P.querySelectorAll('[data-story]').forEach(b => b.onclick = () => readStory(b));
+}
+
+/* ============================================================
+   โหมดผจญภัย (โหลดฉาก 3 มิติเมื่อเลือกเท่านั้น)
+   ============================================================ */
+let ADV = null;
+async function startAdventure(){
+  $('#title').textContent = '🏝️ ผจญภัยเกาะนักอ่าน';
+  const qs = makeSet('adv');
+  const A = { qs, i:0, right:0, wrong:[], res:[] };
+  if(!ADV){
+    try{ const mod = await import('./reading-island.js'); ADV = await mod.createIsland($('#stage'), { tiles:qs.length }); $('#loading').remove(); $('#homeView').onclick = () => ADV.resetView(); }
+    catch(e){ console.error(e); $('#loading').innerHTML = 'โหลดเกาะ 3 มิติไม่ได้ 😢<br>ต้องต่ออินเทอร์เน็ต · ลองเลือก "ทำรวดเดียว" แทนได้เลย'; }
+  }
+  if(ADV){ ADV.resume(); ADV.reset(qs.map(q => SK[q.skill].e)); }
+  $('#coins').textContent = '⭐ 0';
+  showAdvQ(A);
+}
+function showAdvQ(A){
+  const box = $('#advq'), q = A.qs[A.i];
+  box.innerHTML = '<div class="card" style="margin-bottom:10px;padding:10px 14px"><div class="dots">'+A.qs.map((_,k) => '<i class="'+(A.res[k]===true?'ok':A.res[k]===false?'no':k===A.i?'cur':'')+'"></i>').join('')+'</div><div class="sub" style="margin-top:4px">ด่าน '+(A.i+1)+' จาก '+A.qs.length+' · ตอบแล้วกด "ไปต่อ" เพื่อกระโดดไปก้อนถัดไป</div></div><div id="advcard"></div>';
+  renderQ(q, $('#advcard'), A.i+1, ok => {
+    A.res[A.i] = ok; if(ok) A.right++; else A.wrong.push(plain(q.q).replace(/ /g,''));
+    $('#coins').textContent = '⭐ '+A.right;
+    if(ADV) ADV.mark(A.i, ok);
+    const last = A.i===A.qs.length-1;
+    $('#advcard').insertAdjacentHTML('beforeend', '<button type="button" class="btn go nextbtn" id="advnext">'+(last ? 'ไปเปิดหีบสมบัติ 🎁' : 'ไปต่อ ▶')+'</button>');
+    $('#advnext').onclick = async () => {
+      $('#advnext').disabled = true;
+      if(ADV) await ADV.hop(A.i+1);
+      if(last){ finishAdv(A); return; }
+      A.i++; showAdvQ(A);
+      if(window.innerWidth <= 980) $('#stage').scrollIntoView({ behavior:'smooth', block:'start' });
+    };
+    if(window.innerWidth <= 980) setTimeout(() => $('#advnext').scrollIntoView({ behavior:'smooth', block:'center' }), 300);
+  }, { showStory:true });
+  if(q.skill==='story' && (A.i===0 || A.qs[A.i-1].story!==q.story)) setTimeout(() => pop('📚 อ่านเรื่องก่อน แล้วค่อยตอบนะ'), 400);
+}
+async function finishAdv(A){
+  const s = record('adv', 'ผจญภัยเกาะนักอ่าน', A.right, A.qs.length, A.wrong);
+  if(ADV) await ADV.treasure(s);
+  $('#advq').innerHTML = resultHTML(A.right, A.qs.length, s, A.wrong);
+  $('#advq [data-again]').onclick = () => go('adv'); $('#advq [data-home]').onclick = () => go('home');
+  sfx.win(); speak('เปิดหีบสมบัติได้แล้ว ได้ '+A.right+' คะแนน จาก '+A.qs.length+' ข้อ');
+}
+
+const start = (location.hash||'').slice(1);
+go(start && (MODES.some(m => m.id===start) || start.startsWith('skill-')) ? start : 'home');
+window.__test = { makeSet, originalSet, GEN, STORIES, go };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>

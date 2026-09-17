@@ -140,12 +140,15 @@ export function stage(el, { cam=[0,7,9], target=[0,0,0], fov=40, minDist=6, maxD
   }
   new ResizeObserver(resize).observe(el); resize();
   const clock = new THREE.Clock();
-  renderer.setAnimationLoop(() => {
+  const loop = () => {
     const dt = Math.min(.05, clock.getDelta()); t += dt;
     controls.update();
     frames.forEach(fn => fn(dt, t));
     renderer.render(scene, camera);
-  });
+  };
+  renderer.setAnimationLoop(loop);
+  api.pause = () => renderer.setAnimationLoop(null);
+  api.resume = () => { clock.getDelta(); renderer.setAnimationLoop(loop); };
   return api;
 }
 
