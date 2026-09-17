@@ -129,6 +129,52 @@
     const d = data(); day(d).sec += TICK; save(d);
   }, TICK*1000);
 
+  /* ---------------- ปิดเสียงทั้งเว็บ ----------------
+     ใช้ค่าเดียวกันทุกหน้า (localStorage 'kids-brain-mute') · ปิดแล้วเงียบทั้งเสียงอ่าน เสียงเอฟเฟกต์ และเสียงที่อัดไว้
+     หน้าที่มีปุ่ม #mute ของตัวเองใช้ปุ่มนั้น · หน้าที่ไม่มีจะได้ปุ่มลอยมุมขวาล่าง */
+  const MUTE_KEY = 'kids-brain-mute';
+  const isMuted = () => { try{ return localStorage.getItem(MUTE_KEY)==='1'; }catch(e){ return false; } };
+  const contexts = new Set();
+  if(window.speechSynthesis){
+    const speak0 = speechSynthesis.speak.bind(speechSynthesis);
+    try{ speechSynthesis.speak = u => { if(!isMuted()) speak0(u); }; }catch(e){}
+  }
+  const AC0 = window.AudioContext || window.webkitAudioContext;
+  if(AC0){
+    class KidsAudioContext extends AC0 {
+      constructor(...a){ super(...a); contexts.add(this); if(isMuted()) AC0.prototype.suspend.call(this); }
+      resume(){ return isMuted() ? Promise.resolve() : super.resume(); }
+    }
+    window.AudioContext = KidsAudioContext; if(window.webkitAudioContext) window.webkitAudioContext = KidsAudioContext;
+  }
+  if(window.HTMLMediaElement){
+    const play0 = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function(){ return isMuted() ? Promise.resolve() : play0.apply(this, arguments); };
+  }
+  function applyMute(){
+    const m = isMuted();
+    if(m){ try{ window.speechSynthesis && speechSynthesis.cancel(); }catch(e){} document.querySelectorAll('audio,video').forEach(a => { try{ a.pause(); }catch(e){} }); }
+    contexts.forEach(c => { try{ m ? AC0.prototype.suspend.call(c) : AC0.prototype.resume.call(c); }catch(e){} });
+    const own = document.getElementById('mute'); if(own && /^[🔊🔇]$/u.test(own.textContent.trim())) own.textContent = m ? '🔇' : '🔊';
+    const fab = document.getElementById('kp-mute'); if(fab){ fab.textContent = m ? '🔇' : '🔊'; fab.setAttribute('aria-label', m ? 'เปิดเสียง' : 'ปิดเสียง'); fab.classList.toggle('off', m); }
+  }
+  function setMuted(m){ try{ localStorage.setItem(MUTE_KEY, m ? '1' : '0'); }catch(e){} applyMute(); }
+  addEventListener('storage', e => { if(e.key===MUTE_KEY) applyMute(); });
+  function setupMuteUI(){
+    const own = document.getElementById('mute');
+    if(own){ own.addEventListener('click', () => setTimeout(applyMute, 0)); applyMute(); return; }
+    if(/\/(index|parent|stickers)\.html$|\/$/.test(location.pathname)) return;   /* หน้ารวม/ผู้ปกครอง/สติกเกอร์ ไม่มีเสียง */
+    css();
+    const st = document.createElement('style');
+    st.textContent = '#kp-mute{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));z-index:9998;width:52px;height:52px;border-radius:50%;border:none;'+
+      'background:#fff;font-size:24px;box-shadow:0 6px 18px rgba(58,51,80,.22);cursor:pointer}#kp-mute.off{background:#FFE9E2}';
+    document.head.appendChild(st);
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'kp-mute';
+    b.onclick = () => { setMuted(!isMuted()); toast(isMuted() ? '🔇 ปิดเสียงแล้ว' : '🔊 เปิดเสียงแล้ว'); };
+    document.body.appendChild(b); applyMute();
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupMuteUI); else setupMuteUI();
+
   window.KP = { log, data, day, dayKey, missions, streak, owned, stickerCount, STICKER_PAGES, ALL_STICKERS, STARS_PER_STICKER,
-    markSeen(){ const d=data(); d.seenStickers=stickerCount(d); save(d); }, root, toast, WORKSHEETS, GAMES };
+    markSeen(){ const d=data(); d.seenStickers=stickerCount(d); save(d); }, root, toast, WORKSHEETS, GAMES, isMuted, setMuted };
 })();
