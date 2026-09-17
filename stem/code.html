@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>ห้องทดลองโค้ดบล็อก</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ink:#3A3350;--mute:#8C849E;--paper:#FFFBF4;--ok:#2F9E5B;--no:#D2693C;--kd:#1F6FA8;--kl:#E3F4FC}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped',sans-serif;font-size:16px;line-height:1.55}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700}
+.top{position:sticky;top:0;z-index:30;background:rgba(255,251,244,.95);box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{display:flex;align-items:center;gap:10px;padding:8px 12px}
+.pill{background:#fff;color:var(--kd);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.9rem;box-shadow:0 3px 12px rgba(58,51,80,.12);text-decoration:none;white-space:nowrap}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.missions{display:flex;gap:8px;overflow-x:auto;padding:4px 12px 10px;scrollbar-width:none}
+.missions::-webkit-scrollbar{display:none}
+.mbtn{flex:none;background:#fff;border-radius:16px;padding:5px 12px;font-weight:700;font-size:.85rem;box-shadow:0 2px 8px rgba(58,51,80,.08);border:3px solid transparent;text-align:center;line-height:1.25}
+.mbtn small{display:block;font-size:.7rem;letter-spacing:1px}
+.mbtn.on{border-color:var(--kd);color:var(--kd)}
+.mbtn.done{background:#EFFAF2}
+
+.main{display:grid;grid-template-columns:320px minmax(0,1fr);gap:12px;padding:12px;height:calc(100vh - 118px - env(safe-area-inset-top));min-height:560px}
+.side{display:flex;flex-direction:column;gap:12px;overflow:auto}
+.card{background:#fff;border-radius:22px;padding:12px;box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.goal h3{font-size:1.05rem;display:flex;gap:8px;align-items:center}
+.goal h3 .spk{margin-left:auto;width:36px;height:36px;border-radius:12px;background:var(--kl);font-size:1.05rem;flex:none}
+.goal p{font-size:.95rem;margin-top:4px}
+.goal .hint{background:#FFF9DB;border-radius:14px;padding:8px 10px;margin-top:8px;font-size:.88rem;display:none}
+.goal .hint.on{display:block}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn{border-radius:999px;padding:7px 14px;font-weight:700;font-size:.9rem;background:#F4F0FA;color:#5E3FB8}
+.btn.run{background:#2F9E5B;color:#fff}
+.btn.stop{background:#E8572E;color:#fff}
+.btn.check{background:var(--kd);color:#fff}
+.btn:disabled{opacity:.45}
+.result{margin-top:8px;border-radius:14px;padding:8px 10px;font-weight:700;display:none}
+.result.ok{display:block;background:#EFFAF2;color:var(--ok)}
+.result.no{display:block;background:#FFF5EF;color:var(--no)}
+
+/* บอร์ดจำลอง */
+.board{margin:4px auto 0;width:250px;background:linear-gradient(160deg,#2B2D3A,#1C1D26);border-radius:26px;padding:14px 12px;position:relative;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.board .face{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.leds{display:grid;grid-template-columns:repeat(5,22px);gap:8px;padding:10px;background:#15161D;border-radius:14px}
+.led{width:22px;height:22px;border-radius:6px;background:#3A2626;transition:background .08s,box-shadow .08s}
+.led.on{background:#FF4B4B;box-shadow:0 0 12px #FF4B4B,0 0 3px #fff inset}
+.bbtn{width:46px;height:46px;border-radius:50%;background:#3C3F52;color:#fff;font-weight:700;font-family:'Mali',sans-serif;box-shadow:0 4px 0 #111,inset 0 2px 0 rgba(255,255,255,.15);touch-action:manipulation;user-select:none}
+.bbtn:active,.bbtn.down{transform:translateY(3px);box-shadow:0 1px 0 #111}
+.board .label{color:#9EA3BA;font-size:.7rem;text-align:center;margin-top:8px}
+.board .spkr{position:absolute;top:10px;right:14px;font-size:.9rem;opacity:.35;transition:opacity .1s}
+.board .spkr.on{opacity:1}
+.status{text-align:center;font-size:.85rem;color:var(--mute);margin-top:6px;min-height:22px}
+
+#ws{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 22px rgba(58,51,80,.08);min-height:420px}
+.blocklyToolboxDiv{background:#fff!important}
+.blocklyTreeRow{border-radius:12px!important;margin:3px 6px!important;height:auto!important;padding:6px 8px!important}
+.blocklyTreeLabel{font-family:'Noto Sans Thai Looped',sans-serif!important;font-weight:700!important;font-size:14px!important}
+
+@media (max-width:900px){
+  .main{grid-template-columns:1fr;height:auto}
+  .side{flex-direction:row;flex-wrap:wrap;overflow:visible}
+  .side .card{flex:1 1 300px}
+  #ws{height:62vh}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="in"><a class="pill" href="../">‹ หน้ารวม</a><div class="tt">🤖 ห้องทดลองโค้ดบล็อก</div><button class="pill" id="mute" type="button">🔊</button></div>
+  <div class="missions" id="missions"></div>
+</div>
+<div class="main">
+  <div class="side">
+    <section class="card">
+      <div class="board" aria-label="บอร์ดจำลอง">
+        <span class="spkr" id="spkr">🔊</span>
+        <div class="face">
+          <button class="bbtn" id="btnA" type="button">A</button>
+          <div class="leds" id="leds"></div>
+          <button class="bbtn" id="btnB" type="button">B</button>
+        </div>
+        <div class="label">บอร์ดจิ๋ว · ไฟ 5×5 · ปุ่ม A / B · ลำโพง</div>
+      </div>
+      <div class="row" style="justify-content:center">
+        <button class="btn run" id="run" type="button">▶ รันโปรแกรม</button>
+        <button class="btn stop" id="stop" type="button" disabled>⏹ หยุด</button>
+      </div>
+      <div class="status" id="status">ต่อบล็อกด้านขวา แล้วกด ▶</div>
+    </section>
+    <section class="card goal" id="goal"></section>
+  </div>
+  <div id="ws"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/blockly@12.3.1/blockly_compressed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blockly@12.3.1/blocks_compressed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blockly@12.3.1/javascript_compressed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blockly@12.3.1/msg/th.js"></script>
+<script>
+/* ============================================================
+   ห้องทดลองโค้ดบล็อก · ต่อบล็อกสั่งบอร์ดจิ๋ว (ไฟ 5×5 ปุ่ม A/B ลำโพง)
+   ภารกิจตรวจอัตโนมัติ: รันโปรแกรมแบบเร็วในเบื้องหลัง กดปุ่มให้เอง แล้วดูว่าจอ/เสียงเป็นไปตามโจทย์ไหม
+   ============================================================ */
+const $ = s => document.querySelector(s);
+
+/* ---------------- ภาพ 5×5 ---------------- */
+const P = rows => rows.join('').split('').map(c => c==='#' ? 1 : 0);
+const ICONS = {
+  HEART:['❤️ หัวใจ',   P(['.#.#.','#####','#####','.###.','..#..'])],
+  SMALL:['💗 หัวใจเล็ก', P(['.....','.#.#.','.###.','..#..','.....'])],
+  HAPPY:['😊 ยิ้ม',     P(['.....','.#.#.','.....','#...#','.###.'])],
+  SAD:  ['😢 เศร้า',    P(['.....','.#.#.','.....','.###.','#...#'])],
+  YES:  ['✔️ ถูก',      P(['.....','....#','...#.','#.#..','.#...'])],
+  NO:   ['❌ ผิด',      P(['#...#','.#.#.','..#..','.#.#.','#...#'])],
+  SQUARE:['⬜ สี่เหลี่ยม',P(['#####','#...#','#...#','#...#','#####'])],
+  DIAMOND:['🔷 เพชร',  P(['..#..','.#.#.','#...#','.#.#.','..#..'])],
+  UP:   ['⬆️ ลูกศรขึ้น', P(['..#..','.###.','#.#.#','..#..','..#..'])],
+  DOWN: ['⬇️ ลูกศรลง',  P(['..#..','..#..','#.#.#','.###.','..#..'])],
+  LEFT: ['⬅️ ลูกศรซ้าย', P(['..#..','.#...','#####','.#...','..#..'])],
+  RIGHT:['➡️ ลูกศรขวา', P(['..#..','...#.','#####','...#.','..#..'])],
+};
+const FONT = {
+  '0':['.##..','#..#.','#..#.','#..#.','.##..'],'1':['..#..','.##..','..#..','..#..','.###.'],'2':['.##..','...#.','..#..','.#...','.###.'],
+  '3':['.###.','...#.','..#..','...#.','.##..'],'4':['..##.','.#.#.','#..#.','#####','...#.'],'5':['#####','#....','####.','....#','####.'],
+  '6':['...#.','..#..','.###.','#...#','.###.'],'7':['#####','...#.','..#..','.#...','#....'],'8':['.###.','#...#','.###.','#...#','.###.'],
+  '9':['.###.','#...#','.###.','..#..','.#...'],'-':['.....','.....','.###.','.....','.....'],' ':['.....','.....','.....','.....','.....'],
+  'A':['.##..','#..#.','####.','#..#.','#..#.'],'B':['###..','#..#.','###..','#..#.','###..'],'C':['.###.','#....','#....','#....','.###.'],
+  'D':['###..','#..#.','#..#.','#..#.','###..'],'E':['####.','#....','###..','#....','####.'],'F':['####.','#....','###..','#....','#....'],
+  'G':['.###.','#....','#.##.','#..#.','.##..'],'H':['#..#.','#..#.','####.','#..#.','#..#.'],'I':['###..','.#...','.#...','.#...','###..'],
+  'J':['..###','...#.','...#.','#..#.','.##..'],'K':['#..#.','#.#..','##...','#.#..','#..#.'],'L':['#....','#....','#....','#....','####.'],
+  'M':['#...#','##.##','#.#.#','#...#','#...#'],'N':['#...#','##..#','#.#.#','#..##','#...#'],'O':['.##..','#..#.','#..#.','#..#.','.##..'],
+  'P':['###..','#..#.','###..','#....','#....'],'Q':['.##..','#..#.','#..#.','.##..','...#.'],'R':['###..','#..#.','###..','#.#..','#..#.'],
+  'S':['.###.','#....','.##..','...#.','###..'],'T':['#####','..#..','..#..','..#..','..#..'],'U':['#..#.','#..#.','#..#.','#..#.','.##..'],
+  'V':['#...#','#...#','#...#','.#.#.','..#..'],'W':['#...#','#...#','#.#.#','##.##','#...#'],'X':['#..#.','#..#.','.##..','#..#.','#..#.'],
+  'Y':['#...#','.#.#.','..#..','..#..','..#..'],'Z':['####.','..#..','.#...','#....','####.'],'!':['..#..','..#..','..#..','.....','..#..'],
+  '?':['.##..','...#.','..#..','.....','..#..'],
+};
+const NOTES = { C4:['โด',261.63], D4:['เร',293.66], E4:['มี',329.63], F4:['ฟา',349.23], G4:['ซอล',392], A4:['ลา',440], B4:['ที',493.88], C5:['โด สูง',523.25] };
+
+/* ---------------- เสียง ---------------- */
+let muted=false, AC=null;
+try{ muted = localStorage.getItem('kids-brain-mute')==='1'; }catch(e){}
+$('#mute').textContent = muted?'🔇':'🔊';
+$('#mute').onclick = () => { muted=!muted; $('#mute').textContent=muted?'🔇':'🔊'; try{ localStorage.setItem('kids-brain-mute',muted?'1':'0'); }catch(e){} };
+function beep(freq, ms){
+  if(muted) return;
+  try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const t=AC.currentTime, o=AC.createOscillator(), g=AC.createGain();
+    o.type='square'; o.frequency.value=freq; g.gain.setValueAtTime(.07,t); g.gain.setValueAtTime(.07,t+ms/1000*.85); g.gain.exponentialRampToValueAtTime(.001,t+ms/1000);
+    o.connect(g).connect(AC.destination); o.start(t); o.stop(t+ms/1000+.02); }catch(e){}
+}
+let thVoice=null;
+if(window.speechSynthesis){ const pv=()=>{ const v=speechSynthesis.getVoices().filter(x=>/^th/i.test(x.lang)); thVoice=v.find(x=>/Kanya|Narisa|Premwadee/i.test(x.name))||v[0]||null; }; pv(); speechSynthesis.onvoiceschanged=pv; }
+function speak(t){ if(muted||!window.speechSynthesis) return; try{speechSynthesis.cancel();}catch(e){} const u=new SpeechSynthesisUtterance(t); u.lang='th-TH'; u.rate=.95; if(thVoice) u.voice=thVoice; speechSynthesis.speak(u); }
+
+/* ============================================================
+   บล็อก
+   ============================================================ */
+const C = { event:'#43A047', led:'#4C6EF5', sound:'#D6336C', loop:'#1098AD', logic:'#5B80A5', math:'#5B67A5' };
+Blockly.common.defineBlocksWithJsonArray([
+  { type:'mb_on_start', message0:'เมื่อเริ่มทำงาน %1', args0:[{type:'input_statement',name:'DO'}], colour:C.event, tooltip:'ทำครั้งเดียวตอนเริ่ม' },
+  { type:'mb_forever', message0:'ทำตลอดไป %1', args0:[{type:'input_statement',name:'DO'}], colour:C.event, tooltip:'ทำซ้ำไปเรื่อย ๆ' },
+  { type:'mb_on_button', message0:'เมื่อกดปุ่ม %1 %2', args0:[{type:'field_dropdown',name:'BTN',options:[['A','A'],['B','B']]},{type:'input_statement',name:'DO'}], colour:C.event },
+  { type:'mb_show_icon', message0:'แสดงรูป %1', args0:[{type:'field_dropdown',name:'ICON',options:Object.entries(ICONS).map(([k,v])=>[v[0],k])}], previousStatement:null, nextStatement:null, colour:C.led },
+  { type:'mb_show_number', message0:'แสดงตัวเลข %1', args0:[{type:'input_value',name:'N',check:'Number'}], previousStatement:null, nextStatement:null, colour:C.led },
+  { type:'mb_show_text', message0:'แสดงข้อความ %1', args0:[{type:'input_value',name:'T'}], previousStatement:null, nextStatement:null, colour:C.led, tooltip:'ใช้ได้กับตัวอักษรภาษาอังกฤษและตัวเลข' },
+  { type:'mb_plot', message0:'เปิดไฟ x %1 y %2', args0:[{type:'input_value',name:'X',check:'Number'},{type:'input_value',name:'Y',check:'Number'}], inputsInline:true, previousStatement:null, nextStatement:null, colour:C.led, tooltip:'x = หลัก 0–4 (ซ้ายไปขวา) · y = แถว 0–4 (บนลงล่าง)' },
+  { type:'mb_unplot', message0:'ปิดไฟ x %1 y %2', args0:[{type:'input_value',name:'X',check:'Number'},{type:'input_value',name:'Y',check:'Number'}], inputsInline:true, previousStatement:null, nextStatement:null, colour:C.led },
+  { type:'mb_clear', message0:'ล้างจอ', previousStatement:null, nextStatement:null, colour:C.led },
+  { type:'mb_tone', message0:'เล่นโน้ต %1 นาน %2 จังหวะ', args0:[{type:'field_dropdown',name:'NOTE',options:Object.entries(NOTES).map(([k,v])=>[v[0],k])},{type:'field_dropdown',name:'BEAT',options:[['1','1'],['½','0.5'],['2','2']]}], previousStatement:null, nextStatement:null, colour:C.sound },
+  { type:'mb_pause', message0:'หยุดรอ %1 มิลลิวินาที', args0:[{type:'input_value',name:'MS',check:'Number'}], previousStatement:null, nextStatement:null, colour:C.loop },
+  { type:'mb_random', message0:'สุ่มเลข %1 ถึง %2', args0:[{type:'input_value',name:'A',check:'Number'},{type:'input_value',name:'B',check:'Number'}], inputsInline:true, output:'Number', colour:C.math },
+  { type:'mb_pressed', message0:'ปุ่ม %1 ถูกกดอยู่', args0:[{type:'field_dropdown',name:'BTN',options:[['A','A'],['B','B']]}], output:'Boolean', colour:C.logic },
+]);
+const G = javascript.javascriptGenerator, O = javascript.Order;
+G.INFINITE_LOOP_TRAP = 'await api.tick();\n';
+const v = (b,n,d) => G.valueToCode(b,n,O.NONE) || d;
+G.forBlock.mb_on_start = G.forBlock.mb_forever = G.forBlock.mb_on_button = () => '';
+G.forBlock.mb_show_icon = b => `await api.show('${b.getFieldValue('ICON')}');\n`;
+G.forBlock.mb_show_number = b => `await api.num(${v(b,'N','0')});\n`;
+G.forBlock.mb_show_text = b => `await api.text(${v(b,'T',"''")});\n`;
+G.forBlock.mb_plot = b => `await api.plot(${v(b,'X','0')}, ${v(b,'Y','0')}, 1);\n`;
+G.forBlock.mb_unplot = b => `await api.plot(${v(b,'X','0')}, ${v(b,'Y','0')}, 0);\n`;
+G.forBlock.mb_clear = () => `await api.clear();\n`;
+G.forBlock.mb_tone = b => `await api.tone('${b.getFieldValue('NOTE')}', ${b.getFieldValue('BEAT')});\n`;
+G.forBlock.mb_pause = b => `await api.pause(${v(b,'MS','100')});\n`;
+G.forBlock.mb_random = b => [`api.rand(${v(b,'A','1')}, ${v(b,'B','6')})`, O.FUNCTION_CALL];
+G.forBlock.mb_pressed = b => [`api.pressed('${b.getFieldValue('BTN')}')`, O.FUNCTION_CALL];
+
+const num = n => ({ shadow:{ type:'math_number', fields:{ NUM:n } } });
+const TOOLBOX = { kind:'categoryToolbox', contents:[
+  { kind:'category', name:'🟢 เริ่ม', colour:C.event, contents:[
+    { kind:'block', type:'mb_on_start' }, { kind:'block', type:'mb_forever' }, { kind:'block', type:'mb_on_button' } ]},
+  { kind:'category', name:'💡 จอไฟ', colour:C.led, contents:[
+    { kind:'block', type:'mb_show_icon' },
+    { kind:'block', type:'mb_show_number', inputs:{ N:num(1) } },
+    { kind:'block', type:'mb_show_text', inputs:{ T:{ shadow:{ type:'text', fields:{ TEXT:'HI' } } } } },
+    { kind:'block', type:'mb_plot', inputs:{ X:num(2), Y:num(2) } },
+    { kind:'block', type:'mb_unplot', inputs:{ X:num(2), Y:num(2) } },
+    { kind:'block', type:'mb_clear' } ]},
+  { kind:'category', name:'🎵 เสียง', colour:C.sound, contents:[ { kind:'block', type:'mb_tone' } ]},
+  { kind:'category', name:'🔁 รอ·ทำซ้ำ', colour:C.loop, contents:[
+    { kind:'block', type:'mb_pause', inputs:{ MS:num(500) } },
+    { kind:'block', type:'controls_repeat_ext', inputs:{ TIMES:num(3) } } ]},
+  { kind:'category', name:'🔀 เงื่อนไข', colour:C.logic, contents:[
+    { kind:'block', type:'controls_if' }, { kind:'block', type:'controls_if', extraState:{ hasElse:true } },
+    { kind:'block', type:'logic_compare' }, { kind:'block', type:'logic_operation' }, { kind:'block', type:'logic_negate' },
+    { kind:'block', type:'logic_boolean' }, { kind:'block', type:'mb_pressed' } ]},
+  { kind:'category', name:'🔢 ตัวเลข', colour:C.math, contents:[
+    { kind:'block', type:'math_number' },
+    { kind:'block', type:'math_arithmetic', inputs:{ A:num(1), B:num(1) } },
+    { kind:'block', type:'mb_random', inputs:{ A:num(1), B:num(6) } } ]},
+  { kind:'category', name:'📦 ตัวแปร', colour:'#A55B80', custom:'VARIABLE' },
+]};
+
+const theme = Blockly.Theme.defineTheme('kids', { base: Blockly.Themes.Classic,
+  componentStyles:{ workspaceBackgroundColour:'#FFFDF8', toolboxBackgroundColour:'#ffffff', flyoutBackgroundColour:'#F4F0FA', flyoutOpacity:.98, scrollbarColour:'#D6CFE3' },
+  fontStyle:{ family:'Noto Sans Thai Looped, sans-serif', weight:'700', size:12 } });
+const ws = Blockly.inject('ws', { toolbox:TOOLBOX, renderer:'zelos', theme, trashcan:true, sounds:false,
+  zoom:{ controls:true, wheel:true, startScale:.85, maxScale:1.6, minScale:.5 },
+  move:{ scrollbars:true, drag:true, wheel:true }, grid:{ spacing:28, length:2, colour:'#EDE7F5', snap:true } });
+ws.addChangeListener(Blockly.Events.disableOrphans);
+
+/* ---------------- แปลงบล็อกเป็นโปรแกรม ---------------- */
+function buildCode(){
+  G.init(ws);
+  const part = { start:[], forever:[], A:[], B:[] };
+  ws.getTopBlocks(true).forEach(b => {
+    if(!b.isEnabled()) return;
+    if(b.type==='mb_on_start') part.start.push(G.statementToCode(b,'DO'));
+    else if(b.type==='mb_forever') part.forever.push(G.statementToCode(b,'DO'));
+    else if(b.type==='mb_on_button') part[b.getFieldValue('BTN')].push(G.statementToCode(b,'DO'));
+  });
+  const defs = G.finish('');
+  const empty = !part.start.length && !part.forever.length && !part.A.length && !part.B.length;
+  return { empty, code: defs + '\n' +
+    (part.A.length ? `api.on('A', async () => {\n${part.A.join('\n')}});\n` : '') +
+    (part.B.length ? `api.on('B', async () => {\n${part.B.join('\n')}});\n` : '') +
+    part.start.join('\n') + '\n' +
+    (part.forever.length ? `await Promise.all([${part.forever.map(c => `(async () => { while (true) {\n${c}\nawait api.tick(); } })()`).join(',')}]);` : '') };
+}
+
+/* ============================================================
+   ตัวรันโปรแกรม · real = แสดงบนบอร์ด · fast = ตรวจภารกิจในเบื้องหลัง
+   ============================================================ */
+const STOP = { stop:true };
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+function makeMachine({ fast=false, render=null, limit=4000 } = {}){
+  const m = { leds:Array(25).fill(0), handlers:{}, busy:{}, stopped:false, steps:0, limit,
+    log:{ frames:[], icons:[], nums:[], notes:[] }, down:{ A:false, B:false } };
+  const snap = () => { const s=m.leds.join(''); if(m.log.frames[m.log.frames.length-1]!==s) m.log.frames.push(s); if(render) render(m.leds); };
+  const check = () => { if(m.stopped) throw STOP; };
+  const wait = async ms => { check(); if(fast){ m.steps++; if(m.steps>m.limit) throw STOP; await Promise.resolve(); } else { await new Promise(r=>setTimeout(r, Math.max(0,ms))); } check(); };
+  const glyph = async ch => { const g=FONT[String(ch).toUpperCase()]||FONT['?']; m.leds=P(g); snap(); await wait(360); };
+  const api = {
+    on:(btn,fn)=>{ m.handlers[btn]=fn; },
+    tick: async () => { check(); m.steps++; if(m.steps>m.limit) throw STOP; await (fast ? Promise.resolve() : new Promise(r=>setTimeout(r,0))); },
+    pause: async ms => { await wait(Number(ms)||0); },
+    show: async k => { check(); m.log.icons.push(k); m.leds=ICONS[k][1].slice(); snap(); await wait(420); },
+    num: async n => {
+      check(); n = Math.round(Number(n)||0); m.log.nums.push(n); const s=String(n);
+      if(s.length===1){ await glyph(s); return; }
+      for(const ch of s){ await glyph(ch); m.leds=Array(25).fill(0); snap(); await wait(70); }
+    },
+    text: async t => { check(); for(const ch of String(t)){ await glyph(ch); m.leds=Array(25).fill(0); snap(); await wait(70); } },
+    plot: async (x,y,on) => { check(); x=Math.round(x); y=Math.round(y); if(x>=0&&x<5&&y>=0&&y<5){ m.leds[y*5+x]=on; snap(); } await wait(0); },
+    clear: async () => { check(); m.leds=Array(25).fill(0); snap(); await wait(0); },
+    tone: async (note,beat) => { check(); m.log.notes.push(note); const ms=Math.round(420*Number(beat)); if(!fast){ beep(NOTES[note][1], ms); const s=$('#spkr'); s.classList.add('on'); setTimeout(()=>s.classList.remove('on'), ms); } await wait(ms); },
+    rand: (a,b) => { a=Math.round(Number(a)); b=Math.round(Number(b)); if(a>b) [a,b]=[b,a]; return a + Math.floor(Math.random()*(b-a+1)); },
+    pressed: btn => m.down[btn],
+  };
+  m.api = api;
+  m.run = async code => { try{ await new AsyncFunction('api', code)(api); } catch(e){ if(e!==STOP) throw e; } };
+  m.press = async btn => {
+    const fn = m.handlers[btn]; if(!fn || m.stopped) return;
+    if(fast){ m.steps=0; try{ await fn(); }catch(e){ if(e!==STOP) throw e; } return; }
+    if(m.busy[btn]) return;                                  /* กดซ้ำระหว่างที่ยังทำงานอยู่ ไม่ต้องซ้อน */
+    m.busy[btn]=true; try{ await fn(); }catch(e){ if(e!==STOP) showError(e); } finally{ m.busy[btn]=false; }
+  };
+  m.stop = () => { m.stopped = true; };
+  if(render) render(m.leds);
+  return m;
+}
+
+/* ---------------- บอร์ดบนจอ ---------------- */
+$('#leds').innerHTML = Array.from({length:25},()=>'<i class="led"></i>').join('');
+const ledEls = [...document.querySelectorAll('.led')];
+const renderLeds = leds => leds.forEach((on,i) => ledEls[i].classList.toggle('on', !!on));
+let live = null;
+function setRunning(on){ $('#run').disabled = on; $('#stop').disabled = !on; }
+function status(t){ $('#status').textContent = t; }
+function showError(e){ console.error(e); status('โปรแกรมมีปัญหา ลองเช็กบล็อกอีกครั้งนะ'); }
+$('#run').onclick = async () => {
+  if(live) live.stop();
+  const { code, empty } = buildCode();
+  if(empty){ status('ยังไม่มีบล็อกเริ่ม ลองลากบล็อกจากหมวด 🟢 เริ่ม มาก่อนนะ'); return; }
+  const m = live = makeMachine({ render:renderLeds, limit:Infinity });
+  setRunning(true); status('กำลังรัน… ลองกดปุ่ม A หรือ B บนบอร์ดได้');
+  try{ await m.run(code); }catch(e){ showError(e); }
+  if(live===m && !m.stopped && !Object.keys(m.handlers).length){ setRunning(false); status('รันจบแล้ว ✨'); }
+};
+$('#stop').onclick = () => { if(live){ live.stop(); live=null; } setRunning(false); renderLeds(Array(25).fill(0)); status('หยุดแล้ว'); };
+[['btnA','A'],['btnB','B']].forEach(([id,btn]) => {
+  const el = document.getElementById(id);
+  const on = e => { e.preventDefault(); el.classList.add('down'); if(live){ live.down[btn]=true; live.press(btn); } };
+  const off = () => { el.classList.remove('down'); if(live) live.down[btn]=false; };
+  el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointerleave', off); el.addEventListener('pointercancel', off);
+});
+
+/* ============================================================
+   ภารกิจ · check(run) คืน [ผ่านไหม, ข้อความ]
+   ============================================================ */
+const B = (type, o={}) => Object.assign({ type }, o);
+const chain = arr => { for(let i=arr.length-2;i>=0;i--) arr[i].next = { block:arr[i+1] }; return { block:arr[0] }; };
+const hat = (type, body, extra={}) => Object.assign(B(type, { x:30, y:30, inputs:{ DO: chain(body) } }), extra);
+const numIn = n => ({ shadow:{ type:'math_number', fields:{ NUM:n } } });
+const varGet = id => ({ block:{ type:'variables_get', fields:{ VAR:{ id } } } });
+function subseq(arr, want){ let i=0; for(const x of arr){ if(x===want[i]) i++; if(i===want.length) return true; } return false; }
+
+const MISSIONS = [
+  { id:'heart', title:'แสดงรูปหัวใจ', goal:'ให้บอร์ดแสดงรูปหัวใจ ❤️ ตอนเริ่มทำงาน',
+    hint:'ลาก "เมื่อเริ่มทำงาน" จากหมวด 🟢 เริ่ม แล้วเอา "แสดงรูป" จากหมวด 💡 จอไฟ ไปใส่ข้างใน',
+    solution:[ hat('mb_on_start',[ B('mb_show_icon',{ fields:{ ICON:'HEART' } }) ]) ],
+    check: async M => { await M.run(); return M.log.icons.includes('HEART') ? [true] : [false,'ยังไม่เห็นรูปหัวใจบนจอเลย ลองใช้บล็อก "แสดงรูป" แล้วเลือก ❤️']; } },
+  { id:'beat', title:'หัวใจเต้นตึกตัก', goal:'ให้หัวใจเต้น: สลับ หัวใจใหญ่ ❤️ กับ หัวใจเล็ก 💗 อย่างน้อย 3 รอบ',
+    hint:'ใช้ "ทำซ้ำ 3 ครั้ง" จากหมวด 🔁 แล้วใส่ แสดงรูปหัวใจ → แสดงรูปหัวใจเล็ก ไว้ข้างใน',
+    solution:[ hat('mb_on_start',[ B('controls_repeat_ext',{ inputs:{ TIMES:numIn(3), DO:chain([ B('mb_show_icon',{fields:{ICON:'HEART'}}), B('mb_show_icon',{fields:{ICON:'SMALL'}}) ]) } }) ]) ],
+    check: async M => { await M.run(); const seq=M.log.icons.filter(k=>k==='HEART'||k==='SMALL'); let t=0; for(let i=1;i<seq.length;i++) if(seq[i]==='SMALL'&&seq[i-1]==='HEART') t++;
+      return t>=3 ? [true] : [false, t ? 'เต้นได้ '+t+' รอบแล้ว ต้องให้ถึง 3 รอบนะ' : 'ยังไม่เห็นหัวใจใหญ่สลับกับหัวใจเล็กเลย']; } },
+  { id:'count', title:'นับ 1 ถึง 5', goal:'ให้บอร์ดแสดงตัวเลข 1, 2, 3, 4, 5 ตามลำดับ',
+    hint:'ใช้ "แสดงตัวเลข" 5 ก้อนต่อกัน · ถ้าอยากเท่: ใช้ตัวแปร "เลข" เพิ่มทีละ 1 ใน "ทำซ้ำ 5 ครั้ง"',
+    solution:[ hat('mb_on_start',[1,2,3,4,5].map(n=>B('mb_show_number',{ inputs:{ N:numIn(n) } }))) ],
+    check: async M => { await M.run(); return subseq(M.log.nums,[1,2,3,4,5]) ? [true] : [false,'ยังไม่ได้นับ 1 2 3 4 5 ครบตามลำดับ ตอนนี้บอร์ดแสดง: '+(M.log.nums.join(', ')||'ยังไม่มีตัวเลข')]; } },
+  { id:'buttons', title:'ปุ่มอารมณ์ดี', goal:'กดปุ่ม A ให้แสดงหน้ายิ้ม 😊 · กดปุ่ม B ให้แสดงหน้าเศร้า 😢',
+    hint:'ใช้บล็อก "เมื่อกดปุ่ม" 2 ก้อน ก้อนหนึ่งเลือก A อีกก้อนเลือก B',
+    solution:[ hat('mb_on_button',[ B('mb_show_icon',{fields:{ICON:'HAPPY'}}) ],{ fields:{ BTN:'A' } }), hat('mb_on_button',[ B('mb_show_icon',{fields:{ICON:'SAD'}}) ],{ fields:{ BTN:'B' }, x:30, y:160 }) ],
+    check: async M => { await M.run(); await M.press('A'); const a=M.log.icons.at(-1); await M.press('B'); const b=M.log.icons.at(-1); await M.press('A'); const a2=M.log.icons.at(-1);
+      if(a!=='HAPPY'||a2!=='HAPPY') return [false,'กดปุ่ม A แล้วยังไม่เป็นหน้ายิ้ม 😊']; if(b!=='SAD') return [false,'กดปุ่ม B แล้วยังไม่เป็นหน้าเศร้า 😢']; return [true]; } },
+  { id:'dice', title:'ลูกเต๋าไฟฟ้า', goal:'กดปุ่ม A แล้วสุ่มตัวเลข 1 ถึง 6 มาแสดง เหมือนทอยลูกเต๋า 🎲',
+    hint:'ใน "เมื่อกดปุ่ม A" ใส่ "แสดงตัวเลข" แล้วเอา "สุ่มเลข 1 ถึง 6" จากหมวด 🔢 ไปเสียบในช่องตัวเลข',
+    solution:[ hat('mb_on_button',[ B('mb_show_number',{ inputs:{ N:{ block:B('mb_random',{ inputs:{ A:numIn(1), B:numIn(6) } }) } } }) ],{ fields:{ BTN:'A' } }) ],
+    check: async M => { await M.run(); const got=[]; for(let i=0;i<30;i++){ const n0=M.log.nums.length; await M.press('A'); if(M.log.nums.length===n0) return [false,'กดปุ่ม A แล้วยังไม่มีตัวเลขขึ้นจอ']; got.push(M.log.nums.at(-1)); }
+      if(got.some(n=>n<1||n>6)) return [false,'มีตัวเลขที่ไม่อยู่ระหว่าง 1 ถึง 6 ลองเช็กบล็อกสุ่มอีกที'];
+      return new Set(got).size>=4 ? [true] : [false,'ตัวเลขยังไม่สุ่ม ออกเลขเดิมตลอด ลองใช้บล็อก "สุ่มเลข"']; } },
+  { id:'score', title:'ที่นับคะแนน', goal:'ตอนเริ่มให้คะแนนเป็น 0 · กดปุ่ม A ทีไร คะแนนเพิ่ม 1 แล้วแสดงคะแนน',
+    hint:'หมวด 📦 ตัวแปร → สร้างตัวแปร "คะแนน" · ตอนเริ่ม ตั้งค่า คะแนน = 0 · ในปุ่ม A ใช้ "เปลี่ยนค่า คะแนน 1" แล้ว "แสดงตัวเลข คะแนน"',
+    vars:[{ name:'คะแนน', id:'score' }],
+    solution:[ hat('mb_on_start',[ B('variables_set',{ fields:{ VAR:{ id:'score' } }, inputs:{ VALUE:{ block:B('math_number',{ fields:{ NUM:0 } }) } } }), B('mb_show_number',{ inputs:{ N:varGet('score') } }) ]),
+      hat('mb_on_button',[ B('math_change',{ fields:{ VAR:{ id:'score' } }, inputs:{ DELTA:numIn(1) } }), B('mb_show_number',{ inputs:{ N:varGet('score') } }) ],{ fields:{ BTN:'A' }, x:30, y:200 }) ],
+    check: async M => { await M.run(); const shown=[]; for(let i=0;i<3;i++){ const n0=M.log.nums.length; await M.press('A'); if(M.log.nums.length===n0) return [false,'กดปุ่ม A แล้วยังไม่แสดงคะแนน']; shown.push(M.log.nums.at(-1)); }
+      return (shown[1]===shown[0]+1 && shown[2]===shown[1]+1 && shown[0]===1) ? [true] : [false,'กด A 3 ครั้ง บอร์ดแสดง '+shown.join(', ')+' แต่ควรเป็น 1, 2, 3']; } },
+  { id:'song', title:'เพลง โด เร มี', goal:'ให้บอร์ดเล่นโน้ต โด → เร → มี ตามลำดับ 🎵',
+    hint:'หมวด 🎵 เสียง ลาก "เล่นโน้ต" มา 3 ก้อน แล้วเลือก โด เร มี',
+    solution:[ hat('mb_on_start',['C4','D4','E4'].map(n=>B('mb_tone',{ fields:{ NOTE:n, BEAT:'1' } }))) ],
+    check: async M => { await M.run(); const s=M.log.notes.join(','); return /C4,D4,E4/.test(s) ? [true] : [false, M.log.notes.length ? 'ได้ยินโน้ตแล้ว แต่ยังไม่ใช่ โด เร มี ต่อกัน' : 'ยังไม่มีเสียงเลย ลองใช้บล็อก "เล่นโน้ต"']; } },
+  { id:'runner', title:'ไฟวิ่ง', goal:'ให้ไฟแถวกลาง (y = 2) วิ่งจากซ้ายไปขวาทีละดวง x = 0 → 4 โดยเปิดทีละดวงเท่านั้น',
+    hint:'ตั้งตัวแปร x = 0 · ทำซ้ำ 5 ครั้ง: ล้างจอ → เปิดไฟ x, 2 → หยุดรอ → เปลี่ยนค่า x ทีละ 1',
+    vars:[{ name:'x', id:'vx' }],
+    solution:[ hat('mb_on_start',[ B('variables_set',{ fields:{ VAR:{ id:'vx' } }, inputs:{ VALUE:{ block:B('math_number',{ fields:{ NUM:0 } }) } } }),
+      B('controls_repeat_ext',{ inputs:{ TIMES:numIn(5), DO:chain([ B('mb_clear'), B('mb_plot',{ inputs:{ X:varGet('vx'), Y:numIn(2) } }), B('mb_pause',{ inputs:{ MS:numIn(300) } }), B('math_change',{ fields:{ VAR:{ id:'vx' } }, inputs:{ DELTA:numIn(1) } }) ]) } }) ]) ],
+    check: async M => { await M.run(); const cols=[];
+      for(const f of M.log.frames){ const on=[...f].map(Number).reduce((a,x,i)=>x?a.concat(i):a,[]); if(on.length===1 && Math.floor(on[0]/5)===2){ const c=on[0]%5; if(cols.at(-1)!==c) cols.push(c); } }
+      return subseq(cols,[0,1,2,3,4]) ? [true] : [false, cols.length ? 'ไฟวิ่งได้ที่ '+cols.join(' → ')+' ต้องให้ครบ 0 → 4 และเปิดทีละดวง (อย่าลืมล้างจอ)' : 'ยังไม่เห็นไฟดวงเดียววิ่งในแถวกลางเลย']; } },
+];
+
+/* ---------------- สถานะภารกิจ ---------------- */
+let SAVE={}; try{ SAVE=JSON.parse(localStorage.getItem('kids-code')||'{}')||{}; }catch(e){}
+SAVE.stars=SAVE.stars||{};
+const persist = () => { try{ localStorage.setItem('kids-code', JSON.stringify(SAVE)); }catch(e){} };
+let cur = 'free', tries = 0, shownSolution = false;
+
+function drawMissions(){
+  const all = [{ id:'free', title:'สร้างอิสระ' }].concat(MISSIONS);
+  $('#missions').innerHTML = all.map((m,i) => {
+    const s = SAVE.stars[m.id]||0;
+    return '<button type="button" class="mbtn'+(m.id===cur?' on':'')+(s?' done':'')+'" data-id="'+m.id+'">'+(m.id==='free'?'🎨 ':i+'. ')+m.title+
+      (m.id==='free' ? '' : '<small>'+'⭐'.repeat(s)+'☆'.repeat(3-s)+'</small>')+'</button>';
+  }).join('');
+  $('#missions').querySelectorAll('.mbtn').forEach(b => b.onclick = () => openMission(b.dataset.id));
+}
+function drawGoal(){
+  const m = MISSIONS.find(x => x.id===cur);
+  if(!m){
+    $('#goal').innerHTML = '<h3>🎨 สร้างอิสระ</h3><p>ลองต่อบล็อกสร้างอะไรก็ได้ เช่น ไฟกะพริบ เพลง หรือเกมกดปุ่ม · ถ้าอยากฝึกทีละขั้น เลือกภารกิจ 1–8 ด้านบน</p>';
+    return;
+  }
+  $('#goal').innerHTML = '<h3>🎯 '+m.title+'<button class="spk" type="button" id="say" aria-label="ฟังโจทย์">🔊</button></h3><p>'+m.goal+'</p>'+
+    '<div class="row"><button class="btn check" id="check" type="button">✅ ตรวจภารกิจ</button><button class="btn" id="hintBtn" type="button">💡 คำใบ้</button>'+
+    '<button class="btn" id="solBtn" type="button">👀 ดูเฉลย</button></div><div class="hint" id="hint">'+m.hint+'</div><div class="result" id="result"></div>';
+  $('#say').onclick = () => speak(m.goal);
+  $('#hintBtn').onclick = () => $('#hint').classList.toggle('on');
+  $('#solBtn').onclick = () => {
+    if(!confirm('โหลดเฉลยแทนบล็อกที่ต่อไว้? (ได้ดาวน้อยลงนะ)')) return;
+    shownSolution = true; loadBlocks(m.solution, m.vars); status('โหลดเฉลยแล้ว ลองกด ▶ ดูผล');
+  };
+  $('#check').onclick = () => checkMission(m);
+}
+function loadBlocks(blocks, vars){
+  ws.clear();
+  Blockly.serialization.workspaces.load({ blocks:{ languageVersion:0, blocks }, variables:(vars||[]).map(v=>({ name:v.name, id:v.id })) }, ws);
+}
+let saveTimer=null;
+ws.addChangeListener(e => {
+  if(e.isUiEvent) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { try{ localStorage.setItem('kids-code-ws-'+cur, JSON.stringify(Blockly.serialization.workspaces.save(ws))); }catch(err){} }, 400);
+});
+function openMission(id){
+  if(live){ live.stop(); live=null; setRunning(false); renderLeds(Array(25).fill(0)); }
+  clearTimeout(saveTimer);
+  try{ localStorage.setItem('kids-code-ws-'+cur, JSON.stringify(Blockly.serialization.workspaces.save(ws))); }catch(e){}   /* บันทึกภารกิจเดิมก่อนสลับ */
+  cur = id; tries = 0; shownSolution = false;
+  try{ localStorage.setItem('kids-code-last', id); }catch(e){}
+  ws.clear();
+  try{ const saved = JSON.parse(localStorage.getItem('kids-code-ws-'+id)||'null'); if(saved) Blockly.serialization.workspaces.load(saved, ws); }catch(e){}
+  drawMissions(); drawGoal(); status('ต่อบล็อกด้านขวา แล้วกด ▶');
+  const b = $('#missions').querySelector('.mbtn.on'); if(b) b.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' });
+}
+async function checkMission(m){
+  const { code, empty } = buildCode(), r = $('#result');
+  if(empty){ r.className='result no'; r.textContent='ยังไม่มีบล็อกเริ่มเลย ลองลากบล็อกจากหมวด 🟢 เริ่ม ก่อนนะ'; return; }
+  const M = makeMachine({ fast:true, limit:4000 });
+  const run = M.run; M.run = () => run(code);
+  let res;
+  try{ res = await m.check(M); }catch(e){ console.error(e); res=[false,'โปรแกรมมีปัญหา ลองเช็กบล็อกอีกครั้งนะ']; }
+  if(res[0]){
+    const stars = shownSolution ? 1 : tries>=2 ? 2 : 3;
+    const was = SAVE.stars[m.id]||0; SAVE.stars[m.id] = Math.max(was, stars); persist();
+    r.className='result ok'; r.textContent='🎉 ผ่านภารกิจ! ได้ '+'⭐'.repeat(stars)+(shownSolution?' (ดูเฉลย)':'');
+    beep(660,120); setTimeout(()=>beep(990,160),120); speak('ผ่านภารกิจแล้ว เก่งมาก');
+    if(window.KP) KP.log({ kind:'game', page:'code', item:'code-'+m.id, title:'โค้ดบล็อก · '+m.title, stars, mistakes:tries });
+    drawMissions();
+  }else{
+    tries++; r.className='result no'; r.textContent='ยังไม่ผ่าน · '+res[1]+' 💪';
+    if(tries>=2) $('#hint').classList.add('on');
+  }
+}
+
+let first='heart'; try{ first = localStorage.getItem('kids-code-last') || 'heart'; }catch(e){}
+cur = first; drawMissions(); openMission(first);
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>
