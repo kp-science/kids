@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>บล็อกคราฟต์ · สร้างตามแบบ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ink:#3A3350;--mute:#8C849E;--paper:#FFFBF4;--ok:#2F9E5B;--no:#D2693C;--k:#7ED9B0;--kl:#EAFAF2;--kd:#1F7F58}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped',sans-serif;font-size:17px;line-height:1.6;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,251,244,.93);backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:960px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.pill{background:#fff;color:var(--kd);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.92rem;box-shadow:0 3px 12px rgba(58,51,80,.12);text-decoration:none;white-space:nowrap}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wrap{max-width:960px;margin:0 auto;padding:14px 16px 80px}
+
+/* ---------------- บล็อก (วาดด้วย CSS ล้วน) ---------------- */
+.bk{position:relative;border-radius:3px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12),inset 3px 3px 0 rgba(255,255,255,.25),inset -3px -3px 0 rgba(0,0,0,.18)}
+.bk-g{background:linear-gradient(#63C04A 0 28%,#4E9A38 28% 36%,transparent 36%),radial-gradient(circle at 30% 65%,#6E4722 8%,transparent 9%),radial-gradient(circle at 72% 82%,#6E4722 7%,transparent 8%),#8B5A2B}
+.bk-d{background:radial-gradient(circle at 25% 30%,#6E4722 8%,transparent 9%),radial-gradient(circle at 70% 60%,#6E4722 9%,transparent 10%),radial-gradient(circle at 40% 85%,#A7713C 8%,transparent 9%),#8B5A2B}
+.bk-s{background:radial-gradient(circle at 25% 30%,#7C7C7C 10%,transparent 11%),radial-gradient(circle at 70% 65%,#B3B3B3 9%,transparent 10%),radial-gradient(circle at 60% 20%,#858585 7%,transparent 8%),#9C9C9C}
+.bk-w{background:repeating-linear-gradient(#C99557 0 22%,#A9763D 22% 25%),#C99557}
+.bk-l{background:repeating-linear-gradient(90deg,#6B4A2A 0 18%,#83603A 18% 30%),#6B4A2A}
+.bk-f{background:radial-gradient(circle at 25% 25%,#2F7D2C 12%,transparent 13%),radial-gradient(circle at 70% 60%,#56B24E 11%,transparent 12%),radial-gradient(circle at 35% 80%,#2F7D2C 10%,transparent 11%),#3E9B3A}
+.bk-b{background:linear-gradient(#D8CFC4 0 0) 0 48%/100% 6% no-repeat,linear-gradient(90deg,transparent 46%,#D8CFC4 46% 54%,transparent 54%) 0 0/100% 48% no-repeat,linear-gradient(90deg,#D8CFC4 0 6%,transparent 6% 94%,#D8CFC4 94%) 0 100%/100% 46% no-repeat,#B5462F}
+.bk-x{background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,.75) 30% 38%,transparent 38% 55%,rgba(255,255,255,.5) 55% 60%,transparent 60%),#BFE6FA}
+.bk-r{background:#E05252}
+.bk-y{background:linear-gradient(135deg,#FFE680 0 25%,transparent 25%),#F2C230}
+.bk-o{background:radial-gradient(circle at 50% 70%,#FFE066 18%,transparent 19%),radial-gradient(circle at 50% 60%,#FF9A3C 36%,transparent 37%),#E8572E}
+.bk-p{background:#F4A3C0}
+.bk-k{background:#2E2B33}
+.bk-u{background:linear-gradient(transparent 0 30%,rgba(255,255,255,.3) 30% 36%,transparent 36%),#4F9BE8}
+.bk-t{background:#F4F4F4}
+
+/* ---------------- เมนู ---------------- */
+.hero{position:relative;overflow:hidden;border-radius:30px;padding:20px 22px;margin:6px 0 16px;background:linear-gradient(180deg,#9AD7F7,#DDF3FF);box-shadow:0 12px 30px rgba(58,51,80,.10)}
+.hero .row{position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hero .logo{display:grid;grid-template-columns:repeat(2,26px);gap:3px;transform:rotate(-8deg)}
+.hero .logo .bk{width:26px;height:26px}
+.hero h1{font-size:1.9rem;color:#fff;text-shadow:0 2px 8px rgba(30,80,120,.35);line-height:1.2}
+.hero p{color:#2D5B78;font-weight:600}
+.ground{position:absolute;left:0;right:0;bottom:0;height:18px;display:flex}
+.ground .bk{flex:1;height:18px;border-radius:0}
+.hero{padding-bottom:36px}
+
+.card{background:#fff;border-radius:26px;padding:16px;margin-bottom:16px;box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.card h2{font-size:1.25rem;margin-bottom:6px}
+.card .sub{color:var(--mute);font-size:.88rem;margin-bottom:10px}
+.lvls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lvl{border-radius:20px;padding:10px;text-align:center;background:#FBF8F2;border:3px solid transparent;font-weight:700}
+.lvl small{display:block;font-weight:600;color:var(--mute);font-size:.8rem;line-height:1.3}
+.lvl.on{border-color:var(--kd);background:var(--kl);color:var(--kd)}
+.lvl .le{font-size:1.6rem;display:block}
+.bps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.bp{background:#FBF8F2;border-radius:22px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform .12s}
+.bp:hover{transform:translateY(-3px)}
+.bp .mini{display:grid;gap:1px;padding:8px;background:linear-gradient(#D8F0FF,#EEF9FF);border-radius:14px}
+.bp .mini i{display:block}
+.bp b{font-family:'Mali',sans-serif;font-size:1.05rem}
+.bp .meta{font-size:.8rem;color:var(--mute);font-weight:600}
+.bp .st{letter-spacing:2px}
+.size{display:inline-block;border-radius:999px;padding:0 10px;font-size:.75rem;font-weight:700}
+.size.s{background:#EAFAF2;color:#1F7F58}.size.m{background:#FFF2EA;color:#B4551C}.size.l{background:#F4EFFF;color:#5E3FB8}
+
+/* ---------------- หน้าสร้าง ---------------- */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px;align-items:start}
+.panel{background:#fff;border-radius:24px;padding:12px;box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.panel h3{font-size:1.05rem;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.panel h3 .chip{margin-left:auto;font-family:'Noto Sans Thai Looped',sans-serif;font-size:.8rem;background:var(--kl);color:var(--kd);border-radius:999px;padding:1px 10px}
+.sky{background:linear-gradient(#CFEFFF,#F0FAFF);border-radius:16px;padding:8px;display:grid;justify-content:center}
+.grid{display:grid;gap:2px}
+.cell{border-radius:3px}
+.grid.build .cell{cursor:pointer}
+.grid.build .cell:not(.bk){background:rgba(255,255,255,.55);outline:1px dashed rgba(47,109,176,.18)}
+.grid.build .cell.ghost{opacity:.28}
+.grid.build .cell.pop{animation:pop .35s ease-out}
+.grid.build .cell.shake{animation:shake .35s}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tbtn{background:#FBF8F2;border-radius:999px;padding:4px 14px;font-weight:700;font-size:.88rem}
+.tbtn.on{background:var(--kl);color:var(--kd)}
+.bar{height:10px;border-radius:99px;background:#EFEAF5;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7ED9B0,#8EC5FF);transition:width .3s}
+.msg{min-height:28px;text-align:center;font-family:'Mali',sans-serif;margin-top:6px}
+.msg.ok{color:var(--ok)} .msg.no{color:var(--no)}
+
+.hotbar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:15;margin:14px auto 0;max-width:720px;background:rgba(58,51,80,.88);
+  border-radius:22px;padding:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.slot{position:relative;width:56px;height:62px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:3px solid transparent}
+.slot .bk{width:34px;height:34px}
+.slot small{color:#fff;font-size:.7rem;font-weight:700;line-height:1}
+.slot.sel{border-color:#FFE066;background:rgba(255,255,255,.12)}
+.slot.empty{opacity:.35}
+.slot .n{position:absolute;top:2px;right:4px;color:#fff;font-size:.72rem;font-weight:700;text-shadow:0 1px 2px #000}
+
+/* โจทย์ */
+.quiz{position:fixed;inset:0;z-index:40;background:rgba(58,51,80,.35);display:flex;align-items:flex-end;justify-content:center;padding:14px}
+.quiz .box{width:100%;max-width:520px;background:#FFFBF4;border-radius:28px;padding:18px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.2);animation:up .3s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.quiz .qh .bk{width:40px;height:40px;flex:none}
+.quiz .qh span{flex:1;font-weight:700;color:var(--mute);font-size:.9rem}
+.quiz .spk{width:42px;height:42px;border-radius:14px;background:var(--kl);font-size:1.2rem}
+.quiz .q{font-family:'Mali',sans-serif;font-size:2rem;text-align:center;margin:8px 0 4px;line-height:1.35}
+.quiz .q.word{font-size:1.25rem}
+.quiz .q .em{font-size:1.9rem;letter-spacing:2px;display:block;line-height:1.3}
+.quiz .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.quiz .opts button{height:64px;border-radius:18px;background:#fff;font-size:1.7rem;font-weight:700;box-shadow:0 4px 12px rgba(58,51,80,.1);border:3px solid transparent}
+.quiz .opts button.right{border-color:#9EDDB2;background:#EFFAF2}
+.quiz .opts button.wrong{border-color:#FFCBB3;background:#FFF5EF}
+.quiz .cancel{display:block;margin:12px auto 0;color:var(--mute);font-weight:600;font-size:.9rem}
+
+.win{text-align:center;padding:10px 0}
+.win .cheer{font-size:3rem}
+.win .stars{font-size:2.6rem;letter-spacing:8px}
+.win h2{font-size:1.7rem;color:var(--kd)}
+.btn{display:inline-block;background:var(--kd);color:#fff;border-radius:999px;padding:10px 24px;font-weight:700;margin:4px;box-shadow:0 6px 16px rgba(58,51,80,.18)}
+.btn.gh{background:#fff;color:var(--kd)}
+@media (max-width:760px){ .stage{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="pill" id="back" href="../">‹ หน้ารวม</a>
+  <div class="tt" id="tt">🧱 บล็อกคราฟต์</div>
+  <button class="pill" id="mute" type="button" aria-label="เปิดปิดเสียง">🔊</button>
+</div></div>
+<main class="wrap" id="app"></main>
+
+<script>
+/* ============================================================
+   บล็อกคราฟต์ · ดูแบบแล้วสร้างตาม · วางบล็อกแต่ละก้อนต้องตอบโจทย์คณิตให้ถูก
+   ============================================================ */
+const BLOCKS = { g:'หญ้า', d:'ดิน', s:'หิน', w:'ไม้กระดาน', l:'ท่อนไม้', f:'ใบไม้', b:'อิฐ', x:'กระจก',
+                 r:'สีแดง', y:'ทอง', o:'ไฟ', p:'สีชมพู', k:'สีดำ', u:'น้ำ', t:'สีขาว' };
+/* แบบก่อสร้าง: แถวบนลงล่าง · จุด = ว่าง */
+const BLUEPRINTS = [
+  { id:'tree',   name:'ต้นไม้เล็ก',   size:'s', rows:['.f.','fff','.l.','.l.','ggg'] },
+  { id:'flower', name:'ดอกไม้',       size:'s', rows:['.p.','pyp','.p.','.f.','ggg'] },
+  { id:'bridge', name:'สะพานหิน',     size:'s', rows:['wwww','s..s','suus'] },
+  { id:'house',  name:'บ้านหลังน้อย', size:'m', rows:['.bbb.','bbbbb','wxwxw','ww.ww'] },
+  { id:'boat',   name:'เรือใบ',       size:'m', rows:['..t..','..tt.','..l..','wwwww','.www.','uuuuu'] },
+  { id:'pig',    name:'หน้าหมูน้อย',   size:'m', rows:['ppppp','pkpkp','ppppp','prrrp'] },
+  { id:'rocket', name:'จรวด',         size:'l', rows:['..r..','.ttt.','.txt.','.ttt.','.trt.','rtttr','r.o.r','..o..'] },
+  { id:'bigtree',name:'ต้นไม้ใหญ่',    size:'l', rows:['.fff.','fffff','fffff','.fff.','..l..','..l..','ggggg'] },
+  { id:'castle', name:'ปราสาท',       size:'l', rows:['s.s.s.s','sssssss','sxsssxs','sss.sss','sss.sss'] },
+];
+const SIZE = { s:'เล็ก', m:'กลาง', l:'ใหญ่' };
+const MATH = [
+  { name:'ง่าย',  e:'🌱', note:'บวก ลบ ไม่เกิน 10 · นับจำนวน' },
+  { name:'กลาง', e:'🌳', note:'บวก ลบ ไม่เกิน 20 · หาเลขที่หายไป · เปรียบเทียบ' },
+  { name:'ยาก',  e:'🏔️', note:'บวก ลบ ไม่เกิน 100 · บวก 3 จำนวน · โจทย์ปัญหา' },
+];
+
+const $ = s => document.querySelector(s), app = $('#app');
+const rnd = n => Math.floor(Math.random()*n), pick = a => a[rnd(a.length)];
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const cells = bp => bp.rows.join('').replace(/\./g,'').length;
+const bk = (c, px) => '<i class="bk bk-'+c+'" style="width:'+px+'px;height:'+px+'px"></i>';
+
+/* ---------------- บันทึก ---------------- */
+let SAVE = {}; try{ SAVE = JSON.parse(localStorage.getItem('kids-craft')||'{}')||{}; }catch(e){}
+let mathLv = +(SAVE.lv||0);
+const saveAll = () => { try{ localStorage.setItem('kids-craft', JSON.stringify(SAVE)); }catch(e){} };
+
+/* ---------------- เสียง ---------------- */
+let muted=false, AC=null;
+try{ muted = localStorage.getItem('kids-brain-mute')==='1'; }catch(e){}
+$('#mute').textContent = muted?'🔇':'🔊';
+$('#mute').onclick = () => { muted=!muted; $('#mute').textContent=muted?'🔇':'🔊'; try{ localStorage.setItem('kids-brain-mute',muted?'1':'0'); }catch(e){} };
+function tone(f,d=.14,type='square',v=.06,when=0){
+  if(muted) return;
+  try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const t=AC.currentTime+when, o=AC.createOscillator(), g=AC.createGain();
+    o.type=type; o.frequency.value=f; g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g).connect(AC.destination); o.start(t); o.stop(t+d+.02); }catch(e){}
+}
+const sfx = { place:()=>{ tone(180,.08,'square',.08); tone(120,.1,'triangle',.08,.05); }, ok:()=>{ tone(660,.1,'sine',.12); tone(990,.14,'sine',.12,.09); },
+  no:()=>tone(240,.2,'triangle',.1), tap:()=>tone(520,.05,'sine',.06), win:()=>[523,659,784,1046,1318].forEach((f,i)=>tone(f,.18,'square',.06,i*.1)) };
+let thVoice=null;
+if(window.speechSynthesis){ const pv=()=>{ const v=speechSynthesis.getVoices().filter(x=>/^th/i.test(x.lang)); thVoice=v.find(x=>/Kanya|Narisa|Premwadee/i.test(x.name))||v[0]||null; }; pv(); speechSynthesis.onvoiceschanged=pv; }
+function speak(t){ if(muted||!window.speechSynthesis) return; try{speechSynthesis.cancel();}catch(e){} const u=new SpeechSynthesisUtterance(t); u.lang='th-TH'; u.rate=.95; if(thVoice) u.voice=thVoice; speechSynthesis.speak(u); }
+
+/* ============================================================
+   โจทย์คณิต ตามระดับ · คำตอบเป็นตัวเลือก ไม่ต้องพิมพ์
+   q = โจทย์ (html) · say = ข้อความอ่านออกเสียง · ans = คำตอบ · opts = ตัวเลือก
+   ============================================================ */
+const EMO = ['🍎','⭐','🐟','🌸','🍓','🎈','🐥','🍩'];
+const ITEMS = [['ส้ม','ผล'],['ดินสอ','แท่ง'],['ลูกอม','เม็ด'],['ตุ๊กตา','ตัว'],['ดอกไม้','ดอก'],['เพชร','เม็ด'],['ไข่','ฟอง'],['หนังสือ','เล่ม']];
+const NAMES = ['น้องมายด์','น้องต้น','น้องฟ้า','น้องแพรว','น้องภูมิ'];
+function numOpts(ans){
+  const set=new Set([ans]); const near=shuffle([-3,-2,-1,1,2,3,10,-10].map(d=>ans+d).filter(x=>x>=0));
+  for(const x of near){ if(set.size>=4) break; set.add(x); }
+  return shuffle([...set]);
+}
+function makeQ(lv){
+  const r=rnd(100);
+  if(lv===0){
+    if(r<40){ const a=rnd(10), b=rnd(11-a); return {q:a+' + '+b+' = ?', say:a+' บวก '+b+' เท่ากับเท่าไร', ans:a+b}; }
+    if(r<75){ const a=2+rnd(9), b=rnd(a+1); return {q:a+' − '+b+' = ?', say:a+' ลบ '+b+' เท่ากับเท่าไร', ans:a-b}; }
+    const n=3+rnd(8), e=pick(EMO); return {q:'<span class="em">'+e.repeat(n)+'</span>มีกี่อัน?', say:'มีกี่อัน', ans:n, word:true};
+  }
+  if(lv===1){
+    if(r<30){ const a=3+rnd(15), b=1+rnd(20-a); return {q:a+' + '+b+' = ?', say:a+' บวก '+b+' เท่ากับเท่าไร', ans:a+b}; }
+    if(r<55){ const a=10+rnd(11), b=1+rnd(a); return {q:a+' − '+b+' = ?', say:a+' ลบ '+b+' เท่ากับเท่าไร', ans:a-b}; }
+    if(r<80){ const c=10+rnd(11), a=1+rnd(c-1); return {q:a+' + ? = '+c, say:a+' บวก เท่าไร เท่ากับ '+c, ans:c-a}; }
+    const a=rnd(21); let b=rnd(21); if(rnd(4)===0) b=a;
+    const s=a>b?'>':a<b?'<':'=';
+    return {q:a+' ⬜ '+b, say:a+' กับ '+b+' ใช้เครื่องหมายอะไร', ans:s, opts:shuffle(['>','<','='])};
+  }
+  if(r<25){ const a=10+rnd(80), b=1+rnd(Math.min(9,99-a)); return {q:a+' + '+b+' = ?', say:a+' บวก '+b+' เท่ากับเท่าไร', ans:a+b}; }
+  if(r<45){ const a=2+rnd(8), b=1+rnd(9-a+1); return {q:(a*10)+' + '+(b*10)+' = ?', say:(a*10)+' บวก '+(b*10)+' เท่ากับเท่าไร', ans:(a+b)*10}; }
+  if(r<60){ const a=20+rnd(80), b=1+rnd(9); return {q:a+' − '+b+' = ?', say:a+' ลบ '+b+' เท่ากับเท่าไร', ans:a-b}; }
+  if(r<75){ const a=1+rnd(8), b=1+rnd(8), c=1+rnd(Math.max(1,20-a-b)); return {q:a+' + '+b+' + '+c+' = ?', say:a+' บวก '+b+' บวก '+c+' เท่ากับเท่าไร', ans:a+b+c}; }
+  const who=pick(NAMES), [it,unit]=pick(ITEMS);
+  if(rnd(2)){ const a=5+rnd(15), b=2+rnd(10); return {q:who+'มี'+it+' '+a+' '+unit+' ได้มาเพิ่มอีก '+b+' '+unit+' ตอนนี้มีทั้งหมดกี่'+unit, say:who+'มี'+it+' '+a+' '+unit+' ได้มาเพิ่มอีก '+b+' '+unit+' ตอนนี้มีทั้งหมดกี่'+unit, ans:a+b, word:true}; }
+  const a=10+rnd(20), b=1+rnd(a-1); return {q:who+'มี'+it+' '+a+' '+unit+' ให้เพื่อนไป '+b+' '+unit+' เหลือกี่'+unit, say:who+'มี'+it+' '+a+' '+unit+' ให้เพื่อนไป '+b+' '+unit+' เหลือกี่'+unit, ans:a-b, word:true};
+}
+
+/* ---------------- เมนู ---------------- */
+function menu(){
+  history.replaceState(null,'',location.pathname);
+  $('#tt').textContent='🧱 บล็อกคราฟต์'; const b=$('#back'); b.textContent='‹ หน้ารวม'; b.href='../'; b.onclick=null;
+  const logo=['g','b','x','y'].map(c=>bk(c,26)).join('');
+  app.innerHTML =
+    '<div class="hero"><div class="row"><div class="logo">'+logo+'</div><div><h1>บล็อกคราฟต์</h1>'+
+    '<p>ดูแบบแล้วสร้างตาม · วางบล็อกแต่ละก้อนต้องตอบโจทย์เลขให้ถูก</p></div></div>'+
+    '<div class="ground">'+'g'.repeat(24).split('').map(c=>'<i class="bk bk-g"></i>').join('')+'</div></div>'+
+    '<section class="card"><h2>1. เลือกความยากของโจทย์</h2><div class="lvls">'+MATH.map((m,i)=>
+      '<button type="button" class="lvl'+(i===mathLv?' on':'')+'" data-i="'+i+'"><span class="le">'+m.e+'</span>'+m.name+'<small>'+m.note+'</small></button>').join('')+'</div></section>'+
+    '<section class="card"><h2>2. เลือกแบบที่จะสร้าง</h2><p class="sub">แบบใหญ่มีบล็อกมาก ต้องตอบโจทย์หลายข้อ</p><div class="bps">'+BLUEPRINTS.map(bp=>{
+      const best=(SAVE.best||{})[bp.id+'-'+mathLv]||0, cols=bp.rows[0].length;
+      return '<button type="button" class="bp" data-id="'+bp.id+'"><div class="mini" style="grid-template-columns:repeat('+cols+',16px)">'+
+        bp.rows.join('').split('').map(c=>c==='.'?'<i style="width:16px;height:16px"></i>':bk(c,16)).join('')+'</div>'+
+        '<b>'+bp.name+'</b><span class="meta"><span class="size '+bp.size+'">'+SIZE[bp.size]+'</span> · '+cells(bp)+' บล็อก</span>'+
+        '<span class="st">'+'⭐'.repeat(best)+'☆'.repeat(3-best)+'</span></button>'; }).join('')+'</div></section>';
+  app.querySelectorAll('.lvl').forEach(x=>x.onclick=()=>{ sfx.tap(); mathLv=+x.dataset.i; SAVE.lv=mathLv; saveAll(); menu(); });
+  app.querySelectorAll('.bp').forEach(x=>x.onclick=()=>{ sfx.tap(); build(x.dataset.id); });
+  window.scrollTo(0,0);
+}
+
+/* ---------------- สร้าง ---------------- */
+let G=null;
+function build(id){
+  const bp=BLUEPRINTS.find(x=>x.id===id); if(!bp) return menu();
+  history.pushState(null,'','#'+id);
+  const H=bp.rows.length, W=bp.rows[0].length;
+  G={ bp, H, W, placed:Array(H*W).fill(''), sel:null, ghost:mathLv===0, mistakes:0, left:cells(bp) };
+  const need={}; bp.rows.join('').split('').forEach(c=>{ if(c!=='.') need[c]=(need[c]||0)+1; });
+  G.need=need; G.sel=Object.keys(need)[0];
+  $('#tt').textContent='🧱 '+bp.name+' · โจทย์'+MATH[mathLv].name;
+  const b=$('#back'); b.textContent='‹ เลือกแบบ'; b.href='#'; b.onclick=e=>{ e.preventDefault(); menu(); };
+  const avail=Math.min(window.innerWidth,960)-(window.innerWidth<=760?70:420);
+  G.px=Math.max(30,Math.min(58,Math.floor(avail/W)-2));
+  const bpx=window.innerWidth<=760?Math.min(26,Math.floor((window.innerWidth-90)/W)):Math.min(30,Math.floor(260/W));
+  app.innerHTML =
+    '<div class="stage">'+
+      '<section class="panel"><h3>📜 แบบ<span class="chip">'+W+'×'+H+'</span></h3>'+
+        '<div class="sky"><div class="grid" style="grid-template-columns:repeat('+W+','+bpx+'px)">'+
+        bp.rows.join('').split('').map(c=>c==='.'?'<i style="width:'+bpx+'px;height:'+bpx+'px"></i>':bk(c,bpx)).join('')+'</div></div>'+
+        '<p style="font-size:.85rem;color:var(--mute);margin-top:8px">สร้างให้เหมือนแบบ · เลือกบล็อกจากแถบด้านล่าง แตะช่องที่จะวาง แล้วตอบโจทย์ให้ถูก</p></section>'+
+      '<section class="panel"><h3>🏗️ พื้นที่สร้าง<span class="chip" id="cnt"></span></h3>'+
+        '<div class="sky"><div class="grid build" id="board" style="grid-template-columns:repeat('+W+','+G.px+'px)"></div></div>'+
+        '<div class="bar"><i id="prog"></i></div>'+
+        '<div class="tools"><button type="button" class="tbtn'+(G.ghost?' on':'')+'" id="ghost">👻 เงาแบบ</button></div>'+
+        '<div class="msg" id="msg">เลือกบล็อก แล้วแตะช่องที่จะวาง</div></section>'+
+    '</div><div class="hotbar" id="hotbar"></div>';
+  $('#ghost').onclick=()=>{ G.ghost=!G.ghost; $('#ghost').classList.toggle('on',G.ghost); drawBoard(); };
+  drawBoard(); drawHotbar();
+  window.scrollTo(0,0);
+}
+function setMsg(t,c){ const m=$('#msg'); m.className='msg '+(c||''); m.textContent=t; }
+function drawBoard(){
+  const {bp,W,H,placed,px}=G, flat=bp.rows.join('');
+  $('#board').innerHTML=flat.split('').map((c,i)=>{
+    const p=placed[i];
+    if(p) return '<i class="cell bk bk-'+p+'" data-i="'+i+'" style="width:'+px+'px;height:'+px+'px"></i>';
+    if(G.ghost && c!=='.') return '<i class="cell ghost bk bk-'+c+'" data-i="'+i+'" style="width:'+px+'px;height:'+px+'px"></i>';
+    return '<i class="cell" data-i="'+i+'" style="width:'+px+'px;height:'+px+'px"></i>';
+  }).join('');
+  $('#board').querySelectorAll('.cell').forEach(c=>c.onclick=()=>tapCell(+c.dataset.i, c));
+  const total=cells(bp), done=total-G.left;
+  $('#cnt').textContent=done+' / '+total;
+  $('#prog').style.width=Math.round(done/total*100)+'%';
+}
+function drawHotbar(){
+  const used={}; G.placed.forEach(c=>{ if(c) used[c]=(used[c]||0)+1; });
+  $('#hotbar').innerHTML=Object.keys(G.need).map(c=>{
+    const left=G.need[c]-(used[c]||0);
+    return '<button type="button" class="slot'+(G.sel===c?' sel':'')+(left?'':' empty')+'" data-c="'+c+'"><span class="n">'+left+'</span>'+bk(c,34)+'<small>'+BLOCKS[c]+'</small></button>';
+  }).join('');
+  $('#hotbar').querySelectorAll('.slot').forEach(s=>s.onclick=()=>{ sfx.tap(); G.sel=s.dataset.c; drawHotbar(); setMsg('เลือก '+BLOCKS[G.sel]+' แล้ว แตะช่องที่จะวาง'); });
+}
+function shake(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+function tapCell(i, el){
+  const want=G.bp.rows.join('')[i];
+  if(G.placed[i]){ setMsg('ช่องนี้วางแล้ว'); return; }
+  if(want==='.'){ shake(el); sfx.no(); setMsg('ในแบบ ช่องนี้ว่างอยู่นะ ดูแบบอีกที 👀','no'); return; }
+  if(want!==G.sel){ shake(el); sfx.no(); setMsg('ในแบบ ช่องนี้เป็น "'+BLOCKS[want]+'" ลองเลือกบล็อกใหม่นะ','no'); return; }
+  ask(i);
+}
+
+/* ---------------- ถามโจทย์ก่อนวาง ---------------- */
+function ask(i){
+  const Q=makeQ(mathLv), opts=Q.opts||numOpts(Q.ans);
+  const o=document.createElement('div'); o.className='quiz';
+  o.innerHTML='<div class="box" role="dialog" aria-label="โจทย์คณิต"><div class="qh">'+bk(G.sel,40)+'<span>ตอบให้ถูกเพื่อวาง "'+BLOCKS[G.sel]+'"</span>'+
+    '<button class="spk" type="button" aria-label="ฟังโจทย์">🔊</button></div>'+
+    '<div class="q'+(Q.word?' word':'')+'">'+Q.q+'</div>'+
+    '<div class="opts">'+opts.map(v=>{ const e=String(v).replace(/</g,'&lt;').replace(/>/g,'&gt;'); return '<button type="button" data-v="'+e+'">'+e+'</button>'; }).join('')+'</div>'+
+    '<button class="cancel" type="button">ยกเลิก</button></div>';
+  document.body.appendChild(o);
+  o.querySelector('.spk').onclick=()=>speak(Q.say);
+  o.querySelector('.cancel').onclick=()=>o.remove();
+  o.onclick=e=>{ if(e.target===o) o.remove(); };
+  let locked=false;
+  o.querySelectorAll('.opts button').forEach(btn=>btn.onclick=()=>{
+    if(locked) return;
+    if(String(btn.dataset.v)===String(Q.ans)){
+      locked=true; btn.classList.add('right'); sfx.ok();
+      setTimeout(()=>{ o.remove(); place(i); }, 350);
+    }else{
+      locked=true; btn.classList.add('wrong'); G.mistakes++; sfx.no();
+      /* ตอบผิด เปลี่ยนเป็นโจทย์ข้อใหม่ ไม่ให้เดาไล่ตัวเลือก */
+      setTimeout(()=>{ o.remove(); setMsg('ยังไม่ถูก ลองโจทย์ข้อใหม่นะ 💪','no'); ask(i); }, 650);
+    }
+  });
+}
+function place(i){
+  G.placed[i]=G.sel; G.left--; sfx.place();
+  drawBoard(); drawHotbar();
+  const c=$('#board').querySelector('.cell[data-i="'+i+'"]'); if(c) c.classList.add('pop');
+  setMsg(G.left ? 'วางแล้ว! เหลืออีก '+G.left+' บล็อก' : 'สร้างเสร็จแล้ว! 🎉','ok');
+  const used=G.placed.filter(x=>x===G.sel).length;
+  if(G.left && used>=G.need[G.sel]){ const next=Object.keys(G.need).find(k=>G.placed.filter(x=>x===k).length<G.need[k]); if(next){ G.sel=next; drawHotbar(); } }
+  if(!G.left) setTimeout(finish, 600);
+}
+function finish(){
+  const total=cells(G.bp), ratio=G.mistakes/total, stars=ratio<=.1?3:ratio<=.3?2:1;
+  SAVE.best=SAVE.best||{}; const k=G.bp.id+'-'+mathLv; SAVE.best[k]=Math.max(SAVE.best[k]||0,stars); saveAll();
+  if(window.KP) KP.log({ kind:'game', page:'craft', item:'craft', title:'บล็อกคราฟต์ · '+G.bp.name+' · โจทย์'+MATH[mathLv].name, stars, mistakes:G.mistakes });
+  sfx.win(); speak(stars===3?'สร้างเสร็จแล้ว เก่งมาก ได้สามดาว':'สร้างเสร็จแล้ว เก่งมาก');
+  const w=document.createElement('section'); w.className='panel win'; w.style.marginTop='14px';
+  w.innerHTML='<div class="cheer">🎉🏆🎉</div><div class="stars">'+'⭐'.repeat(stars)+'☆'.repeat(3-stars)+'</div>'+
+    '<h2>สร้าง'+G.bp.name+'เสร็จแล้ว!</h2><p style="color:var(--mute)">ตอบโจทย์ถูก '+total+' ข้อ'+(G.mistakes?' · พลาด '+G.mistakes+' ครั้ง':' · ไม่พลาดเลย')+'</p>'+
+    '<div style="margin-top:10px"><button class="btn" type="button" id="again">สร้างใหม่อีกครั้ง</button><button class="btn gh" type="button" id="other">เลือกแบบอื่น</button></div>';
+  $('.stage').after(w); $('#hotbar').remove();
+  w.scrollIntoView({behavior:'smooth',block:'center'});
+  $('#again').onclick=()=>build(G.bp.id);
+  $('#other').onclick=()=>menu();
+}
+
+addEventListener('popstate', ()=>{ const id=location.hash.slice(1); if(BLUEPRINTS.some(b=>b.id===id)) build(id); else menu(); });
+{ const id=location.hash.slice(1); if(BLUEPRINTS.some(b=>b.id===id)) build(id); else menu(); }
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>
