@@ -108,11 +108,11 @@ const ckey = c => c.i+','+c.j;
 const DIR = { R:{ di:1, dj:0, t:'ไป ทาง ขวา ➡️', a:'➡️' }, L:{ di:-1, dj:0, t:'ไป ทาง ซ้าย ⬅️', a:'⬅️' }, U:{ di:0, dj:-1, t:'ขึ้น ไป ⬆️', a:'⬆️' }, D:{ di:0, dj:1, t:'ลง มา ⬇️', a:'⬇️' } };
 const OPP = { R:'L', L:'R', U:'D', D:'U' };
 let kidTex = null;
-new THREE.TextureLoader().load('../img/kid.webp', t => { t.colorSpace = THREE.SRGBColorSpace; kidTex = t; if(G.walker) setKid(); });
+new THREE.TextureLoader().load('../img/kid-full.webp', t => { t.colorSpace = THREE.SRGBColorSpace; kidTex = t; if(G.walker) setKid(); });
 function setKid(){
   if(!kidTex || !G.walkerKid) return;
   G.walkerKid.material.map = kidTex; G.walkerKid.material.needsUpdate = true;
-  const h = 1.5; G.walkerKid.scale.set(h*kidTex.image.width/kidTex.image.height, h, 1);
+  const h = 1.75; G.walkerKid.scale.set(h*kidTex.image.width/kidTex.image.height, h, 1);
 }
 function buildGrid(){
   const pts = [];

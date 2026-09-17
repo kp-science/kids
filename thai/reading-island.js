@@ -28,7 +28,10 @@ export async function createIsland(el, { tiles=12 }={}){
     g.position.set(x, .5, z); g.scale.setScalar(s); g.rotation.y = Math.random()*6; g.traverse(m => { if(m.isMesh) m.castShadow = true; }); scene.add(g);
   }
   let placed = 0;
-  for(let t=0;t<200 && placed<9;t++){ const a = Math.random()*Math.PI*2, r = 2.2 + Math.random()*3.9, x = r*Math.cos(a), z = r*Math.sin(a); if(farFromPath(x, z, 1.25)){ palm(x, z, .75+Math.random()*.4); placed++; } }
+  /* ต้นไม้ห้ามอยู่ระหว่างกล้องกับก้อนหิน (กล้องมองจากทิศ OFF) */
+  const ox = OFF.x/Math.hypot(OFF.x, OFF.z), oz = OFF.z/Math.hypot(OFF.x, OFF.z);
+  const blocksView = (x, z) => P.some(p => { const dx = x-p.x, dz = z-p.z, along = dx*ox + dz*oz, side = Math.abs(dx*oz - dz*ox); return along > 0 && along < 6 && side < 1.6; });
+  for(let t=0;t<300 && placed<9;t++){ const a = Math.random()*Math.PI*2, r = 2.2 + Math.random()*3.9, x = r*Math.cos(a), z = r*Math.sin(a); if(farFromPath(x, z, 1.25) && !blocksView(x, z)){ palm(x, z, .75+Math.random()*.4); placed++; } }
   const COLORS = ['#FF9EC4','#FFD66B','#C9A8FF','#FFFFFF','#FFB38A'];
   for(let t=0,n=0;t<400 && n<40;t++){ const a = Math.random()*Math.PI*2, r = 1.9 + Math.random()*4.4, x = r*Math.cos(a), z = r*Math.sin(a); if(farFromPath(x, z, .7)){ scene.add(at(sph(.09, COLORS[n%5]), x, .6, z), at(cyl(.015, .015, .12, '#5FBF6E', 5), x, .55, z)); n++; } }
   [[6.9,.8],[-6.6,-2.4],[2.5,-6.8],[-3.8,5.8]].forEach(([x,z]) => { const m = new THREE.Mesh(new THREE.DodecahedronGeometry(.45, 0), mat('#BDB6C8', { flatShading:true })); m.position.set(x, .45, z); m.scale.y = .6; m.castShadow = true; scene.add(m); });
@@ -56,8 +59,8 @@ export async function createIsland(el, { tiles=12 }={}){
   const shadow = rot(new THREE.Mesh(new THREE.CircleGeometry(.42, 24), new THREE.MeshBasicMaterial({ color:'#3A3350', transparent:true, opacity:.18, depthWrite:false })), -Math.PI/2); shadow.position.y = .66; avatar.add(shadow);
   let kid;
   try{
-    const tex = await new THREE.TextureLoader().loadAsync('../img/kid.webp'); tex.colorSpace = THREE.SRGBColorSpace;
-    kid = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true })); const h = 2.0; kid.scale.set(h*tex.image.width/tex.image.height, h, 1);
+    const tex = await new THREE.TextureLoader().loadAsync('../img/kid-full.webp'); tex.colorSpace = THREE.SRGBColorSpace;
+    kid = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true })); const h = 2.35; kid.scale.set(h*tex.image.width/tex.image.height, h, 1);
   }catch(e){ kid = sprite('🧒', { size:1.6 }); }
   kid.center.set(.5, 0); kid.position.y = .66; avatar.add(kid);
   const baseScale = kid.scale.clone();
