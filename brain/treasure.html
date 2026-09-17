@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>ล่าขุมทรัพย์ พ่อแม่ลูก</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{ "imports": { "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+<link rel="stylesheet" href="../stem/stem.css">
+<style>
+body{font-size:17px}
+[hidden]{display:none!important}
+.wrap{max-width:1000px;margin:0 auto;padding:14px 12px 60px}
+.hero{text-align:center;padding:4px 4px 12px}
+.hero h1{font-size:1.9rem;color:#B4551C}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.role{border-radius:22px;padding:14px;display:flex;gap:12px;align-items:flex-start}
+.role .re{font-size:2.6rem;line-height:1}
+.role b{font-family:'Mali',sans-serif;font-size:1.08rem;display:block}
+.role small{display:block;color:#5E5873;font-size:.9rem;line-height:1.5}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.seg button{flex:1 1 140px;border-radius:16px;padding:8px 10px;background:#FBF8F2;font-weight:700;border:3px solid transparent;text-align:left;line-height:1.35}
+.seg button small{display:block;font-weight:600;color:var(--mute);font-size:.78rem}
+.seg button.on{border-color:#FFB400;background:#FFF6D6}
+.start{display:block;margin:16px auto 0;font-size:1.2rem;padding:12px 30px;border-radius:999px;background:#FF922B;color:#fff;font-weight:700;box-shadow:0 8px 20px rgba(255,146,43,.35)}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
+.lvcard{border-radius:20px;padding:10px;text-align:center;font-weight:700;background:#fff;box-shadow:0 4px 14px rgba(58,51,80,.07);border:3px solid transparent;line-height:1.3}
+.lvcard .le{font-size:2.2rem;display:block}
+.lvcard small{display:block;letter-spacing:2px;font-size:.8rem}
+.lvcard.next{border-color:#FF922B}
+.lvcard .ord{display:block;color:var(--mute);font-size:.75rem;font-weight:600}
+h2.sec{font-size:1.15rem;margin:20px 4px 4px}
+
+.play{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:12px;padding:12px;max-width:1400px;margin:0 auto}
+.stage{height:calc(100vh - 90px - env(safe-area-inset-top))}
+.side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.steps3{display:flex;align-items:center;justify-content:center;gap:6px;font-size:1.8rem}
+.steps3 span{width:54px;height:54px;border-radius:18px;background:#F4F0FA;display:grid;place-items:center;filter:grayscale(1);opacity:.5;transition:.3s}
+.steps3 span.cur{filter:none;opacity:1;background:#FFF1C9;outline:3px solid #FFB400;transform:scale(1.08)}
+.steps3 span.got{filter:none;opacity:1;background:#EFFAF2}
+.steps3 i{font-style:normal;font-size:1rem;color:var(--mute)}
+.clue{border-radius:22px;padding:14px;background:#FFF9DB;text-align:center}
+.clue h3{font-size:1rem;color:#8A6100}
+.clue .who{font-size:.85rem;color:#8A6100;font-weight:600}
+.hold{margin-top:8px;width:100%;min-height:92px;border-radius:18px;background:#fff;border:3px dashed #FFD66B;font-weight:700;color:#8A6100;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;padding:10px;display:grid;place-items:center;font-size:1.05rem}
+.hold.show{border-style:solid;border-color:#FFB400;color:#3A3350;font-size:1.3rem;word-spacing:.2em;line-height:1.6}
+.cluetext{margin-top:8px;background:#fff;border-radius:18px;padding:12px;font-size:1.35rem;font-weight:700;word-spacing:.22em;line-height:1.6}
+.bar{display:flex;gap:6px;flex-wrap:wrap}
+.bar .btn{flex:1 1 auto}
+.msg{border-radius:18px;padding:10px 12px;background:#fff;font-weight:600;text-align:center;box-shadow:0 4px 14px rgba(58,51,80,.06)}
+.done{border-radius:22px;padding:16px;background:#fff;text-align:center;box-shadow:0 8px 22px rgba(58,51,80,.08)}
+.done .big{font-size:3rem}
+.done .stars{font-size:2.2rem;letter-spacing:6px}
+.done .btn{margin:6px 4px 0}
+.hud .lv{background:#fff;border-radius:999px;padding:4px 14px;font-weight:700;box-shadow:0 3px 10px rgba(58,51,80,.12);font-size:.9rem}
+@media (max-width:980px){
+  .play{grid-template-columns:1fr}
+  .stage{height:52vh;min-height:340px}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><a class="pill" href="../#เกม" id="back">‹ หน้ารวม</a><div class="tt" id="title">🗺️ ล่าขุมทรัพย์ พ่อแม่ลูก</div><button class="pill" id="mute" type="button">🔊</button></div></div>
+
+<section id="home" class="wrap">
+  <div class="hero"><h1>🗺️ ล่าขุมทรัพย์ พ่อแม่ลูก</h1><p class="sub">ช่วยกันหาของ 3 ชิ้นในแต่ละด่าน 📜 → 🗝️ → 💰 · ลำดับด่านและที่ซ่อนสุ่มใหม่ทุกครั้ง</p></div>
+  <div class="roles">
+    <div class="role" style="background:#FFF3CC"><span class="re">🧑‍🧒</span><span><b>คนอ่านคำใบ้</b><small>กดค้างที่กล่องคำใบ้เพื่ออ่านคนเดียว แล้วบอกใบ้ให้อีกคนฟัง (ห้ามชี้นะ!) · พูดอธิบายเพิ่มได้ เช่น "ร้อนขึ้น ๆ"</small></span></div>
+    <div class="role" style="background:#DDF6F2"><span class="re">🔍</span><span><b>นักสำรวจ</b><small>ฟังคำใบ้ แล้วแตะของในห้องเพื่อเปิดลิ้นชัก ยกหมอน เปิดฝา เขย่าต้นไม้ จนกว่าจะเจอของ</small></span></div>
+  </div>
+  <div class="opts">
+    <div class="card"><b>👥 ใครอ่านคำใบ้?</b><div class="seg" id="segRole">
+      <button type="button" data-v="parent">🧑 ผู้ปกครองอ่าน<small>เด็กเป็นนักสำรวจ · คำใบ้ซ่อนอยู่</small></button>
+      <button type="button" data-v="kid">🧒 เด็กอ่านเอง<small>ผู้ปกครองเป็นนักสำรวจ · ฝึกอ่าน</small></button></div></div>
+    <div class="card"><b>🧩 ความยากของคำใบ้</b><div class="seg" id="segLevel">
+      <button type="button" data-v="easy">🌱 ง่าย<small>บอกชื่อที่ซ่อนตรง ๆ</small></button>
+      <button type="button" data-v="hard">🔎 ปริศนา<small>ต้องคิดว่าหมายถึงอะไร</small></button></div></div>
+  </div>
+  <button type="button" class="start" id="startBtn">🗺️ เริ่มล่าสมบัติ</button>
+  <h2 class="sec">🧭 แผนที่ด่าน <span class="sub" id="mapNote"></span></h2>
+  <div class="map" id="map"></div>
+  <div class="row" style="justify-content:center;margin-top:12px"><button type="button" class="btn" id="shuffleBtn">🔀 สุ่มลำดับด่านใหม่</button></div>
+</section>
+
+<section id="play" hidden>
+  <div class="play">
+    <div class="stage" id="stage"><div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
+      <div class="hud"><span class="lv" id="lvname"></span><span class="sp"></span><button type="button" id="viewBtn">⟲ มุมเดิม</button></div></div>
+    <div class="side">
+      <div class="card"><div class="steps3" id="steps3"></div></div>
+      <div class="clue" id="clue"></div>
+      <div class="msg" id="msg"></div>
+      <div class="bar"><button type="button" class="btn" id="tagBtn">🏷️ ป้ายชื่อ</button><button type="button" class="btn" id="hintBtn">💡 ใบ้เพิ่ม</button><button type="button" class="btn" id="restartBtn">↺ เริ่มด่านใหม่</button></div>
+      <div id="done"></div>
+    </div>
+  </div>
+</section>
+
+<script>setTimeout(() => { if(!window.__stemReady){ const l = document.getElementById('loading'); if(l) l.textContent = 'โหลดฉาก 3 มิติไม่ได้ 😢 ต้องต่ออินเทอร์เน็ต แล้วลองโหลดหน้าใหม่อีกครั้ง'; } }, 12000);</script>
+<script type="module">
+import { THREE, $, shuffle, setupMute, sfx, speak, stage, mat, box, cyl, sph, at, rot, sprite, label, glow, tween, ease, wait } from '../stem/stem3d.js';
+import { MODELS, EMPTY_FINDS } from './treasure-models.js';
+import LEVELS from './treasure-levels.js';
+
+setupMute($('#mute'));
+
+/* ---------------- บันทึก ---------------- */
+let SAVE = {}; try{ SAVE = JSON.parse(localStorage.getItem('kids-treasure')||'{}')||{}; }catch(e){}
+SAVE.stars = SAVE.stars || {}; SAVE.role = SAVE.role || 'parent'; SAVE.level = SAVE.level || 'easy';
+const persist = () => { try{ localStorage.setItem('kids-treasure', JSON.stringify(SAVE)); }catch(e){} };
+function ensureRoute(force){
+  const ids = LEVELS.map(l => l.id);
+  if(force || !Array.isArray(SAVE.route) || SAVE.route.length !== ids.length || !ids.every(i => SAVE.route.includes(i))){ SAVE.route = shuffle(ids); SAVE.pos = 0; }
+  SAVE.pos = Math.min(SAVE.pos||0, ids.length-1); persist();
+}
+ensureRoute();
+const starTxt = n => '⭐'.repeat(n)+'☆'.repeat(3-n);
+
+/* ---------------- หน้าแรก ---------------- */
+function seg(id, key){
+  const el = $(id);
+  const draw = () => el.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v===SAVE[key]));
+  el.querySelectorAll('button').forEach(b => b.onclick = () => { SAVE[key] = b.dataset.v; persist(); sfx('tap'); draw(); });
+  draw();
+}
+seg('#segRole', 'role'); seg('#segLevel', 'level');
+function drawHome(){
+  const next = SAVE.route[SAVE.pos];
+  $('#map').innerHTML = SAVE.route.map((id, i) => { const L = LEVELS.find(l => l.id===id), s = SAVE.stars[id]||0;
+    return '<button type="button" class="lvcard'+(id===next?' next':'')+'" data-id="'+id+'"><span class="ord">ด่านที่ '+(i+1)+(id===next?' · ถัดไป':'')+'</span><span class="le">'+L.e+'</span>'+L.name+'<small>'+starTxt(s)+'</small></button>'; }).join('');
+  $('#map').querySelectorAll('.lvcard').forEach(b => b.onclick = () => { SAVE.pos = SAVE.route.indexOf(b.dataset.id); persist(); openPlay(); });
+  const done = SAVE.route.filter(id => SAVE.stars[id]).length;
+  $('#mapNote').textContent = '· ผ่านแล้ว '+done+' / '+LEVELS.length+' ด่าน';
+  $('#startBtn').textContent = done && done < LEVELS.length ? '🗺️ เล่นต่อ: ด่านที่ '+(SAVE.pos+1) : '🗺️ เริ่มล่าสมบัติ';
+}
+$('#startBtn').onclick = () => openPlay();
+$('#shuffleBtn').onclick = () => { ensureRoute(true); sfx('pop'); drawHome(); };
+function showHome(){
+  $('#home').hidden = false; $('#play').hidden = true; if(S) S.pause();
+  $('#back').href = '../#เกม'; $('#back').textContent = '‹ หน้ารวม'; $('#back').onclick = null;
+  history.replaceState(null, '', location.pathname); drawHome(); window.scrollTo(0, 0);
+}
+
+/* ---------------- ฉาก 3 มิติ ---------------- */
+let S = null, world = null, G = {};
+const VIEW = { cam:[2.3, 7.9, 10.4], target:[0, .3, .2] };
+function initStage(){
+  if(S) return;
+  S = stage($('#stage'), { cam:VIEW.cam, target:VIEW.target, minDist:6, maxDist:20, minPolar:.35, maxPolar:1.25, minAzimuth:-.55, maxAzimuth:1.0, shadow:9 });
+  $('#loading').remove();
+  $('#viewBtn').onclick = () => S.resetView();
+  S.onTap(onTap);
+  S.onFrame((dt, t) => {
+    if(G.hint){ G.hint.material.opacity = .55 + .45*Math.sin(t*6); const s = 1.6 + .25*Math.sin(t*6); G.hint.scale.set(s, s, 1); }
+    (G.sea||[]).forEach(m => { m.position.y = m.userData.y + Math.sin(t*1.2 + m.userData.p)*.04; });
+  });
+}
+function buildPlace(L){
+  const g = new THREE.Group(), p = L.place;
+  if(p==='indoor'){
+    g.add(at(box(12.4, .2, 9.4, L.floor||'#F3E3CF', .04), 0, -.1, 0));
+    const line = new THREE.Color(L.floor||'#F3E3CF').offsetHSL(0, 0, -.05).getStyle(); for(let i=-5;i<=5;i++) g.add(at(box(.03, .005, 9.3, line, .001), i*1.1, .005, 0));
+    g.add(at(box(12.4, 3.4, .2, L.wall||'#E4F1FF', .03), 0, 1.7, -4.8), at(box(.2, 3.4, 9.4, L.wall2||L.wall||'#E4F1FF', .03), -6.3, 1.7, 0));
+    g.add(at(box(12.4, .18, .06, '#FFFFFF', .02), 0, .09, -4.68), at(box(.06, .18, 9.4, '#FFFFFF', .02), -6.18, .09, 0));
+  }
+  if(p==='grass'){
+    g.add(at(cyl(10, 10.2, .3, L.ground||'#A8DE94', 48), 0, -.15, 0));
+    for(let i=0;i<14;i++){ const a = i/14*Math.PI*2, r = 9 + (i%3)*.3; if(Math.sin(a) > .35) continue;
+      g.add(at(cyl(.12, .16, .8, '#9C6B45', 8), r*Math.cos(a), .4, r*Math.sin(a)), at(sph(.8+(i%2)*.2, i%2 ? '#7FCB8A' : '#8ED99A'), r*Math.cos(a), 1.3, r*Math.sin(a))); }
+  }
+  if(p==='sand'){
+    g.add(at(box(14, .3, 9, '#F6E1B0', .1), 0, -.15, .8));
+    const sea = at(box(40, .2, 20, '#7FD3F5', .05), 0, -.25, -13.6); g.add(sea);
+    G.sea = [];
+    for(let i=0;i<5;i++){ const w = at(box(3+i%3, .04, .15, '#FFFFFF', .02), -8+i*4, -.08, -3.9-i%2*.4); w.userData = { y:-.08, p:i }; g.add(w); G.sea.push(w); }
+  }
+  if(p==='deck'){
+    g.add(at(box(40, .2, 40, '#7FD3F5', .05), 0, -1.2, 0));
+    g.add(at(box(12.4, .3, 9.4, '#C98D55', .05), 0, -.15, 0));
+    for(let i=-4;i<=4;i++) g.add(at(box(12.3, .01, .03, '#A8743F', .005), 0, .005, i));
+    [[0,-4.7,12.4,.2],[0,4.7,12.4,.2],[-6.2,0,.2,9.4],[6.2,0,.2,9.4]].forEach(([x,z,w,d]) => g.add(at(box(w, .6, d, '#9C6B45', .04), x, .3, z)));
+  }
+  g.traverse(m => { if(m.isMesh){ m.receiveShadow = true; } });
+  return g;
+}
+
+/* ---------------- ด่าน ---------------- */
+let R = null;   /* สถานะด่านปัจจุบัน */
+const STEP_ICON = ['📜','🗝️','💰'];
+function openPlay(){
+  $('#home').hidden = true; $('#play').hidden = false; window.scrollTo(0, 0);
+  $('#back').href = '#'; $('#back').textContent = '‹ แผนที่'; $('#back').onclick = e => { e.preventDefault(); showHome(); };
+  initStage(); S.resume();
+  startLevel(LEVELS.find(l => l.id===SAVE.route[SAVE.pos]));
+}
+function startLevel(L){
+  history.replaceState(null, '', '#'+L.id);
+  if(world) S.scene.remove(world);
+  world = new THREE.Group(); G = {}; S.scene.add(world);
+  world.add(buildPlace(L));
+  const spots = [];
+  L.props.forEach(p => {
+    const make = MODELS[p.m]; if(!make){ console.warn('ไม่มีโมเดล', p.m); return; }
+    const o = make(p), holder = new THREE.Group();
+    holder.add(o.g); holder.position.set(p.at[0], p.y||0, p.at[1]); holder.rotation.y = (p.rot||0)*Math.PI/180; if(p.s) holder.scale.setScalar(p.s);
+    o.g.traverse(m => { if(m.isMesh){ m.castShadow = true; m.receiveShadow = true; } });
+    world.add(holder);
+    if(p.name){
+      const spot = { p, o, holder, busy:false };
+      holder.userData.pick = spot;
+      spot.tag = at(label(p.name, { height:.36, bg:'#FFFFFF' }), 0, (o.top||1)+.15, 0); spot.tag.visible = !!SAVE.tags; holder.add(spot.tag);
+      spots.push(spot);
+    }
+  });
+  const chain = shuffle(spots).slice(0, 3);
+  R = { L, spots, chain, step:0, wrong:0, hint:false, done:false, busy:false };
+  S.setView(VIEW.cam, VIEW.target, 10);
+  $('#lvname').textContent = L.e+' ด่านที่ '+(SAVE.pos+1)+' · '+L.name;
+  $('#title').textContent = L.e+' '+L.name;
+  $('#done').innerHTML = '';
+  drawSide();
+  sfx('pop');
+}
+function clueOf(spot){ return SAVE.role==='kid' || SAVE.level==='easy' ? spot.p.easy : spot.p.hard; }
+function drawSide(){
+  $('#steps3').innerHTML = STEP_ICON.map((e,i) => '<span class="'+(i<R.step?'got':i===R.step && !R.done?'cur':'')+'">'+e+'</span>').join('<i>→</i>');
+  const clue = $('#clue');
+  if(R.done){ clue.innerHTML = '<h3>🎉 เจอขุมทรัพย์แล้ว!</h3>'; $('#msg').textContent = 'เก่งมาก ช่วยกันหาจนเจอ'; return; }
+  const text = clueOf(R.chain[R.step]), what = STEP_ICON[R.step]+' '+['จดหมายลับ','กุญแจ','ขุมทรัพย์'][R.step];
+  if(SAVE.role==='parent'){
+    clue.innerHTML = '<h3>🤫 คำใบ้ลับ หา '+what+'</h3><div class="who">สำหรับผู้ปกครอง · อย่าให้นักสำรวจเห็นนะ</div><button type="button" class="hold" id="hold">👆 กดค้างไว้เพื่ออ่านคำใบ้</button>'+
+      '<div class="row" style="justify-content:center"><button type="button" class="btn" id="sayClue">🔊 ให้เครื่องอ่าน (ทุกคนได้ยิน)</button></div>';
+    const h = $('#hold'), show = e => { e.preventDefault(); h.classList.add('show'); h.textContent = text; }, hide = () => { h.classList.remove('show'); h.textContent = '👆 กดค้างไว้เพื่ออ่านคำใบ้'; };
+    h.addEventListener('pointerdown', show); ['pointerup','pointerleave','pointercancel'].forEach(ev => h.addEventListener(ev, hide));
+    h.addEventListener('contextmenu', e => e.preventDefault());
+    $('#msg').textContent = R.step===0 ? '🧑 ผู้ปกครองอ่านคำใบ้ แล้วบอกนักสำรวจ · 🔍 นักสำรวจแตะของในห้องเพื่อค้นหา' : '👏 เจอแล้ว! ผู้ปกครองอ่านคำใบ้ต่อไปได้เลย';
+  } else {
+    clue.innerHTML = '<h3>📖 คำใบ้ หา '+what+'</h3><div class="who">นักอ่านตัวน้อย อ่านให้ผู้ปกครองฟังนะ</div><div class="cluetext">'+text+'</div>'+
+      '<div class="row" style="justify-content:center"><button type="button" class="btn" id="sayClue">🔊 ฟังคำใบ้</button></div>';
+    $('#msg').textContent = R.step===0 ? '🧒 อ่านคำใบ้ให้ผู้ปกครองฟัง · 🔍 ผู้ปกครองแตะของในห้องเพื่อค้นหา' : '👏 เจอแล้ว! อ่านคำใบ้ต่อไปได้เลย';
+  }
+  $('#sayClue').onclick = () => speak(text);
+}
+async function onTap(x, y){
+  if(!R || R.done || R.busy) return;
+  const hit = S.pick(x, y, world.children); if(!hit) return;
+  const spot = hit.obj.userData.pick; if(!spot || !spot.o.open) return;
+  R.busy = true;
+  const target = R.chain[R.step];
+  sfx('tap');
+  await spot.o.open();
+  const local = spot.o.reveal.clone(), world0 = spot.holder.localToWorld(local.clone());
+  if(spot===target){
+    clearHint();
+    const icon = STEP_ICON[R.step];
+    let from = world0.clone();
+    if(spot.o.drop){ const s = sprite(icon, { size:.9 }); s.position.copy(from); world.add(s); const ground = spot.holder.localToWorld(new THREE.Vector3(0, .5, 1.1)); await tween(s.position, { x:ground.x, y:ground.y, z:ground.z }, 450, ease.bounce); from = ground; world.remove(s); }
+    await reveal(icon, from, true);
+    R.step++;
+    if(R.step >= 3){ await finishLevel(spot); }
+    else { sfx('ok'); drawSide(); }
+    await wait(300); await spot.o.close();
+  } else {
+    R.wrong++;
+    const done = R.chain.slice(0, R.step).includes(spot);
+    await reveal(done ? '✅' : EMPTY_FINDS[Math.floor(Math.random()*EMPTY_FINDS.length)], world0, false);
+    $('#msg').textContent = done ? '✅ ตรงนี้เจอของไปแล้ว ลองที่อื่นนะ' : '🤔 '+spot.p.name+' ไม่มี '+STEP_ICON[R.step]+' ลองฟังคำใบ้อีกครั้งนะ';
+    await spot.o.close();
+  }
+  R.busy = false;
+}
+async function reveal(icon, pos, good){
+  const s = sprite(icon, { size:good ? 1.1 : .7 }); s.position.copy(pos); s.scale.set(.1, .1, 1); world.add(s);
+  if(good){ sfx('ding'); await tween(s.scale, { x:1.3, y:1.3 }, 300, ease.back); await tween(s.position, { y:pos.y+1.4 }, 500, ease.out); await wait(400); }
+  else { sfx('no'); await tween(s.scale, { x:.8, y:.8 }, 250, ease.back); await tween(s.position, { y:pos.y+.5 }, 350); await wait(350); }
+  world.remove(s);
+}
+function clearHint(){ if(G.hint){ world.remove(G.hint); G.hint = null; } }
+$('#hintBtn').onclick = () => {
+  if(!R || R.done) return;
+  const spot = R.chain[R.step]; clearHint();
+  G.hint = glow('#FFE27A', 1); G.hint.position.copy(spot.holder.localToWorld(new THREE.Vector3(0, (spot.o.top||1)*.6, 0))); world.add(G.hint);
+  R.hint = true; sfx('ding'); $('#msg').textContent = '💡 ดูแสงวิบวับในห้อง ของอยู่แถว ๆ นั้น';
+};
+$('#tagBtn').onclick = () => { SAVE.tags = !SAVE.tags; persist(); if(R) R.spots.forEach(s => s.tag.visible = SAVE.tags); $('#tagBtn').classList.toggle('go', !!SAVE.tags); sfx('tap'); };
+$('#tagBtn').classList.toggle('go', !!SAVE.tags);
+$('#restartBtn').onclick = () => { if(R) startLevel(R.L); };
+
+async function finishLevel(spot){
+  R.done = true; drawSide();
+  const pos = spot.holder.localToWorld(spot.o.reveal.clone());
+  /* หีบสมบัติโผล่ขึ้นมา */
+  const chest = new THREE.Group(), lid = new THREE.Group();
+  chest.add(at(box(1.1, .6, .75, '#C98D55', .06), 0, .3, 0), at(box(1.14, .1, .79, '#F2C94C', .02), 0, .45, 0));
+  lid.position.set(0, .6, -.375); lid.add(at(box(1.1, .26, .75, '#B97A45', .08), 0, .13, .375), at(box(.16, .2, .06, '#F2C94C', .02), 0, 0, .76)); chest.add(lid);
+  const ground = spot.holder.localToWorld(new THREE.Vector3(0, 0, 1.2)); chest.position.set(ground.x, 0, ground.z); chest.lookAt(S.camera.position.x, 0, S.camera.position.z);
+  chest.scale.setScalar(.1); world.add(chest);
+  await tween(chest.scale, { x:1, y:1, z:1 }, 450, ease.back);
+  sfx('win'); await tween(lid.rotation, { x:-1.9 }, 600, ease.back);
+  const shine = glow('#FFE27A', 1); shine.position.set(ground.x, .9, ground.z); shine.scale.set(.1, .1, 1); world.add(shine); tween(shine.scale, { x:3.2, y:3.2 }, 600, ease.back);
+  ['💰','💎','👑','🪙','⭐'].forEach((e, i) => { const s = sprite(e, { size:.6 }); s.position.set(ground.x, .8, ground.z); world.add(s); tween(s.position, { x:ground.x+(i-2)*.55, y:2.1+(i%2)*.3 }, 700+i*80, ease.back); });
+  const stars = R.wrong <= 2 && !R.hint ? 3 : R.wrong <= 5 ? 2 : 1;
+  const L = R.L;
+  SAVE.stars[L.id] = Math.max(SAVE.stars[L.id]||0, stars);
+  const last = SAVE.pos >= SAVE.route.length-1;
+  if(!last) SAVE.pos++;
+  persist();
+  if(window.KP) KP.log({ kind:'game', page:'treasure', item:'treasure-'+L.id, title:'ล่าขุมทรัพย์ · '+L.name, stars, mistakes:R.wrong });
+  const allDone = LEVELS.every(l => SAVE.stars[l.id]);
+  $('#done').innerHTML = '<div class="done"><div class="big">🎉💰🎉</div><div class="stars">'+starTxt(stars)+'</div><p><b>เจอขุมทรัพย์'+L.name+'แล้ว!</b><br>แตะผิด '+R.wrong+' ครั้ง'+(R.hint ? ' · ใช้ใบ้เพิ่ม' : '')+'</p>'+
+    (last ? '<p>🏆 '+(allDone ? 'ล่าสมบัติครบทุกด่านแล้ว สุดยอดทีม!' : 'จบเส้นทางแล้ว ลองกลับไปเก็บดาวด่านที่ยังไม่ผ่านนะ')+'</p><button type="button" class="btn go" id="newRoute">🔀 เริ่มเส้นทางใหม่ (สุ่มลำดับ)</button>'
+      : '<button type="button" class="btn go" id="nextLv">ด่านต่อไป ▶</button>')+
+    '<button type="button" class="btn" id="againLv">↺ เล่นด่านนี้อีกครั้ง (ที่ซ่อนใหม่)</button><button type="button" class="btn" id="toMap">🧭 แผนที่</button></div>';
+  if($('#nextLv')) $('#nextLv').onclick = () => startLevel(LEVELS.find(l => l.id===SAVE.route[SAVE.pos]));
+  if($('#newRoute')) $('#newRoute').onclick = () => { ensureRoute(true); startLevel(LEVELS.find(l => l.id===SAVE.route[0])); };
+  $('#againLv').onclick = () => { if(!last) SAVE.pos--; persist(); startLevel(L); };
+  $('#toMap').onclick = showHome;
+  speak('เจอขุมทรัพย์แล้ว เก่งมาก');
+  if(window.innerWidth <= 980) setTimeout(() => $('#done').scrollIntoView({ behavior:'smooth', block:'center' }), 1200);
+}
+
+/* เปิดด่านจากลิงก์ #id ได้ */
+const h = decodeURIComponent((location.hash||'').slice(1));
+if(h && LEVELS.some(l => l.id===h)){ SAVE.pos = SAVE.route.indexOf(h); openPlay(); } else showHome();
+window.__test = { get R(){ return R; }, get S(){ return S; }, onTap, LEVELS, MODELS, startLevel, showHome, openPlay };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>
