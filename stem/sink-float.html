@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>จมหรือลอย 3 มิติ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stem.css">
+<style>
+.trayov{position:absolute;left:8px;right:8px;bottom:8px;display:flex;gap:8px;overflow-x:auto;padding:6px;background:rgba(255,255,255,.78);border-radius:22px;scrollbar-width:none;backdrop-filter:blur(6px)}
+.trayov::-webkit-scrollbar{display:none}
+.trayov:empty{display:none}
+.trayov .part{flex:none;width:86px;background:#fff;padding:4px 2px 6px}
+.trayov .part img{width:58px;height:58px;display:block;margin:0 auto;pointer-events:none}
+.trayov .part b{font-size:.76rem}
+.trayov .part small{font-size:.68rem}
+.trayov .part[disabled]{cursor:default}
+.hud .now{background:#fff;border-radius:16px;padding:5px 12px;font-weight:700;font-size:.9rem;box-shadow:0 3px 10px rgba(58,51,80,.12);max-width:70%}
+.acts{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center;background:rgba(255,255,255,.94);border-radius:24px;padding:8px 10px;box-shadow:0 8px 24px rgba(58,51,80,.18);width:max-content;max-width:calc(100% - 20px);z-index:5}
+.acts:empty{display:none}
+.acts .q{font-weight:700;padding:0 4px;text-align:center;width:100%}
+.big{border-radius:18px;padding:9px 18px;font-weight:700;font-size:1.05rem}
+.big.sink{background:#DCEBFF;color:#2560B8}
+.big.float{background:#FFF1C9;color:#8A6100}
+.big.act{background:#E6F8EC;color:#23843B}
+.big.soft{background:#F4F0FA;color:#5E3FB8}
+.log{display:grid;gap:5px;margin-top:8px}
+.log:empty{display:none}
+.log div{background:#FBF8F2;border-radius:12px;padding:5px 10px;font-size:.88rem;font-weight:600}
+.log div.ok{background:var(--okbg)}
+.log div.no{background:var(--nobg)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="in"><a class="pill" href="../#STEM">‹ หน้ารวม</a><div class="tt">⛵ จมหรือลอย 3 มิติ</div><button class="pill" id="mute" type="button">🔊</button></div>
+  <div class="levels" id="levels"></div>
+</div>
+
+<section id="quiz"></section>
+<div class="lab">
+  <div class="stage" id="stage">
+    <div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
+    <div class="hud"><span class="now" id="now"></span><span class="sp"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
+    <div class="trayov" id="parts"></div>
+    <div class="acts" id="acts"></div>
+  </div>
+  <div class="panel">
+    <div class="card goal">
+      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
+      <p id="gtext"></p>
+      <ul class="steps" id="steps"></ul>
+      <div class="log" id="log"></div>
+      <div id="ask"></div>
+      <div class="result" id="result"></div>
+      <div class="row"><button class="btn" type="button" id="reset">↺ เริ่มด่านใหม่</button><button class="btn go" type="button" id="next" hidden>ด่านต่อไป ▶</button></div>
+    </div>
+    <div class="know" id="know"></div>
+    <div class="card goal"><p class="sub">👆 แตะของในกล่อง → ทายว่า จม หรือ ลอย → ดูผลจริงในตู้ · ลากนิ้วบนฉากเพื่อหมุนดู หยิกนิ้วเพื่อซูม</p></div>
+    <div class="safety">⚠️ เล่นน้ำต้องมีผู้ใหญ่ดูแลเสมอ · ทดลองจริงใช้กะละมังหรืออ่างน้ำตื้น ๆ ในบ้านได้เลย</div>
+  </div>
+</div>
+
+<script>setTimeout(() => { if(!window.__stemReady){ const l = document.getElementById('loading'); if(l) l.textContent = 'โหลดฉาก 3 มิติไม่ได้ 😢 ต้องต่ออินเทอร์เน็ต แล้วลองโหลดหน้าใหม่อีกครั้ง'; } }, 12000);</script>
+<script type="importmap">{ "imports": { "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+<script type="module">
+import { THREE, $, R, shuffle, store, setupMute, sfx, speak, stage, mat, box, cyl, sph, at, rot, tween, ease, levelBar, pop, quiz, makeThumbs, wait } from './stem3d.js';
+
+const st = store('kids-stem-sink');
+setupMute($('#mute'));
+const S = stage($('#stage'), { cam:[0, 4.3, 10.8], target:[0, .95, 0], minDist:6, maxDist:16, minPolar:.45, maxPolar:1.52, shadow:6 });
+$('#loading').remove();
+$('#home').onclick = () => S.resetView();
+
+/* ---------------- ตู้ปลา ---------------- */
+const TW = 5.2, TD = 2.8, TH = 3.1, WY = 2.3, FLOOR = .2, HANGY = 3.65;
+S.scene.add(at(box(14, .5, 8, '#EED9B8', .2), 0, -.25, 0));
+S.scene.add(at(box(TW-.1, .2, TD-.1, '#F3E3C0', .05), 0, .1, 0));
+const glassMat = new THREE.MeshStandardMaterial({ color:'#E8F7FF', transparent:true, opacity:.16, roughness:.05, depthWrite:false, side:THREE.DoubleSide });
+[[TW, TH, .06, 0, TH/2, -TD/2], [TW, TH, .06, 0, TH/2, TD/2], [.06, TH, TD, -TW/2, TH/2, 0], [.06, TH, TD, TW/2, TH/2, 0]].forEach(([w,h,d,x,y,z]) => {
+  const m = at(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), glassMat), x, y, z); m.renderOrder = 4; S.scene.add(m);
+});
+[[TW+.08, .1, .12, 0, TH, -TD/2], [TW+.08, .1, .12, 0, TH, TD/2], [.12, .1, TD, -TW/2, TH, 0], [.12, .1, TD, TW/2, TH, 0]].forEach(([w,h,d,x,y,z]) => { const r = at(box(w, h, d, '#9FD8F5', .03), x, y, z); r.castShadow = false; S.scene.add(r); });
+const WATER0 = new THREE.Color('#3FA9E6'), SALTY = new THREE.Color('#A9CFE0');
+const waterMat = new THREE.MeshStandardMaterial({ color:WATER0.clone(), transparent:true, opacity:.34, roughness:.2, depthWrite:false });
+const water = at(new THREE.Mesh(new THREE.BoxGeometry(TW-.12, WY-FLOOR, TD-.12), waterMat), 0, (WY+FLOOR)/2, 0); water.renderOrder = 2; S.scene.add(water);
+const surfMat = new THREE.MeshStandardMaterial({ color:'#9ED8F7', transparent:true, opacity:.4, roughness:.1, depthWrite:false, side:THREE.DoubleSide });
+const surf = at(rot(new THREE.Mesh(new THREE.PlaneGeometry(TW-.12, TD-.12), surfMat), -Math.PI/2), 0, WY, 0); surf.renderOrder = 3; S.scene.add(surf);
+/* ของตกแต่ง: หินกรวดกับต้นไม้น้ำ */
+[[-2.2,-1,'#C9B8A6'],[2.1,-1.1,'#B8C4C9'],[-1.4,1.05,'#D8C3B0'],[1.5,1.1,'#C4B6D0']].forEach(([x,z,c]) => S.scene.add(at(rot(sph(.12, c), 0, 0, 0), x, .25, z)));
+[[-2.25,-.95],[2.2,-.95]].forEach(([x,z]) => { for(let i=0;i<3;i++) S.scene.add(at(rot(cyl(.03, .05, .9+i*.2, '#7FD18B', 8), 0, 0, (i-1)*.25), x+(i-1)*.08, .6+i*.1, z)); });
+
+/* ---------------- ของที่ใช้ทดลอง ---------------- */
+const METAL = c => mat(c, { metalness:.75, roughness:.3 });
+function stripes(){ const c = document.createElement('canvas'); c.width = 256; c.height = 64; const g = c.getContext('2d'); ['#FF6B6B','#FFFFFF','#4DABF7','#FFFFFF','#FFD43B','#FFFFFF'].forEach((col,i) => { g.fillStyle = col; g.fillRect(i*256/6, 0, 256/6+1, 64); }); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
+const OBJ = {
+  rock:     { name:'ก้อนหิน',  r:2.6, h:.46, why:'หินเนื้อแน่นมาก หนักเมื่อเทียบกับขนาด',
+    build:() => { const m = new THREE.Mesh(new THREE.DodecahedronGeometry(.3, 0), mat('#9A9AA5', { flatShading:true })); m.scale.set(1.15, .77, 1); m.castShadow = true; return m; } },
+  pingpong: { name:'ลูกปิงปอง', r:.08, h:.4, why:'ข้างในลูกปิงปองมีแต่อากาศ เบามาก', build:() => sph(.2, '#FFA94D') },
+  spoon:    { name:'ช้อนเหล็ก', r:7.8, h:.12, why:'เหล็กเนื้อแน่น',
+    build:() => { const g = new THREE.Group(), b = new THREE.Mesh(new THREE.SphereGeometry(.18, 20, 12), METAL('#CDD3DD')); b.scale.set(1.3, .3, .9); g.add(at(b, -.32, 0, 0), at(box(.7, .04, .09, METAL('#CDD3DD'), .02), .18, 0, 0)); return g; } },
+  leaf:     { name:'ใบไม้', r:.6, h:.05, why:'ใบไม้บางและเบา',
+    build:() => { const s = new THREE.Shape(); s.moveTo(-.4,0); s.quadraticCurveTo(0,.3,.4,0); s.quadraticCurveTo(0,-.3,-.4,0);
+      const m = new THREE.Mesh(new THREE.ShapeGeometry(s, 12), mat('#6BCB77', { side:THREE.DoubleSide })); m.rotation.x = -Math.PI/2; m.castShadow = true;
+      return new THREE.Group().add(m, at(box(.8, .02, .025, '#3E9B4F', .005), 0, .01, 0)); } },
+  coin:     { name:'เหรียญ', r:8.5, h:.05, why:'เหรียญเล็กก็จริง แต่เป็นโลหะเนื้อแน่น', build:() => cyl(.22, .22, .05, METAL('#E5B84A')) },
+  apple:    { name:'แอปเปิ้ล', r:.8, h:.58, why:'ในเนื้อแอปเปิ้ลมีอากาศแทรกอยู่',
+    build:() => { const g = new THREE.Group(), a = sph(.3, '#F25C54'); a.scale.y = .95; g.add(a, at(cyl(.02, .02, .16, '#7A5230', 6), 0, .3, 0), at(rot(box(.14, .02, .07, '#6BCB77', .01), 0, 0, .5), .08, .34, 0)); return g; } },
+  bottle:   { name:'ขวดพลาสติกเปล่า', r:.1, h:.4, why:'ในขวดปิดฝามีอากาศเต็มขวด',
+    build:() => { const g = new THREE.Group(), glassy = mat('#CFEAFF', { transparent:true, opacity:.65, roughness:.15 });
+      g.add(cyl(.2, .2, .6, glassy), at(cyl(.08, .19, .16, glassy), 0, .38, 0), at(cyl(.09, .09, .1, '#4C86E8'), 0, .5, 0)); g.rotation.z = Math.PI/2; return new THREE.Group().add(g); } },
+  key:      { name:'ลูกกุญแจ', r:8, h:.07, why:'กุญแจเป็นโลหะเนื้อแน่น',
+    build:() => { const g = new THREE.Group(), M = METAL('#E5B84A'); g.add(at(rot(new THREE.Mesh(new THREE.TorusGeometry(.1, .035, 10, 24), M), Math.PI/2), -.24, 0, 0), at(box(.42, .05, .07, M, .02), .1, 0, 0), at(box(.06, .05, .1, M, .01), .22, 0, .07), at(box(.05, .05, .08, M, .01), .12, 0, .06)); g.children.forEach(m => m.castShadow = true); return g; } },
+  log:      { name:'ท่อนไม้ใหญ่', r:.6, h:.72, why:'เนื้อไม้มีอากาศแทรกอยู่ แม้ท่อนใหญ่ก็ลอย',
+    build:() => { const g = new THREE.Group(); g.add(rot(cyl(.36, .36, 1.4, '#B07A4A'), Math.PI/2), at(rot(cyl(.33, .33, .02, '#E3B98A'), Math.PI/2), 0, 0, .71), at(rot(cyl(.33, .33, .02, '#E3B98A'), Math.PI/2), 0, 0, -.71)); return g; } },
+  nail:     { name:'ตะปูตัวเล็ก', r:7.8, h:.12, why:'ตะปูเล็กนิดเดียว แต่เป็นเหล็กเนื้อแน่น',
+    build:() => new THREE.Group().add(rot(cyl(.03, .01, .5, METAL('#9AA0AA'), 10), 0, 0, Math.PI/2), at(rot(cyl(.07, .07, .03, METAL('#9AA0AA'), 16), 0, 0, Math.PI/2), -.26, 0, 0)) },
+  beachball:{ name:'ลูกบอลชายหาด', r:.03, h:.9, why:'ลูกบอลใหญ่ แต่ข้างในเป็นอากาศ', build:() => sph(.45, new THREE.MeshStandardMaterial({ map:stripes(), roughness:.45 })) },
+  marble:   { name:'ลูกแก้ว', r:2.5, h:.22, why:'ลูกแก้วเล็ก แต่แก้วเนื้อแน่น', build:() => sph(.11, mat('#74C0FC', { roughness:.05, transparent:true, opacity:.9 })) },
+  clay:     { name:'ดินน้ำมันก้อนกลม', r:1.8, h:.52, why:'ดินน้ำมันเนื้อแน่น ปั้นกลมแล้วจม', build:() => { const m = sph(.27, '#FF8FB1'); m.scale.y = .95; return m; } },
+  boat:     { name:'เรือดินน้ำมัน', r:.3, h:.36, why:'ปั้นเป็นเรือแล้ว มีอากาศในเรือ น้ำดันให้ลอย',
+    build:() => { const g = new THREE.Group(), M = mat('#FF8FB1', { side:THREE.DoubleSide });
+      const bowl = new THREE.Mesh(new THREE.SphereGeometry(.6, 32, 12, 0, Math.PI*2, Math.PI/2, Math.PI/2), M); bowl.scale.set(1.3, .6, .8); bowl.castShadow = true;
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(.6, .035, 8, 40), M); rim.rotation.x = Math.PI/2; rim.scale.set(1.3, .8, 1);
+      g.add(at(bowl, 0, .18, 0), at(rim, 0, .18, 0)); return g; } },
+  egg:      { name:'ไข่ไก่', r:1.06, h:.4, why:'ไข่หนักกว่าน้ำเปล่านิดหน่อย จึงจม',
+    build:() => { const m = sph(.2, '#FFF1D6'); m.scale.set(1.3, 1, 1); return m; } },
+};
+const THUMBS = makeThumbs(Object.fromEntries(['rock','pingpong','spoon','leaf','coin','apple','bottle','key','log','nail','beachball','marble','clay','egg'].map(k => [k, OBJ[k].build])));
+
+/* ---------------- ฟิสิกส์แบบง่าย ---------------- */
+let salt = 0, bodies = [], fx = [], X = {}, L = null, busy = false, done = false;
+const waterD = () => 1 + salt*.013;
+const frac = b => b.kind==='boat' ? (X.marbles!==undefined ? .3 + X.marbles*.085 : .3) : b.r/waterD();
+const targetY = b => { const f = frac(b); return f >= 1 ? FLOOR + b.h/2 : WY + b.h*(.5 - f); };
+function spawn(kind, x, z){
+  const o = OBJ[kind], g = o.build(); g.traverse(m => { if(m.isMesh) m.castShadow = true; });
+  const b = { kind, r:o.r, h:o.h, x, z, y:HANGY, v:0, state:'hang', g, landed:false };
+  S.scene.add(g); g.position.set(x, HANGY+1.2, z); g.scale.setScalar(.3);
+  tween(g.scale, { x:1, y:1, z:1 }, 350, ease.back);
+  bodies.push(b); sfx('pop'); return b;
+}
+const dropGeo = new THREE.SphereGeometry(.05, 8, 6), dropMat = new THREE.MeshBasicMaterial({ color:'#FFFFFF', transparent:true, opacity:.9 });
+function splash(x, z, size){
+  sfx('splash');
+  for(let i=0;i<14+size*10;i++){ const a = Math.random()*Math.PI*2, s = .6 + Math.random()*1.4; const m = at(new THREE.Mesh(dropGeo, dropMat), x, WY, z); S.scene.add(m); fx.push({ m, vx:Math.cos(a)*s, vz:Math.sin(a)*s*.6, vy:1.5+Math.random()*2, life:.9, kind:'drop' }); }
+  const ring = at(rot(new THREE.Mesh(new THREE.TorusGeometry(.25, .025, 6, 32), new THREE.MeshBasicMaterial({ color:'#FFFFFF', transparent:true, opacity:.8 })), Math.PI/2), x, WY+.01, z);
+  S.scene.add(ring); fx.push({ m:ring, life:1, kind:'ring' });
+}
+function bubble(x, y, z){ const m = at(new THREE.Mesh(dropGeo, new THREE.MeshStandardMaterial({ color:'#FFFFFF', transparent:true, opacity:.55 })), x+(Math.random()-.5)*.2, y, z+(Math.random()-.5)*.2); m.scale.setScalar(.6+Math.random()); S.scene.add(m); fx.push({ m, kind:'bubble', life:9 }); if(R(3)===0) sfx('bubble'); }
+S.onFrame((dt, t) => {
+  surf.position.y = WY + Math.sin(t*1.3)*.008;
+  for(const b of bodies){
+    if(b.state==='anim'){ b.g.position.set(b.x, b.y, b.z); continue; }
+    if(b.state==='hang'){ b.y = HANGY + Math.sin(t*2)*.06; b.g.position.y += (b.y - b.g.position.y)*Math.min(1, dt*6); b.g.position.x = b.x; b.g.position.z = b.z; b.g.rotation.y += dt*.5; continue; }
+    if(b.state==='fall'){
+      b.v -= 9*dt; b.y += b.v*dt;
+      if(b.y - b.h/2 <= WY){ b.state = 'water'; b.v *= .3; b.enter = t; splash(b.x, b.z, b.h); }
+    } else if(b.state==='water'){
+      const T = targetY(b), f = frac(b);
+      if(f >= 1 && b.y > T + .001){
+        b.v += (-.95 - b.v)*3*dt; b.y = Math.max(T, b.y + b.v*dt);
+        if(Math.random() < dt*6) bubble(b.x, b.y, b.z);
+        if(b.y <= T){ b.v = 0; if(!b.landed){ b.landed = true; sfx('plop'); b.onSettle && b.onSettle(); } }
+      } else if(f < 1){
+        b.v += ((T - b.y)*10 - b.v*3.4)*dt; b.y += b.v*dt;
+        if(!b.landed && t - b.enter > 1.3 && Math.abs(T - b.y) < .04){ b.landed = true; b.onSettle && b.onSettle(); }
+      }
+    }
+    const bob = b.state==='water' && frac(b) < 1 ? Math.sin(t*1.7 + b.x*3)*.02 : 0;
+    b.g.position.set(b.x, b.y + bob, b.z);
+    if(b.state==='water' && frac(b) < 1){ b.g.rotation.z = Math.sin(t*1.3 + b.x)*.04; }
+  }
+  fx = fx.filter(p => {
+    p.life -= dt;
+    if(p.kind==='drop'){ p.vy -= 9*dt; p.m.position.x += p.vx*dt; p.m.position.y += p.vy*dt; p.m.position.z += p.vz*dt; if(p.m.position.y < WY) p.life = 0; }
+    if(p.kind==='ring'){ const s = 1 + (1-p.life)*4; p.m.scale.set(s, s, 1); p.m.material.opacity = Math.max(0, p.life*.8); }
+    if(p.kind==='bubble'){ p.m.position.y += dt*.9; p.m.position.x += Math.sin(t*8 + p.life)*dt*.1; if(p.m.position.y >= WY) p.life = 0; }
+    if(p.kind==='salt'){ p.m.position.y -= dt*2.2; if(p.m.position.y < WY){ p.life = 0; } }
+    if(p.life <= 0){ S.scene.remove(p.m); return false; }
+    return true;
+  });
+});
+
+/* ---------------- ด่าน ---------------- */
+const SL8 = [[-1.8,-.6],[-.6,-.6],[.6,-.6],[1.8,-.6],[-1.8,.6],[-.6,.6],[.6,.6],[1.8,.6]];
+const SL4 = [[-1.8,0],[-.6,0],[.6,0],[1.8,0]];
+const LEVELS = [
+  { id:'L1', name:'ทายก่อนทดลอง', title:'ด่าน 1 · ทายก่อนทดลอง', items:['rock','pingpong','spoon','leaf','coin','apple','bottle','key'], slots:SL8,
+    text:'แตะของในกล่องทีละชิ้น ทายว่าจะ จม หรือ ลอย แล้วดูผลจริงในตู้ ทดลองให้ครบทุกชิ้นนะ',
+    steps:[['ทดลองของให้ครบ 8 ชิ้น', X => X.n>=8, X => X.n+' / 8']], scored:true,
+    know:'<b>🔎 รู้ไหม</b> ของที่ <b>เนื้อแน่น หนักเมื่อเทียบกับขนาดของมัน</b> เช่น หิน เหล็ก เหรียญ จะ<b>จม</b> · ของที่ <b>เบา มีอากาศอยู่ข้างใน</b> เช่น ลูกปิงปอง ขวดเปล่าปิดฝา ใบไม้ จะ<b>ลอย</b> · การทายก่อนแล้วทดลองดูจริง คือวิธีคิดแบบนักวิทยาศาสตร์' },
+  { id:'L2', name:'ใหญ่หรือเล็ก?', title:'ด่าน 2 · ใหญ่จม เล็กลอย จริงไหม?', items:['log','nail','beachball','marble'], slots:SL4,
+    text:'หลายคนคิดว่า ของใหญ่ต้องจม ของเล็กต้องลอย จริงไหมนะ? ลองทายแล้วทดลองดู',
+    steps:[['ทดลองของให้ครบ 4 ชิ้น', X => X.n>=4, X => X.n+' / 4'], ['ตอบคำถามให้ถูก', X => X.asked]], scored:true,
+    ask:{ q:'ของใหญ่จะจมน้ำเสมอไหม?', opts:['🙅 ไม่ใช่ ของใหญ่บางอย่างก็ลอยได้', '✅ ใช่ ของใหญ่ต้องจมเสมอ'], need:X => X.n>=4 },
+    know:'<b>🔎 รู้ไหม</b> จมหรือลอย <b>ไม่ได้ขึ้นกับว่าของใหญ่หรือเล็ก</b> · ท่อนไม้ใหญ่ลอยได้ เพราะเนื้อไม้มีอากาศแทรกอยู่ · ตะปูเล็กนิดเดียวกลับจม เพราะเหล็กเนื้อแน่นมาก' },
+  { id:'L3', name:'ดินน้ำมันปั้นเรือ', title:'ด่าน 3 · ดินน้ำมันปั้นเรือ', items:['clay'], slots:[[0,0]],
+    text:'ดินน้ำมันก้อนกลมจมหรือลอย? ถ้าเอามาปั้นเป็นเรือล่ะ จะเป็นอย่างไร?',
+    steps:[['หย่อนดินน้ำมันก้อนกลมลงน้ำ', X => X.claySank], ['ปั้นดินน้ำมันเป็นเรือ', X => X.shaped], ['หย่อนเรือดินน้ำมันลงน้ำ', X => X.boatFloat], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'ดินน้ำมันก้อนเท่าเดิม ทำไมพอปั้นเป็นเรือแล้วลอยได้?', opts:['⛵ เพราะเปลี่ยนรูปร่างเป็นเรือ มีอากาศในเรือ', '🪶 เพราะดินน้ำมันเบาลง'], need:X => X.boatFloat },
+    know:'<b>🔎 รู้ไหม</b> ดินน้ำมันก้อนเท่าเดิม แต่พอปั้นเป็น<b>รูปเรือ</b> มันแผ่กว้าง มีอากาศอยู่ในเรือ และแหวกน้ำออกไปได้มาก น้ำจึง<b>ดันเรือให้ลอย</b> · เรือเหล็กลำใหญ่ก็ลอยได้เพราะรูปร่างแบบนี้' },
+  { id:'L4', name:'เรือบรรทุกของ', title:'ด่าน 4 · เรือบรรทุกของ', items:[], slots:[[0,0]],
+    text:'เรือดินน้ำมันลอยอยู่ ลองใส่ลูกแก้วลงในเรือทีละลูก แล้วสังเกตว่าเรือเปลี่ยนไปอย่างไร',
+    steps:[['ใส่ลูกแก้วลงในเรือ', X => X.marbles>=1], ['สังเกตเรือจมลึกลง (ใส่ให้ถึง 5 ลูก)', X => X.maxMarbles>=5], ['ใส่จนเรือจม', X => X.sankOnce], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'ทำไมเรือถึงจม?', opts:['🎒 ของในเรือหนักเกินไป น้ำไหลเข้าเรือ', '🌊 น้ำในตู้มีน้อยเกินไป'], need:X => X.sankOnce },
+    know:'<b>🔎 รู้ไหม</b> ยิ่งใส่ของ เรือยิ่ง<b>จมลึกลง</b> ถ้าใส่มากเกินไป ขอบเรือจะต่ำกว่าผิวน้ำ น้ำไหลเข้าเรือ เรือก็จม · เรือจริงจึงบอกไว้ว่าบรรทุกได้กี่คน ห้ามขึ้นเกินจำนวน' },
+  { id:'L5', name:'ไข่ลอยได้ไหม', title:'ด่าน 5 · ไข่ลอยได้ไหม', items:['egg'], slots:[[0,0]],
+    text:'หย่อนไข่ลงในน้ำเปล่าก่อน แล้วลองเติมเกลือทีละช้อน ดูว่าไข่จะเป็นอย่างไร',
+    steps:[['หย่อนไข่ลงในน้ำเปล่า', X => X.eggSank], ['เติมเกลือลงในน้ำ', X => salt>=1, () => salt+' ช้อน'], ['ทำให้ไข่ลอยขึ้นมา', X => X.eggFloat], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'ทำไมไข่ถึงลอยขึ้นมาได้?', opts:['🧂 น้ำเกลือดันของขึ้นได้แรงกว่าน้ำเปล่า', '🥚 ไข่เบาลงเพราะโดนเกลือ'], need:X => X.eggFloat },
+    know:'<b>🔎 รู้ไหม</b> น้ำเกลือ<b>ดันของขึ้นได้แรงกว่า</b>น้ำเปล่า ไข่ที่จมในน้ำเปล่า จึงลอยขึ้นในน้ำเกลือเข้ม ๆ · เราลอยตัวในทะเลได้ง่ายกว่าในสระว่ายน้ำ เพราะน้ำทะเลเค็ม' },
+];
+
+function openLevel(id){
+  if(id==='quiz'){ openQuiz(); return; }
+  document.body.classList.remove('quizmode');
+  L = LEVELS.find(x => x.id===id) || LEVELS[0];
+  try{ localStorage.setItem('kids-stem-sink-last', L.id); }catch(e){}
+  history.replaceState(null, '', '#'+L.id);
+  bodies.forEach(b => S.scene.remove(b.g)); bodies = [];
+  fx.forEach(p => S.scene.remove(p.m)); fx = [];
+  salt = 0; setWater(); busy = false; done = false;
+  X = { n:0, right:0, results:[], asked:false };
+  $('#ask').innerHTML = ''; delete $('#ask').dataset.shown; $('#acts').innerHTML = '';
+  $('#gtitle').textContent = L.title; $('#gtext').textContent = L.text;
+  $('#result').className = 'result'; $('#know').className = 'know'; $('#know').innerHTML = L.know; $('#next').hidden = true;
+  if(L.id==='L4') setupBoatLevel();
+  drawLevels(); drawTray(); drawSteps(); speak(L.text);
+}
+function setWater(){ waterMat.color.copy(WATER0).lerp(SALTY, Math.min(1, salt/7)); waterMat.opacity = .34 + Math.min(.2, salt*.025); }
+
+/* ---------------- ทาย → หย่อน → ดูผล ---------------- */
+function drawTray(){
+  const el = $('#parts');
+  el.innerHTML = L.items.map(k => {
+    const r = X.results.find(x => x.kind===k);
+    const note = !r ? 'ยังไม่ทดลอง' : (r.actual==='sink' ? '🔽 จม' : '🔼 ลอย')+(r.ok ? ' ✓' : '');
+    return '<button type="button" class="part'+(r ? (r.ok ? ' yes' : ' nope') : '')+'" data-k="'+k+'"'+(r?' disabled':'')+'><img src="'+THUMBS[k]+'" alt=""><b>'+OBJ[k].name+'</b><small>'+note+'</small></button>';
+  }).join('');
+  el.querySelectorAll('.part:not([disabled])').forEach(b => b.onclick = () => choose(b.dataset.k));
+}
+function choose(kind){
+  if(busy){ pop('รอให้ของชิ้นเดิมหยุดนิ่งก่อนนะ'); return; }
+  if(L.id==='L3' && X.results.length) return;
+  busy = true;
+  const [x, z] = L.slots[X.results.length % L.slots.length];
+  const b = spawn(kind, x, z);
+  askPredict(b);
+}
+function askPredict(b){
+  const name = OBJ[b.kind].name;
+  $('#parts').style.visibility = 'hidden';
+  $('#acts').innerHTML = '<div class="q">🤔 คิดว่า '+name+' จะจมหรือลอย?</div><button type="button" class="big sink" data-p="sink">🔽 จม</button><button type="button" class="big float" data-p="float">🔼 ลอย</button>';
+  speak('คิดว่า '+name+' จะจมหรือลอย');
+  $('#acts').querySelectorAll('button').forEach(btn => btn.onclick = () => { $('#acts').innerHTML = ''; drop(b, btn.dataset.p); });
+}
+function drop(b, pred){
+  b.state = 'fall'; b.v = 0; b.y = b.g.position.y; sfx('tap');
+  b.onSettle = () => {
+    const actual = frac(b) >= 1 ? 'sink' : 'float', ok = pred===actual, name = OBJ[b.kind].name;
+    const res = { kind:b.kind, pred, actual, ok }; X.results.push(res); X.n = X.results.length; if(ok) X.right++;
+    const word = actual==='sink' ? 'จม' : 'ลอย';
+    pop((ok ? '🎉 ทายถูก! ' : '💡 ')+name+' '+word+' · '+OBJ[b.kind].why, ok ? 'ok' : 'no');
+    speak((ok ? 'ทายถูก ' : '')+name+word+' เพราะ'+OBJ[b.kind].why);
+    sfx(ok ? 'ok' : 'tap');
+    if(b.kind==='clay'){ X.claySank = true; setTimeout(() => offerShape(b), 1200); }
+    else if(b.kind==='boat'){ X.boatFloat = actual==='float'; busy = false; }
+    else if(b.kind==='egg'){ X.eggSank = actual==='sink'; setTimeout(() => offerSalt(b), 1200); }
+    else busy = false;
+    $('#parts').style.visibility = '';
+    drawTray(); drawLog(); drawSteps();
+  };
+}
+function drawLog(){
+  if(!L.scored){ $('#log').innerHTML = ''; return; }
+  $('#log').innerHTML = X.results.map(r => '<div class="'+(r.ok?'ok':'no')+'">'+(r.ok?'✅':'🔁')+' '+OBJ[r.kind].name+' · ทาย: '+(r.pred==='sink'?'จม':'ลอย')+' · ผลจริง: <b>'+(r.actual==='sink'?'จม':'ลอย')+'</b></div>').join('');
+}
+
+/* ด่าน 3: เอาขึ้นมาปั้นเป็นเรือ */
+function offerShape(b){
+  $('#acts').innerHTML = '<button type="button" class="big act" id="shape">🤲 เอาขึ้นมาปั้นเป็นเรือ</button>';
+  speak('ลองเอาดินน้ำมันขึ้นมาปั้นเป็นเรือ');
+  $('#shape').onclick = async () => {
+    $('#acts').innerHTML = ''; b.state = 'anim'; sfx('take');
+    await tween(b, { y:HANGY }, 900, ease.inOut);
+    await tween(b.g.scale, { x:.2, y:.2, z:.2 }, 300);
+    S.scene.remove(b.g); b.g = OBJ.boat.build(); b.g.traverse(m => { if(m.isMesh) m.castShadow = true; }); b.g.scale.setScalar(.2); S.scene.add(b.g);
+    Object.assign(b, { kind:'boat', r:OBJ.boat.r, h:OBJ.boat.h, landed:false }); b.g.position.set(b.x, b.y, b.z);
+    sfx('pop'); await tween(b.g.scale, { x:1, y:1, z:1 }, 450, ease.back);
+    X.shaped = true; drawSteps(); b.state = 'hang';
+    askPredict(b);
+  };
+}
+/* ด่าน 4: เรือกับลูกแก้ว */
+let boat = null;
+function setupBoatLevel(){
+  X.marbles = 0; X.maxMarbles = 0; X.boatSank = false;
+  boat = spawn('boat', 0, 0); boat.state = 'water'; boat.y = targetY(boat); boat.enter = -9; boat.landed = true;
+  drawMarbleActs();
+}
+const MPOS = [[0,0],[.26,.12],[-.26,-.12],[.26,-.14],[-.26,.14],[0,.24],[0,-.24],[.5,0],[-.5,0],[.45,.2]];
+function drawMarbleActs(){
+  $('#acts').innerHTML = X.boatSank
+    ? '<button type="button" class="big soft" id="again">↺ เอาเรือขึ้นมาลองใหม่</button>'
+    : '<button type="button" class="big act" id="addm">🔵 ใส่ลูกแก้ว 1 ลูก</button><span class="q" style="width:auto">ในเรือมี '+X.marbles+' ลูก</span>';
+  if($('#addm')) $('#addm').onclick = addMarble;
+  if($('#again')) $('#again').onclick = () => { const keep = { maxMarbles:X.maxMarbles, asked:X.asked, sankOnce:X.sankOnce }; bodies.forEach(b => S.scene.remove(b.g)); bodies = []; setupBoatLevel(); Object.assign(X, keep); drawSteps(); };
+}
+async function addMarble(){
+  if(busy || X.boatSank) return; busy = true;
+  const [mx, mz] = MPOS[X.marbles % MPOS.length];
+  const m = OBJ.marble.build(); m.castShadow = true; boat.g.add(m); m.position.set(mx, 1.6, mz);
+  sfx('tap'); await tween(m.position, { y:.12 }, 420, ease.bounce); sfx('click');
+  X.marbles++; X.maxMarbles = Math.max(X.maxMarbles, X.marbles);
+  if(frac(boat) >= 1){
+    X.boatSank = true; X.sankOnce = true; boat.landed = false; boat.v = -.2;
+    boat.onSettle = () => { pop('💦 น้ำไหลเข้าเรือ เรือจมแล้ว! ใส่ลูกแก้วได้ '+(X.marbles-1)+' ลูก เรือยังลอย', 'no'); speak('เรือจมแล้ว ของในเรือหนักเกินไป'); drawSteps(); };
+    splash(boat.x, boat.z, .3); sfx('no');
+  } else if(X.marbles===5) pop('👀 สังเกตไหม เรือจมลึกลงกว่าตอนแรกแล้ว');
+  busy = false; drawMarbleActs(); drawSteps();
+}
+/* ด่าน 5: เติมเกลือ */
+function offerSalt(egg){
+  X.egg = egg;
+  const draw = () => {
+    $('#acts').innerHTML = '<button type="button" class="big act" id="salt">🧂 เติมเกลือ 1 ช้อน</button><span class="q" style="width:auto">เติมแล้ว '+salt+' ช้อน</span>';
+    $('#salt').onclick = async () => {
+      if(salt >= 9) { pop('เกลือเยอะมากแล้ว'); return; }
+      $('#salt').disabled = true;
+      const spoon = new THREE.Group(); spoon.add(at(box(.9, .05, .12, METAL('#CDD3DD'), .02), .45, 0, 0)); const bowl = new THREE.Mesh(new THREE.SphereGeometry(.18, 16, 10), METAL('#CDD3DD')); bowl.scale.set(1.2, .4, .9); spoon.add(bowl);
+      spoon.add(at(sph(.12, '#FFFFFF'), 0, .05, 0));
+      spoon.position.set(-1.2, 3.7, 0); S.scene.add(spoon);
+      await tween(spoon.rotation, { z:-.9 }, 350);
+      for(let i=0;i<24;i++){ const p = at(new THREE.Mesh(dropGeo, new THREE.MeshBasicMaterial({ color:'#FFFFFF' })), -1.2+(Math.random()-.5)*.3, 3.6-Math.random()*.4, (Math.random()-.5)*.3); p.scale.setScalar(.5); S.scene.add(p); fx.push({ m:p, kind:'salt', life:3 }); }
+      sfx('splash'); await wait(500); S.scene.remove(spoon);
+      salt++; setWater(); egg.landed = true; drawSteps();
+      if(frac(egg) < 1 && !X.eggFloat){
+        setTimeout(() => { X.eggFloat = true; pop('🥚 ไข่ลอยขึ้นมาแล้ว! น้ำเค็มพอแล้ว', 'ok'); speak('ไข่ลอยขึ้นมาแล้ว'); sfx('ok'); drawSteps(); }, 1800);
+      } else if(!X.eggFloat) pop('ไข่ยังจมอยู่ เติมอีกไหม?');
+      draw();
+    };
+  };
+  draw();
+}
+
+/* ---------------- เป้าหมาย / ขั้นตอน ---------------- */
+function drawSteps(){
+  const items = L.steps.map(([t, f, extra]) => ({ t:t+(extra && !f(X) ? ' ('+extra(X)+')' : ''), ok:!!f(X) }));
+  $('#steps').innerHTML = items.map(s => '<li class="'+(s.ok?'done':'')+'">'+s.t+'</li>').join('');
+  const nx = items.find(s => !s.ok);
+  $('#now').textContent = nx ? '👉 '+nx.t : '🎉 ผ่านด่านแล้ว!';
+  const A = L.ask, box = $('#ask');
+  if(A && A.need(X) && !box.dataset.shown){
+    box.dataset.shown = '1';
+    const order = shuffle([0,1]);
+    box.innerHTML = '<p style="margin-top:10px;font-weight:700">❓ '+A.q+'</p><div class="choice">'+order.map(i => '<button type="button" data-i="'+i+'">'+A.opts[i]+'</button>').join('')+'</div>';
+    setTimeout(() => speak(A.q), 2500);
+    box.querySelectorAll('.choice button').forEach(b => b.onclick = () => {
+      if(X.asked) return;
+      if(b.dataset.i==='0'){ b.className = 'right'; X.asked = true; sfx('ok'); drawSteps(); }
+      else { b.className = 'wrong'; sfx('no'); pop('ยังไม่ใช่ ลองคิดจากสิ่งที่เห็นในตู้อีกทีนะ', 'no'); setTimeout(() => { b.className = ''; }, 1200); }
+    });
+  }
+  if(!done && items.every(s => s.ok)) complete();
+}
+function complete(){
+  done = true;
+  let stars = 3;
+  if(L.scored){ const p = X.right/X.n; stars = p >= .75 ? 3 : p >= .5 ? 2 : 1; }
+  st.stars[L.id] = Math.max(st.stars[L.id]||0, stars); st.save();
+  $('#result').className = 'result ok';
+  $('#result').textContent = '🎉 ผ่านด่านแล้ว! ได้ '+'⭐'.repeat(stars)+(L.scored ? ' · ทายถูก '+X.right+' จาก '+X.n+' ชิ้น'+(stars<3 ? ' (ทายผิดไม่เป็นไร การทดลองทำให้เรารู้คำตอบจริง)' : '') : '');
+  $('#know').className = 'know on';
+  const idx = LEVELS.indexOf(L), nx = LEVELS[idx+1];
+  $('#next').hidden = false; $('#next').textContent = nx ? 'ด่านต่อไป: '+nx.name+' ▶' : 'ไปทำแบบทดสอบ 📝 ▶';
+  $('#next').onclick = () => openLevel(nx ? nx.id : 'quiz');
+  setTimeout(() => { sfx('win'); speak('ผ่านด่านแล้ว เก่งมาก '+$('#know').textContent); }, 1500);
+  if(window.KP) KP.log({ kind:'game', page:'stem-sink', item:'sink-'+L.id, title:'จมหรือลอย · '+L.name, stars, mistakes:L.scored ? X.n-X.right : 0 });
+  drawLevels();
+  if(window.innerWidth <= 980) setTimeout(() => $('#result').scrollIntoView({ behavior:'smooth', block:'center' }), 3000);
+}
+$('#gsay').onclick = () => speak(L.text);
+$('#reset').onclick = () => openLevel(L.id);
+
+/* ---------------- แบบทดสอบ ---------------- */
+const BANK = [
+  { q:'ก้อนหินใส่ลงน้ำ จะเป็นอย่างไร?', e:'🪨', opts:[['🔽','จม'],['🔼','ลอย'],['💨','ลอยขึ้นฟ้า']], why:'หินเนื้อแน่น หนักเมื่อเทียบกับขนาด จึงจม' },
+  { q:'ลูกปิงปองใส่ลงน้ำ จะเป็นอย่างไร?', e:'🏓', opts:[['🔼','ลอย'],['🔽','จม'],['💥','แตก']], why:'ข้างในลูกปิงปองมีอากาศ จึงลอย' },
+  { q:'ของชิ้นไหนลอยน้ำได้?', e:'🔼', opts:[['🍃','ใบไม้'],['🥄','ช้อนเหล็ก'],['🪙','เหรียญ'],['🔑','ลูกกุญแจ']], why:'ใบไม้บางและเบา จึงลอย ส่วนของโลหะจม' },
+  { q:'ของชิ้นไหนจมน้ำ?', e:'🔽', opts:[['🔩','ตะปูเหล็ก'],['🏐','ลูกบอลชายหาด'],['🍎','แอปเปิ้ล'],['🍃','ใบไม้']], why:'ตะปูเป็นเหล็กเนื้อแน่น จึงจม' },
+  { q:'ท่อนไม้ใหญ่ กับ ตะปูตัวเล็ก อันไหนลอยน้ำ?', e:'🪵', opts:[['🪵','ท่อนไม้ใหญ่'],['🔩','ตะปูตัวเล็ก'],['🙅','จมทั้งคู่']], why:'จมหรือลอยไม่ได้ขึ้นกับขนาด ไม้มีอากาศแทรกอยู่จึงลอย' },
+  { q:'ดินน้ำมันก้อนกลมจมน้ำ ทำอย่างไรให้ลอย?', e:'🟣', opts:[['⛵','ปั้นเป็นรูปเรือ'],['⚪','ปั้นให้กลมแน่นขึ้น'],['✂️','แบ่งเป็นก้อนกลมเล็ก ๆ']], why:'ปั้นเป็นเรือ มีอากาศในเรือ น้ำจึงดันให้ลอย' },
+  { q:'เรือเหล็กลำใหญ่ ลอยน้ำได้เพราะอะไร?', e:'🚢', opts:[['⛵','รูปร่างเป็นเรือ มีอากาศอยู่ข้างใน'],['🪶','เหล็กเบากว่าน้ำ'],['🌊','ทะเลลึกมาก']], why:'เหล็กเนื้อแน่นก็จริง แต่รูปร่างเรือที่มีอากาศข้างใน ทำให้น้ำดันเรือให้ลอย' },
+  { q:'ใส่ของลงในเรือมากเกินไป จะเกิดอะไรขึ้น?', e:'📦', opts:[['🔽','เรือจม'],['🔼','เรือลอยสูงขึ้น'],['😐','ไม่มีอะไรเปลี่ยน']], why:'ยิ่งใส่ของ เรือยิ่งจมลึก ถ้ามากเกินไปน้ำเข้าเรือ เรือจม' },
+  { q:'ไข่จมในน้ำเปล่า ถ้าเติมเกลือลงไปมาก ๆ ไข่จะเป็นอย่างไร?', e:'🥚', opts:[['🔼','ลอยขึ้นมา'],['🔽','จมเร็วขึ้น'],['💥','ไข่แตก']], why:'น้ำเกลือดันของขึ้นได้แรงกว่าน้ำเปล่า ไข่จึงลอยขึ้น' },
+  { q:'ทำไมเราลอยตัวในทะเลได้ง่ายกว่าในสระว่ายน้ำ?', e:'🏖️', opts:[['🧂','น้ำทะเลเค็ม มีเกลือ'],['❄️','น้ำทะเลเย็นกว่า'],['🐟','ในทะเลมีปลา']], why:'น้ำเค็มดันตัวเราขึ้นได้แรงกว่าน้ำจืด' },
+  { q:'เสื้อชูชีพช่วยให้เราลอยน้ำได้ เพราะอะไร?', e:'🦺', opts:[['🫧','ข้างในมีโฟมหรืออากาศ ที่เบามาก'],['🎨','มีสีสดใส'],['🧱','ข้างในมีหิน']], why:'โฟมและอากาศเบามาก ช่วยพยุงตัวให้ลอย (สีสดช่วยให้คนอื่นมองเห็นเรา)' },
+  { q:'ก่อนหย่อนของลงน้ำ นักวิทยาศาสตร์ทำอะไรก่อน?', e:'🔬', opts:[['🤔','ทายหรือคาดคะเนผลก่อน'],['🙈','ปิดตาไม่ดู'],['🏃','วิ่งหนี']], why:'ทายก่อนแล้วทดลองจริง เพื่อดูว่าที่คิดไว้ถูกไหม' },
+  { q:'เวลาเล่นน้ำ ควรทำอย่างไร?', e:'⚠️', opts:[['🧑‍🧒','มีผู้ใหญ่ดูแล และใส่เสื้อชูชีพ'],['🚶','ไปเล่นคนเดียว'],['🌊','ลงไปในที่น้ำลึก']], why:'น้ำอันตราย ต้องมีผู้ใหญ่ดูแลเสมอ' },
+];
+function openQuiz(){
+  document.body.classList.add('quizmode'); L = { id:'quiz' }; history.replaceState(null, '', '#quiz');
+  $('#acts').innerHTML = ''; drawLevels(); window.scrollTo(0, 0);
+  quiz($('#quiz'), { bank:BANK, count:8, page:'stem-sink-quiz', title:'จมหรือลอย', st, onDone:drawLevels });
+}
+function drawLevels(){ levelBar($('#levels'), LEVELS, { cur:L && L.id, stars:st.stars, quiz:true, onPick:id => { if(L && id===L.id && id!=='quiz') return; openLevel(id); } }); }
+
+let first = (location.hash||'').slice(1);
+if(!first){ try{ first = localStorage.getItem('kids-stem-sink-last') || 'L1'; }catch(e){ first = 'L1'; } }
+openLevel(first);
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if(id && (!L || id!==L.id)) openLevel(id); });
+window.__test = { S, openLevel, addMarble, get salt(){ return salt; }, choose, get bodies(){ return bodies; }, get X(){ return X; }, pick:p => { const b = $('#acts').querySelector('[data-p="'+p+'"]'); if(b) b.click(); }, act:id => $('#'+id) && $('#'+id).click() };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>

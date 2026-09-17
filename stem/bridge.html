@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>สร้างสะพาน 3 มิติ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stem.css">
+<style>
+.trayov{position:absolute;left:8px;right:8px;bottom:8px;display:flex;gap:8px;overflow-x:auto;padding:6px;background:rgba(255,255,255,.8);border-radius:22px;scrollbar-width:none;backdrop-filter:blur(6px);align-items:stretch}
+.trayov::-webkit-scrollbar{display:none}
+.trayov:empty{display:none}
+.trayov .grp{flex:none;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;font-size:.72rem;color:var(--mute);text-align:center;padding:0 2px}
+.trayov .part{flex:none;width:84px;background:#fff;padding:4px 2px 6px}
+.trayov .part img{width:56px;height:56px;display:block;margin:0 auto;pointer-events:none}
+.trayov .part .em{height:56px;display:grid;place-items:center;font-size:2rem}
+.trayov .part b{font-size:.76rem}
+.hud .now{background:#fff;border-radius:16px;padding:5px 12px;font-weight:700;font-size:.9rem;box-shadow:0 3px 10px rgba(58,51,80,.12);max-width:62%}
+.acts{position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center;background:rgba(255,255,255,.94);border-radius:22px;padding:6px 8px;box-shadow:0 8px 24px rgba(58,51,80,.15);width:max-content;max-width:calc(100% - 20px);z-index:5}
+.acts:empty{display:none}
+.acts .lbl{font-weight:700;font-size:.85rem;color:var(--mute);padding:0 2px}
+.big{border-radius:16px;padding:7px 14px;font-weight:700;font-size:1rem;background:#E6F8EC;color:#23843B}
+.big.b2{background:#DCEBFF;color:#2560B8}
+.big.b3{background:#FFF1C9;color:#8A6100}
+.big.soft{background:#F4F0FA;color:#5E3FB8}
+.big:disabled{opacity:.45}
+.big.passed::after{content:' ✓'}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="in"><a class="pill" href="../#STEM">‹ หน้ารวม</a><div class="tt">🌉 สร้างสะพาน 3 มิติ</div><button class="pill" id="mute" type="button">🔊</button></div>
+  <div class="levels" id="levels"></div>
+</div>
+
+<section id="quiz"></section>
+<div class="lab">
+  <div class="stage" id="stage">
+    <div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
+    <div class="hud"><span class="now" id="now"></span><span class="sp"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
+    <div class="acts" id="acts"></div>
+    <div class="trayov" id="parts"></div>
+  </div>
+  <div class="panel">
+    <div class="card goal">
+      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
+      <p id="gtext"></p>
+      <ul class="steps" id="steps"></ul>
+      <div id="ask"></div>
+      <div class="result" id="result"></div>
+      <div class="row"><button class="btn" type="button" id="reset">↺ เริ่มด่านใหม่</button><button class="btn go" type="button" id="next" hidden>ด่านต่อไป ▶</button></div>
+    </div>
+    <div class="know" id="know"></div>
+    <div class="card goal"><p class="sub">👇 แตะเลือกพื้นสะพานและโครงรองรับในกล่องด้านล่าง · 👆 แตะปุ่มรถด้านบนเพื่อทดสอบ · ลากนิ้วบนฉากเพื่อหมุนดู หยิกนิ้วเพื่อซูม</p></div>
+  </div>
+</div>
+
+<script>setTimeout(() => { if(!window.__stemReady){ const l = document.getElementById('loading'); if(l) l.textContent = 'โหลดฉาก 3 มิติไม่ได้ 😢 ต้องต่ออินเทอร์เน็ต แล้วลองโหลดหน้าใหม่อีกครั้ง'; } }, 12000);</script>
+<script type="importmap">{ "imports": { "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+<script type="module">
+import { THREE, $, shuffle, store, setupMute, sfx, speak, stage, mat, box, cyl, sph, at, rot, tween, ease, levelBar, pop, quiz, makeThumbs, wait } from './stem3d.js';
+
+const st = store('kids-stem-bridge');
+setupMute($('#mute'));
+const VIEW_BRIDGE = { cam:[2.6, 7.4, 16.5], target:[0, 1.0, 0] }, VIEW_LAB = { cam:[0, 3.4, 9], target:[0, 1.0, 0] };
+const S = stage($('#stage'), { cam:VIEW_BRIDGE.cam, target:VIEW_BRIDGE.target, minDist:5, maxDist:20, minPolar:.35, maxPolar:1.45, shadow:10 });
+$('#loading').remove();
+$('#home').onclick = () => S.resetView();
+
+/* ---------------- ฉากแม่น้ำ ---------------- */
+const TOP = 1.56, HALF = 3, world = new THREE.Group(), lab = new THREE.Group();
+S.scene.add(world, lab);
+[-1, 1].forEach(sd => {
+  world.add(at(box(6.5, 1.5, 12, '#D9B38C', .08), sd*(HALF+3.25), .75, 0));
+  world.add(at(box(6.5, .08, 12, '#A8DE94', .03), sd*(HALF+3.25), 1.5, 0));
+  world.add(at(box(6.5, .06, 1.7, '#8E8A99', .02), sd*(HALF+3.25), 1.53, 0));
+  for(let i=0;i<5;i++) world.add(at(box(.5, .01, .08, '#FFFFFF', .004), sd*(HALF+.8+i*1.2), 1.565, 0));
+  [[2.6,-3.5],[4.6,3.8],[5.6,-2.2],[2.2,4.2]].forEach(([dx,z]) => { const x = sd*(HALF+dx); world.add(at(cyl(.1, .14, .8, '#9C6B45', 8), x, 1.9, z), at(new THREE.Mesh(new THREE.ConeGeometry(.55, 1.2, 10), mat('#7FCB8A')), x, 2.8, z)); });
+});
+world.children.forEach(m => { if(m.isMesh){ m.castShadow = true; m.receiveShadow = true; } });
+world.add(at(box(6.2, .1, 12, '#CDB692', .02), 0, .05, 0));
+const riverMat = mat('#5BB8EC', { roughness:.25, transparent:true, opacity:.88 });
+const river = at(new THREE.Mesh(new THREE.BoxGeometry(6.02, .25, 12), riverMat), 0, .22, 0); river.receiveShadow = true; world.add(river);
+const WATER_Y = .35;
+
+/* ---------------- ชิ้นส่วนสะพาน ---------------- */
+const DECKS = { thin:{ name:'แผ่นไม้บาง', t:.12, s:1.5, c:'#E8BE86' }, thick:{ name:'แผ่นไม้หนา', t:.28, s:3, c:'#C98D55' } };
+const SUPPORTS = { none:{ name:'ไม่มีโครง', s:0 }, pillar:{ name:'เสากลางน้ำ', s:2.5 }, square:{ name:'โครงสี่เหลี่ยม', s:1 }, truss:{ name:'โครงสามเหลี่ยม', s:3.5 } };
+const VEH = { bike:{ name:'จักรยาน', e:'🚲', load:1, speed:2.4 }, car:{ name:'รถเก๋ง', e:'🚗', load:3, speed:2.2 }, truck:{ name:'รถบรรทุก', e:'🚚', load:5, speed:1.7 } };
+const WOOD = '#A87B55', PIN = '#FF8A7A';
+
+/* ไม้ท่อนหนึ่งระหว่างจุด a กับ b */
+function stick(r=.06, color=WOOD){ const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 1, 10), mat(color)); m.castShadow = true; return m; }
+const UP = new THREE.Vector3(0,1,0), tmpV = new THREE.Vector3();
+function place(m, a, b){ m.position.copy(a).add(b).multiplyScalar(.5); tmpV.copy(b).sub(a); const len = tmpV.length(); m.scale.set(1, Math.max(.001, len), 1); m.quaternion.setFromUnitVectors(UP, tmpV.normalize()); }
+
+const bridge = new THREE.Group(); world.add(bridge);
+let B = { deck:null, support:'none', sag:0, broken:0, skew:0, segs:[], sticks:[], pillar:null };
+function frameDesign(kind){
+  const H = 1.25, bx = [-3,-1.5,0,1.5,3], list = [];
+  if(kind==='square'){
+    bx.forEach(x => list.push([[x,0,false],[x,H,true]]));
+    for(let i=0;i<4;i++) list.push([[bx[i],H,true],[bx[i+1],H,true]]);
+  }
+  if(kind==='truss'){
+    const tx = [-2.25,-.75,.75,2.25];
+    tx.forEach((x,i) => { list.push([[bx[i],0,false],[x,H,true]]); list.push([[x,H,true],[bx[i+1],0,false]]); });
+    for(let i=0;i<3;i++) list.push([[tx[i],H,true],[tx[i+1],H,true]]);
+  }
+  return list;
+}
+function sagShape(x){ const ax = Math.abs(x); if(ax >= HALF) return 0; if(B.support==='pillar'){ const u = (ax-1.5)/1.5; return Math.max(0, 1-u*u); } return 1-(x/HALF)*(x/HALF); }
+function nodePos(x, yo, z, out=new THREE.Vector3()){
+  if(Math.abs(x) >= HALF || !B.broken) return out.set(x, TOP + yo - (Math.abs(x) < HALF ? B.sag*sagShape(x) : 0), z);
+  const px = x < 0 ? -HALF : HALF, a = x < 0 ? -B.broken : B.broken, dx = x - px, c = Math.cos(a), s = Math.sin(a);
+  return out.set(px + dx*c - yo*s, TOP + dx*s + yo*c, z);
+}
+function buildBridge(){
+  while(bridge.children.length) bridge.remove(bridge.children[0]);
+  B.segs = []; B.sticks = []; B.pillar = null; B.sag = 0; B.broken = 0; B.skew = 0;
+  if(!B.deck) return;
+  const D = DECKS[B.deck], N = 16, w = 6.4/N;
+  for(let i=0;i<N;i++){
+    const x0 = -3.2 + i*w, m = box(w+.01, D.t, 1.7, i%2 ? D.c : new THREE.Color(D.c).offsetHSL(0, 0, .04).getStyle(), .02);
+    bridge.add(m); B.segs.push({ m, x0, x1:x0+w });
+  }
+  if(B.support==='pillar'){
+    const p = new THREE.Group(); p.add(at(cyl(.38, .48, TOP-D.t-.05, '#B8B2A7'), 0, (TOP-D.t-.05)/2, 0), at(box(1.1, .12, 1.8, '#A59E92', .03), 0, TOP-D.t-.08, 0));
+    p.children.forEach(m => m.castShadow = true); bridge.add(p); B.pillar = p;
+  }
+  frameDesign(B.support).forEach(([a, b]) => [-.82, .82].forEach(z => { const m = stick(); bridge.add(m); B.sticks.push({ m, a, b, z }); }));
+  if(B.support==='truss') [-.75,.75].forEach(x => { const m = stick(.05); bridge.add(m); B.sticks.push({ m, a:[x,1.25,true], b:[x,1.25,true], z:-.82, z2:.82 }); });
+  if(B.support!=='none' && B.support!=='pillar') [-3,-1.5,0,1.5,3].forEach(x => [-.82,.82].forEach(z => { const m = sph(.09, PIN); bridge.add(m); B.sticks.push({ m, pin:[x,0], z }); }));
+  updateBridge();
+}
+const A = new THREE.Vector3(), Bv = new THREE.Vector3();
+function updateBridge(){
+  const D = B.deck && DECKS[B.deck]; if(!D) return;
+  B.segs.forEach(s => { nodePos(s.x0, -D.t/2, 0, A); nodePos(s.x1, -D.t/2, 0, Bv); s.m.position.copy(A).add(Bv).multiplyScalar(.5); s.m.rotation.z = Math.atan2(Bv.y-A.y, Bv.x-A.x); });
+  B.sticks.forEach(s => {
+    if(s.pin){ nodePos(s.pin[0], .02, s.z, s.m.position); return; }
+    const sk = x => x + B.skew;
+    nodePos(s.a[2] ? sk(s.a[0]) : s.a[0], s.a[1], s.z, A); nodePos(s.b[2] ? sk(s.b[0]) : s.b[0], s.b[1], s.z2 ?? s.z, Bv); place(s.m, A, Bv);
+  });
+}
+const strength = () => B.deck ? DECKS[B.deck].s + SUPPORTS[B.support].s : 0;
+
+/* ---------------- ยานพาหนะ ---------------- */
+function wheel(r=.16){ const w = rot(cyl(r, r, .12, '#3A3350', 16), Math.PI/2); return w; }
+function makeVehicle(k){
+  const g = new THREE.Group();
+  if(k==='bike'){
+    g.add(at(wheel(.2), -.35, .2, 0), at(wheel(.2), .35, .2, 0));
+    const fr = [[-.35,.2,0,.0,.45,0],[.0,.45,0,.35,.2,0],[-.1,.45,0,.3,.55,0]];
+    fr.forEach(p => { const m = stick(.03, '#FF6B6B'); place(m, new THREE.Vector3(p[0],p[1],p[2]), new THREE.Vector3(p[3],p[4],p[5])); g.add(m); });
+    g.add(at(sph(.14, '#FFD43B'), -.02, .82, 0), at(box(.18, .3, .16, '#4DABF7', .05), -.02, .6, 0));
+  }
+  if(k==='car'){
+    g.add(at(box(1.3, .35, .75, '#FF8FAB', .12), 0, .36, 0), at(box(.7, .3, .66, '#FFD6E2', .1), -.08, .66, 0));
+    [[-.42,.38],[.42,.38],[-.42,-.38],[.42,-.38]].forEach(([x,z]) => g.add(at(wheel(), x, .16, z)));
+  }
+  if(k==='truck'){
+    g.add(at(box(1.4, .8, .85, '#FFD43B', .08), -.35, .62, 0), at(box(.6, .6, .8, '#74C0FC', .1), .72, .5, 0), at(box(.3, .22, .7, '#D0EBFF', .05), .82, .66, 0));
+    [[-.75,.42],[-.2,.42],[.7,.42],[-.75,-.42],[-.2,-.42],[.7,-.42]].forEach(([x,z]) => g.add(at(wheel(.2), x, .2, z)));
+  }
+  g.traverse(m => { if(m.isMesh) m.castShadow = true; });
+  return g;
+}
+function makeBoat(){
+  const g = new THREE.Group();
+  g.add(at(box(.7, .3, 1.3, '#FFFFFF', .12), 0, .1, 0), at(box(.5, .35, .5, '#FF8FAB', .08), 0, .42, -.1), at(box(.72, .06, 1.32, '#4DABF7', .02), 0, .2, 0));
+  g.traverse(m => { if(m.isMesh) m.castShadow = true; });
+  return g;
+}
+
+/* ---------------- ห้องทดลองโครงสี่เหลี่ยม / สามเหลี่ยม (ด่าน 3) ---------------- */
+lab.add(at(box(8, .3, 3.2, '#EED9B8', .1), 0, .15, 0), at(box(14, .2, 9, '#F7EBDD', .1), 0, -.1, 0));
+const LB = { phi:Math.PI/2, braced:false, triDip:0, sq:[], tri:[], brace:null, wSq:null, wTri:null };
+function labSticks(){
+  const mk = () => { const m = stick(.07, '#C98D55'); lab.add(m); return m; };
+  LB.sq = [mk(), mk(), mk(), mk()]; LB.tri = [mk(), mk(), mk()];
+  LB.pins = Array.from({ length:7 }, () => { const p = sph(.1, PIN); lab.add(p); return p; });
+  LB.brace = mk(); LB.brace.visible = false;
+  LB.wSq = at(box(1.1, .35, .6, '#9AA0AA', .06), -1.8, 3.4, 0); LB.wTri = at(box(1.1, .35, .6, '#9AA0AA', .06), 1.8, 3.4, 0); lab.add(LB.wSq, LB.wTri);
+}
+labSticks();
+const V = (x,y) => new THREE.Vector3(x, y, 0);
+function sqNodes(){ const h = 1.6, bx = -1.8, y0 = .38; return [V(bx-.8, y0), V(bx+.8, y0), V(bx+.8 + h*Math.cos(LB.phi), y0 + h*Math.sin(LB.phi)), V(bx-.8 + h*Math.cos(LB.phi), y0 + h*Math.sin(LB.phi))]; }
+function triNodes(){ const y0 = .38; return [V(1.8-.9, y0), V(1.8+.9, y0), V(1.8, y0+1.55-LB.triDip)]; }
+function updateLab(){
+  const q = sqNodes(), t = triNodes();
+  for(let i=0;i<4;i++) place(LB.sq[i], q[i], q[(i+1)%4]);
+  for(let i=0;i<3;i++) place(LB.tri[i], t[i], t[(i+1)%3]);
+  place(LB.brace, q[0], q[2]);
+  [...q, ...t].forEach((p,i) => LB.pins[i].position.copy(p));
+}
+function resetLab(){ LB.phi = Math.PI/2; LB.braced = false; LB.brace.visible = false; LB.triDip = 0; LB.wSq.position.set(-1.8, 3.4, 0); LB.wTri.position.set(1.8, 3.4, 0); updateLab(); }
+
+/* ---------------- วนทุกเฟรม ---------------- */
+let run = null, fx = [];
+const dropGeo = new THREE.SphereGeometry(.06, 8, 6), dropMat = new THREE.MeshBasicMaterial({ color:'#FFFFFF', transparent:true, opacity:.9 });
+function splash(x, z){ sfx('splash'); for(let i=0;i<26;i++){ const a = Math.random()*Math.PI*2, s = .6+Math.random()*1.6; const m = at(new THREE.Mesh(dropGeo, dropMat), x, WATER_Y, z); world.add(m); fx.push({ m, vx:Math.cos(a)*s, vz:Math.sin(a)*s, vy:2+Math.random()*2.5, life:1 }); } }
+S.onFrame((dt, t) => {
+  fx = fx.filter(p => { p.life -= dt; p.vy -= 9*dt; p.m.position.x += p.vx*dt; p.m.position.y += p.vy*dt; p.m.position.z += p.vz*dt; if(p.m.position.y < WATER_Y || p.life <= 0){ world.remove(p.m); return false; } return true; });
+  if(run) run.step(dt, t);
+  if(L && L.id!=='L3'){
+    if(B.support==='square' && !B.broken) B.skew += ((run && run.onDeck ? run.load/strength()*.28 : 0) - B.skew)*Math.min(1, dt*4);
+    updateBridge();
+  } else if(L) updateLab();
+});
+function roadY(x){ return Math.abs(x) < HALF+.2 && B.deck ? nodePos(Math.max(-3.19, Math.min(3.19, x)), 0, 0).y : TOP; }
+
+function testVehicle(kind){
+  if(run) return;
+  if(!B.deck){ pop('ยังไม่มีสะพานเลย เลือกพื้นสะพานในกล่องก่อนนะ', 'no'); sfx('no'); return; }
+  if(B.broken) buildBridge();
+  X.tried[kind] = true;
+  const v = VEH[kind], g = makeVehicle(kind), st0 = strength(); g.userData.vehicle = true; world.add(g);
+  const r = { kind, load:v.load, x:-8.5, y:TOP, vy:0, state:'drive', onDeck:false, creaked:false };
+  sfx('engine'); drawActs(true);
+  r.step = (dt, t) => {
+    if(r.state==='drive'){
+      r.x += v.speed*dt;
+      r.onDeck = Math.abs(r.x) < HALF;
+      const prox = r.onDeck ? Math.max(0, 1-(r.x/HALF)**2) : 0;
+      const target = Math.min(1.25, .38*(r.load/st0))*prox*(B.support==='pillar' ? .8 : 1);
+      B.sag += (target - B.sag)*Math.min(1, dt*5);
+      if(B.sag > .2 && !r.creaked){ r.creaked = true; sfx('creak'); }
+      if(r.load > st0 && r.x > -.4){ r.state = 'break'; sfx('crack'); tween(B, { broken:.95 }, 700, k => k*k); r.vy = 0; }
+      const y = roadY(r.x), y2 = roadY(r.x+.4);
+      g.position.set(r.x, y, 0); g.rotation.z = Math.atan2(y2-y, .4);
+      if(r.x > 8.5) finish(true);
+    } else if(r.state==='break' || r.state==='fall'){
+      r.vy -= 8*dt; r.x += dt*.6; r.y = g.position.y + r.vy*dt; g.position.set(r.x, r.y, 0); g.rotation.z -= dt*.6;
+      if(r.y < WATER_Y+.05){ r.state = 'float'; splash(r.x, 0); setTimeout(() => finish(false), 1300); }
+    } else if(r.state==='float'){
+      g.position.y = WATER_Y - .15 + Math.sin(t*2)*.03; g.rotation.z *= .95;
+    }
+  };
+  function finish(ok){
+    if(r.done) return; r.done = true;
+    const name = v.name;
+    if(ok){
+      X.crossed[kind] = true; X.lastOK[kind] = X.buildId;
+      pop('🎉 '+name+'ข้ามสะพานสำเร็จ!', 'ok'); speak(name+'ข้ามสะพานสำเร็จ'); sfx('ok');
+    } else {
+      X.broke++;
+      pop('💥 สะพานพัง! '+name+'หนักเกินไปสำหรับสะพานนี้ ลองเปลี่ยนแบบแล้วทดสอบใหม่', 'no'); speak('สะพานพัง ลองเปลี่ยนแบบสะพานแล้วทดสอบใหม่นะ'); sfx('no');
+    }
+    setTimeout(() => { world.remove(g); run = null; B.sag = 0; if(!ok) buildBridge(); drawActs(); drawSteps(); }, ok ? 300 : 1800);
+  }
+  run = r;
+}
+function testBoat(){
+  if(run) return;
+  const g = makeBoat(); g.userData.vehicle = true; world.add(g);
+  const r = { z:-6.5, state:'go' }; g.position.set(0, WATER_Y-.05, r.z);
+  sfx('engine'); drawActs(true);
+  r.step = (dt, t) => {
+    if(r.state!=='go') return;
+    r.z += dt*2.2; g.position.set(0, WATER_Y-.05 + Math.sin(t*3)*.03, r.z); g.rotation.x = Math.sin(t*2.5)*.04;
+    if(B.support==='pillar' && r.z > -1.25){
+      r.state = 'stop'; sfx('no'); tween(g.position, { z:-1.7 }, 400, ease.out);
+      pop('⛔ เสากลางน้ำขวางทางเรือ เรือผ่านไม่ได้', 'no'); speak('เสากลางน้ำขวางทางเรือ');
+      setTimeout(() => { world.remove(g); run = null; drawActs(); drawSteps(); }, 1800);
+    }
+    if(r.z > 6.5){ r.state = 'done'; X.boatOK = X.buildId; pop('⛵ เรือแล่นลอดใต้สะพานได้!', 'ok'); speak('เรือแล่นลอดใต้สะพานได้'); sfx('ok'); world.remove(g); run = null; drawActs(); drawSteps(); }
+  };
+  run = r;
+}
+
+/* ---------------- ด่าน ---------------- */
+const LEVELS = [
+  { id:'L1', name:'สะพานแรก', title:'ด่าน 1 · สะพานแรก', view:VIEW_BRIDGE, decks:['thin','thick'], supports:[], veh:['bike'],
+    text:'จักรยานอยากข้ามแม่น้ำ เลือกพื้นสะพานวางข้ามแม่น้ำ แล้วกด 🚲 ทดสอบ',
+    steps:[['วางพื้นสะพาน', X => !!B.deck], ['จักรยานข้ามสะพานสำเร็จ', X => X.crossed.bike]],
+    know:'<b>🔎 รู้ไหม</b> สะพานช่วยให้คนและรถข้ามแม่น้ำหรือหุบเขาได้ · สะพานต้อง<b>รับน้ำหนัก</b>ของที่อยู่บนสะพานให้ได้ ถ้ารับไม่ไหว สะพานจะแอ่นลงหรือพัง' },
+  { id:'L2', name:'รถเก๋งข้ามได้ไหม', title:'ด่าน 2 · รถเก๋งข้ามได้ไหม', view:VIEW_BRIDGE, decks:['thin','thick'], supports:['none','pillar','square'], veh:['bike','car'],
+    text:'รถเก๋งหนักกว่าจักรยาน ลองสร้างสะพานให้รถเก๋งข้ามได้ ถ้าพังก็ลองเปลี่ยนแบบใหม่',
+    steps:[['ลองให้รถเก๋งข้ามสะพาน', X => X.tried.car], ['รถเก๋งข้ามสะพานสำเร็จ', X => X.crossed.car]],
+    know:'<b>🔎 รู้ไหม</b> ทำสะพานให้แข็งแรงขึ้นได้หลายวิธี เช่น ใช้<b>แผ่นไม้หนาขึ้น</b> หรือเพิ่ม<b>เสา</b>ช่วยรับน้ำหนัก · วิศวกรจะ<b>ทดสอบ</b>ก่อน ถ้าไม่ผ่านก็ปรับแบบแล้วทดสอบใหม่' },
+  { id:'L3', name:'สามเหลี่ยมแข็งแรง', title:'ด่าน 3 · สี่เหลี่ยม กับ สามเหลี่ยม', view:VIEW_LAB, lab:true,
+    text:'บนโต๊ะมีโครงไม้ 2 แบบ ลองเอาตุ้มน้ำหนักกดลงบนโครงแต่ละแบบ ดูว่าแบบไหนแข็งแรงกว่า',
+    steps:[['กดโครงสี่เหลี่ยม', X => X.pSq], ['กดโครงสามเหลี่ยม', X => X.pTri], ['ใส่ไม้ทแยงในสี่เหลี่ยม แล้วกดอีกครั้ง', X => X.pBraced], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'โครงรูปไหนแข็งแรง ไม่เสียรูปเมื่อถูกกด?', opts:['🔺 รูปสามเหลี่ยม', '🟦 รูปสี่เหลี่ยม (ไม่มีไม้ทแยง)'], need:X => X.pSq && X.pTri },
+    know:'<b>🔎 รู้ไหม</b> <b>สามเหลี่ยม</b>เป็นรูปทรงที่แข็งแรง ถูกกดแล้วไม่เสียรูป · สี่เหลี่ยมถูกกดแล้วล้มเอียงได้ แต่ถ้า<b>ใส่ไม้ทแยง</b> จะกลายเป็นสามเหลี่ยม 2 รูป แข็งแรงขึ้นทันที · สะพานเหล็ก เสาไฟฟ้า หลังคาบ้าน จึงมีโครงรูปสามเหลี่ยมเยอะมาก' },
+  { id:'L4', name:'รถบรรทุกกับเรือ', title:'ด่าน 4 · รถบรรทุกกับเรือ', view:VIEW_BRIDGE, decks:['thin','thick'], supports:['none','pillar','square','truss'], veh:['bike','car','truck'], boat:true,
+    text:'รถบรรทุกหนักมาก ต้องข้ามสะพานให้ได้ แต่เรือก็ต้องแล่นลอดใต้สะพานได้ด้วย ห้ามมีอะไรขวางทางน้ำ!',
+    steps:[['รถบรรทุกข้ามสะพานนี้ได้', X => X.lastOK.truck===X.buildId], ['เรือแล่นลอดใต้สะพานนี้ได้', X => X.boatOK===X.buildId]],
+    know:'<b>🔎 รู้ไหม</b> <b>โครงสามเหลี่ยม</b>ช่วยให้สะพานรับน้ำหนักได้มากโดยไม่ต้องมีเสากลางน้ำ เรือจึงแล่นผ่านได้สะดวก · วิศวกรต้องคิดหลายเรื่องพร้อมกัน ทั้งความแข็งแรง ทางเรือ และความปลอดภัย' },
+];
+let L = null, X = {}, done = false;
+function openLevel(id){
+  if(id==='quiz'){ openQuiz(); return; }
+  document.body.classList.remove('quizmode');
+  const prev = L; L = LEVELS.find(x => x.id===id) || LEVELS[0];
+  try{ localStorage.setItem('kids-stem-bridge-last', L.id); }catch(e){}
+  history.replaceState(null, '', '#'+L.id);
+  if(run){ run = null; world.children.filter(c => c.userData.vehicle).forEach(c => world.remove(c)); }
+  done = false; X = { crossed:{}, tried:{}, lastOK:{}, boatOK:-1, buildId:0, broke:0, asked:false };
+  $('#ask').innerHTML = ''; delete $('#ask').dataset.shown;
+  world.visible = !L.lab; lab.visible = !!L.lab;
+  B.deck = null; B.support = 'none'; buildBridge(); resetLab();
+  if(!prev || (prev.view !== L.view)) S.setView(L.view.cam, L.view.target, prev ? 700 : 0);
+  $('#gtitle').textContent = L.title; $('#gtext').textContent = L.text;
+  $('#result').className = 'result'; $('#know').className = 'know'; $('#know').innerHTML = L.know; $('#next').hidden = true;
+  drawLevels(); drawTray(); drawActs(); drawSteps(); speak(L.text);
+}
+
+/* ---------------- กล่องชิ้นส่วน / ปุ่มทดสอบ ---------------- */
+const THUMBS = makeThumbs({
+  thin:() => box(1.6, .12, .7, DECKS.thin.c, .02), thick:() => box(1.6, .3, .7, DECKS.thick.c, .03),
+  pillar:() => { const g = new THREE.Group(); g.add(at(cyl(.28, .36, 1.2, '#B8B2A7'), 0, .6, 0), at(box(.9, .1, .5, '#A59E92', .02), 0, 1.25, 0)); return g; },
+  square:() => { const g = new THREE.Group(); [[-.6,0,.6,0],[.6,0,.6,1],[.6,1,-.6,1],[-.6,1,-.6,0]].forEach(p => { const m = stick(.05); place(m, V(p[0],p[1]), V(p[2],p[3])); g.add(m); }); return g; },
+  truss:() => { const g = new THREE.Group(); [[-.8,0,.8,0],[.8,0,0,1],[0,1,-.8,0],[-.4,.5,.4,.5]].slice(0,3).forEach(p => { const m = stick(.05); place(m, V(p[0],p[1]), V(p[2],p[3])); g.add(m); }); return g; },
+}, { view:[.3,.5,1.6] });
+function drawTray(){
+  const el = $('#parts');
+  if(L.lab){ el.innerHTML = ''; return; }
+  const card = (k, name, on, grp) => '<button type="button" class="part'+(on?' sel':'')+'" data-g="'+grp+'" data-k="'+k+'">'+(THUMBS[k] ? '<img src="'+THUMBS[k]+'" alt="">' : '<span class="em">🚫</span>')+'<b>'+name+'</b></button>';
+  el.innerHTML = '<span class="grp">พื้นสะพาน</span>'+L.decks.map(k => card(k, DECKS[k].name, B.deck===k, 'deck')).join('')+
+    (L.supports.length ? '<span class="grp">โครงรองรับ</span>'+L.supports.map(k => card(k, SUPPORTS[k].name, B.support===k, 'support')).join('') : '');
+  el.querySelectorAll('.part').forEach(b => b.onclick = () => {
+    if(run){ pop('รอให้ทดสอบเสร็จก่อนนะ'); return; }
+    if(b.dataset.g==='deck') B.deck = b.dataset.k; else B.support = b.dataset.k;
+    X.buildId++; buildBridge(); sfx('pop');
+    if(B.deck){ bridge.position.y = 1.2; tween(bridge.position, { y:0 }, 450, ease.bounce); }
+    if(!B.deck && b.dataset.g==='support') pop('เลือกพื้นสะพานด้วยนะ');
+    drawTray(); drawSteps();
+  });
+}
+function drawActs(busy=false){
+  const el = $('#acts');
+  if(L.lab){
+    el.innerHTML = '<span class="lbl">กดด้วยตุ้มน้ำหนัก:</span><button type="button" class="big b2" id="pSq">👇 กดสี่เหลี่ยม</button><button type="button" class="big b3" id="pTri">👇 กดสามเหลี่ยม</button>'+
+      (X.pSq && !LB.braced ? '<button type="button" class="big" id="brace">➕ ใส่ไม้ทแยง</button>' : '');
+    el.querySelectorAll('button').forEach(b => b.disabled = busy);
+    $('#pSq').onclick = pressSquare; $('#pTri').onclick = pressTri; if($('#brace')) $('#brace').onclick = addBrace;
+    return;
+  }
+  el.innerHTML = '<span class="lbl">ทดสอบ:</span>'+L.veh.map(k => '<button type="button" class="big'+(X.lastOK[k]===X.buildId?' passed':'')+'" data-v="'+k+'">'+VEH[k].e+' '+VEH[k].name+'</button>').join('')+
+    (L.boat ? '<button type="button" class="big b2'+(X.boatOK===X.buildId?' passed':'')+'" id="boatBtn">⛵ เรือ</button>' : '');
+  el.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { testVehicle(b.dataset.v); drawSteps(); });
+  if($('#boatBtn')) $('#boatBtn').onclick = testBoat;
+  el.querySelectorAll('button').forEach(b => b.disabled = busy);
+}
+
+/* ---------------- ด่าน 3: กดโครง ---------------- */
+let labBusy = false;
+async function dropWeight(w, toY){ await tween(w.position, { y:toY }, 500, k => k*k); sfx('plop'); }
+async function pressSquare(){
+  if(labBusy) return; labBusy = true; drawActs(true);
+  if(LB.phi < Math.PI/2 - .01){ await tween(LB.wSq.position, { y:3.4 }, 300); await tween(LB, { phi:Math.PI/2 }, 400); }
+  const top = () => sqNodes()[3].y + .2;
+  await dropWeight(LB.wSq, top());
+  if(LB.braced){
+    await tween(LB.wSq.position, { y:top()-.03 }, 120); await tween(LB.wSq.position, { y:top() }, 150);
+    X.pBraced = true; pop('💪 ใส่ไม้ทแยงแล้ว กลายเป็นสามเหลี่ยม 2 รูป ไม่เสียรูปเลย!', 'ok'); speak('ใส่ไม้ทแยงแล้ว กลายเป็นสามเหลี่ยมสองรูป แข็งแรงขึ้น'); sfx('ok');
+  } else {
+    sfx('creak');
+    const t0 = performance.now();
+    await new Promise(res => { const f = () => { const k = Math.min(1, (performance.now()-t0)/900); LB.phi = Math.PI/2 - .8*ease.out(k); LB.wSq.position.x = -1.8 + .9*ease.out(k); LB.wSq.position.y = top(); LB.wSq.rotation.z = -.2*k; if(k<1) requestAnimationFrame(f); else res(); }; requestAnimationFrame(f); });
+    X.pSq = true; pop('😮 โครงสี่เหลี่ยมล้มเอียง เสียรูปไปเลย!', 'no'); speak('โครงสี่เหลี่ยมล้มเอียง เสียรูป');
+  }
+  labBusy = false; drawActs(); drawSteps();
+}
+async function pressTri(){
+  if(labBusy) return; labBusy = true; drawActs(true);
+  const top = () => triNodes()[2].y + .2;
+  await dropWeight(LB.wTri, top());
+  await tween(LB, { triDip:.04 }, 120); await tween(LB, { triDip:0 }, 180);
+  X.pTri = true; pop('💪 โครงสามเหลี่ยมไม่เสียรูปเลย แข็งแรง!', 'ok'); speak('โครงสามเหลี่ยมไม่เสียรูป แข็งแรง'); sfx('ok');
+  labBusy = false; drawActs(); drawSteps();
+}
+async function addBrace(){
+  if(labBusy) return; labBusy = true; drawActs(true);
+  await tween(LB.wSq.position, { x:-1.8, y:3.4 }, 400); LB.wSq.rotation.z = 0;
+  await tween(LB, { phi:Math.PI/2 }, 500, ease.out);
+  LB.braced = true; LB.brace.visible = true; LB.brace.scale.x = .1; sfx('pop'); updateLab();
+  pop('➕ ใส่ไม้ทแยงแล้ว ลองกดสี่เหลี่ยมอีกครั้ง');
+  labBusy = false; drawActs(); drawSteps();
+}
+
+/* ---------------- เป้าหมาย / ขั้นตอน ---------------- */
+function drawSteps(){
+  const items = L.steps.map(([t, f]) => ({ t, ok:!!f(X) }));
+  $('#steps').innerHTML = items.map(s => '<li class="'+(s.ok?'done':'')+'">'+s.t+'</li>').join('');
+  const nx = items.find(s => !s.ok);
+  $('#now').textContent = nx ? '👉 '+nx.t : '🎉 ผ่านด่านแล้ว!';
+  const A = L.ask, box = $('#ask');
+  if(A && A.need(X) && !box.dataset.shown){
+    box.dataset.shown = '1';
+    box.innerHTML = '<p style="margin-top:10px;font-weight:700">❓ '+A.q+'</p><div class="choice">'+shuffle([0,1]).map(i => '<button type="button" data-i="'+i+'">'+A.opts[i]+'</button>').join('')+'</div>';
+    setTimeout(() => speak(A.q), 2200);
+    box.querySelectorAll('.choice button').forEach(b => b.onclick = () => {
+      if(X.asked) return;
+      if(b.dataset.i==='0'){ b.className = 'right'; X.asked = true; sfx('ok'); drawSteps(); }
+      else { b.className = 'wrong'; sfx('no'); pop('ยังไม่ใช่ ลองดูว่าโครงไหนเสียรูปนะ', 'no'); setTimeout(() => { b.className = ''; }, 1200); }
+    });
+  }
+  if(!done && items.every(s => s.ok)) complete();
+}
+function complete(){
+  done = true;
+  st.stars[L.id] = 3; st.save();
+  $('#result').className = 'result ok'; $('#result').textContent = '🎉 ผ่านด่านแล้ว! ได้ ⭐⭐⭐'+(X.broke ? ' · ทดสอบแล้วพัง '+X.broke+' ครั้ง ก็ไม่ยอมแพ้ เก่งมาก!' : '');
+  $('#know').className = 'know on';
+  const idx = LEVELS.indexOf(L), nx = LEVELS[idx+1];
+  $('#next').hidden = false; $('#next').textContent = nx ? 'ด่านต่อไป: '+nx.name+' ▶' : 'ไปทำแบบทดสอบ 📝 ▶';
+  $('#next').onclick = () => openLevel(nx ? nx.id : 'quiz');
+  setTimeout(() => { sfx('win'); speak('ผ่านด่านแล้ว เก่งมาก '+$('#know').textContent); }, 1200);
+  if(window.KP) KP.log({ kind:'game', page:'stem-bridge', item:'bridge-'+L.id, title:'สร้างสะพาน · '+L.name, stars:3, mistakes:X.broke });
+  drawLevels();
+  if(window.innerWidth <= 980) setTimeout(() => $('#result').scrollIntoView({ behavior:'smooth', block:'center' }), 2800);
+}
+$('#gsay').onclick = () => speak(L.text);
+$('#reset').onclick = () => openLevel(L.id);
+
+/* ---------------- แบบทดสอบ ---------------- */
+const BANK = [
+  { q:'รูปทรงไหนแข็งแรง ถูกกดแล้วไม่เสียรูป?', e:'💪', opts:[['🔺','สามเหลี่ยม'],['🟦','สี่เหลี่ยม (ไม่มีไม้ทแยง)'],['⬟','ห้าเหลี่ยม (ไม่มีไม้ทแยง)']], why:'สามเหลี่ยมเป็นรูปทรงที่แข็งแรง ไม่เสียรูปง่าย' },
+  { q:'กดโครงสี่เหลี่ยมที่ไม่มีไม้ทแยง จะเกิดอะไรขึ้น?', e:'🟦', opts:[['↗️','ล้มเอียง เสียรูป'],['💪','แข็งแรงเหมือนเดิม'],['⭕','กลายเป็นวงกลม']], why:'สี่เหลี่ยมที่ไม่มีไม้ทแยงถูกกดแล้วเอียงเป็นรูปสี่เหลี่ยมด้านขนาน' },
+  { q:'ทำให้โครงสี่เหลี่ยมแข็งแรงขึ้นได้อย่างไร?', e:'🛠️', opts:[['➕','ใส่ไม้ทแยง ให้เป็นสามเหลี่ยม'],['🎨','ทาสีใหม่'],['➖','เอาไม้ออก 1 ท่อน']], why:'ไม้ทแยงแบ่งสี่เหลี่ยมเป็นสามเหลี่ยม 2 รูป จึงแข็งแรงขึ้น' },
+  { q:'แผ่นไม้แบบไหนรับน้ำหนักได้มากกว่า?', e:'🪵', opts:[['🟫','แผ่นไม้หนา'],['📄','แผ่นไม้บาง'],['🟰','รับได้เท่ากัน']], why:'แผ่นไม้หนาแอ่นยากกว่า จึงรับน้ำหนักได้มากกว่า' },
+  { q:'ยานพาหนะคันไหนหนักที่สุด?', e:'⚖️', opts:[['🚚','รถบรรทุก'],['🚲','จักรยาน'],['🚗','รถเก๋ง']], why:'รถบรรทุกใหญ่และหนักที่สุด สะพานต้องแข็งแรงมาก' },
+  { q:'สะพานจะแอ่นลงมากขึ้นเมื่อไร?', e:'〰️', opts:[['🐘','ของที่อยู่บนสะพานหนักขึ้น'],['🌈','รถมีสีสวยขึ้น'],['☀️','แดดออก']], why:'ยิ่งหนัก สะพานยิ่งแอ่น ถ้าหนักเกินไปก็พัง' },
+  { q:'เสากลางแม่น้ำช่วยสะพานอย่างไร?', e:'🏛️', opts:[['💪','ช่วยรับน้ำหนัก สะพานแข็งแรงขึ้น'],['🪶','ทำให้สะพานเบาลง'],['🎀','ทำให้สะพานสวยอย่างเดียว']], why:'เสาช่วยรับน้ำหนักตรงกลาง สะพานจึงแอ่นน้อยลง' },
+  { q:'เสากลางแม่น้ำมีข้อเสียอะไร?', e:'⛵', opts:[['⛔','ขวางทางเรือ'],['💥','ทำให้สะพานพังง่าย'],['🚗','รถข้ามไม่ได้']], why:'เสาที่อยู่กลางน้ำอาจขวางทางให้เรือแล่นผ่านไม่ได้' },
+  { q:'ทำไมสะพานเหล็กหลายแห่งมีโครงรูปสามเหลี่ยม?', e:'🌉', opts:[['🔺','สามเหลี่ยมแข็งแรง ไม่เสียรูป'],['🎨','ให้ดูสวยเท่านั้น'],['🪶','ให้สะพานเบาจนลอยได้']], why:'โครงสามเหลี่ยมช่วยให้สะพานรับน้ำหนักได้มาก' },
+  { q:'ก่อนเปิดให้รถใช้สะพาน วิศวกรต้องทำอะไร?', e:'👷', opts:[['🧪','ทดสอบว่ารับน้ำหนักได้'],['🎉','จัดงานเลี้ยงก่อน'],['🙈','ไม่ต้องทำอะไร']], why:'ต้องทดสอบให้แน่ใจว่าปลอดภัยก่อนใช้งานจริง' },
+  { q:'ป้ายจำกัดน้ำหนักที่สะพาน บอกเราว่าอะไร?', e:'🪧', opts:[['🚚','รถที่หนักเกินกำหนด ห้ามข้าม'],['🚶','ห้ามคนเดิน'],['🏎️','ให้ขับเร็ว ๆ']], why:'ถ้ารถหนักเกินกว่าที่สะพานรับได้ สะพานอาจพัง' },
+  { q:'ถ้าสะพานที่เราสร้างพังตอนทดสอบ ควรทำอย่างไร?', e:'🔁', opts:[['🛠️','ปรับแบบให้แข็งแรงขึ้น แล้วทดสอบใหม่'],['😭','เลิกทำเลย'],['🙅','ไม่ต้องสนใจ ใช้ต่อไป']], why:'นักวิทยาศาสตร์และวิศวกรเรียนรู้จากการทดสอบ แล้วปรับปรุงให้ดีขึ้น' },
+];
+function openQuiz(){
+  document.body.classList.add('quizmode'); L = { id:'quiz', steps:[] }; history.replaceState(null, '', '#quiz');
+  drawLevels(); window.scrollTo(0, 0);
+  quiz($('#quiz'), { bank:BANK, count:8, page:'stem-bridge-quiz', title:'สร้างสะพาน', st, onDone:drawLevels });
+}
+function drawLevels(){ levelBar($('#levels'), LEVELS, { cur:L && L.id, stars:st.stars, quiz:true, onPick:id => { if(L && id===L.id && id!=='quiz') return; openLevel(id); } }); }
+
+let first = (location.hash||'').slice(1);
+if(!first){ try{ first = localStorage.getItem('kids-stem-bridge-last') || 'L1'; }catch(e){ first = 'L1'; } }
+openLevel(first);
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if(id && (!L || id!==L.id)) openLevel(id); });
+window.__test = { S, openLevel, testVehicle, testBoat, pressSquare, pressTri, addBrace, B, get X(){ return X; }, get run(){ return run; }, setBuild:(d, s) => { B.deck = d; B.support = s; X.buildId++; buildBridge(); drawTray(); drawActs(); drawSteps(); } };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>

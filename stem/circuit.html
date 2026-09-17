@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>ต่อวงจรไฟฟ้า 3 มิติ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stem.css">
+<style>
+.trayov{position:absolute;left:8px;right:8px;bottom:8px;display:flex;gap:8px;overflow-x:auto;padding:6px;background:rgba(255,255,255,.78);border-radius:22px;scrollbar-width:none;backdrop-filter:blur(6px)}
+.trayov::-webkit-scrollbar{display:none}
+.trayov:empty{display:none}
+.trayov .part{flex:none;width:86px;background:#fff;padding:4px 2px 6px}
+.trayov .part img{width:58px;height:58px;display:block;margin:0 auto;pointer-events:none}
+.trayov .part b{font-size:.78rem}
+.trayov .part small{font-size:.68rem}
+.stage .hud{top:10px}
+.hud .now{background:#fff;border-radius:16px;padding:5px 12px;font-weight:700;font-size:.9rem;box-shadow:0 3px 10px rgba(58,51,80,.12);max-width:70%}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="in"><a class="pill" href="../#STEM">‹ หน้ารวม</a><div class="tt">💡 ต่อวงจรไฟฟ้า 3 มิติ</div><button class="pill" id="mute" type="button">🔊</button></div>
+  <div class="levels" id="levels"></div>
+</div>
+
+<section id="quiz"></section>
+<div class="lab">
+  <div class="stage" id="stage">
+    <div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
+    <div class="hud"><span class="now" id="now"></span><span class="sp"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
+    <div class="trayov" id="parts"></div>
+  </div>
+  <div class="panel">
+    <div class="card goal">
+      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
+      <p id="gtext"></p>
+      <ul class="steps" id="steps"></ul>
+      <div id="ask"></div>
+      <div class="result" id="result"></div>
+      <div class="row"><button class="btn" type="button" id="reset">↺ เริ่มด่านใหม่</button><button class="btn go" type="button" id="next" hidden>ด่านต่อไป ▶</button></div>
+    </div>
+    <div class="know" id="know"></div>
+    <div class="card goal"><p class="sub">👆 แตะชิ้นส่วนในกล่อง แล้วแตะช่องว่างในวงจร (หรือลากไปวางก็ได้) · แตะชิ้นที่วางแล้วเพื่อเอาออก · แตะสวิตช์เพื่อเปิด–ปิด · ลากนิ้วบนฉากเพื่อหมุนดู หยิกนิ้วเพื่อซูม</p></div>
+    <div class="safety">⚠️ ไฟฟ้าในบ้าน (ปลั๊กไฟ) อันตรายมาก ห้ามเล่นเด็ดขาด · ถ้าอยากทดลองจริง ใช้ถ่านไฟฉายก้อนเล็กกับผู้ใหญ่เท่านั้น</div>
+  </div>
+</div>
+
+<script>setTimeout(() => { if(!window.__stemReady){ const l = document.getElementById('loading'); if(l) l.textContent = 'โหลดฉาก 3 มิติไม่ได้ 😢 ต้องต่ออินเทอร์เน็ต แล้วลองโหลดหน้าใหม่อีกครั้ง'; } }, 12000);</script>
+<script type="importmap">{ "imports": { "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+<script type="module">
+import { THREE, $, shuffle, store, setupMute, sfx, speak, stage, mat, box, cyl, sph, group, at, rot, sprite, label, glow, tween, ease, levelBar, pop, quiz } from './stem3d.js';
+
+const st = store('kids-stem-circuit');
+setupMute($('#mute'));
+const S = stage($('#stage'), { cam:[0, 8.2, 9.2], target:[0, 0, 1.1], minDist:6.5, maxDist:17, maxPolar:1.2, shadow:7 });
+$('#loading').remove();
+$('#home').onclick = () => S.resetView();
+
+/* ---------------- โต๊ะและแผ่นวงจร ---------------- */
+S.scene.add(at(box(16, .6, 12, '#EED9B8', .2), 0, -.3, 0));
+S.scene.add(at(box(7.8, .14, 5.8, '#E4F3E8', .12), 0, .07, 0));
+const BASE = .14;
+const root = new THREE.Group(); root.position.y = BASE; S.scene.add(root);
+
+/* ---------------- ชิ้นส่วน ---------------- */
+const METAL = c => mat(c, { metalness:.75, roughness:.3 });
+const ITEMS = {
+  spoon: { e:'🥄', name:'ช้อนเหล็ก', metal:true,  half:.72 },
+  coin:  { e:'🪙', name:'เหรียญ',    metal:true,  half:.4 },
+  foil:  { e:'✨', name:'กระดาษฟอยล์', metal:true, half:.66 },
+  eraser:{ e:'🩷', name:'ยางลบ',     metal:false, half:.46 },
+  stick: { e:'🍦', name:'ไม้ไอติม',   metal:false, half:.7 },
+  ruler: { e:'📏', name:'ไม้บรรทัดพลาสติก', metal:false, half:.82 },
+};
+const PARTS = { wire:{ name:'สายไฟ', note:'ใช้ได้หลายเส้น' }, bulb:{ name:'หลอดไฟ' }, switch:{ name:'สวิตช์' }, battery:{ name:'ถ่านไฟฉาย' } };
+const partName = k => (ITEMS[k]||PARTS[k]).name;
+
+function lead(x0, x1, y=.22, color='#D08A4A'){
+  const len = Math.abs(x1-x0); if(len < .02) return null;
+  return at(rot(cyl(.045, .045, len, METAL(color), 10), 0, 0, Math.PI/2), (x0+x1)/2, y, 0);
+}
+function makePart(kind, len, e={}, thumb=false){
+  const g = new THREE.Group(), h = len/2;
+  if(kind==='wire'){
+    const pts = [[-h,.3,0],[-h*.55,.42,.14],[0,.46,0],[h*.55,.42,-.14],[h,.3,0]].map(p => new THREE.Vector3(...p));
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .075, 10), mat('#F07167', { roughness:.5 }));
+    tube.castShadow = true; g.add(tube);
+    g.add(at(rot(cyl(.05,.05,.18,METAL('#E0A15C'),10),0,0,Math.PI/2), -h+.02, .3, 0), at(rot(cyl(.05,.05,.18,METAL('#E0A15C'),10),0,0,Math.PI/2), h-.02, .3, 0));
+  }
+  else if(kind==='battery'){
+    g.add(at(box(Math.min(1.9, len-.2), .12, .72, '#DCD6EC', .05), 0, .06, 0));
+    const cell = rot(cyl(.27, .27, 1.3, '#4C86E8'), 0, 0, Math.PI/2); at(cell, 0, .4, 0); g.add(cell); e.cell = cell;
+    g.add(at(rot(cyl(.275,.275,.36,'#F2C94C'),0,0,Math.PI/2), -.47, .4, 0));
+    g.add(at(rot(cyl(.1,.1,.14,METAL('#CDD3DD'),16),0,0,Math.PI/2), -.72, .4, 0));
+    g.add(at(rot(cyl(.2,.2,.05,METAL('#CDD3DD'),20),0,0,Math.PI/2), .67, .4, 0));
+    g.add(at(sprite('+', { size:.55, bg:'#FFD9D9', color:'#D23C3C', font:150 }), -.5, 1.0, 0));
+    g.add(at(sprite('−', { size:.55, bg:'#D9E7FF', color:'#2F5FB8', font:150 }), .5, 1.0, 0));
+    [lead(-h, -.78, .4), lead(.69, h, .4)].forEach(x => x && g.add(x));
+  }
+  else if(kind==='bulb'){
+    g.add(at(box(1.0, .22, .8, '#EDE7F7', .06), 0, .11, 0));
+    g.add(at(cyl(.2, .24, .34, METAL('#BFC5D2')), 0, .39, 0));
+    const glassMat = new THREE.MeshStandardMaterial({ color:'#FFFFFF', transparent:true, opacity:.45, roughness:.05, emissive:'#FFC93C', emissiveIntensity:0 });
+    const glass = at(new THREE.Mesh(new THREE.SphereGeometry(.44, 32, 20), glassMat), 0, .95, 0); g.add(glass);
+    const filMat = new THREE.MeshStandardMaterial({ color:'#8A6A3A', emissive:'#FFB300', emissiveIntensity:0 });
+    g.add(at(new THREE.Mesh(new THREE.TorusGeometry(.1, .018, 8, 20, Math.PI), filMat), 0, .9, 0));
+    const halo = at(glow('#FFE27A', 1), 0, .95, 0); halo.scale.set(.01,.01,1); g.add(halo);
+    const light = at(new THREE.PointLight('#FFD37A', 0, 7, 1.4), 0, 1.1, 0); g.add(light);
+    Object.assign(e, { glass:glassMat, fil:filMat, halo, light });
+    if(!thumb) [lead(-h, -.5), lead(.5, h)].forEach(x => x && g.add(x));
+  }
+  else if(kind==='switch'){
+    g.add(at(box(1.35, .16, .76, '#FFE0B5', .05), 0, .08, 0));
+    g.add(at(box(.16, .24, .3, METAL('#C9CED8'), .03), -.46, .27, 0), at(box(.16, .24, .3, METAL('#C9CED8'), .03), .46, .27, 0));
+    const pivot = at(new THREE.Group(), -.46, .4, 0);
+    pivot.add(at(box(1.02, .06, .16, METAL('#AEB6C4'), .02), .5, 0, 0));
+    pivot.add(at(cyl(.07, .09, .26, '#FF7A7A'), 1.0, .12, 0));
+    pivot.rotation.z = e.on ? 0 : .55; g.add(pivot); e.pivot = pivot;
+    if(!thumb) [lead(-h, -.55), lead(.55, h)].forEach(x => x && g.add(x));
+  }
+  else if(ITEMS[kind]){
+    const it = ITEMS[kind], y = .26;
+    if(kind==='spoon'){ g.add(at(new THREE.Mesh(new THREE.SphereGeometry(.25, 24, 14), METAL('#CDD3DD')), -.45, y, 0)); g.children[0].scale.set(1.25, .32, .9); g.add(at(box(.95, .05, .12, METAL('#CDD3DD'), .02), .25, y, 0)); }
+    if(kind==='coin') g.add(at(cyl(.4, .4, .07, METAL('#E5B84A')), 0, y, 0));
+    if(kind==='foil') g.add(at(box(1.32, .04, .56, mat('#DDE2EA', { metalness:.85, roughness:.5 }), .015), 0, y, 0));
+    if(kind==='eraser') g.add(at(box(.92, .28, .46, '#FFB3C1', .08), 0, y, 0));
+    if(kind==='stick') g.add(at(box(1.4, .05, .24, '#E9C893', .05), 0, y, 0));
+    if(kind==='ruler') g.add(at(box(1.64, .05, .42, mat('#8EC5FF', { transparent:true, opacity:.85, roughness:.2 }), .02), 0, y, 0));
+    g.children.forEach(m => { m.castShadow = true; });
+    if(!thumb){
+      const cx = it.half + .06;
+      g.add(at(box(.32, .15, .22, '#FF6B6B', .04), -cx-.1, y+.02, 0), at(box(.32, .15, .22, '#4A4A5A', .04), cx+.1, y+.02, 0));
+      [lead(-h, -cx-.24, y), lead(cx+.24, h, y)].forEach(x => x && g.add(x));
+    }
+  }
+  return g;
+}
+
+/* รูปชิ้นส่วนในกล่อง (เรนเดอร์จากโมเดล 3 มิติจริง) */
+const THUMBS = {};
+(function(){
+  const r = new THREE.WebGLRenderer({ antialias:true, alpha:true, preserveDrawingBuffer:true }); r.setSize(120, 120);
+  const sc = new THREE.Scene(); sc.add(new THREE.HemisphereLight(0xffffff, 0xE9DFCF, 2.4)); const dl = new THREE.DirectionalLight(0xffffff, 2); dl.position.set(3, 6, 4); sc.add(dl);
+  const cam = new THREE.PerspectiveCamera(32, 1, .1, 50);
+  ['wire','bulb','switch', ...Object.keys(ITEMS)].forEach(k => {
+    const m = makePart(k, k==='wire' ? 1.8 : 2, { on:true }, true); sc.add(m);
+    const b = new THREE.Box3().setFromObject(m), c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()).length();
+    cam.position.set(c.x + s*.75, c.y + s*.9, c.z + s*1.2); cam.lookAt(c);
+    r.render(sc, cam); THUMBS[k] = r.domElement.toDataURL(); sc.remove(m);
+  });
+  r.dispose(); r.forceContextLoss();
+})();
+
+/* ---------------- ด่าน ---------------- */
+const LOOP = { A:[-2.6,-1.4], B:[0,-1.4], C:[2.6,-1.4], D:[2.6,1.4], E:[0,1.4], F:[-2.6,1.4] };
+const W = { fixed:'wire' }, BAT = { fixed:'battery' }, BULB = { fixed:'bulb' };
+const LEVELS = [
+  { id:'L1', name:'ต่อให้ครบวง', title:'ด่าน 1 · ต่อให้ครบวง', nodes:LOOP,
+    text:'วงจรนี้มีช่องว่างอยู่ 1 ช่อง หลอดไฟเลยไม่ติด ลองเอาสายไฟไปต่อให้ครบวงสิ',
+    edges:[['F','E',BAT],['F','A',W],['A','B',W],['B','C',BULB],['C','D',W],['D','E',{ empty:['wire'] }]], tray:[['wire',1]],
+    steps:[['วางสายไฟในช่องว่าง', X => X.filled], ['หลอดไฟติด', X => X.lit]],
+    know:'<b>🔎 รู้ไหม</b> ไฟฟ้าต้องเดินได้ครบรอบ จากถ่าน → สายไฟ → หลอดไฟ → กลับมาที่ถ่าน เรียกว่า <b>วงจรปิด</b> · ถ้ามีช่องว่างแม้นิดเดียว (<b>วงจรเปิด</b>) ไฟฟ้าเดินไม่ได้ หลอดไฟก็ไม่ติด' },
+  { id:'L2', name:'ต่อวงจรเอง', title:'ด่าน 2 · ต่อวงจรเองทั้งวง', nodes:LOOP,
+    text:'มีแค่ถ่านไฟฉาย ลองวางหลอดไฟ 1 ดวง แล้วต่อสายไฟให้ครบทุกช่อง ให้หลอดไฟติด',
+    edges:[['F','E',BAT],['F','A',{ empty:['wire','bulb'] }],['A','B',{ empty:['wire','bulb'] }],['B','C',{ empty:['wire','bulb'] }],['C','D',{ empty:['wire','bulb'] }],['D','E',{ empty:['wire','bulb'] }]],
+    tray:[['bulb',1],['wire',9]],
+    steps:[['วางหลอดไฟ 1 ดวง', X => X.count.bulb>=1], ['ใส่ชิ้นส่วนให้ครบทุกช่อง', X => X.filled], ['หลอดไฟติด', X => X.lit]],
+    know:'<b>🔎 รู้ไหม</b> <b>ถ่านไฟฉาย</b> ให้พลังงานไฟฟ้า · <b>หลอดไฟ</b> เปลี่ยนพลังงานไฟฟ้าเป็นแสงสว่าง · <b>สายไฟ</b> เป็นทางให้ไฟฟ้าเดิน · ⚠️ ถ้าต่อสายไฟจากขั้ว + ไปขั้ว − ตรง ๆ โดยไม่มีหลอดไฟ เรียกว่า <b>ลัดวงจร</b> ถ่านจะร้อนและหมดเร็ว' },
+  { id:'L3', name:'สวิตช์', title:'ด่าน 3 · สวิตช์ เปิด–ปิด', nodes:LOOP,
+    text:'ใส่สวิตช์ลงในช่องว่าง แล้วแตะที่สวิตช์เพื่อเปิดไฟ และปิดไฟ',
+    edges:[['F','E',BAT],['F','A',W],['A','B',W],['B','C',BULB],['C','D',{ empty:['switch'] }],['D','E',W]], tray:[['switch',1]],
+    steps:[['วางสวิตช์ในช่องว่าง', X => X.count.switch>=1], ['แตะสวิตช์ให้ไฟติด', X => X.everLit], ['แตะสวิตช์อีกครั้งให้ไฟดับ', X => X.offAfterLit]],
+    know:'<b>🔎 รู้ไหม</b> สวิตช์ทำหน้าที่ <b>ต่อ</b> หรือ <b>ตัด</b> ทางเดินของไฟฟ้า · เปิดสวิตช์ = ทางต่อกัน ไฟติด · ปิดสวิตช์ = ทางขาด ไฟดับ · สวิตช์ไฟในบ้านเราก็ทำงานแบบนี้' },
+  { id:'L4', name:'นักสืบตัวนำไฟฟ้า', title:'ด่าน 4 · นักสืบตัวนำไฟฟ้า', nodes:LOOP,
+    text:'ของแต่ละชิ้น ไฟฟ้าผ่านได้ไหม? ลองเอาของไปหนีบในช่องว่างทีละชิ้น แล้วดูว่าหลอดไฟติดหรือไม่',
+    edges:[['F','E',BAT],['F','A',W],['A','B',W],['B','C',BULB],['C','D',W],['D','E',{ empty:['item'] }]],
+    tray:Object.keys(ITEMS).map(k => [k, 99]),
+    steps:[['ทดลองของให้ครบ 6 ชิ้น', X => Object.keys(X.tested).length>=6, X => Object.keys(X.tested).length+' / 6'], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'ของแบบไหนที่ทำให้หลอดไฟติด?', opts:['🥄 โลหะ เช่น ช้อน เหรียญ ฟอยล์', '🍦 ยาง ไม้ และพลาสติก'], need:X => Object.keys(X.tested).length>=6 },
+    know:'<b>🔎 รู้ไหม</b> ของที่ไฟฟ้าผ่านได้ เรียกว่า <b>ตัวนำไฟฟ้า</b> ส่วนใหญ่เป็นโลหะ · ของที่ไฟฟ้าผ่านไม่ได้ เรียกว่า <b>ฉนวนไฟฟ้า</b> เช่น ยาง ไม้ พลาสติก · สายไฟจึงมีลวดทองแดง (โลหะ) อยู่ข้างใน แล้วหุ้มด้วยพลาสติก เพื่อไม่ให้ไฟดูดเรา' },
+  { id:'L5', name:'สวิตช์ 2 ตัว (และ)', title:'ด่าน 5 · สวิตช์ 2 ตัว เรียงกัน', nodes:LOOP,
+    text:'วงจรนี้มีสวิตช์ 2 ตัวอยู่ในทางเดียวกัน ลองแตะเปิด–ปิดดูว่า ต้องเปิดกี่ตัวไฟถึงจะติด',
+    edges:[['F','E',BAT],['F','A',W],['A','B',W],['B','C',BULB],['C','D',{ fixed:'switch', label:'1' }],['D','E',{ fixed:'switch', label:'2' }]], tray:[],
+    steps:[['ลองเปิดสวิตช์แค่ตัวเดียว', X => X.oneOnly], ['ทำให้หลอดไฟติด', X => X.everLit], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'ต้องเปิดสวิตช์กี่ตัว หลอดไฟถึงจะติด?', opts:['✌️ ต้องเปิดทั้ง 2 ตัว', '☝️ เปิดตัวเดียวก็พอ'], need:X => X.oneOnly && X.everLit },
+    know:'<b>🔎 รู้ไหม</b> สวิตช์ที่อยู่ในทางเดียวกัน ต้องเปิด <b>ตัวที่ 1 และ ตัวที่ 2</b> ไฟถึงจะติด ถ้าปิดตัวไหน ทางก็ขาด · เหมือนบล็อก "และ" ในห้องทดลองโค้ด · เครื่องจักรบางเครื่องต้องกดปุ่ม 2 มือพร้อมกันถึงทำงาน เพื่อให้มืออยู่ห่างจากส่วนที่อันตราย' },
+  { id:'L6', name:'สวิตช์ 2 ทาง (หรือ)', title:'ด่าน 6 · สวิตช์ 2 ทาง', nodes:{ A:[-2.6,-2.1], B:[0,-2.1], C:[2.6,-2.1], D:[2.6,0], M:[0,0], N:[-2.6,0], P:[2.6,2.1], Q:[0,2.1], T:[-2.6,2.1] },
+    text:'วงจรนี้มี 2 ทางให้ไฟฟ้าเดิน แต่ละทางมีสวิตช์ของตัวเอง ลองเปิดทีละตัวดูสิ',
+    edges:[['N','A',BAT],['A','B',W],['B','C',BULB],['C','D',W],['D','M',{ fixed:'switch', label:'1' }],['M','N',W],['D','P',W],['P','Q',{ fixed:'switch', label:'2' }],['Q','T',W],['T','N',W]], tray:[],
+    steps:[['เปิดเฉพาะสวิตช์ 1 ให้ไฟติด', X => X.only1], ['เปิดเฉพาะสวิตช์ 2 ให้ไฟติด', X => X.only2], ['ตอบคำถามให้ถูก', X => X.asked]],
+    ask:{ q:'ต้องเปิดสวิตช์อย่างน้อยกี่ตัว หลอดไฟถึงจะติด?', opts:['☝️ ตัวไหนก็ได้ 1 ตัว', '✌️ ต้องเปิดทั้ง 2 ตัว'], need:X => X.only1 && X.only2 },
+    know:'<b>🔎 รู้ไหม</b> เมื่อมี 2 ทางให้ไฟฟ้าเดิน เปิดสวิตช์ <b>ตัวที่ 1 หรือ ตัวที่ 2</b> ตัวไหนก็ได้ ไฟก็ติด · เหมือนบล็อก "หรือ" ในห้องทดลองโค้ด · เหมือนบ้านที่มีกริ่งทั้งประตูหน้าและประตูหลัง กดที่ไหนก็ดัง' },
+];
+
+/* ---------------- สร้างด่าน ---------------- */
+let L = null, edges = [], X = {}, selected = null, drag = null, dots = [], done = false;
+const npos = k => new THREE.Vector3(L.nodes[k][0], 0, L.nodes[k][1]);
+
+function openLevel(id){
+  if(id==='quiz'){ openQuiz(); return; }
+  document.body.classList.remove('quizmode');
+  L = LEVELS.find(x => x.id===id) || LEVELS[0];
+  try{ localStorage.setItem('kids-stem-circuit-last', L.id); }catch(e){}
+  history.replaceState(null, '', '#'+L.id);
+  while(root.children.length) root.remove(root.children[0]);
+  dots = []; selected = null; done = false; $('#ask').innerHTML = ''; delete $('#ask').dataset.shown;
+  X = { lit:false, everLit:false, offAfterLit:false, oneOnly:false, only1:false, only2:false, tested:{}, asked:false, filled:false, count:{}, shortWarned:false };
+  Object.values(L.nodes).forEach(([x,z]) => {
+    root.add(at(cyl(.13, .16, .34, METAL('#C9A23A')), x, .17, z));
+    root.add(at(sph(.1, METAL('#E2BE55')), x, .36, z));
+  });
+  edges = L.edges.map(([a, b, spec], i) => {
+    const pa = npos(a), pb = npos(b), len = pa.distanceTo(pb);
+    const e = { i, a, b, spec, len, kind:null, on:false, fixed:!!spec.fixed, label:spec.label };
+    const holder = new THREE.Group(); holder.position.copy(pa).add(pb).multiplyScalar(.5);
+    holder.rotation.y = -Math.atan2(pb.z-pa.z, pb.x-pa.x); holder.userData.pick = { edge:e };
+    const slotMat = new THREE.MeshStandardMaterial({ color:'#FFFFFF', transparent:true, opacity:.5, roughness:1 });
+    e.slot = at(new THREE.Mesh(new THREE.BoxGeometry(Math.max(.4, len-.6), .05, .7), slotMat), 0, .03, 0);
+    e.slotMat = slotMat; e.plus = at(sprite('➕', { size:.45 }), 0, .35, 0);
+    holder.add(e.slot, e.plus); e.holder = holder; root.add(holder);
+    if(spec.fixed) setComp(e, spec.fixed, false);
+    return e;
+  });
+  $('#gtitle').textContent = L.title; $('#gtext').textContent = L.text;
+  $('#result').className = 'result'; $('#know').className = 'know'; $('#know').innerHTML = L.know; $('#next').hidden = true;
+  drawLevels(); drawTray(); evaluate(); speak(L.text);
+}
+function setComp(e, kind, anim=true){
+  if(e.comp){ e.holder.remove(e.comp); e.comp = null; }
+  e.kind = kind; e.on = false;
+  ['cell','glass','fil','halo','light','pivot','tag'].forEach(k => delete e[k]);
+  e.slot.visible = e.plus.visible = !kind;
+  if(!kind) return;
+  e.comp = makePart(kind, e.len, e); e.holder.add(e.comp);
+  if(kind==='switch'){ e.tag = at(label('ปิด'), 0, 1.0, 0); e.comp.add(e.tag); drawTag(e); }
+  if(anim){ e.comp.position.y = 1.2; e.comp.scale.setScalar(.6); tween(e.comp.position, { y:0 }, 380, ease.bounce); tween(e.comp.scale, { x:1, y:1, z:1 }, 300, ease.back); }
+}
+function drawTag(e){
+  if(!e.tag) return;
+  const txt = (e.label ? 'สวิตช์ '+e.label+' : ' : '')+(e.on ? 'เปิด' : 'ปิด');
+  const s = label(txt, { height:.42, bg:e.on ? '#DDF6E5' : '#FFFFFF', color:e.on ? '#23843B' : '#8C849E' });
+  e.tag.material.map.dispose(); e.tag.material = s.material; e.tag.scale.copy(s.scale);
+}
+
+/* ---------------- คำนวณวงจร ---------------- */
+function conducts(e){ return e.kind==='wire' || e.kind==='bulb' || (e.kind==='switch' && e.on) || !!(ITEMS[e.kind] && ITEMS[e.kind].metal); }
+function evaluate(){
+  const bat = edges.find(e => e.kind==='battery'), adj = {};
+  edges.forEach(e => { if(e===bat || !conducts(e)) return; (adj[e.a]=adj[e.a]||[]).push([e.b,e]); (adj[e.b]=adj[e.b]||[]).push([e.a,e]); });
+  const paths = [];
+  (function dfs(n, seen, path){
+    if(paths.length > 60) return;
+    if(n===bat.b){ paths.push({ nodes:[...seen], edges:[...path] }); return; }
+    for(const [m, e] of adj[n]||[]){ if(seen.includes(m)) continue; seen.push(m); path.push(e); dfs(m, seen, path); seen.pop(); path.pop(); }
+  })(bat.a, [bat.a], []);
+  const shortP = paths.filter(p => !p.edges.some(e => e.kind==='bulb'));
+  const litP = paths.filter(p => p.edges.some(e => e.kind==='bulb'));
+  const short = shortP.length > 0, lit = !short && litP.length > 0;
+  const wasLit = X.lit; X.lit = lit;
+  edges.filter(e => e.kind==='bulb').forEach(e => setBulb(e, lit && litP.some(p => p.edges.includes(e))));
+  if(bat.cell){ bat.cell.material.emissive.set(short ? '#FF3B1F' : '#000000'); bat.cell.material.emissiveIntensity = short ? .5 : 0; }
+  if(short && !X.shortWarned){ X.shortWarned = true; sfx('no'); pop('⚠️ ลัดวงจร! ไฟฟ้าวิ่งผ่านสายไฟอย่างเดียว ไม่ผ่านหลอดไฟ ถ่านจะร้อน', 'no'); speak('ลัดวงจร ต้องมีหลอดไฟอยู่ในวงจรด้วยนะ'); }
+  if(!short) X.shortWarned = false;
+  if(lit && !wasLit) sfx('ding');
+  makeDots(lit ? litP : short ? shortP : [], short);
+  /* สถานะสำหรับขั้นตอน */
+  X.count = {}; edges.forEach(e => { if(e.kind && !e.fixed) X.count[e.kind] = (X.count[e.kind]||0)+1; });
+  X.filled = edges.every(e => e.kind);
+  const sw = edges.filter(e => e.kind==='switch');
+  if(lit) X.everLit = true;
+  if(L.id==='L3' && X.everLit && sw.length && !sw[0].on) X.offAfterLit = true;
+  if(sw.length===2){
+    const on = sw.map(e => e.on);
+    if(on[0] !== on[1]){ X.oneOnly = true; if(lit && on[0]) X.only1 = true; if(lit && on[1]) X.only2 = true; }
+  }
+  const gap = edges.find(e => e.spec.empty && e.spec.empty.includes('item'));
+  if(gap && ITEMS[gap.kind]){ const had = gap.kind in X.tested; X.tested[gap.kind] = lit; if(!had){ drawTray(); pop((lit ? '💡 ' : '🌑 ')+ITEMS[gap.kind].name+(lit ? ' ไฟฟ้าผ่านได้ ไฟติด!' : ' ไฟฟ้าผ่านไม่ได้ ไฟไม่ติด'), lit ? 'ok' : 'no'); speak(ITEMS[gap.kind].name+(lit ? ' ไฟติด' : ' ไฟไม่ติด')); } }
+  drawSteps();
+}
+function setBulb(e, on){
+  if(!e.glass) return;
+  const k = on ? 1 : 0;
+  tween(e.glass, { emissiveIntensity:1.6*k, opacity:on ? .92 : .45 }, 300);
+  tween(e.fil, { emissiveIntensity:3*k }, 200);
+  tween(e.light, { intensity:on ? 9 : 0 }, 300);
+  tween(e.halo.scale, { x:on ? 3.2 : .01, y:on ? 3.2 : .01 }, 350, ease.back);
+}
+function makeDots(paths, danger){
+  dots.forEach(d => root.remove(d.mesh)); dots = [];
+  const dm = new THREE.MeshBasicMaterial({ color:danger ? '#FF6B4A' : '#FFD23F' });
+  paths.slice(0, 3).forEach(p => {
+    const pts = p.nodes.concat([p.nodes[0]]).map(k => npos(k).setY(.34));
+    const seg = []; let total = 0;
+    for(let i=0;i<pts.length-1;i++){ const l = pts[i].distanceTo(pts[i+1]); seg.push([pts[i], pts[i+1], total, l]); total += l; }
+    const n = Math.floor(total/.55);
+    for(let i=0;i<n;i++){ const mesh = new THREE.Mesh(new THREE.SphereGeometry(.075, 10, 8), dm); root.add(mesh); dots.push({ mesh, seg, total, off:i*total/n, speed:danger ? 3 : 1.3 }); }
+  });
+}
+S.onFrame((dt, t) => {
+  dots.forEach(d => {
+    const s = (d.off + t*d.speed) % d.total, g = d.seg.find(x => s >= x[2] && s <= x[2]+x[3]) || d.seg[0];
+    d.mesh.position.lerpVectors(g[0], g[1], (s-g[2])/g[3]);
+  });
+  const want = drag ? drag.kind : selected;
+  edges.forEach(e => {
+    if(!e.slot.visible) return;
+    const ok = want && accepts(e, want);
+    e.slotMat.color.set(ok ? '#FFD54A' : '#FFFFFF');
+    e.slotMat.opacity = ok ? .55 + .35*Math.sin(t*6) : .5;
+    e.plus.scale.setScalar(ok ? .55 + .08*Math.sin(t*6) : .45);
+  });
+  edges.forEach(e => { if(e.halo && X.lit && e.halo.scale.x > 1) e.halo.material.opacity = .85 + .15*Math.sin(t*9); });
+});
+
+/* ---------------- วาง / เอาออก / สวิตช์ ---------------- */
+const cat = k => ITEMS[k] ? 'item' : k;
+const accepts = (e, kind) => !e.fixed && e.spec.empty && e.spec.empty.includes(cat(kind));
+const left = kind => { const t = L.tray.find(x => x[0]===kind); return t ? t[1] - (X.count[kind]||0) : 0; };
+function tryPlace(e, kind){
+  if(!e){ return; }
+  if(e.fixed){ pop('วางตรงช่องว่างที่มี ➕ นะ', 'no'); sfx('no'); return; }
+  if(!accepts(e, kind)){ pop('ช่องนี้ใส่'+partName(kind)+'ไม่ได้', 'no'); sfx('no'); return; }
+  if(e.kind===kind) return;
+  if(left(kind) <= 0 && !ITEMS[kind]){ pop(partName(kind)+'ใช้หมดแล้ว แตะชิ้นที่วางไว้เพื่อเอาออกก่อน', 'no'); sfx('no'); return; }
+  setComp(e, kind); sfx('pop');
+  if(left(kind) <= 1 || ITEMS[kind]) selected = null;
+  evaluate(); drawTray();
+}
+S.onTap((x, y) => {
+  const hit = S.pick(x, y, root.children); if(!hit || !hit.obj.userData.pick.edge) return;
+  const e = hit.obj.userData.pick.edge;
+  if(selected && !e.kind){ tryPlace(e, selected); return; }
+  if(selected && e.kind && !e.fixed && accepts(e, selected)){ tryPlace(e, selected); return; }
+  if(e.kind==='switch'){
+    e.on = !e.on; sfx('click'); drawTag(e);
+    tween(e.pivot.rotation, { z:e.on ? 0 : .55 }, 220, ease.out).then(evaluate);
+    return;
+  }
+  if(e.kind && !e.fixed){ setComp(e, null); sfx('take'); evaluate(); drawTray(); return; }
+  if(!e.kind){ pop('👇 แตะชิ้นส่วนในกล่องด้านล่างก่อน แล้วค่อยแตะช่องว่าง'); sfx('tap'); return; }
+  speak(partName(e.kind)); sfx('tap');
+});
+
+/* ---------------- กล่องชิ้นส่วน ---------------- */
+function drawTray(){
+  const el = $('#parts');
+  el.innerHTML = L.tray.map(([k]) => {
+    const n = left(k), t = X.tested[k];
+    const note = ITEMS[k] ? (t===undefined ? 'ยังไม่ทดลอง' : t ? '💡 ไฟติด' : '🌑 ไม่ติด') : k==='wire' ? 'ใช้ได้หลายเส้น' : n > 0 ? 'เหลือ '+n : 'วางแล้ว';
+    return '<button type="button" class="part'+(selected===k?' sel':'')+(!ITEMS[k] && n<=0?' used':'')+(t===true?' yes':t===false?' nope':'')+'" data-k="'+k+'"><img src="'+THUMBS[k]+'" alt=""><b>'+partName(k)+'</b><small>'+note+'</small></button>';
+  }).join('');
+  el.querySelectorAll('.part').forEach(b => b.addEventListener('pointerdown', ev => startDrag(ev, b.dataset.k)));
+}
+function startDrag(ev, kind){
+  ev.preventDefault();
+  drag = { kind, x:ev.clientX, y:ev.clientY, moved:false, ghost:null };
+  const move = e => {
+    if(!drag) return;
+    if(!drag.moved && Math.hypot(e.clientX-drag.x, e.clientY-drag.y) > 12){
+      drag.moved = true; const g = document.createElement('img'); g.src = THUMBS[kind]; g.className = 'ghost'; g.style.width = '70px'; document.body.appendChild(g); drag.ghost = g;
+    }
+    if(drag.ghost){ drag.ghost.style.left = e.clientX+'px'; drag.ghost.style.top = e.clientY+'px'; }
+  };
+  const up = e => {
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    const d = drag; drag = null; if(!d) return;
+    if(d.ghost) d.ghost.remove();
+    if(d.moved){
+      const hit = e.type==='pointerup' ? S.pick(e.clientX, e.clientY, root.children) : null;
+      if(hit && hit.obj.userData.pick.edge) tryPlace(hit.obj.userData.pick.edge, kind);
+    } else {
+      if(!ITEMS[kind] && left(kind) <= 0){ pop(partName(kind)+'วางไปแล้ว', 'no'); sfx('no'); return; }
+      selected = selected===kind ? null : kind; sfx('tap'); drawTray();
+      if(selected) pop('👆 แตะช่องว่างที่กะพริบสีเหลือง เพื่อวาง'+partName(kind));
+    }
+  };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+}
+
+/* ---------------- เป้าหมาย / ขั้นตอน ---------------- */
+function drawSteps(){
+  const items = L.steps.map(([t, f, extra]) => ({ t:t+(extra && !f(X) ? ' ('+extra(X)+')' : ''), ok:!!f(X) }));
+  $('#steps').innerHTML = items.map(s => '<li class="'+(s.ok?'done':'')+'">'+s.t+'</li>').join('');
+  const nextStep = items.find(s => !s.ok);
+  $('#now').textContent = nextStep ? '👉 '+nextStep.t : '🎉 ผ่านด่านแล้ว!';
+  const A = L.ask, box = $('#ask');
+  if(A && A.need(X) && !box.dataset.shown){
+    box.dataset.shown = '1';
+    const order = shuffle([0,1]);
+    box.innerHTML = '<p style="margin-top:10px;font-weight:700">❓ '+A.q+' <button class="spk" type="button" id="asksay" style="display:inline-grid;place-items:center;vertical-align:middle;width:34px;height:34px">🔊</button></p><div class="choice">'+
+      order.map(i => '<button type="button" data-i="'+i+'">'+A.opts[i]+'</button>').join('')+'</div>';
+    $('#asksay').onclick = () => speak(A.q+' '+A.opts.join(' หรือ '));
+    speak(A.q);
+    box.querySelectorAll('.choice button').forEach(b => b.onclick = () => {
+      if(X.asked) return;
+      if(b.dataset.i==='0'){ b.className = 'right'; X.asked = true; sfx('ok'); drawSteps(); }
+      else { b.className = 'wrong'; sfx('no'); pop('ยังไม่ใช่ ลองดูหลอดไฟอีกทีนะ', 'no'); setTimeout(() => { b.className = ''; }, 1200); }
+    });
+  }
+  if(!A || !A.need(X)){ if(!X.asked){ box.innerHTML = ''; delete box.dataset.shown; } }
+  if(!done && items.every(s => s.ok)) complete();
+}
+function complete(){
+  done = true;
+  const was = st.stars[L.id]||0; st.stars[L.id] = 3; st.save();
+  $('#result').className = 'result ok'; $('#result').textContent = '🎉 ผ่านด่านแล้ว! ได้ ⭐⭐⭐';
+  $('#know').className = 'know on';
+  const idx = LEVELS.indexOf(L), nx = LEVELS[idx+1];
+  $('#next').hidden = false; $('#next').textContent = nx ? 'ด่านต่อไป: '+nx.name+' ▶' : 'ไปทำแบบทดสอบ 📝 ▶';
+  $('#next').onclick = () => openLevel(nx ? nx.id : 'quiz');
+  sfx('win'); setTimeout(() => speak('ผ่านด่านแล้ว เก่งมาก '+$('#know').textContent), 700);
+  if(window.KP) KP.log({ kind:'game', page:'stem-circuit', item:'circuit-'+L.id, title:'ต่อวงจรไฟฟ้า · '+L.name, stars:3 });
+  drawLevels();
+  if(window.innerWidth <= 980) setTimeout(() => $('#result').scrollIntoView({ behavior:'smooth', block:'center' }), 2600);
+}
+$('#gsay').onclick = () => speak(L.text);
+$('#reset').onclick = () => openLevel(L.id);
+
+/* ---------------- แบบทดสอบ ---------------- */
+const BANK = [
+  { q:'หลอดไฟจะติดเมื่อไร?', e:'💡', opts:[['⭕','ต่อวงจรครบรอบ ไม่มีช่องว่าง'],['✂️','วงจรมีช่องว่าง'],['🔋','มีถ่านแต่ไม่ได้ต่อสายไฟ']], why:'ไฟฟ้าต้องเดินได้ครบรอบ จากถ่าน ผ่านหลอดไฟ แล้วกลับมาที่ถ่าน' },
+  { q:'ของชิ้นไหนที่ไฟฟ้าผ่านได้?', e:'⚡', opts:[['🥄','ช้อนเหล็ก'],['🧸','ตุ๊กตาผ้า'],['🪵','ไม้'],['🎈','ลูกโป่งยาง']], why:'ช้อนเหล็กเป็นโลหะ โลหะเป็นตัวนำไฟฟ้า' },
+  { q:'ของชิ้นไหนที่ไฟฟ้าผ่าน ไม่ได้?', e:'🚫', opts:[['📏','ไม้บรรทัดพลาสติก'],['🪙','เหรียญ'],['🔑','กุญแจเหล็ก'],['📎','ลวดเสียบกระดาษ']], why:'พลาสติกเป็นฉนวนไฟฟ้า ส่วนเหรียญ กุญแจ ลวด เป็นโลหะ ไฟฟ้าผ่านได้' },
+  { q:'ถ้าปิดสวิตช์ หลอดไฟจะเป็นอย่างไร?', e:'🔘', opts:[['🌑','ดับ'],['💡','สว่างขึ้น'],['🔁','กะพริบ']], why:'ปิดสวิตช์ = ทางเดินไฟฟ้าขาด ไฟฟ้าเดินไม่ครบรอบ หลอดไฟจึงดับ' },
+  { q:'สายไฟหุ้มด้วยพลาสติกหรือยางเพื่ออะไร?', e:'🔌', opts:[['🛡️','กันไม่ให้ไฟดูดเรา'],['🎨','ให้สีสวยเท่านั้น'],['🚀','ให้ไฟฟ้าวิ่งเร็วขึ้น']], why:'พลาสติกและยางเป็นฉนวน ไฟฟ้าผ่านไม่ได้ จึงช่วยป้องกันไฟดูด' },
+  { q:'สวิตช์ 2 ตัวเรียงอยู่ในทางเดียวกัน ต้องเปิดกี่ตัวไฟถึงติด?', e:'✌️', opts:[['✌️','ทั้ง 2 ตัว'],['☝️','ตัวเดียวก็พอ'],['🙅','ไม่ต้องเปิดเลย']], why:'อยู่ทางเดียวกัน ต้องเปิดตัวที่ 1 และ ตัวที่ 2 ทางถึงจะต่อกันตลอด' },
+  { q:'มี 2 ทางให้ไฟฟ้าเดิน แต่ละทางมีสวิตช์ 1 ตัว ต้องเปิดอย่างน้อยกี่ตัว?', e:'🔀', opts:[['☝️','ตัวไหนก็ได้ 1 ตัว'],['✌️','ต้องเปิดทั้ง 2 ตัว'],['🙅','เปิดเท่าไรก็ไม่ติด']], why:'เปิดตัวที่ 1 หรือ ตัวที่ 2 ก็มีทางให้ไฟฟ้าเดินครบรอบแล้ว' },
+  { q:'ในวงจรนี้ อะไรให้พลังงานไฟฟ้า?', e:'🔋', opts:[['🔋','ถ่านไฟฉาย'],['💡','หลอดไฟ'],['🔘','สวิตช์']], why:'ถ่านไฟฉายเป็นแหล่งพลังงาน หลอดไฟเป็นตัวใช้พลังงาน' },
+  { q:'ถ้าเห็นสายไฟขาด หรือปลั๊กไฟแตก ควรทำอย่างไร?', e:'⚠️', opts:[['🙋','บอกผู้ใหญ่ ไม่แตะเอง'],['✋','เอามือจับดู'],['🔧','ซ่อมเองเลย']], why:'ไฟฟ้าในบ้านอันตรายมาก ต้องให้ผู้ใหญ่จัดการ' },
+  { q:'ต่อสายไฟจากขั้ว + ไปขั้ว − ของถ่านตรง ๆ โดยไม่มีหลอดไฟ จะเกิดอะไร?', e:'🔥', opts:[['⚠️','ลัดวงจร ถ่านร้อนและหมดเร็ว'],['🌟','ไฟสว่างที่สุด'],['😴','ไม่เกิดอะไรเลย']], why:'ไฟฟ้าวิ่งผ่านสายไฟอย่างเดียวแรงมาก ถ่านจึงร้อน เรียกว่าลัดวงจร' },
+  { q:'ข้างในสายไฟมีอะไร ที่ให้ไฟฟ้าวิ่งผ่าน?', e:'🧵', opts:[['🟠','ลวดทองแดง (โลหะ)'],['🟦','พลาสติก'],['🌬️','อากาศ']], why:'ลวดทองแดงเป็นโลหะ เป็นตัวนำไฟฟ้า ส่วนพลาสติกหุ้มไว้ข้างนอก' },
+  { q:'ยาง ไม้ พลาสติก เรียกว่าอะไร?', e:'🧤', opts:[['🧤','ฉนวนไฟฟ้า (ไฟฟ้าผ่านไม่ได้)'],['⚡','ตัวนำไฟฟ้า (ไฟฟ้าผ่านได้)'],['🔋','แหล่งพลังงาน']], why:'ของที่ไฟฟ้าผ่านไม่ได้ เรียกว่า ฉนวนไฟฟ้า' },
+];
+function openQuiz(){
+  document.body.classList.add('quizmode'); L = { id:'quiz' }; history.replaceState(null, '', '#quiz');
+  drawLevels(); window.scrollTo(0, 0);
+  quiz($('#quiz'), { bank:BANK, count:8, page:'stem-circuit-quiz', title:'วงจรไฟฟ้า', st, onDone:drawLevels });
+}
+function drawLevels(){ levelBar($('#levels'), LEVELS, { cur:L && L.id, stars:st.stars, quiz:true, onPick:id => { if(L && id===L.id && id!=='quiz') return; openLevel(id); } }); }
+
+let first = (location.hash||'').slice(1);
+if(!first){ try{ first = localStorage.getItem('kids-stem-circuit-last') || 'L1'; }catch(e){ first = 'L1'; } }
+openLevel(first);
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if(id && (!L || id!==L.id)) openLevel(id); });
+window.__test = { openLevel, tryPlace, evaluate, get edges(){ return edges; }, get X(){ return X; }, toggle:e => { e.on = !e.on; drawTag(e); e.pivot.rotation.z = e.on ? 0 : .55; evaluate(); } };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>
