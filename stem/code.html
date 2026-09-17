@@ -64,6 +64,51 @@ h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700}
 .blocklyTreeLabel{font-family:'Noto Sans Thai Looped',sans-serif!important;font-weight:700!important;font-size:14px!important}
 
 
+
+/* ================= แบบทดสอบ ================= */
+.mbtn.quiz{background:#FFF1C9;color:#8A6100}
+.mbtn.quiz.on{border-color:#C98A00}
+#quiz{display:none;max-width:860px;margin:0 auto;padding:12px 12px 40px}
+body.quizmode #quiz{display:block}
+body.quizmode .main{display:none}
+.qcard{background:#fff;border-radius:24px;padding:16px;box-shadow:0 8px 22px rgba(58,51,80,.08);margin-bottom:12px}
+.qcard h2{font-size:1.3rem}
+.qcard .sub{color:var(--mute);font-size:.9rem}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
+.level{border-radius:20px;padding:14px 10px;text-align:center;background:#FBF8F2;font-weight:700;border:3px solid transparent}
+.level:hover{border-color:var(--kd)}
+.level .le{font-size:2rem;display:block}
+.level small{display:block;color:var(--mute);font-weight:600;font-size:.8rem;line-height:1.35;margin-top:2px}
+.level .best{display:block;margin-top:4px;letter-spacing:2px}
+.qtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qtop .qn{font-family:'Mali',sans-serif;font-weight:700}
+.qbar{flex:1;min-width:120px;height:10px;border-radius:99px;background:#EFEAF5;overflow:hidden}
+.qbar i{display:block;height:100%;background:linear-gradient(90deg,#7ED9B0,#8EC5FF);transition:width .3s}
+.qscore{font-weight:700;color:var(--ok)}
+#qws{height:300px;border-radius:18px;overflow:hidden;background:#FFFDF8;margin:10px 0;border:2px dashed #EDE7F5}
+.qask{display:flex;align-items:flex-start;gap:10px;font-weight:700;font-size:1.1rem}
+.qask span{flex:1}
+.qask .spk{width:40px;height:40px;border-radius:14px;background:var(--kl);flex:none}
+.qpress{margin-top:6px;font-size:.9rem;color:#8A6100;background:#FFF6D6;border-radius:12px;padding:4px 10px;display:inline-block}
+.qopts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.qopt{border-radius:18px;background:#FDFCFF;border:3px solid #EDE7F5;padding:10px;min-height:64px;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:1.15rem;text-align:center}
+.qopt:hover{border-color:var(--kd)}
+.qopt.right{border-color:#9EDDB2;background:#EFFAF2}
+.qopt.wrong{border-color:#FFCBB3;background:#FFF5EF}
+.qopt.dim{opacity:.5}
+.mini{display:grid;grid-template-columns:repeat(5,12px);gap:3px;padding:6px;background:#1C1D26;border-radius:10px}
+.mini i{width:12px;height:12px;border-radius:3px;background:#3A2626}
+.mini i.on{background:#FF4B4B;box-shadow:0 0 6px #FF4B4B}
+.qfb{margin-top:10px;border-radius:14px;padding:10px 12px;font-weight:600;display:none}
+.qfb.ok{display:block;background:#EFFAF2;color:#236B40}
+.qfb.no{display:block;background:#FFF5EF;color:#9A4A26}
+.qnext{display:none;margin:12px auto 0}
+.qdone{text-align:center}
+.qdone .big{font-family:'Mali',sans-serif;font-size:2.4rem;color:var(--kd)}
+.qdone .stars{font-size:2.4rem;letter-spacing:6px}
+.qlist{text-align:left;margin-top:12px;display:grid;gap:6px}
+.qlist div{background:#FBF8F2;border-radius:12px;padding:6px 10px;font-size:.9rem}
+@media (max-width:520px){ .qopts{grid-template-columns:1fr} }
 /* ================= โหมดสอน ================= */
 .btn.tut{background:#FFB400;color:#4A3500}
 .coach{position:fixed;left:12px;right:96px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;max-width:620px;background:#fff;border-radius:22px;
@@ -100,6 +145,7 @@ h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700}
   <div class="in"><a class="pill" href="../">‹ หน้ารวม</a><div class="tt">🤖 ห้องทดลองโค้ดบล็อก</div><button class="pill" id="mute" type="button">🔊</button></div>
   <div class="missions" id="missions"></div>
 </div>
+<section id="quiz"></section>
 <div class="main">
   <div class="side">
     <section class="card">
@@ -133,6 +179,11 @@ h1,h2,h3{font-family:'Mali',sans-serif;font-weight:700}
    ภารกิจตรวจอัตโนมัติ: รันโปรแกรมแบบเร็วในเบื้องหลัง กดปุ่มให้เอง แล้วดูว่าจอ/เสียงเป็นไปตามโจทย์ไหม
    ============================================================ */
 const $ = s => document.querySelector(s);
+/* ข้อความไทยของ Blockly บางคำแปลแล้วเข้าใจผิด (เช่น "เปลี่ยนค่า x เป็น 2" แต่จริง ๆ คือบวกเพิ่ม) แก้ให้เด็กอ่านแล้วตรงกับที่บล็อกทำ */
+Object.assign(Blockly.Msg, {
+  VARIABLES_SET:'ตั้งค่า %1 เป็น %2', MATH_CHANGE_TITLE:'เปลี่ยนค่า %1 ทีละ %2',
+  CONTROLS_IF_MSG_ELSE:'ไม่เช่นนั้น', CONTROLS_IF_MSG_ELSEIF:'ถ้าไม่ใช่ แต่ถ้า', CONTROLS_IF_MSG_THEN:'แล้วทำ',
+});
 
 /* ---------------- ภาพ 5×5 ---------------- */
 const P = rows => rows.join('').split('').map(c => c==='#' ? 1 : 0);
@@ -252,10 +303,10 @@ const ws = Blockly.inject('ws', { toolbox:TOOLBOX, renderer:'zelos', theme, tras
 ws.addChangeListener(Blockly.Events.disableOrphans);
 
 /* ---------------- แปลงบล็อกเป็นโปรแกรม ---------------- */
-function buildCode(){
-  G.init(ws);
+function buildCode(w=ws){
+  G.init(w);
   const part = { start:[], forever:[], A:[], B:[] };
-  ws.getTopBlocks(true).forEach(b => {
+  w.getTopBlocks(true).forEach(b => {
     if(!b.isEnabled()) return;
     if(b.type==='mb_on_start') part.start.push(G.statementToCode(b,'DO'));
     else if(b.type==='mb_forever') part.forever.push(G.statementToCode(b,'DO'));
@@ -404,10 +455,12 @@ function drawMissions(){
   const all = [{ id:'free', title:'สร้างอิสระ' }].concat(MISSIONS);
   $('#missions').innerHTML = all.map((m,i) => {
     const s = SAVE.stars[m.id]||0;
-    return '<button type="button" class="mbtn'+(m.id===cur?' on':'')+(s?' done':'')+'" data-id="'+m.id+'">'+(m.id==='free'?'🎨 ':i+'. ')+m.title+
+    return '<button type="button" class="mbtn'+(m.id===cur && !document.body.classList.contains('quizmode')?' on':'')+(s?' done':'')+'" data-id="'+m.id+'">'+(m.id==='free'?'🎨 ':i+'. ')+m.title+
       (m.id==='free' ? '' : '<small>'+'⭐'.repeat(s)+'☆'.repeat(3-s)+'</small>')+'</button>';
   }).join('');
-  $('#missions').querySelectorAll('.mbtn').forEach(b => b.onclick = () => openMission(b.dataset.id));
+  $('#missions').insertAdjacentHTML('beforeend', '<button type="button" class="mbtn quiz'+(document.body.classList.contains('quizmode')?' on':'')+'" id="quizBtn">📝 แบบทดสอบ<small>'+quizStarsText()+'</small></button>');
+  $('#missions').querySelectorAll('.mbtn[data-id]').forEach(b => b.onclick = () => { closeQuiz(); openMission(b.dataset.id); });
+  $('#quizBtn').onclick = openQuiz;
 }
 function drawGoal(){
   const m = MISSIONS.find(x => x.id===cur);
@@ -680,6 +733,200 @@ function coachUpdate(){
   }, 150);
 }
 ws.addChangeListener(e => { if(TUT && !e.isUiEvent) coachUpdate(); });
+
+/* ============================================================
+   แบบทดสอบโค้ดบล็อก
+   สุ่มโปรแกรมตามระดับ → รันบนบอร์ดจำลองแบบเร็วเพื่อหาเฉลย → สร้างตัวเลือกหลอกที่ใกล้เคียง
+   ============================================================ */
+const QR = n => Math.floor(Math.random()*n), QP = a => a[QR(a.length)];
+const QS = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=QR(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const ICON_POOL = ['HEART','SMALL','HAPPY','SAD','YES','NO','DIAMOND','SQUARE','UP','DOWN'];
+const iconName = k => ICONS[k][0];
+const vset = (id, n) => B('variables_set',{ fields:{ VAR:{ id } }, inputs:{ VALUE:{ block:B('math_number',{ fields:{ NUM:n } }) } } });
+const vchg = (id, n) => B('math_change',{ fields:{ VAR:{ id } }, inputs:{ DELTA:numIn(n) } });
+const icon = k => B('mb_show_icon',{ fields:{ ICON:k } });
+const shownum = inp => B('mb_show_number',{ inputs:{ N:inp } });
+const repeat = (n, body) => B('controls_repeat_ext',{ inputs:{ TIMES:numIn(n), DO:chain(body) } });
+const onBtn = (btn, body, y) => hat('mb_on_button', body, { fields:{ BTN:btn }, x:30, y:y||30 });
+const numOpts = (ans, extra=[]) => { const set=[ans]; for(const x of QS(extra.concat([ans+1,ans-1,ans+2,ans*2,ans-2]).filter(x=>x>=0))) { if(set.length>=4) break; if(!set.includes(x)) set.push(x); } let k=3; while(set.length<4){ if(!set.includes(ans+k)) set.push(ans+k); k++; } return QS(set); };
+const seqText = a => a.join(' → ');
+const gridOf = (x,y) => { const g=Array(25).fill(0); g[y*5+x]=1; return g.join(''); };
+
+/* gen คืน { blocks, vars, ask, kind:'icon'|'num'|'text'|'grid', presses, answer(log), opts(ans), why(ans) } */
+const QGEN = {
+  easy:[
+    () => { const ks=QS(ICON_POOL).slice(0,2+QR(2)); return { blocks:[hat('mb_on_start', ks.map(icon))], ask:'เมื่อรันโปรแกรมนี้ รูปสุดท้ายที่ค้างอยู่บนจอคือรูปอะไร?', kind:'icon',
+      answer:L=>L.icons.at(-1), opts:a=>QS([a].concat(QS(ICON_POOL.filter(k=>k!==a)).slice(0,3))), why:a=>'บอร์ดทำจากบนลงล่าง บล็อกล่างสุดคือ '+iconName(a)+' จึงค้างอยู่เป็นรูปสุดท้าย' }; },
+    () => { const ks=QS(ICON_POOL).slice(0,3); return { blocks:[hat('mb_on_start', ks.map(icon))], ask:'รูปแรกที่ขึ้นบนจอคือรูปอะไร?', kind:'icon',
+      answer:L=>L.icons[0], opts:a=>QS([a].concat(ks.filter(k=>k!==a), QS(ICON_POOL.filter(k=>!ks.includes(k))).slice(0,1))), why:a=>'บล็อกบนสุดทำก่อน จึงเห็น '+iconName(a)+' เป็นรูปแรก' }; },
+    () => { const ns=[QR(10),QR(10),QR(10)]; return { blocks:[hat('mb_on_start', ns.map(n=>shownum(numIn(n))))], ask:'ตัวเลขขึ้นบนจอตามลำดับอย่างไร?', kind:'text',
+      answer:L=>seqText(L.nums), opts:a=>{ const o=new Set([a, seqText(ns.slice().reverse()), seqText([ns[1],ns[0],ns[2]]), seqText([ns[0],ns[2],ns[1]]), seqText([ns[0],ns[1],(ns[2]+1)%10])]); return QS([...o].slice(0,4)); },
+      why:a=>'บอร์ดแสดงตัวเลขตามลำดับบล็อกจากบนลงล่าง คือ '+a }; },
+    () => { const n=2+QR(4), k=QP(ICON_POOL); return { blocks:[hat('mb_on_start',[ repeat(n,[icon(k)]) ])], ask:'จอจะแสดงรูป '+iconName(k)+' ทั้งหมดกี่ครั้ง?', kind:'num',
+      answer:L=>L.icons.filter(x=>x===k).length, opts:a=>numOpts(a,[1]), why:a=>'"ทำซ้ำ '+n+' ครั้ง" ทำบล็อกข้างใน '+n+' รอบ จึงเห็นรูป '+a+' ครั้ง' }; },
+    () => { const a=QP(ICON_POOL), b=QP(ICON_POOL.filter(x=>x!==a)), btn=QP(['A','B']); return { blocks:[onBtn('A',[icon(a)]), onBtn('B',[icon(b)],180)], presses:[btn],
+      ask:'ถ้ารันแล้วกดปุ่ม '+btn+' จอจะแสดงรูปอะไร?', kind:'icon', answer:L=>L.icons.at(-1), opts:x=>QS([x, x===a?b:a].concat(QS(ICON_POOL.filter(k=>k!==a&&k!==b)).slice(0,2))),
+      why:x=>'กดปุ่ม '+btn+' บอร์ดจะทำเฉพาะบล็อกใน "เมื่อกดปุ่ม '+btn+'" จึงเห็น '+iconName(x) }; },
+    () => { const n=2+QR(3), notes=Object.keys(NOTES); return { blocks:[hat('mb_on_start', Array.from({length:n},()=>B('mb_tone',{ fields:{ NOTE:QP(notes), BEAT:'1' } })))], ask:'ได้ยินเสียงโน้ตทั้งหมดกี่ครั้ง?', kind:'num',
+      answer:L=>L.notes.length, opts:a=>numOpts(a), why:a=>'มีบล็อก "เล่นโน้ต" '+a+' ก้อน แต่ละก้อนเล่น 1 ครั้ง' }; },
+  ],
+  medium:[
+    () => { const n=2+QR(3), x=QP(ICON_POOL), y=QP(ICON_POOL.filter(k=>k!==x)); const all=QR(2)===0; return { blocks:[hat('mb_on_start',[ repeat(n,[icon(x),icon(y)]) ])],
+      ask: all ? 'จอแสดงรูปทั้งหมดรวมกันกี่ครั้ง?' : 'จอแสดงรูป '+iconName(y)+' กี่ครั้ง?', kind:'num',
+      answer:L=> all ? L.icons.length : L.icons.filter(k=>k===y).length, opts:a=>numOpts(a,[n,2*n,n+2]), why:a=> all ? 'ทำซ้ำ '+n+' รอบ รอบละ 2 รูป → '+n+' × 2 = '+a : 'ทำซ้ำ '+n+' รอบ รอบละ 1 ครั้ง → '+a+' ครั้ง' }; },
+    () => { const a=QR(6), b=1+QR(5); return { vars:[{ name:'x', id:'vx' }], blocks:[hat('mb_on_start',[ vset('vx',a), vchg('vx',b), shownum(varGet('vx')) ])],
+      ask:'จอจะแสดงตัวเลขอะไร?', kind:'num', answer:L=>L.nums.at(-1), opts:x=>numOpts(x,[a,b]), why:x=>'x เริ่มที่ '+a+' แล้วเพิ่มอีก '+b+' → '+a+' + '+b+' = '+x }; },
+    () => { const a=QR(4), n=2+QR(3), b=1+QR(3); return { vars:[{ name:'x', id:'vx' }], blocks:[hat('mb_on_start',[ vset('vx',a), repeat(n,[vchg('vx',b)]), shownum(varGet('vx')) ])],
+      ask:'จอจะแสดงตัวเลขอะไร?', kind:'num', answer:L=>L.nums.at(-1), opts:x=>numOpts(x,[a+b, a+n, n*b]), why:x=>'x เริ่มที่ '+a+' ทำซ้ำ '+n+' รอบ รอบละเพิ่ม '+b+' → '+a+' + ('+n+' × '+b+') = '+x }; },
+    () => { const k=2+QR(3); return { vars:[{ name:'คะแนน', id:'sc' }], blocks:[hat('mb_on_start',[ vset('sc',0) ]), onBtn('A',[ vchg('sc',1), shownum(varGet('sc')) ],150)], presses:Array(k).fill('A'),
+      ask:'รันแล้วกดปุ่ม A '+k+' ครั้ง ตัวเลขสุดท้ายบนจอคืออะไร?', kind:'num', answer:L=>L.nums.at(-1), opts:x=>numOpts(x,[1]), why:x=>'คะแนนเริ่ม 0 กด A ทีละครั้งเพิ่ม 1 กด '+k+' ครั้ง → '+x }; },
+    () => { const st=1+QR(3), step=1+QR(3), n=3; return { vars:[{ name:'n', id:'vn' }], blocks:[hat('mb_on_start',[ vset('vn',st), repeat(n,[ shownum(varGet('vn')), vchg('vn',step) ]) ])],
+      ask:'ตัวเลขขึ้นบนจอตามลำดับอย่างไร?', kind:'text', answer:L=>seqText(L.nums),
+      opts:a=>{ const r=[0,1,2].map(i=>st+i*step); const o=new Set([a, seqText(r.map(x=>x+step)), seqText([st,st,st]), seqText([0,1,2].map(i=>st+i*(step+1)))]); let e=1; while(o.size<4){ o.add(seqText(r.map(x=>x+e+step))); e++; } return QS([...o].slice(0,4)); },
+      why:a=>'แสดง n ก่อนแล้วค่อยเพิ่มทีละ '+step+' จึงได้ '+a }; },
+    () => { const x=QR(5), y=QR(5); return { blocks:[hat('mb_on_start',[ B('mb_plot',{ inputs:{ X:numIn(x), Y:numIn(y) } }) ])], ask:'ไฟดวงไหนจะสว่าง? (x = หลักจากซ้าย, y = แถวจากบน เริ่มนับที่ 0)', kind:'grid',
+      answer:L=>L.frames.at(-1), opts:a=>{ const o=new Set([a, gridOf(y,x), gridOf((x+1)%5,y), gridOf(x,(y+1)%5), gridOf(4-x,y)]); return QS([...o].slice(0,4)); },
+      why:()=>'x = '+x+' คือหลักที่ '+(x+1)+' จากซ้าย · y = '+y+' คือแถวที่ '+(y+1)+' จากบน' }; },
+  ],
+  hard:[
+    () => { const a=2+QR(3), b=2+QR(3), k=QP(ICON_POOL); return { blocks:[hat('mb_on_start',[ repeat(a,[ repeat(b,[icon(k)]) ]) ])], ask:'ทำซ้ำซ้อนกันแบบนี้ จอแสดงรูป '+iconName(k)+' ทั้งหมดกี่ครั้ง?', kind:'num',
+      answer:L=>L.icons.length, opts:x=>numOpts(x,[a+b, a, b]), why:x=>'รอบนอก '+a+' รอบ แต่ละรอบทำรอบใน '+b+' ครั้ง → '+a+' × '+b+' = '+x }; },
+    () => { const v=QR(10), t=2+QR(6); const cmp=B('logic_compare',{ fields:{ OP:'GT' }, inputs:{ A:varGet('vx'), B:{ block:B('math_number',{ fields:{ NUM:t } }) } } });
+      return { vars:[{ name:'x', id:'vx' }], blocks:[hat('mb_on_start',[ vset('vx',v), B('controls_if',{ extraState:{ hasElse:true }, inputs:{ IF0:{ block:cmp }, DO0:chain([icon('HAPPY')]), ELSE:chain([icon('SAD')]) } }) ])],
+      ask:'x = '+v+' จอจะแสดงรูปอะไร?', kind:'icon', answer:L=>L.icons.at(-1), opts:a=>QS([a, a==='HAPPY'?'SAD':'HAPPY', 'HEART', 'NO']),
+      why:a=>'ตรวจว่า '+v+' > '+t+' '+(v>t?'จริง จึงทำส่วน "ถ้า"':'ไม่จริง จึงทำส่วน "ไม่เช่นนั้น"')+' → '+iconName(a) }; },
+    () => { const n=4+QR(3), t=1+QR(3); const cmp=B('logic_compare',{ fields:{ OP:'GT' }, inputs:{ A:varGet('vx'), B:{ block:B('math_number',{ fields:{ NUM:t } }) } } });
+      return { vars:[{ name:'x', id:'vx' }], blocks:[hat('mb_on_start',[ vset('vx',0), repeat(n,[ vchg('vx',1), B('controls_if',{ inputs:{ IF0:{ block:cmp }, DO0:chain([icon('HEART')]) } }) ]) ])],
+      ask:'จอแสดงรูปหัวใจทั้งหมดกี่ครั้ง?', kind:'num', answer:L=>L.icons.filter(k=>k==='HEART').length, opts:a=>numOpts(a,[n, t, n-t+1]),
+      why:a=>'x เป็น 1, 2, … '+n+' · หัวใจขึ้นเฉพาะรอบที่ x มากกว่า '+t+' → '+a+' ครั้ง' }; },
+    () => { const n=2+QR(3), y=QR(5); return { vars:[{ name:'x', id:'vx' }], blocks:[hat('mb_on_start',[ vset('vx',0), repeat(n,[ B('mb_plot',{ inputs:{ X:varGet('vx'), Y:numIn(y) } }), vchg('vx',1) ]) ])],
+      ask:'หลังรันจบ จอจะมีไฟสว่างแบบไหน?', kind:'grid', answer:L=>L.frames.at(-1),
+      opts:a=>{ const row=(k,yy)=>{ const g=Array(25).fill(0); for(let i=0;i<k;i++) g[yy*5+i]=1; return g.join(''); }; const col=(k,xx)=>{ const g=Array(25).fill(0); for(let i=0;i<k;i++) g[i*5+xx]=1; return g.join(''); };
+        const o=new Set([a, row(n+1,y), row(Math.max(1,n-1),y), col(n,y), row(n,(y+1)%5)]); return QS([...o].slice(0,4)); },
+      why:()=>'x เริ่ม 0 ทุกรอบเปิดไฟที่ x แถว '+y+' แล้วเพิ่ม x อีก 1 → สว่าง '+n+' ดวงเรียงจากซ้าย' }; },
+    () => { const wrong=QP([0,2]); return { vars:[{ name:'x', id:'vx' }], blocks:[hat('mb_on_start',[ vset('vx',1), repeat(3,[ shownum(varGet('vx')), vchg('vx',wrong) ]) ])],
+      ask:'อยากให้จอแสดง 1 → 2 → 3 แต่โปรแกรมนี้ยังผิด ต้องแก้เลขในบล็อก "เปลี่ยนค่า x" ให้เป็นเท่าไร?', kind:'num', fixed:1,
+      verify:() => { const H=new Blockly.Workspace(); Blockly.serialization.workspaces.load({ blocks:{ languageVersion:0, blocks:[hat('mb_on_start',[ vset('vx',1), repeat(3,[ shownum(varGet('vx')), vchg('vx',1) ]) ])] }, variables:[{ name:'x', id:'vx' }] }, H); const c=buildCode(H).code; H.dispose(); return c; },
+      opts:()=>QS([0,1,2,3]), why:()=>'ตอนนี้เพิ่มทีละ '+wrong+' จึงได้ '+(wrong?'1 → 3 → 5':'1 → 1 → 1')+' · ต้องเพิ่มทีละ 1 ถึงจะได้ 1 → 2 → 3' }; },
+    () => { const k=1+QR(4), t=2; const cmp=B('logic_compare',{ fields:{ OP:'GT' }, inputs:{ A:varGet('sc'), B:{ block:B('math_number',{ fields:{ NUM:t } }) } } });
+      return { vars:[{ name:'คะแนน', id:'sc' }], blocks:[hat('mb_on_start',[ vset('sc',0) ]), onBtn('A',[ vchg('sc',1) ],120), onBtn('B',[ B('controls_if',{ extraState:{ hasElse:true }, inputs:{ IF0:{ block:cmp }, DO0:chain([icon('HAPPY')]), ELSE:chain([icon('SAD')]) } }) ],220)],
+      presses:Array(k).fill('A').concat(['B']), ask:'รันแล้วกดปุ่ม A '+k+' ครั้ง แล้วกดปุ่ม B จอจะแสดงรูปอะไร?', kind:'icon', answer:L=>L.icons.at(-1), opts:a=>QS([a, a==='HAPPY'?'SAD':'HAPPY', 'HEART', 'YES']),
+      why:a=>'กด A '+k+' ครั้ง คะแนนเป็น '+k+' · ปุ่ม B ตรวจว่า '+k+' > '+t+' '+(k>t?'จริง → ยิ้ม':'ไม่จริง → เศร้า') }; },
+  ],
+};
+QGEN.mix = [].concat(QGEN.easy, QGEN.medium, QGEN.hard);
+const QLEVELS = [
+  { id:'easy',   e:'🌱', name:'ง่าย',  note:'ลำดับคำสั่ง · ทำซ้ำ · ปุ่ม · เสียง' },
+  { id:'medium', e:'🌳', name:'กลาง', note:'ทำซ้ำหลายบล็อก · ตัวแปร · ตำแหน่งไฟ' },
+  { id:'hard',   e:'🏔️', name:'ยาก',  note:'ทำซ้ำซ้อน · ถ้า…แล้ว · หาจุดผิด' },
+  { id:'mix',    e:'🌈', name:'ผสม',  note:'รวมทุกระดับ 15 ข้อ' },
+];
+
+async function solveQ(q){
+  const H = new Blockly.Workspace();
+  Blockly.serialization.workspaces.load({ blocks:{ languageVersion:0, blocks:q.blocks }, variables:(q.vars||[]).map(v=>({ name:v.name, id:v.id })) }, H);
+  const { code } = buildCode(H); H.dispose();
+  const M = makeMachine({ fast:true, limit:4000 });
+  await M.run(code);
+  for(const b of (q.presses||[])) await M.press(b);
+  return M.log;
+}
+async function makeQuestion(level){
+  for(let t=0;t<30;t++){
+    const q = QP(QGEN[level])();
+    if(q.fixed!==undefined){
+      const M = makeMachine({ fast:true }); await M.run(q.verify());      /* ตรวจว่าเฉลยแก้แล้วได้ 1 2 3 จริง */
+      if(M.log.nums.join()!=='1,2,3') continue;
+      q.ans = q.fixed;
+    } else {
+      const log = await solveQ(q); q.ans = q.answer(log);
+      if(q.ans===undefined || q.ans===null || (typeof q.ans==='number' && isNaN(q.ans))) continue;
+    }
+    q.options = q.opts(q.ans);
+    if(q.options.length<4 || !q.options.map(String).includes(String(q.ans)) || new Set(q.options.map(String)).size!==q.options.length) continue;
+    return q;
+  }
+}
+
+let QZ = null, qws = null;
+function quizStarsText(){ const b=(SAVE.quiz||{}); const best=Math.max(0,...Object.values(b)); return '⭐'.repeat(best)+'☆'.repeat(3-best); }
+function openQuiz(){
+  if(live){ live.stop(); live=null; setRunning(false); }
+  stopTutorial(); document.body.classList.add('quizmode'); drawMissions(); quizHome(); window.scrollTo(0,0);
+  const qb=$('#quizBtn'); if(qb) qb.scrollIntoView({ inline:'center', block:'nearest' });
+}
+function closeQuiz(){ if(!document.body.classList.contains('quizmode')) return; document.body.classList.remove('quizmode'); QZ=null; setTimeout(()=>Blockly.svgResize(ws), 50); }
+function quizHome(){
+  const best = SAVE.quiz || {};
+  $('#quiz').innerHTML = '<div class="qcard"><h2>📝 แบบทดสอบโค้ดบล็อก</h2><p class="sub">ดูโปรแกรมแล้วทายว่าบอร์ดจะทำอะไร · สุ่มข้อใหม่ทุกครั้ง · เฉลยมาจากการรันโปรแกรมจริง</p>'+
+    '<div class="levels">'+QLEVELS.map(l => '<button type="button" class="level" data-l="'+l.id+'"><span class="le">'+l.e+'</span>'+l.name+
+      '<small>'+l.note+'</small><span class="best">'+'⭐'.repeat(best[l.id]||0)+'☆'.repeat(3-(best[l.id]||0))+'</span></button>').join('')+'</div>'+
+    '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn" type="button" id="qback">‹ กลับไปต่อบล็อก</button></div></div>';
+  $('#quiz').querySelectorAll('.level').forEach(b => b.onclick = () => startQuiz(b.dataset.l));
+  $('#qback').onclick = () => { closeQuiz(); drawMissions(); };
+}
+async function startQuiz(level){
+  const total = level==='mix' ? 15 : 10;
+  QZ = { level, total, i:0, right:0, qs:[], answered:false, wrongList:[] };
+  $('#quiz').innerHTML = '<div class="qcard"><p class="sub">กำลังเตรียมข้อสอบ…</p></div>';
+  const seen = new Set();
+  while(QZ && QZ.qs.length < total){
+    const q = await makeQuestion(level); if(!q) continue;
+    const key = JSON.stringify(q.blocks)+q.ask; if(seen.has(key)) continue; seen.add(key);
+    QZ.qs.push(q);
+  }
+  if(QZ) drawQ();
+}
+function optHTML(q, v){
+  if(q.kind==='icon') return '<span class="mini">'+ICONS[v][1].map(x=>'<i class="'+(x?'on':'')+'"></i>').join('')+'</span><span>'+iconName(v)+'</span>';
+  if(q.kind==='grid') return '<span class="mini">'+[...v].map(x=>'<i class="'+(x==='1'?'on':'')+'"></i>').join('')+'</span>';
+  return String(v);
+}
+function drawQ(){
+  const q = QZ.qs[QZ.i]; QZ.answered = false;
+  $('#quiz').innerHTML = '<div class="qcard"><div class="qtop"><span class="qn">ข้อ '+(QZ.i+1)+' / '+QZ.total+'</span><div class="qbar"><i style="width:'+Math.round(QZ.i/QZ.total*100)+'%"></i></div>'+
+      '<span class="qscore">✓ '+QZ.right+'</span><button class="btn" type="button" id="qquit">ออก</button></div>'+
+    '<div id="qws"></div>'+
+    '<div class="qask"><span>'+q.ask+'</span><button class="spk" type="button" id="qsay" aria-label="ฟังคำถาม">🔊</button></div>'+
+    (q.presses ? '<span class="qpress">🎮 ลำดับการกดปุ่ม: '+q.presses.join(' → ')+'</span>' : '')+
+    '<div class="qopts">'+q.options.map((v,k) => '<button type="button" class="qopt" data-k="'+k+'">'+optHTML(q,v)+'</button>').join('')+'</div>'+
+    '<div class="qfb" id="qfb"></div><button class="btn check qnext" id="qnext" type="button">'+(QZ.i+1<QZ.total?'ข้อต่อไป ▶':'ดูผลคะแนน 🏁')+'</button></div>';
+  $('#qquit').onclick = () => { if(confirm('ออกจากแบบทดสอบ?')) { QZ=null; quizHome(); } };
+  $('#qsay').onclick = () => speak(q.ask.replace(/[()]/g,' '));
+  if(qws){ qws.dispose(); qws=null; }
+  qws = Blockly.inject('qws', { readOnly:true, renderer:'zelos', theme, sounds:false, zoom:{ controls:false, wheel:false, startScale:.75 }, move:{ scrollbars:true, drag:true, wheel:true } });
+  Blockly.serialization.workspaces.load({ blocks:{ languageVersion:0, blocks:q.blocks }, variables:(q.vars||[]).map(v=>({ name:v.name, id:v.id })) }, qws);
+  setTimeout(() => { Blockly.svgResize(qws); qws.zoomToFit(); qws.setScale(Math.min(1, Math.max(.7, qws.getScale()))); qws.scrollCenter(); }, 30);
+  $('#quiz').querySelectorAll('.qopt').forEach(b => b.onclick = () => answerQ(+b.dataset.k));
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function answerQ(k){
+  if(QZ.answered) return; QZ.answered = true;
+  const q = QZ.qs[QZ.i], ok = String(q.options[k])===String(q.ans);
+  if(ok) QZ.right++; else QZ.wrongList.push(q.ask);
+  $('#quiz').querySelectorAll('.qopt').forEach((b,j) => {
+    b.disabled = true;
+    if(String(q.options[j])===String(q.ans)) b.classList.add('right'); else if(j===k) b.classList.add('wrong'); else b.classList.add('dim');
+  });
+  const fb = $('#qfb'); fb.className = 'qfb '+(ok?'ok':'no');
+  fb.innerHTML = (ok ? '✅ ถูกต้อง! ' : '💡 คำตอบที่ถูกคือช่องสีเขียว · ') + q.why(q.ans);
+  if(ok){ beep(660,100); setTimeout(()=>beep(990,140),100); } else beep(240,200);
+  $('#qnext').style.display = 'block';
+  $('#qnext').onclick = () => { QZ.i++; if(QZ.i<QZ.total) drawQ(); else finishQuiz(); };
+}
+function finishQuiz(){
+  if(qws){ qws.dispose(); qws=null; }
+  const pct = QZ.right/QZ.total, stars = pct>=.9?3 : pct>=.7?2 : pct>=.5?1 : 0;
+  SAVE.quiz = SAVE.quiz || {}; SAVE.quiz[QZ.level] = Math.max(SAVE.quiz[QZ.level]||0, stars); persist();
+  const L = QLEVELS.find(l => l.id===QZ.level);
+  if(window.KP) KP.log({ kind:'test', page:'code-quiz', subject:'STEM', title:'แบบทดสอบโค้ดบล็อก · '+L.name, score:QZ.right, total:QZ.total, stars:Math.max(1,stars), wrong:QZ.wrongList.slice(0,10) });
+  $('#quiz').innerHTML = '<div class="qcard qdone"><div style="font-size:3rem">'+(stars>=2?'🎉🏆🎉':'🌈')+'</div><div class="stars">'+'⭐'.repeat(stars)+'☆'.repeat(3-stars)+'</div>'+
+    '<div class="big">'+QZ.right+' / '+QZ.total+'</div><p>แบบทดสอบระดับ'+L.name+(stars>=2?' · เก่งมาก!':' · ลองทบทวนในภารกิจ แล้วกลับมาทำใหม่นะ')+'</p>'+
+    '<div class="row" style="justify-content:center"><button class="btn check" type="button" id="qagain">ทำระดับนี้อีกครั้ง (ข้อใหม่)</button><button class="btn" type="button" id="qhome">เลือกระดับอื่น</button></div></div>';
+  $('#qagain').onclick = () => startQuiz(QZ.level);
+  $('#qhome').onclick = () => { QZ=null; quizHome(); };
+  drawMissions();
+}
 
 let first='heart'; try{ first = localStorage.getItem('kids-code-last') || 'heart'; }catch(e){}
 cur = first; drawMissions(); openMission(first);
