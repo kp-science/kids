@@ -455,6 +455,8 @@ function openFolder(g, sb=null){
   if(g!=='all') window.scrollTo({ top: $('#chips').getBoundingClientRect().top + scrollY - 8, behavior:'smooth' });
 }
 window.addEventListener('popstate', () => { [filter, subf] = fromHash(); render(); });
+/* ลิงก์ #วิชา จากที่อื่นในหน้า (เช่น ภารกิจวันนี้) — pushState ของเราเองไม่ทำให้เกิด hashchange จึงไม่ซ้อน */
+window.addEventListener('hashchange', () => { [filter, subf] = fromHash(); term=''; $('#q').value=''; render(); });
 
 function renderChips(){
   const gs = groups();
@@ -524,7 +526,7 @@ function renderToday(show){
   const starsToday = ev.reduce((t,x)=>t+(x.stars||0),0), st = KP.streak(d);
   const have = KP.stickerCount(d), total = KP.ALL_STICKERS.length, per = KP.STARS_PER_STICKER;
   const toNext = per - (d.totals.stars % per), isNew = have > (d.seenStickers||0);
-  const allDone = ms.every(m => m.done(ev));
+  const allDone = ms.filter(m => !m.bonus).every(m => m.done(ev));
   const now = new Date();
   box.hidden = false;
   box.innerHTML =
@@ -533,6 +535,7 @@ function renderToday(show){
     '<ul class="mlist">'+ms.map(m => {
       const ok = m.done(ev);
       return '<li class="'+(ok?'done':'')+'"><span class="me">'+m.e+'</span><span class="mt">'+esc(m.text)+
+        (m.bonus ? '<small>โบนัสวันหยุด · เล่นด้วยกันทั้งบ้าน (ไม่ทำก็ได้)</small>' : '')+
         (m.progress && !ok ? '<small>ตอนนี้ '+m.progress(ev)+'</small>' : '')+'</span>'+
         (ok ? '<span class="mok">✅</span>' : (m.url ? '<a class="mgo" href="'+esc(m.url)+'">ไปเลย ▶</a>' : ''))+'</li>';
     }).join('')+'</ul>'+

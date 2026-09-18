@@ -39,26 +39,55 @@
     ['sudoku','ซูดูกุรูปภาพ','🧩'],['balance','ตาชั่งปริศนา','⚖️'],['hanoi','หอคอยฮานอย','🗼'],
     ['slide','เลื่อนเลขเรียงลำดับ','🔢'],['traffic','รถติด! พารถแดงออก','🚗'],['detective','นักสืบหาบ้านสัตว์','🕵️'],
   ];
+
+  /* สื่อสาย "เรียน" ที่ไม่ใช่ใบทบทวน 5 วิชา */
+  const LESSONS = [
+    { id:'reflect', e:'✍️', tag:'test',   text:'ทำแบบฝึกอ่านเขียนสะท้อนคิด 1 ชุด',  url:'thai/reading-reflect.html',        done:ev => ev.some(x=>x.page==='thai-reflect') },
+    { id:'plants',  e:'🐢', tag:'test',   text:'ทำแบบทดสอบพืชและสัตว์ 1 ชุด',        url:'science/plants-animals-test.html', done:ev => ev.some(x=>x.page==='plants') },
+    { id:'pinyin',  e:'拼', tag:'pinyin', text:'ฝึกพินอินให้จบ 1 รอบ',                url:'chinese/pinyin-drill.html',        done:ev => ev.some(x=>x.kind==='pinyin') },
+  ];
+  /* สื่อสาย "ลงมือทำ" ที่ไม่ใช่เกมฝึกสมอง */
+  const HANDS = [
+    { id:'circuit', e:'💡', tag:'stem', text:'ต่อวงจรไฟฟ้า 3 มิติ ให้ผ่าน 1 ด่าน',  url:'stem/circuit.html',    done:ev => ev.some(x=>x.kind==='game' && x.page==='stem-circuit') },
+    { id:'sink',    e:'⛵', tag:'stem', text:'ทดลองจมหรือลอย ให้ผ่าน 1 ด่าน',        url:'stem/sink-float.html', done:ev => ev.some(x=>x.kind==='game' && x.page==='stem-sink') },
+    { id:'bridge',  e:'🌉', tag:'stem', text:'สร้างสะพานให้รถข้ามได้ 1 ด่าน',        url:'stem/bridge.html',     done:ev => ev.some(x=>x.kind==='game' && x.page==='stem-bridge') },
+    { id:'code',    e:'🤖', tag:'code', text:'ทำภารกิจในห้องทดลองโค้ดบล็อก 1 ข้อ',   url:'stem/code.html',       done:ev => ev.some(x=>x.kind==='game' && x.page==='code') },
+    { id:'craft',   e:'🧱', tag:'game', text:'ต่อบล็อกคราฟต์ให้ครบ 1 แบบ',           url:'brain/craft.html',     done:ev => ev.some(x=>x.kind==='game' && x.page==='craft') },
+  ];
+  /* โบนัสวันหยุด · ต้องมีคนเล่นด้วย จึงไม่นับรวมตอนตัดสินว่าภารกิจครบ */
+  const BONUS = [
+    { id:'treasure', e:'🗺️', bonus:true, text:'ชวนพ่อแม่เล่นล่าขุมทรัพย์ 1 ด่าน', url:'brain/treasure.html', done:ev => ev.some(x=>x.kind==='game' && x.page==='treasure') },
+  ];
+
+  const learnPool = () => WORKSHEETS.map(w => ({ id:'ws-'+w.page, e:w.e, tag:'worksheet',
+      text:'ทำแบบฝึก'+w.name+' 1 ชุด (ชุดไหนก็ได้)', url:w.url,
+      done:ev => ev.some(e => e.kind==='worksheet' && e.page===w.page) })).concat(LESSONS);
+  const playPool = () => GAMES.map(g => ({ id:'g-'+g[0], e:g[2], tag:'game',
+      text:'เล่นเกม "'+g[1]+'" ให้ผ่าน 1 ระดับ', url:'brain/games.html#'+g[0],
+      done:ev => ev.some(e => e.kind==='game' && e.item===g[0]) })).concat(HANDS);
+
   function seeded(seed){ let s = seed>>>0; return () => { s = (s*1664525 + 1013904223)>>>0; return s/4294967296; }; }
   function hash(str){ let h = 2166136261; for(const ch of str){ h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return h>>>0; }
+  function weekday(k){ const [y,m,d] = k.split('-').map(Number); return new Date(y, m-1, d).getDay(); }   /* 0=อาทิตย์ */
   function missions(k=dayKey()){
-    const r = seeded(hash('kids'+k));
-    const w = WORKSHEETS[Math.floor(r()*WORKSHEETS.length)];
-    const g = GAMES[Math.floor(r()*GAMES.length)];
+    const r = seeded(hash('kids'+k)), pick = a => a[Math.floor(r()*a.length)];
+    const w = pick(learnPool());
+    const g = pick(playPool());
     const extras = [
       { id:'stars',  e:'⭐', text:'เก็บดาวให้ได้ 5 ดวง', url:null, done:ev => ev.reduce((t,x)=>t+(x.stars||0),0) >= 5,
         progress:ev => Math.min(5, ev.reduce((t,x)=>t+(x.stars||0),0))+' / 5' },
-      { id:'plants', e:'🐢', text:'ทำแบบทดสอบพืชและสัตว์ 1 ชุด', url:'science/plants-animals-test.html', done:ev => ev.some(x=>x.kind==='test') },
-      { id:'pinyin', e:'拼', text:'ฝึกพินอินให้จบ 1 รอบ', url:'chinese/pinyin-drill.html', done:ev => ev.some(x=>x.kind==='pinyin') },
       { id:'games2', e:'🎮', text:'เล่นเกมให้ผ่าน 2 ด่าน', url:'brain/games.html', done:ev => ev.filter(x=>x.kind==='game').length >= 2,
         progress:ev => Math.min(2, ev.filter(x=>x.kind==='game').length)+' / 2' },
+      { id:'stem3d', e:'🔬', text:'เล่นห้องทดลอง 3 มิติ ชิ้นไหนก็ได้ 1 ด่าน', url:'index.html#STEM',
+        skip:(w,g) => g.tag==='stem', done:ev => ev.some(x => x.kind==='game' && String(x.page||'').startsWith('stem-')) },
+      { id:'quiz',   e:'📝', text:'ทำแบบทดสอบให้จบ 1 ชุด (พืชและสัตว์ · STEM 3 มิติ · โค้ดบล็อก ก็ได้)', url:null,
+        skip:(w,g) => w.tag==='test', done:ev => ev.some(x => x.kind==='test') },
     ];
-    const x = extras[Math.floor(r()*extras.length)];
-    return [
-      { id:'ws', e:w.e, text:'ทำแบบฝึก'+w.name+' 1 ชุด (ชุดไหนก็ได้)', url:w.url, done:ev => ev.some(e=>e.kind==='worksheet' && e.page===w.page) },
-      { id:'game', e:g[2], text:'เล่นเกม "'+g[1]+'" ให้ผ่าน 1 ระดับ', url:'brain/games.html#'+g[0], done:ev => ev.some(e=>e.kind==='game' && e.item===g[0]) },
-      x,
-    ];
+    const x = pick(extras.filter(e => !e.skip || !e.skip(w, g)));
+    const day = [w, g, x];
+    const wd = weekday(k);
+    if(wd===0 || wd===6) day.push(pick(BONUS));   /* เสาร์-อาทิตย์ มีโบนัสเล่นด้วยกัน */
+    return day;
   }
 
   /* ---------------- สติกเกอร์ ---------------- */
@@ -92,7 +121,7 @@
     ev.stars = Math.max(0, Math.min(3, ev.stars||0));
     td.events.push(ev); d.totals.stars += ev.stars;
     let missionNow = false;
-    if(!td.mission && missions().every(m => m.done(td.events))){ td.mission = true; d.totals.missionDays++; missionNow = true; }
+    if(!td.mission && missions().filter(m => !m.bonus).every(m => m.done(td.events))){ td.mission = true; d.totals.missionDays++; missionNow = true; }
     prune(d); save(d);
     const after = stickerCount(d);
     if(missionNow) toast('🎯 ภารกิจวันนี้สำเร็จครบแล้ว! เก่งมาก');
