@@ -6,9 +6,7 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="icon" type="image/png" href="../favicon.png">
 <title>ต่อวงจรไฟฟ้า 3 มิติ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
 <link rel="stylesheet" href="stem.css">
 <style>
 .trayov{position:absolute;left:8px;right:8px;bottom:8px;display:flex;gap:8px;overflow-x:auto;padding:6px;background:rgba(255,255,255,.78);border-radius:22px;scrollbar-width:none;backdrop-filter:blur(6px)}
@@ -51,7 +49,7 @@
 </div>
 
 <script>setTimeout(() => { if(!window.__stemReady){ const l = document.getElementById('loading'); if(l) l.textContent = 'โหลดฉาก 3 มิติไม่ได้ 😢 ต้องต่ออินเทอร์เน็ต แล้วลองโหลดหน้าใหม่อีกครั้ง'; } }, 12000);</script>
-<script type="importmap">{ "imports": { "three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+<script type="importmap">{ "imports": { "three":"../vendor/three/three.module.js", "three/addons/":"../vendor/three/addons/" } }</script>
 <script type="module">
 import { THREE, $, shuffle, store, setupMute, sfx, speak, stage, mat, box, cyl, sph, group, at, rot, sprite, label, glow, tween, ease, levelBar, pop, quiz } from './stem3d.js';
 

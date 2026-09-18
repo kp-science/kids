@@ -204,6 +204,11 @@
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupMuteUI); else setupMuteUI();
 
+  /* ---------------- เก็บเว็บไว้ในเครื่อง ให้เล่นได้ตอนไม่มีเน็ต ---------------- */
+  /* sw.js สร้างด้วย node tools/gen-sw.js · ทำงานเฉพาะ https กับ localhost (ตามกติกาเบราว์เซอร์) */
+  if('serviceWorker' in navigator && root)
+    addEventListener('load', () => navigator.serviceWorker.register(root+'sw.js').catch(() => {}));
+
   window.KP = { log, data, day, dayKey, missions, streak, owned, stickerCount, STICKER_PAGES, ALL_STICKERS, STARS_PER_STICKER,
     markSeen(){ const d=data(); d.seenStickers=stickerCount(d); save(d); }, root, toast, WORKSHEETS, GAMES, isMuted, setMuted };
 })();
