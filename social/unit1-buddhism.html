@@ -514,6 +514,8 @@ const READ = {
 };
 const READ_KEYS = Object.keys(READ).sort((a,b) => b.length - a.length);
 const readOf = t => { for(const k of READ_KEYS) if(t.indexOf(k) >= 0) return READ[k]; return ''; };
+/* เวลาพูดตัวเลือก ให้ต่อคำอ่านไปด้วย เครื่องจะได้อ่านคำยากได้ถูก (แปลงขีดเป็นเว้นวรรค) */
+const spoken = t => { const r = readOf(t); return r ? t + ' อ่านว่า ' + r.replace(/-/g, ' ') : t; };
 
 const $=s=>document.querySelector(s);
 const strip=s=>String(s).replace(/<[^>]*>/g,'');
@@ -552,7 +554,7 @@ function speak(text){
   if(thVoice) u.voice=thVoice;
   synth.speak(u);
 }
-const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+q[1][i][1]).join(' … '));
+const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+spoken(q[1][i][1])).join(' … '));
 
 function renderTabs(){
   $('#tabs').innerHTML=TABS.map((t,i)=>'<button type="button" style="--tc:'+t.tc+'" class="'+(i===cur?'on':'')+'" data-i="'+i+'">'+t.name+'</button>').join('');
@@ -643,7 +645,7 @@ function show(k,i,say){
   fb.innerHTML=(ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[ORD[k].indexOf(q[2])]+'. '+q[1][q[2]][1])+
     (q[4]?'<small>'+q[4]+'</small>':'');
   /* อ่านเฉลยให้ฟังทันทีที่เลือก (ตอนโหลดหน้าเก่าคืนมาไม่ต้องอ่าน) */
-  if(say) speak((ok ? 'ถูกต้อง เก่งมาก' : 'ยังไม่ใช่ คำตอบที่ถูกคือ '+q[1][q[2]][1]) + (q[4] ? ' … '+strip(q[4]) : ''));
+  if(say) speak((ok ? 'ถูกต้อง เก่งมาก … '+spoken(q[1][q[2]][1]) : 'ยังไม่ใช่ คำตอบที่ถูกคือ '+spoken(q[1][q[2]][1])) + (q[4] ? ' … '+strip(q[4]) : ''));
 }
 
 function pick(k,i,fresh){

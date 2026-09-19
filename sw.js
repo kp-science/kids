@@ -4,7 +4,7 @@
    วิธีทำงาน: เปิดเว็บครั้งแรกตอนมีเน็ต → เก็บทุกไฟล์ไว้ในเครื่อง → ครั้งต่อไปเปิดจากในเครื่อง
    พออัปเดตเว็บ เลขรุ่นจะเปลี่ยน ตัวนี้จะโหลดชุดใหม่มาเก็บแล้วลบชุดเก่าทิ้ง
    ============================================================ */
-const VERSION = '2026-09-19-a92ab2c5';
+const VERSION = '2026-09-19-4b706293';
 const CACHE = 'kids-' + VERSION;
 const ASSETS = [
   "./",
@@ -128,4 +128,9 @@ self.addEventListener('fetch', e => {
   })());
 });
 
-self.addEventListener('message', e => { if (e.data === 'version') e.source.postMessage({ version: VERSION }); });
+self.addEventListener('message', e => {
+  if (e.data !== 'version') return;
+  const reply = { version: VERSION };
+  if (e.ports && e.ports[0]) e.ports[0].postMessage(reply);
+  else if (e.source) e.source.postMessage(reply);
+});

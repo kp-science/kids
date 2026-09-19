@@ -85,7 +85,12 @@ self.addEventListener('fetch', e => {
   })());
 });
 
-self.addEventListener('message', e => { if (e.data === 'version') e.source.postMessage({ version: VERSION }); });
+self.addEventListener('message', e => {
+  if (e.data !== 'version') return;
+  const reply = { version: VERSION };
+  if (e.ports && e.ports[0]) e.ports[0].postMessage(reply);
+  else if (e.source) e.source.postMessage(reply);
+});
 `);
 
 console.log('sw.js: ' + assets.length + ' ไฟล์ · รุ่น ' + version);

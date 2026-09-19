@@ -34,6 +34,19 @@
 .livesrow .hearts{font-size:1.15rem;letter-spacing:2px}
 .livesrow small{font-weight:400;color:var(--mute)}
 .medal.fail{background:#FFF3EC}
+
+/* ป้ายชื่อในฉาก เป็น HTML ลอยทับผ้าใบ ไม่ได้วาดลงผ้าใบ 3 มิติ
+   เบราว์เซอร์จัดข้อความเอง ตัวอักษรจึงไม่มีทางถูกตัด ไม่ว่าฟอนต์จะโหลดเสร็จตอนไหน */
+.lab3d{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
+.l3{position:absolute;left:0;top:0;background:#fff;border-radius:999px;padding:4px 14px;text-align:center;
+  font-family:'Mali',sans-serif;font-weight:700;font-size:1rem;color:#3A3350;line-height:1.25;white-space:nowrap;
+  box-shadow:0 3px 10px rgba(58,51,80,.18)}
+.l3 small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-weight:400;font-size:.76rem;color:#6E6785}
+.l3.big{font-size:1.6rem;padding:0 16px}
+.l3.off{display:none}
+.stage.night .l3{box-shadow:0 3px 14px rgba(0,0,0,.35)}
+@media (max-width:520px){ .l3{font-size:.86rem;padding:3px 10px} .l3 small{font-size:.68rem} .l3.big{font-size:1.3rem} }
+.verline{color:var(--mute);font-size:.78rem;margin-top:8px}
 .stage.locked::after{content:'⏳ ใจเย็น ๆ อ่านโจทย์ก่อนนะ';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   background:rgba(255,255,255,.95);color:#8A4A2A;font-family:'Mali',sans-serif;font-weight:700;border-radius:999px;
   padding:10px 22px;box-shadow:0 10px 30px rgba(58,51,80,.22);pointer-events:none;z-index:6}
@@ -53,11 +66,12 @@
 <div class="lab">
   <div class="stage" id="stage">
     <div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
+    <div class="lab3d" id="lab3d"></div>
     <div class="hud"><span class="now" id="now"></span><span class="sp"></span><span class="lives" id="lives"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
   </div>
   <div class="panel">
     <div class="card goal">
-      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
+      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์และตัวเลือก">🔊</button></h3>
       <p id="gtext"></p>
       <div class="prog" id="prog"></div>
       <div class="livesrow"><span class="hearts" id="hearts"></span><small id="livestext"></small></div>
@@ -68,7 +82,7 @@
     <div class="medal" id="medal"></div>
     <div class="know" id="know"></div>
     <div class="card goal"><p class="tips">❤️ แต่ละด่านมีหัวใจ ๕ ดวง · ตอบผิดเสีย ๑ ดวง ตอบถูกไม่เสีย · ถ้าหัวใจหมดก่อนตอบครบจะไม่ผ่านด่าน ต้องเริ่มใหม่</p>
-      <p class="tips" style="margin-top:6px">👆 แตะสิ่งของในฉากเพื่อตอบ · ลากนิ้วเพื่อหมุนดูรอบ ๆ · หยิกนิ้วเพื่อซูมเข้าออก · แตะ 🔊 ให้อ่านโจทย์ให้ฟัง</p><p style="margin-top:8px"><a class="btn" href="unit1-buddhism.html" style="display:inline-block;text-decoration:none">📖 เปิดหน้าสรุป + แบบฝึกเต็ม</a></p></div>
+      <p class="tips" style="margin-top:6px">👆 แตะสิ่งของในฉากเพื่อตอบ · ลากนิ้วเพื่อหมุนดูรอบ ๆ · หยิกนิ้วเพื่อซูมเข้าออก · แตะ 🔊 ให้อ่านโจทย์ให้ฟัง</p><p class="verline" id="verline">รุ่นของเว็บ: กำลังตรวจ…</p><p style="margin-top:8px"><a class="btn" href="unit1-buddhism.html" style="display:inline-block;text-decoration:none">📖 เปิดหน้าสรุป + แบบฝึกเต็ม</a></p></div>
   </div>
 </div>
 
@@ -76,7 +90,7 @@
 <script type="importmap">{ "imports": { "three":"../vendor/three/three.module.js", "three/addons/":"../vendor/three/addons/" } }</script>
 <script type="module">
 import { THREE, $, shuffle, store, setupMute, sfx, speak, cleanSpeech, stage, mat, box, cyl, sph, group, at, rot,
-         label, glow, tween, ease, wait, levelBar, quiz } from '../stem/stem3d.js';
+         glow, tween, ease, wait, levelBar, quiz } from '../stem/stem3d.js';
 
 const st = store('kids-unit1-quest');
 setupMute($('#mute'));
@@ -130,23 +144,6 @@ function platform(c='#CFE9A8', r=2.3){
   g.children.forEach(m => { m.castShadow = true; m.receiveShadow = true; });
   return g;
 }
-/* ป้ายชื่อ · บังคับให้วาดทับวัตถุอื่นเสมอ (สไปรต์ธรรมดาจะถูกใบไม้/หลังคา/ดอกบัวบังได้) */
-function tag(text, { height=.52, bg='#FFFFFF', color='#3A3350' }={}){
-  const sp = label(text, { height, bg, color });
-  sp.material.depthTest = false; sp.material.depthWrite = false; sp.renderOrder = 20;
-  return sp;
-}
-function nameTag(text, y=4.6, bg='#FFFFFF', color='#3A3350'){ return at(tag(text, { bg, color }), 0, y, 0); }
-/* ป้ายชื่อ + คำอ่าน (+ บรรทัดขยาย) วางซ้อนกันลงมา · ชื่อยาก ๆ เด็ก ป.1 จะได้อ่านออก */
-function tagStack(y, name, read, extra, bg='#FFFFFF'){
-  const g = new THREE.Group();
-  g.add(at(tag(name, { bg }), 0, y, 0));
-  let k = y - .44;
-  if(read){ g.add(at(tag('อ่านว่า ' + read, { height:.32, color:'#6E6785' }), 0, k, 0)); k -= .36; }
-  if(extra){ g.add(at(tag(extra, { height:.32, color:'#6E6785' }), 0, k, 0)); }
-  return g;
-}
-
 /* ดอกบัว · กลีบชมพูรอบเกสรสีทอง (ไม่ใช้อิโมจิ เพราะบางเครื่องวาดอิโมจิลงผ้าใบไม่ได้) */
 function lotusMesh(s0=1){
   const g = new THREE.Group();
@@ -181,40 +178,108 @@ function buddhaSymbol(){
                at(sph(.19, '#F7D77A'), 0, .93, 0));
 }
 
+/* ---------------- ป้ายชื่อในฉาก (HTML ลอยทับผ้าใบ) ----------------
+   สร้างจุดยึด (Object3D) ไว้ในฉาก แล้ววาดกล่องข้อความเป็น HTML ทับตำแหน่งนั้นทุกเฟรม
+   ข้อดี: เบราว์เซอร์จัดข้อความเอง ตัวอักษรไม่ถูกตัด · คมชัดทุกความละเอียด · อยู่หน้าสุดเสมอ */
+const labLayer = $('#lab3d');
+let labels3d = [];
+const _lv = new THREE.Vector3();
+
+function tag3d(parent, pos, name, read, extra, bg, cls){
+  const anchor = new THREE.Object3D();
+  anchor.position.set(pos[0] || 0, pos[1] || 0, pos[2] || 0);
+  parent.add(anchor);
+  const el = document.createElement('div');
+  el.className = 'l3' + (cls ? ' ' + cls : '');
+  if(bg) el.style.background = bg;
+  labLayer.appendChild(el);
+  /* เก็บคำอ่านไว้กับกลุ่มที่ป้ายนี้ติดอยู่ เวลาอ่านตัวเลือกให้ฟังจะได้ออกเสียงถูก
+     (ตั้งบน parent ตรง ๆ เพราะบางด่านเรียก tag3d ก่อน pickable) */
+  if(parent !== world && parent.userData)
+    parent.userData.say = name + (read ? ' อ่านว่า ' + String(read).replace(/-/g, ' ') : '');
+  const o = { anchor, el, dirty:true, set(name2, read2, extra2){
+    o.dirty = true;
+    el.innerHTML = '<span>' + name2 + '</span>' +
+      (read2 ? '<small>อ่านว่า ' + read2 + '</small>' : '') +
+      (extra2 ? '<small>' + extra2 + '</small>' : '');
+  } };
+  o.set(name, read, extra);
+  labels3d.push(o);
+  return o;
+}
+function clearLabels(){ labels3d.forEach(o => o.el.remove()); labels3d = []; }
+
+/* ขนาดกล่องป้าย วัดเท่าที่จำเป็น (วัดทุกเฟรมจะทำให้เบราว์เซอร์คำนวณ layout ซ้ำ ๆ) */
+function sizeOf(o){
+  if(!o.sz || o.dirty){ o.sz = { w:o.el.offsetWidth, h:o.el.offsetHeight }; o.dirty = false; }
+  return o.sz;
+}
+function markLabelsDirty(){ labels3d.forEach(o => o.dirty = true); }
+
+/* วางป้ายตามตำแหน่งวัตถุในฉาก
+   declutter = true : ถ้าป้ายไหนทับกัน ให้เลื่อนลงมาจนไม่ทับ (จอแคบป้ายจะชนกันเอง เพราะป้ายขนาดคงที่แต่ฉากเล็กลง) */
+function updateLabels(declutter){
+  if(!labels3d.length) return;
+  S.scene.updateMatrixWorld();
+  const rect = S.renderer.domElement.getBoundingClientRect();
+  const items = [];
+  for(const o of labels3d){
+    const q = S.toScreen(o.anchor.getWorldPosition(_lv));
+    if(q.behind){ o.el.classList.add('off'); continue; }
+    o.el.classList.remove('off');
+    const sz = sizeOf(o);
+    items.push({ o, x:q.x, y:q.y, w:sz.w, h:sz.h });
+  }
+  if(declutter !== false){
+    items.sort((a, b) => a.y - b.y);
+    const placed = [];
+    for(const it of items){
+      for(let guard = 0; guard < 12; guard++){
+        const hit = placed.find(p => Math.abs(p.x - it.x) < (p.w + it.w)/2 + 4 &&
+                                     Math.abs(p.y - it.y) < (p.h + it.h)/2 + 4);
+        if(!hit) break;
+        it.y = hit.y + (hit.h + it.h)/2 + 6;
+      }
+      /* ไม่ให้หลุดออกนอกฉาก */
+      it.y = Math.max(it.h/2 + 2, Math.min(rect.height - it.h/2 - 2, it.y));
+      placed.push(it);
+    }
+  }
+  for(const it of items)
+    it.o.el.style.transform = 'translate(-50%,-50%) translate(' + Math.round(it.x) + 'px,' + Math.round(it.y) + 'px)';
+}
+S.onFrame(() => updateLabels(true));
+
 /* ============================================================
    จัดกล้องให้ป้ายทุกอันอยู่ในกรอบฉาก
    ป้ายเป็นสไปรต์ ความกว้างบนจอไม่ขึ้นกับขนาดฉาก พอจอแคบ (มือถือ) ป้ายริมจึงล้นออกนอกภาพ
    วิธีแก้: วัดกรอบป้ายจริงบนจอ แล้วถอยกล้องออกทีละนิดจนไม่มีอันไหนล้น
    ทำแบบนี้ได้ทุกด่านและทุกขนาดจอ ไม่ต้องจูนมือทีละด่าน
    ============================================================ */
-const _r3 = new THREE.Vector3(), _u3 = new THREE.Vector3(), _f3 = new THREE.Vector3(), _p3 = new THREE.Vector3();
 function worstOverflow(){
-  const rect = S.renderer.domElement.getBoundingClientRect();
-  if(rect.width < 2 || rect.height < 2) return 1;
-  S.scene.updateMatrixWorld(true);
-  S.camera.matrixWorld.extractBasis(_r3, _u3, _f3);
-  const cx = rect.width/2, cy = rect.height/2;
+  const r = S.renderer.domElement.getBoundingClientRect();
+  if(r.width < 2 || r.height < 2) return 1;
+  const cx = r.width/2, cy = r.height/2;
   let worst = 1;
-  S.scene.traverse(o => {
-    if(!o.isSprite || o.renderOrder !== 20 || !o.visible) return;
-    const p = o.getWorldPosition(_p3), hw = o.scale.x/2, hh = o.scale.y/2;
-    for(const [sx, sy] of [[-1,-1],[1,-1],[-1,1],[1,1]]){
-      const v = p.clone().addScaledVector(_r3, sx*hw).addScaledVector(_u3, sy*hh), q = S.toScreen(v);
-      worst = Math.max(worst, Math.abs(q.x - cx)/cx, Math.abs(q.y - cy)/cy);
-    }
-  });
+  for(const o of labels3d){
+    if(o.el.classList.contains('off')) continue;
+    const b = o.el.getBoundingClientRect();
+    const l = b.left - r.left, t = b.top - r.top;
+    worst = Math.max(worst, (cx - l)/cx, (l + b.width - cx)/cx, (cy - t)/cy, (t + b.height - cy)/cy);
+  }
   return worst;
 }
-function fitView(L, tries = 5){
+function fitView(L, tries = 6){
   const t = L.view.target;
   let cam = L.view.cam.slice();
-  S.setView(cam, t, 0); S.controls.update();
+  S.setView(cam, t, 0); S.controls.update(); updateLabels(false);
   for(let i = 0; i < tries; i++){
     const over = worstOverflow();
     if(over <= 1.002) break;
     cam = cam.map((v, k) => t[k] + (v - t[k]) * Math.min(1.25, over * 1.04));
-    S.setView(cam, t, 0); S.controls.update();
+    S.setView(cam, t, 0); S.controls.update(); updateLabels(false);
   }
+  updateLabels(true);
 }
 
 /* ============================================================
@@ -238,15 +303,16 @@ const LEVELS = [
     ];
     const targets = {};
     spots.forEach(s => {
-      const g = group(platform(), s.tree(), tagStack(5.6, s.tag, s.read, s.land, s.tint));
+      const g = group(platform(), s.tree());
       at(g, s.x, 0, s.z);
+      tag3d(g, [0, 5.2, 0], s.tag, s.read, s.land, s.tint);
       world.add(pickable(g, s.id, at(hit(4.4, 5.6, 4.4), 0, 2.4, 0)));
       targets[s.id] = g;
     });
     /* แม่น้ำเนรัญชรา ไหลผ่านหน้าพุทธคยา */
     const river = at(box(9, .14, 1.7, '#5BB8EC', .06, { roughness:.2 }), 0, .06, -.4);
     river.receiveShadow = true; world.add(river);
-    world.add(at(tag('แม่น้ำเนรัญชรา (เน-รัน-ชะ-รา)', { height:.4, bg:'#DFF2FF', color:'#1F6FA8' }), 0, .9, .9));
+    tag3d(world, [0, .9, .9], 'แม่น้ำเนรัญชรา', 'เน-รัน-ชะ-รา', null, '#DFF2FF');
     /* ดอกบัวนำทาง */
     const lotus = group(at(lotusMesh(1.15), 0, -.1, 0), at(glow('#FFC9E4', 1.7), 0, 0, 0));
     at(lotus, 0, 1.6, 5.2); world.add(lotus);
@@ -276,8 +342,8 @@ const LEVELS = [
     nums.forEach((nm, i) => {
       const h = .8 + i*.72, x = -5.2 + i*2.6;
       const step = at(box(2.2, h, 2.2, nm[2], .12), 0, h/2, 0);
-      const g = group(step, at(tag(nm[1], { height:.72 }), 0, h + 1.15, 0),
-                      at(tag(nm[3], { height:.3, color:'#6E6785' }), 0, h + .7, 0));
+      const g = group(step);
+      tag3d(g, [0, h + .95, 0], nm[1], null, nm[3], null, 'big');
       at(g, x, 0, 0); g.userData.top = h;
       world.add(pickable(g, nm[0], at(hit(2.4, h + 1.4, 2.4), 0, (h + 1.4)/2, 0)));
       targets[nm[0]] = g;
@@ -318,7 +384,8 @@ const LEVELS = [
       crystal.castShadow = true;
       const g = group(at(cyl(.9, 1.05, .45, '#C8A76A', 24), 0, .22, 0), at(gm.icon(), 0, .45, 0),
                       at(crystal, 0, 2.6, 0), at(glow(gm.c, 3), 0, 2.6, 0),
-                      nameTag(gm.tag, 3.9, '#FFFFFF'));
+                      new THREE.Object3D());
+      tag3d(g, [0, 3.9, 0], gm.tag);
       at(g, gm.x, 0, 0);
       world.add(pickable(g, gm.id, at(hit(2.2, 3.4, 2.2), 0, 1.8, 0)));
       targets[gm.id] = g;
@@ -356,23 +423,23 @@ const LEVELS = [
     const targets = {};
     bins.forEach(b => {
       const g = group(at(cyl(1.25, .95, 1.3, b.c, 22), 0, .65, 0), at(cyl(1.3, 1.3, .14, '#FFFFFF', 22), 0, 1.35, 0),
-                      at(tag(b.tag, { height:.46 }), 0, 2.5, 0));
+                      new THREE.Object3D());
+      tag3d(g, [0, 2.5, 0], b.tag);
       at(g, b.x, 0, 0);
       world.add(pickable(g, b.id, at(hit(2.8, 3.2, 2.8), 0, 1.4, 0)));
       targets[b.id] = g;
     });
     const item = group(at(glow('#FFF3C4', 2.4), 0, 0, 0));
-    let face = at(tag('พร้อมแล้ว', { height:.6 }), 0, 0, 0); item.add(face);
     at(item, 0, 4.4, 2.2); world.add(item);
+    const face = tag3d(item, [0, 0, 0], 'พร้อมแล้ว');
     onFrame((dt, t) => { item.position.y = 4.4 + Math.sin(t*2.2)*.16; });
     return { targets, item,
       onPrompt(p){
-        item.remove(face); if(face.material.map) face.material.map.dispose(); face.material.dispose();
-        face = at(tag(p.item, { height:.62 }), 0, 0, 0); item.add(face);
+        face.set(p.item); face.el.classList.remove('off');
         item.position.set(0, 4.4, 2.2); item.visible = true; },
       onRight(id, p, obj){
         return tween(item.position, { x:obj.position.x, y:1.9, z:0 }, 650, ease.inOut)
-          .then(() => { item.visible = false; });
+          .then(() => { item.visible = false; face.el.classList.add('off'); });
       } };
   },
   prompts:[
@@ -407,8 +474,9 @@ const LEVELS = [
       roof.castShadow = true;
       const door = at(box(.9, 1.3, .12, '#8A5A3B', .04), .45, .65, 1.12);
       door.geometry.translate(-.45, 0, 0);                 /* ให้บานพับอยู่ขอบซ้าย */
-      const g = group(body, roof, door, tagStack(4.1, h.tag, h.read));
+      const g = group(body, roof, door);
       at(g, h.x, 0, 0);
+      tag3d(g, [0, 3.9, 0], h.tag, h.read);
       world.add(pickable(g, h.id, at(hit(2.8, 3.6, 2.8), 0, 1.6, 0)));
       targets[h.id] = g; g.userData.door = door;
     });
@@ -441,7 +509,7 @@ const LEVELS = [
     moons.forEach(m => {
       const ball = sph(.85, mat('#FFF4CE', { emissive:0xFFE9A8, emissiveIntensity:.55, roughness:.9 }));
       const g = group(at(ball, 0, 0, 0), at(glow('#FFF0B8', 3.2), 0, 0, 0),
-                      tagStack(-1.25, m.tag, m.read, m.when));
+                      new THREE.Object3D());
       /* แรม ๘ ค่ำ = จันทร์ครึ่งดวง ใช้เงามืดบังครึ่งหนึ่ง */
       if(m.half){
         const shade = at(sph(.87, mat('#2B3566', { roughness:1 })), -.87, 0, 0);
@@ -449,6 +517,7 @@ const LEVELS = [
       }
       at(g, m.x, m.y, 0);
       world.add(pickable(g, m.id, at(hit(2.2, 2.2, 2.2), 0, 0, 0)));
+      tag3d(g, [0, -1.45, 0], m.tag, m.read, m.when);
       targets[m.id] = g;
       onFrame((dt, t) => { g.position.y = m.y + Math.sin(t*1.1 + m.x)*.14; });
     });
@@ -515,6 +584,7 @@ function drawLives(){
 }
 
 function clearWorld(){
+  clearLabels();
   frameOff.forEach(off => off()); frameOff = [];
   world.traverse(o => {
     if(o.geometry) o.geometry.dispose();
@@ -563,10 +633,16 @@ function showPrompt(){
   $('#now').innerHTML = '<b>' + (idx+1) + '/' + order.length + '</b> · ' + p.q;
   $('#prog').innerHTML = order.map((_, i) => '<i class="' + (i < idx ? 'done' : i === idx ? 'now' : '') + '">' + (i < idx ? '✓' : i+1) + '</i>').join('');
   if(built.onPrompt) built.onPrompt(p);
-  speak(cleanSpeech(p.q));
+  speak(cleanSpeech(p.q) + optionsSpeech());
 }
 
-$('#gsay').onclick = () => { if(L && idx < order.length) speak(cleanSpeech(P().q)); };
+/* อ่านโจทย์ + ชื่อตัวเลือกทุกอันในฉาก (พร้อมคำอ่าน) */
+function optionsSpeech(){
+  if(!built || !built.targets) return '';
+  const names = Object.values(built.targets).map(o => o.userData.say).filter(Boolean);
+  return names.length ? ' … เลือกจาก … ' + names.join(' … ') : '';
+}
+$('#gsay').onclick = () => { if(L && idx < order.length) speak(cleanSpeech(P().q) + optionsSpeech()); };
 
 S.onTap((x, y) => {
   if(!L || locked || idx >= order.length) return;
@@ -661,11 +737,22 @@ function finish(){
 }
 
 /* ป้ายจะวาดตัวเองใหม่เมื่อฟอนต์โหลดเสร็จ (ดู label() ใน stem3d.js) ขนาดจึงเปลี่ยน ต้องจัดกล้องใหม่ */
-if(document.fonts) document.fonts.ready.then(() => { if(L && !document.body.classList.contains('quizmode')) fitView(L); }).catch(() => {});
+if(document.fonts) document.fonts.ready.then(() => { markLabelsDirty(); if(L && !document.body.classList.contains('quizmode')) fitView(L); }).catch(() => {});
 
 /* หมุนเครื่องหรือเปลี่ยนขนาดหน้าต่าง แล้วจัดกล้องใหม่ให้ป้ายยังอยู่ในกรอบ */
 let fitTimer = 0;
-new ResizeObserver(() => { clearTimeout(fitTimer); fitTimer = setTimeout(() => { if(L && !document.body.classList.contains('quizmode')) fitView(L); }, 220); }).observe($('#stage'));
+new ResizeObserver(() => { markLabelsDirty(); clearTimeout(fitTimer); fitTimer = setTimeout(() => { markLabelsDirty(); if(L && !document.body.classList.contains('quizmode')) fitView(L); }, 220); }).observe($('#stage'));
+
+/* บอกรุ่นของเว็บที่เครื่องนี้ใช้อยู่ เอาไว้เช็กเวลาสงสัยว่าเห็นของเก่าค้างหรือเปล่า */
+(function showVersion(){
+  const el = $('#verline'); if(!el) return;
+  const sw = navigator.serviceWorker;
+  if(!sw || !sw.controller){ el.textContent = 'รุ่นของเว็บ: โหลดสดจากอินเทอร์เน็ต (ยังไม่ได้เก็บไว้ในเครื่อง)'; return; }
+  const ch = new MessageChannel();
+  ch.port1.onmessage = e => { el.textContent = 'รุ่นของเว็บที่เครื่องนี้ใช้อยู่: ' + (e.data && e.data.version || '?'); };
+  sw.controller.postMessage('version', [ch.port2]);
+  setTimeout(() => { if(/กำลังตรวจ/.test(el.textContent)) el.textContent = 'รุ่นของเว็บ: ตรวจไม่ได้'; }, 2500);
+})();
 
 $('#reset').onclick = () => openLevel(cur);
 openLevel(LEVELS[0].id);
