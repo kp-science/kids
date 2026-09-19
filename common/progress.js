@@ -45,6 +45,7 @@
     { id:'reflect', e:'✍️', tag:'test',   text:'ทำแบบฝึกอ่านเขียนสะท้อนคิด 1 ชุด',  url:'thai/reading-reflect.html',        done:ev => ev.some(x=>x.page==='thai-reflect') },
     { id:'plants',  e:'🐢', tag:'test',   text:'ทำแบบทดสอบพืชและสัตว์ 1 ชุด',        url:'science/plants-animals-test.html', done:ev => ev.some(x=>x.page==='plants') },
     { id:'pinyin',  e:'拼', tag:'pinyin', text:'ฝึกพินอินให้จบ 1 รอบ',                url:'chinese/pinyin-drill.html',        done:ev => ev.some(x=>x.kind==='pinyin') },
+    { id:'unit1',   e:'🪷', tag:'test',   text:'ทำแบบฝึกหน่วยที่ 1 พระพุทธศาสนา 1 ชุด', url:'social/unit1-buddhism.html',       done:ev => ev.some(x=>x.page==='social-unit1') },
   ];
   /* สื่อสาย "ลงมือทำ" ที่ไม่ใช่เกมฝึกสมอง */
   const HANDS = [
