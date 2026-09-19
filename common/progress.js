@@ -207,8 +207,17 @@
 
   /* ---------------- เก็บเว็บไว้ในเครื่อง ให้เล่นได้ตอนไม่มีเน็ต ---------------- */
   /* sw.js สร้างด้วย node tools/gen-sw.js · ทำงานเฉพาะ https กับ localhost (ตามกติกาเบราว์เซอร์) */
-  if('serviceWorker' in navigator && root)
+  if('serviceWorker' in navigator && root){
+    /* เคยมี service worker อยู่ก่อนแล้ว = การเปิดครั้งนี้เป็นการอัปเดต
+       พอตัวใหม่พร้อมใช้ ให้โหลดหน้าใหม่ครั้งเดียว จะได้เห็นของใหม่เลย ไม่ต้องเปิดซ้ำรอบสอง */
+    const hadWorker = !!navigator.serviceWorker.controller;
+    let reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if(!hadWorker || reloading) return;
+      reloading = true; location.reload();
+    });
     addEventListener('load', () => navigator.serviceWorker.register(root+'sw.js').catch(() => {}));
+  }
 
   window.KP = { log, data, day, dayKey, missions, streak, owned, stickerCount, STICKER_PAGES, ALL_STICKERS, STARS_PER_STICKER,
     markSeen(){ const d=data(); d.seenStickers=stickerCount(d); save(d); }, root, toast, WORKSHEETS, GAMES, isMuted, setMuted };

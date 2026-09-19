@@ -680,7 +680,7 @@ window.__test = { S, LEVELS, BANK, openLevel,
     const o = built.targets[id], c = S.renderer.domElement, r = c.getBoundingClientRect();
     const q = S.toScreen(o.getWorldPosition(new THREE.Vector3()));
     const x = r.left + q.x, y = r.top + q.y;
-    const opt = { clientX:x, clientY:y, bubbles:true };
+    const opt = { clientX:x, clientY:y, bubbles:true, pointerId:1, isPrimary:true, pointerType:'touch' };
     c.dispatchEvent(new PointerEvent('pointerdown', opt));
     c.dispatchEvent(new PointerEvent('pointerup', opt));
   },

@@ -174,31 +174,52 @@ export function sprite(text, { size=.8, bg=null, color='#3A3350', font=110 }={})
   s.scale.set(size, size, 1); return s;
 }
 /* ป้ายข้อความทรงแคปซูล กว้างตามข้อความ
-   ⚠️ ถ้าฟอนต์ Mali ยังโหลดไม่เสร็จตอนสร้างป้าย measureText จะวัดด้วยฟอนต์สำรองซึ่งแคบกว่า
-      ผ้าใบจึงเล็กเกินไปและตัวอักษรถูกตัดหาย → วาดครั้งแรกไปก่อน แล้ววาดซ้ำเมื่อฟอนต์มาถึง */
+
+   ⚠️ กับดักที่เจอจริง: ถ้าฟอนต์ Mali ยังใช้กับ canvas ไม่ได้ตอนวัดความกว้าง (measureText)
+   แต่ใช้ได้แล้วตอนวาด (fillText) ผ้าใบจะเล็กเกินไปและตัวอักษรถูกตัดหาย
+   บางเบราว์เซอร์ (โดยเฉพาะ Safari) โหลดฟอนต์ให้ canvas ช้ากว่าที่ใช้ใน DOM จึงเกิดอาการนี้
+   กันไว้ ๓ ชั้น
+     ๑) วัด → ปรับขนาดผ้าใบ → วัดซ้ำในสถานะเดียวกับตอนวาด ถ้ากว้างขึ้นก็ขยายผ้าใบแล้ววัดใหม่
+     ๒) ถ้ายังล้นอยู่ ย่อตัวอักษรให้พอดีผ้าใบ (แคบลงนิดหน่อยดีกว่าตัวอักษรขาด)
+     ๓) พอฟอนต์พร้อมจริง (fonts.load / fonts.ready) วาดใหม่ทั้งป้ายให้เต็มขนาด */
 export function label(text, { height=.4, bg='#FFFFFF', color='#3A3350' }={}){
   const c = document.createElement('canvas'), g = c.getContext('2d');
-  const F = '700 64px "Mali","Noto Sans Thai Looped",sans-serif';
+  const F = '700 64px "Mali","Noto Sans Thai Looped",sans-serif', PAD = 64;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ transparent:true, depthWrite:false }));
+  const inkWidth = () => { const m = g.measureText(text);
+    return Math.max(m.width, (m.actualBoundingBoxLeft || 0) + (m.actualBoundingBoxRight || 0)); };
   function paint(){
     g.font = F;
-    const m = g.measureText(text);
-    /* ใช้ขอบหมึกจริงด้วย เผื่อบางตัวล้ำออกนอกความกว้างที่วัดได้ */
-    const ink = Math.max(m.width, (m.actualBoundingBoxLeft || 0) + (m.actualBoundingBoxRight || 0));
-    const w = Math.ceil(ink) + 64;
-    c.width = w; c.height = 104;
-    g.font = F; g.fillStyle = bg; g.beginPath(); g.roundRect(2, 2, w-4, 100, 50); g.fill();
-    g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, w/2, 56);
+    let w = Math.ceil(inkWidth()) + PAD, ink = 0;
+    for(let i = 0; i < 3; i++){
+      c.width = w; c.height = 104; g.font = F;
+      ink = inkWidth();
+      const need = Math.ceil(ink) + PAD;
+      if(need <= w) break;
+      w = need;
+    }
+    g.fillStyle = bg; g.beginPath(); g.roundRect(2, 2, w-4, 100, 50); g.fill();
+    g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const fit = ink > w - 20 ? (w - 20) / ink : 1;
+    g.save(); g.translate(w/2, 56); if(fit < 1) g.scale(fit, 1); g.fillText(text, 0, 0); g.restore();
     if(s.material.map) s.material.map.dispose();
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
     s.material.map = tex; s.material.needsUpdate = true;
     s.scale.set(height * w / 104, height, 1);
   }
   paint();
-  if(document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(paint).catch(() => {});
-  s.userData.text = text;   /* ไว้ตรวจว่าป้ายกว้างพอกับข้อความจริงไหม */
+  if(document.fonts){
+    /* บอกเบราว์เซอร์ให้โหลดฟอนต์สำหรับ canvas โดยเฉพาะ แล้วค่อยวาดใหม่ */
+    Promise.all([
+      document.fonts.load('700 64px "Mali"').catch(() => {}),
+      document.fonts.load('700 64px "Noto Sans Thai Looped"').catch(() => {}),
+      document.fonts.ready.catch(() => {}),
+    ]).then(paint).catch(() => {});
+  }
+  s.userData.text = text;   /* ไว้ตรวจว่าป้ายกว้างพอกับข้อความไหม */
   return s;
 }
+
 /* แสงเรือง (glow) */
 export function glow(color='#FFE27A', size=2){
   const c = document.createElement('canvas'); c.width = c.height = 128;
