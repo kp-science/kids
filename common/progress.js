@@ -166,9 +166,71 @@
   const MUTE_KEY = 'kids-brain-mute';
   const isMuted = () => { try{ return localStorage.getItem(MUTE_KEY)==='1'; }catch(e){ return false; } };
   const contexts = new Set();
+
+  /* ---------------- เสียงอ่านภาษาไทย ----------------
+     แก้ให้ทุกหน้าพร้อมกัน ก่อนส่งข้อความเข้าเครื่องอ่าน (เฉพาะ utterance ภาษาไทย)
+     1) ตัวเลขอ่านเป็นคำ   15 -> สิบห้า · 145 -> หนึ่งร้อยสี่สิบห้า · เลขไทย ๑๕ ก็อ่านเหมือนกัน
+     2) คำยากที่เครื่องอ่านผิด สะกดใหม่ตามเสียง เช่น ราชมารดา -> ราดชะมานดา
+     เพิ่มคำใหม่ = เพิ่มใน SAY_FIX (ใส่เฉพาะคำที่เครื่องอ่านผิดจริง ถ้าอ่านถูกอยู่แล้วอย่าใส่) */
+  const TH_DIG = ['ศูนย์','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+  const TH_POS = ['','สิบ','ร้อย','พัน','หมื่น','แสน'];
+  function numWords(n){
+    n = Math.floor(Math.abs(n));
+    if(n === 0) return TH_DIG[0];
+    if(n >= 1000000){
+      const hi = Math.floor(n / 1000000), lo = n % 1000000;
+      return numWords(hi) + 'ล้าน' + (lo ? numWords(lo) : '');
+    }
+    const s = String(n); let out = '';
+    for(let i = 0; i < s.length; i++){
+      const d = +s[i], pos = s.length - 1 - i;
+      if(d === 0) continue;
+      if(pos === 1 && d === 1) out += 'สิบ';                      /* 15 = สิบห้า ไม่ใช่ หนึ่งสิบห้า */
+      else if(pos === 1 && d === 2) out += 'ยี่สิบ';
+      else if(pos === 0 && d === 1 && s.length > 1) out += 'เอ็ด'; /* 21 = ยี่สิบเอ็ด */
+      else out += TH_DIG[d] + TH_POS[pos];
+    }
+    return out;
+  }
+  const SAY_FIX = {
+    /* คำราชาศัพท์ */
+    'ราชมารดา':'ราดชะมานดา', 'ราชบิดา':'ราดชะบิดา', 'ราชชนนี':'ราดชะชนนี', 'ราชกุมาร':'ราดชะกุมาน',
+    'ชนกาธิเบศร':'ชะนะกาทิเบด', 'ภูมิพลอดุลยเดช':'พูมิพนอะดุนยะเดด', 'บรมนาถบพิตร':'บอรมมะนาดบอพิด',
+    'จริยวัตร':'จะริยะวัด', 'สวรรคต':'สะหวันคด', 'ปณิธาน':'ปะนิทาน',
+    /* คำทางศาสนา */
+    'พุทธศาสนา':'พุดทะสาดสะหนา', 'ศาสนิกชน':'สาดสะนิกกะชน', 'พุทธคยา':'พุดทะคะยา', 'เนรัญชรา':'เนรันชะรา',
+    'สิทธัตถะ':'สิดทัดถะ', 'สุทโธทนะ':'สุดโททะนะ', 'มหาปชาบดีโคตมี':'มะหาปะชาบอดีโคตะมี',
+    'วิศวามิตร':'วิดสะวามิด', 'ทุกรกิริยา':'ทุกกะระกิริยา', 'พระศรีมหาโพธิ์':'พระสีมะหาโพ',
+    'ปรินิพพาน':'ปะรินิบพาน', 'พุทธมามกะ':'พุดทะมามะกะ', 'จาตุรงคสันนิบาต':'จาตุรงคะสันนิบาด',
+    'มาฆบูชา':'มาคะบูชา', 'วิสาขบูชา':'วิสาขะบูชา', 'อัฏฐมีบูชา':'อัดถะมีบูชา', 'อาสาฬหบูชา':'อาสานหะบูชา',
+    'โอวาทปาติโมกข์':'โอวาดปาติโมก', 'สังคหวัตถุ':'สังคะหะวัดถุ', 'ปิยวาจา':'ปิยะวาจา',
+    'อัตถจริยา':'อัดถะจะริยา', 'สมานัตตตา':'สะมานัดตะตา', 'เบญจศีล':'เบนจะสีน', 'เบญจธรรม':'เบนจะทำ',
+    'เบญจางคประดิษฐ์':'เบนจางคะประดิด', 'กตัญญูกตเวที':'กะตันยูกะตะเวที', 'พระรัตนตรัย':'พระรัดตะนะไตร',
+    'สาวัตถี':'สาวัดถี', 'พระสารีบุตร':'พระสารีบุด', 'วัณณุปถชาดก':'วันนุปะถะชาดก', 'สุวัณณสาม':'สุวันนะสาม',
+    'ปิลยักษ์':'ปินละยัก', 'หิมพานต์':'หิมมะพาน', 'อัญญาโกณฑัญญะ':'อันยาโกนดันยะ', 'ปัญจวัคคีย์':'ปันจะวักคี',
+    'บรรพชา':'บันพะชา', 'พระอรหันต์':'พระอะระหัน', 'กบิลพัสดุ์':'กะบินละพัด', 'บิณฑบาต':'บินทะบาด',
+    'อานิสงส์':'อานิสง', 'อธิษฐาน':'อะทิดถาน', 'สุจริต':'สุดจะหริด', 'กุฏิ':'กุดติ',
+    /* วิชา/คำทั่วไปที่มักอ่านผิด */
+    'นาฏศิลป์':'นาดตะสิน',
+  };
+  const SAY_RE = new RegExp(Object.keys(SAY_FIX).sort((a,b) => b.length - a.length).join('|'), 'g');
+  const THAI_DIGITS = '๐๑๒๓๔๕๖๗๘๙';
+  function sayThai(t){
+    return String(t)
+      .replace(/[๐-๙]/g, c => THAI_DIGITS.indexOf(c))
+      .replace(SAY_RE, w => SAY_FIX[w])
+      .replace(/\d+/g, m => numWords(+m));
+  }
+
   if(window.speechSynthesis){
     const speak0 = speechSynthesis.speak.bind(speechSynthesis);
-    try{ speechSynthesis.speak = u => { if(!isMuted()) speak0(u); }; }catch(e){}
+    try{
+      speechSynthesis.speak = u => {
+        if(isMuted()) return;
+        try{ if(!u.lang || /^th/i.test(u.lang)) u.text = sayThai(u.text); }catch(e){}
+        speak0(u);
+      };
+    }catch(e){}
   }
   const AC0 = window.AudioContext || window.webkitAudioContext;
   if(AC0){
@@ -221,5 +283,5 @@
   }
 
   window.KP = { log, data, day, dayKey, missions, streak, owned, stickerCount, STICKER_PAGES, ALL_STICKERS, STARS_PER_STICKER,
-    markSeen(){ const d=data(); d.seenStickers=stickerCount(d); save(d); }, root, toast, WORKSHEETS, GAMES, isMuted, setMuted };
+    markSeen(){ const d=data(); d.seenStickers=stickerCount(d); save(d); }, root, toast, WORKSHEETS, GAMES, isMuted, setMuted, numWords, sayThai };
 })();
