@@ -548,7 +548,7 @@ function renderSummary(){
   $('#score').className='score hide';
   $('#tools').className='tools hide';
   $('#result').className='result hide';
-  let h='<div class="lead">📌 อ่านสรุปนี้ก่อนสอบ แล้วกดแท็บ <b>บทที่ ๑–๔</b> เพื่อลองทำแบบฝึก หรือกด <b>ข้อสอบรวม</b> เพื่อวัดความพร้อม · แตะปุ่ม 🔊 ให้อ่านออกเสียงให้ฟังได้</div>';
+  let h='<div class="lead">📌 อ่านสรุปนี้ก่อนสอบ แล้วกดแท็บ <b>บทที่ ๑–๔</b> เพื่อลองทำแบบฝึก หรือกด <b>ข้อสอบรวม</b> เพื่อวัดความพร้อม · แตะปุ่ม 🔊 ให้อ่านออกเสียงให้ฟังได้<div style="margin-top:10px"><a href="unit1-quest.html" style="display:inline-block;background:#C98A2E;color:#fff;border-radius:999px;padding:8px 18px;font-weight:700;text-decoration:none">🪷 เล่นเป็นเกม 3 มิติ ▶</a></div></div>';
   SUMMARY.forEach((s,si)=>{
     h+='<div class="sum" style="--pc:'+s.c[0]+';--pcd:'+s.c[1]+';--pl:'+s.c[2]+'">'+
        '<div class="sh"><span class="pe">'+s.e+'</span><h2>'+s.t+'</h2>'+

@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>ผจญภัยหน่วยที่ 1 พระพุทธศาสนา 3 มิติ</title>
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+<link rel="stylesheet" href="../stem/stem.css">
+<style>
+.stage.night{background:linear-gradient(180deg,#1B2350 0%,#2E3C77 45%,#5B6BA8 100%)}
+.stage.night .hud button,.stage.night .now{background:rgba(255,255,255,.9)}
+.hud .now{background:#fff;border-radius:16px;padding:6px 14px;font-weight:700;font-size:.95rem;
+  box-shadow:0 3px 10px rgba(58,51,80,.14);max-width:74%;line-height:1.35}
+.hud .now b{color:#1F6FA8}
+.hud .now:empty{display:none}
+.factbox{background:#FFF9DB;border-radius:16px;padding:10px 12px;font-size:.95rem;margin-top:10px;display:none}
+.factbox.on{display:block}
+.factbox b{font-family:'Mali',sans-serif;color:#8A6100}
+.tips{color:var(--mute);font-size:.88rem}
+.prog{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.prog i{width:22px;height:22px;border-radius:50%;background:#EFEAF5;display:grid;place-items:center;font-size:.8rem;font-style:normal}
+.prog i.done{background:var(--okbg)}
+.prog i.now{background:#FFF1C9;box-shadow:0 0 0 3px #FFE08A}
+.medal{background:#fff;border-radius:22px;padding:16px;text-align:center;box-shadow:0 8px 22px rgba(58,51,80,.08);display:none}
+.medal.on{display:block}
+.medal .st{font-size:2.2rem;letter-spacing:5px}
+.intro{max-width:860px;margin:0 auto;padding:0 12px}
+.intro .card{margin-bottom:12px}
+.intro ol{margin:8px 0 0 20px}
+.intro li{margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="in"><a class="pill" href="../#สังคมศึกษา">‹ หน้ารวม</a><div class="tt">🪷 ผจญภัยพระพุทธศาสนา 3 มิติ</div><button class="pill" id="mute" type="button">🔊</button></div>
+  <div class="levels" id="levels"></div>
+</div>
+
+<section id="quiz"></section>
+<div class="lab">
+  <div class="stage" id="stage">
+    <div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
+    <div class="hud"><span class="now" id="now"></span><span class="sp"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
+  </div>
+  <div class="panel">
+    <div class="card goal">
+      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
+      <p id="gtext"></p>
+      <div class="prog" id="prog"></div>
+      <div class="factbox" id="fact"></div>
+      <div class="result" id="result"></div>
+      <div class="row"><button class="btn" type="button" id="reset">↺ เล่นด่านนี้ใหม่</button><button class="btn go" type="button" id="next" hidden>ด่านต่อไป ▶</button></div>
+    </div>
+    <div class="medal" id="medal"></div>
+    <div class="know" id="know"></div>
+    <div class="card goal"><p class="tips">👆 แตะสิ่งของในฉากเพื่อตอบ · ลากนิ้วเพื่อหมุนดูรอบ ๆ · หยิกนิ้วเพื่อซูมเข้าออก · แตะ 🔊 ให้อ่านโจทย์ให้ฟัง</p><p style="margin-top:8px"><a class="btn" href="unit1-buddhism.html" style="display:inline-block;text-decoration:none">📖 เปิดหน้าสรุป + แบบฝึกเต็ม</a></p></div>
+  </div>
+</div>
+
+<script>setTimeout(() => { if(!window.__stemReady){ const l = document.getElementById('loading'); if(l) l.textContent = 'โหลดฉาก 3 มิติไม่ได้ 😢 ลองโหลดหน้าใหม่อีกครั้ง'; } }, 12000);</script>
+<script type="importmap">{ "imports": { "three":"../vendor/three/three.module.js", "three/addons/":"../vendor/three/addons/" } }</script>
+<script type="module">
+import { THREE, $, shuffle, store, setupMute, sfx, speak, cleanSpeech, stage, mat, box, cyl, sph, group, at, rot,
+         label, glow, tween, ease, wait, levelBar, quiz } from '../stem/stem3d.js';
+
+const st = store('kids-unit1-quest');
+setupMute($('#mute'));
+const S = stage($('#stage'), { cam:[0, 7.5, 13], target:[0, 1.2, 0], minDist:6, maxDist:24, minPolar:.2, maxPolar:1.4, shadow:12 });
+$('#loading').remove();
+$('#home').onclick = () => S.resetView();
+
+/* ============================================================
+   ตัวช่วยสร้างของในฉาก
+   ============================================================ */
+const world = new THREE.Group(); S.scene.add(world);
+
+/* ทุกด่านลงทะเบียนแอนิเมชันผ่าน onFrame() นี้ เปลี่ยนด่านแล้วจะถูกถอนทิ้งทั้งหมด
+   ไม่งั้นแอนิเมชันของด่านเก่าจะวิ่งค้างอยู่เรื่อย ๆ */
+let frameOff = [];
+const onFrame = fn => frameOff.push(S.onFrame(fn));
+
+function ground(color='#9ADE86', r=16){
+  const g = cyl(r, r, .5, color, 48); g.position.y = -.25; g.receiveShadow = true; return g;
+}
+/* กล่องชนสำหรับแตะ (มองไม่เห็นแต่ raycast โดน) */
+function hit(w, h, d){
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d),
+    new THREE.MeshBasicMaterial({ transparent:true, opacity:0, depthWrite:false }));
+  return m;
+}
+/* ทำให้กลุ่มนี้แตะได้ */
+function pickable(g, id, hitBox){
+  g.userData.pick = true; g.userData.id = id;
+  if(hitBox) g.add(hitBox);
+  return g;
+}
+function trunk(h=1.8, rt=.16, rb=.26, c='#9C6B45'){ return at(cyl(rt, rb, h, c, 12), 0, h/2, 0); }
+
+/* ต้นสาละ · พุ่มกลมเขียวอ่อน มีดอกสีขาวอมชมพู */
+function salaTree(){
+  const g = group(trunk(1.9));
+  [[0,2.5,0,1.25],[-.75,2.15,.35,.85],[.8,2.25,-.3,.9]].forEach(([x,y,z,r]) => g.add(at(sph(r, '#79C26A'), x, y, z)));
+  [[-.5,2.9,.5],[.7,2.8,.4],[0,3.5,-.3],[-1.1,2.4,-.4],[1.05,2.6,.5]].forEach(([x,y,z]) => g.add(at(sph(.14, '#FFD3E3'), x, y, z)));
+  return g;
+}
+/* ต้นพระศรีมหาโพธิ์ · ลำต้นใหญ่ พุ่มกว้างเขียวเข้ม ใบรูปหัวใจ */
+function bodhiTree(){
+  const g = group(trunk(2.2, .26, .42, '#8A6039'));
+  [[0,3.1,0,1.7],[-1.35,2.7,.5,1.05],[1.4,2.75,-.4,1.1],[.3,2.6,1.3,.9]].forEach(([x,y,z,r]) => g.add(at(sph(r, '#3F9A5B'), x, y, z)));
+  [[-1.3,3.7,.6],[1.2,3.8,-.2],[0,4.5,.2],[1.9,3,.8]].forEach(([x,y,z]) => { const l = sph(.3, '#2F7F49'); l.scale.set(.5,.22,.75); g.add(at(l, x, y, z)); });
+  return g;
+}
+function platform(c='#CFE9A8', r=2.3){
+  const g = group(at(cyl(r, r+.15, .45, '#D9C39B', 32), 0, .22, 0), at(cyl(r-.02, r-.02, .06, c, 32), 0, .47, 0));
+  g.children.forEach(m => { m.castShadow = true; m.receiveShadow = true; });
+  return g;
+}
+function nameTag(text, y=4.6, bg='#FFFFFF', color='#3A3350'){ return at(label(text, { height:.52, bg, color }), 0, y, 0); }
+
+/* ดอกบัว · กลีบชมพูรอบเกสรสีทอง (ไม่ใช้อิโมจิ เพราะบางเครื่องวาดอิโมจิลงผ้าใบไม่ได้) */
+function lotusMesh(s0=1){
+  const g = new THREE.Group();
+  g.add(at(sph(.2, '#FFD34F'), 0, .12, 0));
+  for(let i=0;i<7;i++){
+    const p = sph(.3, '#FF9EC4'); p.scale.set(.55, .32, 1.25);
+    const a = i/7*Math.PI*2;
+    at(rot(p, 0, -a, .34), Math.sin(a)*.34, .06, Math.cos(a)*.34);
+    g.add(p);
+  }
+  for(let i=0;i<5;i++){
+    const p = sph(.26, '#FFC7DE'); p.scale.set(.6, .3, 1.15);
+    const a = i/5*Math.PI*2 + .4;
+    at(rot(p, 0, -a, .75), Math.sin(a)*.24, -.02, Math.cos(a)*.24);
+    g.add(p);
+  }
+  g.scale.setScalar(s0); return g;
+}
+/* หนังสือพระธรรม */
+function bookMesh(){
+  return group(at(box(.8, .14, .6, '#2E7D4F', .03), 0, 0, 0), at(box(.72, .1, .54, '#FFF8E7', .02), 0, .06, 0));
+}
+/* ผ้าไตรจีวรพับ แทนพระสงฆ์ */
+function robeMesh(){
+  return group(at(new THREE.Mesh(new THREE.ConeGeometry(.42, .7, 14), mat('#F08A3C')), 0, .35, 0),
+               at(cyl(.3, .34, .16, '#E07627', 16), 0, .78, 0));
+}
+/* พระพุทธรูปอย่างย่อ (ทรงเรขาคณิต) เป็นสัญลักษณ์แทนพระพุทธ */
+function buddhaSymbol(){
+  return group(at(cyl(.46, .52, .16, '#E0B24A', 20), 0, .08, 0),
+               at(new THREE.Mesh(new THREE.ConeGeometry(.36, .66, 16), mat('#F5C95B')), 0, .48, 0),
+               at(sph(.19, '#F7D77A'), 0, .93, 0));
+}
+
+/* ============================================================
+   ๖ ด่าน
+   แต่ละด่าน: build() วางของลงฉาก คืน { targets, onRight?, onDone? }
+   prompts: { q:'โจทย์', a:'id ที่ถูก', fact:'สิ่งที่ต้องจำ' }
+   ============================================================ */
+const LEVELS = [
+
+/* ---------- ๑ ตามรอยพระพุทธเจ้า ---------- */
+{ id:'road', name:'ตามรอย', emoji:'🗺️', title:'ตามรอยพระพุทธเจ้า',
+  text:'ในฉากมี ๓ สถานที่สำคัญ · อ่านโจทย์แล้วแตะสถานที่ที่ถูกต้อง ดอกบัวนำทางจะลอยไปหา',
+  view:{ cam:[0, 8.5, 18], target:[0, 1.6, 0] }, ordered:true,
+  know:'<b>จำง่าย ๆ</b> ประสูติใต้<b>ต้นสาละ</b> ที่<b>ลุมพินีวัน (เนปาล)</b> · ตรัสรู้ใต้<b>ต้นโพธิ์</b> ที่<b>พุทธคยา</b> ริมแม่น้ำเนรัญชรา · ปรินิพพานใต้<b>ต้นสาละ</b> ที่<b>กุสินารา</b> · ทั้งสามเหตุการณ์ตรงกับวัน<b>ขึ้น ๑๕ ค่ำ เดือน ๖</b>',
+  build(){
+    world.add(ground('#9ADE86', 17));
+    const spots = [
+      { id:'lumbini',  x:-5.4, z:1.4, tag:'ลุมพินีวัน · เนปาล', tree:salaTree,  tint:'#FFF0F5' },
+      { id:'bodhgaya', x:0,    z:-3,  tag:'พุทธคยา · อินเดีย',    tree:bodhiTree, tint:'#F0FFF3' },
+      { id:'kusinara', x:5.4,  z:1.4, tag:'กุสินารา · อินเดีย',   tree:salaTree,  tint:'#FFF7E6' },
+    ];
+    const targets = {};
+    spots.forEach(s => {
+      const g = group(platform(), s.tree(), nameTag(s.tag, 4.8, s.tint));
+      at(g, s.x, 0, s.z);
+      world.add(pickable(g, s.id, at(hit(4.4, 5.6, 4.4), 0, 2.4, 0)));
+      targets[s.id] = g;
+    });
+    /* แม่น้ำเนรัญชรา ไหลผ่านหน้าพุทธคยา */
+    const river = at(box(9, .14, 1.7, '#5BB8EC', .06, { roughness:.2 }), 0, .06, -.4);
+    river.receiveShadow = true; world.add(river);
+    world.add(at(label('แม่น้ำเนรัญชรา', { height:.42, bg:'#DFF2FF', color:'#1F6FA8' }), 0, .9, .9));
+    /* ดอกบัวนำทาง */
+    const lotus = group(at(lotusMesh(1.15), 0, -.1, 0), at(glow('#FFC9E4', 1.7), 0, 0, 0));
+    at(lotus, 0, 1.6, 5.2); world.add(lotus);
+    onFrame((dt, t) => { lotus.position.y = 1.6 + Math.sin(t*2)*.18; lotus.children[0].rotation.y = t*.6; });
+    return { targets, onRight(id, p, obj){
+      return tween(lotus.position, { x:obj.position.x, z:obj.position.z + 3.2 }, 700, ease.inOut);
+    } };
+  },
+  prompts:[
+    { q:'พระพุทธเจ้า <b>ประสูติ</b> ที่ไหน', a:'lumbini',  fact:'ประสูติใต้<b>ต้นสาละ</b> ที่<b>ลุมพินีวัน</b> ปัจจุบันอยู่ในประเทศ<b>เนปาล</b> เมื่อวันขึ้น ๑๕ ค่ำ เดือน ๖' },
+    { q:'พระพุทธเจ้า <b>ตรัสรู้</b> ที่ไหน', a:'bodhgaya', fact:'ตรัสรู้ใต้<b>ต้นพระศรีมหาโพธิ์</b> ใกล้ริมฝั่ง<b>แม่น้ำเนรัญชรา</b> ปัจจุบันคือ<b>พุทธคยา ประเทศอินเดีย</b>' },
+    { q:'พระพุทธเจ้า <b>ปรินิพพาน</b> ที่ไหน', a:'kusinara', fact:'ปรินิพพานใต้<b>ต้นสาละ</b> ในเมือง<b>กุสินารา ประเทศอินเดีย</b>' },
+    { q:'สถานที่ใดอยู่ในประเทศ <b>เนปาล</b>', a:'lumbini',  fact:'มีลุมพินีวันแห่งเดียวที่อยู่ในเนปาล อีกสองแห่งอยู่ในอินเดีย' },
+    { q:'<b>ต้นพระศรีมหาโพธิ์</b> อยู่ที่ไหน', a:'bodhgaya', fact:'ต้นโพธิ์ใหญ่ใบรูปหัวใจ คือที่ที่พระองค์ตรัสรู้ เมื่อพระชนมายุ ๓๕ พรรษา' },
+    { q:'ที่ใดมี <b>ต้นสาละ</b> ทั้งตอนเริ่มต้นและตอนสุดท้าย', a:'kusinara', fact:'ประสูติและปรินิพพานใต้ต้นสาละเหมือนกัน · ที่กุสินาราคือครั้งสุดท้าย' },
+  ]},
+
+/* ---------- ๒ บันไดตัวเลข ---------- */
+{ id:'steps', name:'บันไดตัวเลข', emoji:'🔢', title:'บันไดตัวเลขที่ต้องจำ',
+  text:'บันไดแต่ละขั้นมีตัวเลข · อ่านโจทย์แล้วแตะขั้นที่มีตัวเลขถูกต้อง',
+  view:{ cam:[.5, 7, 16], target:[0, 2.2, 0] },
+  know:'<b>ตัวเลขสำคัญ</b> พระมารดาสวรรคตหลังประสูติ <b>๗ วัน</b> · ออกผนวช <b>๒๙</b> · ตรัสรู้ <b>๓๕</b> · เผยแผ่ธรรม <b>๔๕ ปี</b> · ปรินิพพาน <b>๘๐ พรรษา</b>',
+  build(){
+    world.add(ground('#CFE3F7', 16));
+    const nums = [['n7','๗','#FFD9E4'],['n29','๒๙','#FFE9C6'],['n35','๓๕','#D8F2D0'],['n45','๔๕','#D5E8FF'],['n80','๘๐','#E8DCFB']];
+    const targets = {};
+    nums.forEach((nm, i) => {
+      const h = .8 + i*.72, x = -5.2 + i*2.6;
+      const step = at(box(2.2, h, 2.2, nm[2], .12), 0, h/2, 0);
+      const g = group(step, at(label(nm[1], { height:.7, bg:'#FFFFFF', color:'#3A3350' }), 0, h + .62, 0));
+      at(g, x, 0, 0); g.userData.top = h;
+      world.add(pickable(g, nm[0], at(hit(2.4, h + 1.4, 2.4), 0, (h + 1.4)/2, 0)));
+      targets[nm[0]] = g;
+    });
+    const walker = at(lotusMesh(1), -5.2, 2, 1.9); world.add(walker);
+    onFrame((dt, t) => { walker.rotation.y = t*.8; });
+    return { targets, onRight(id, p, obj){
+      return tween(walker.position, { x:obj.position.x, y:obj.userData.top + .9, z:1.9 }, 600, ease.out);
+    } };
+  },
+  prompts:[
+    { q:'เสด็จ<b>ออกทรงผนวช</b> เมื่อพระชนมายุเท่าใด', a:'n29', fact:'ออกผนวชเมื่อ <b>๒๙ พรรษา</b> เพราะทรงเบื่อหน่ายความไม่ยั่งยืนของชีวิต' },
+    { q:'<b>ตรัสรู้</b> เมื่อพระชนมายุเท่าใด', a:'n35', fact:'ตรัสรู้เป็นพระสัมมาสัมพุทธเจ้าเมื่อ <b>๓๕ พรรษา</b> ด้วยการนั่งสมาธิ' },
+    { q:'ทรง<b>เผยแผ่หลักธรรม</b> นานกี่ปี', a:'n45', fact:'ทรงเผยแผ่หลักธรรมแก่ประชาชนนานถึง <b>๔๕ ปี</b>' },
+    { q:'<b>ปรินิพพาน</b> เมื่อพระชนมายุเท่าใด', a:'n80', fact:'รวมพระชนมายุได้ <b>๘๐ พรรษา</b>' },
+    { q:'พระมารดา<b>สวรรคต</b>หลังประสูติกี่วัน', a:'n7', fact:'หลังประสูติ <b>๗ วัน</b> พระนางสิริมหามายาสวรรคต พระนางมหาปชาบดีโคตมี (น้า) จึงเลี้ยงดูแทน' },
+    { q:'<b>สามเณรบัณฑิต</b> บรรพชาเมื่ออายุเท่าใด', a:'n7', fact:'บรรพชาเมื่ออายุ <b>๗ ปี</b> ในสำนักพระสารีบุตร' },
+    { q:'ตัวเลขใด<b>มากที่สุด</b> ในเรื่องพุทธประวัติ', a:'n80', fact:'๘๐ พรรษา คือพระชนมายุรวมทั้งหมด' },
+  ]},
+
+/* ---------- ๓ ดวงแก้ว ๓ ดวง ---------- */
+{ id:'gems', name:'ดวงแก้ว ๓', emoji:'💎', title:'พระรัตนตรัย · แก้ว ๓ ดวง',
+  text:'พระรัตนตรัย คือ แก้วอันประเสริฐ ๓ ประการ · อ่านโจทย์แล้วแตะดวงแก้วที่ถูก',
+  view:{ cam:[0, 4.8, 10.5], target:[0, 2.4, 0] },
+  know:'<b>พระรัตนตรัย</b> = แก้วอันประเสริฐ ๓ ประการ · <b>พระพุทธ</b> (พระพุทธเจ้า ใช้พระพุทธรูปเป็นสัญลักษณ์) · <b>พระธรรม</b> (คำสั่งสอน) · <b>พระสงฆ์</b> (สาวกผู้นำพระธรรมมาสั่งสอน) · บทกราบ: อะระหังฯ (พระพุทธ) → สะวากขาโตฯ (พระธรรม) → สุปะฏิปันโนฯ (พระสงฆ์)',
+  build(){
+    world.add(ground('#F3E3C2', 14));
+    world.add(at(cyl(4.4, 4.7, .5, '#E7D2A8', 40), 0, .25, 0));
+    const gems = [
+      { id:'buddha', x:-3, icon:buddhaSymbol, c:'#FFD86B', tag:'พระพุทธ' },
+      { id:'dhamma', x:0,  icon:bookMesh,     c:'#9BE3A8', tag:'พระธรรม' },
+      { id:'sangha', x:3,  icon:robeMesh,     c:'#FFB98A', tag:'พระสงฆ์' },
+    ];
+    const targets = {};
+    gems.forEach(gm => {
+      const crystal = at(new THREE.Mesh(new THREE.OctahedronGeometry(.95),
+        mat(gm.c, { roughness:.2, metalness:.15, transparent:true, opacity:.9 })), 0, 0, 0);
+      crystal.castShadow = true;
+      const g = group(at(cyl(.9, 1.05, .45, '#C8A76A', 24), 0, .22, 0), at(gm.icon(), 0, .45, 0),
+                      at(crystal, 0, 2.6, 0), at(glow(gm.c, 3), 0, 2.6, 0),
+                      nameTag(gm.tag, 3.9, '#FFFFFF'));
+      at(g, gm.x, 0, 0);
+      world.add(pickable(g, gm.id, at(hit(2.2, 3.4, 2.2), 0, 1.8, 0)));
+      targets[gm.id] = g;
+      onFrame((dt, t) => { crystal.rotation.y = t*.7 + gm.x; crystal.position.y = 2.6 + Math.sin(t*1.6 + gm.x)*.12; });
+    });
+    return { targets,
+      onRight(id, p, obj){ return tween(obj.scale, { x:1.18, y:1.18, z:1.18 }, 220).then(() => tween(obj.scale, { x:1, y:1, z:1 }, 260)); },
+      /* ครบแล้วแก้วทั้งสามลอยมารวมเป็นสามเหลี่ยม */
+      onDone(targets){
+        const p = [[0, 5.2, 0], [-1.8, 3.3, 0], [1.8, 3.3, 0]], ids = ['buddha','dhamma','sangha'];
+        ids.forEach((id, i) => tween(targets[id].position, { x:p[i][0], y:p[i][1] - 2.6, z:p[i][2] }, 900, ease.inOut));
+      } };
+  },
+  prompts:[
+    { q:'ดวงใดหมายถึง <b>คำสั่งสอนของพระพุทธเจ้า</b>', a:'dhamma', fact:'<b>พระธรรม</b> คือคำสั่งสอน ให้ละเว้นความชั่ว ทำความดี และทำจิตใจให้ผ่องใส' },
+    { q:'ดวงใดหมายถึง <b>สาวกผู้นำพระธรรมมาสั่งสอน</b>', a:'sangha', fact:'<b>พระสงฆ์</b> คือสาวกของพระพุทธเจ้า ผู้นำพระธรรมมาสั่งสอนพุทธศาสนิกชน' },
+    { q:'ดวงใดใช้ <b>พระพุทธรูป</b> เป็นสัญลักษณ์แทน', a:'buddha', fact:'<b>พระพุทธ</b> คือพระพุทธเจ้า เรากราบพระพุทธรูปเพื่อรำลึกถึงพระคุณของพระองค์' },
+    { q:'สวดว่า “<b>อะระหัง สัมมาสัมพุทโธ ภะคะวา</b>” กราบดวงใด', a:'buddha', fact:'บทแรกของคำบูชาพระรัตนตรัย เป็นการกราบ<b>พระพุทธ</b>' },
+    { q:'สวดว่า “<b>ธัมมัง นะมัสสามิ</b>” กราบดวงใด', a:'dhamma', fact:'“ข้าพเจ้าขอนมัสการ<b>พระธรรม</b>”' },
+    { q:'สวดว่า “<b>สังฆัง นะมามิ</b>” กราบดวงใด', a:'sangha', fact:'“ข้าพเจ้าขอนอบน้อม<b>พระสงฆ์</b>” · กราบครบ ๓ ครั้ง = พระรัตนตรัยครบ ๓ ดวง' },
+  ]},
+
+/* ---------- ๔ ตะกร้าโอวาท ๓ ---------- */
+{ id:'ovada', name:'โอวาท ๓', emoji:'🧺', title:'แยกของลงตะกร้าโอวาท ๓',
+  text:'ของที่ลอยอยู่กลางฉากคือการกระทำหนึ่งอย่าง · แตะตะกร้าที่ถูกต้องให้ของลอยลงไป',
+  view:{ cam:[0, 6, 13.5], target:[0, 1.8, 0] },
+  know:'<b>โอวาท ๓ คือหัวใจของพระพุทธศาสนา</b> ๑) ละเว้นการทำความชั่ว (เบญจศีล) ๒) ทำความดี (เบญจธรรม · สังคหวัตถุ ๔ · มงคล) ๓) ทำจิตใจให้ผ่องใสบริสุทธิ์ (สวดมนต์ แผ่เมตตา นั่งสมาธิ มีสติ)',
+  build(){
+    world.add(ground('#BFE9C4', 15));
+    const bins = [
+      { id:'stop',  x:-4.4, c:'#FFC7C7', tag:'๑ ละเว้นความชั่ว' },
+      { id:'good',  x:0,    c:'#FFE1A8', tag:'๒ ทำความดี' },
+      { id:'clear', x:4.4,  c:'#BBDCFF', tag:'๓ ทำจิตใจให้ผ่องใส' },
+    ];
+    const targets = {};
+    bins.forEach(b => {
+      const g = group(at(cyl(1.25, .95, 1.3, b.c, 22), 0, .65, 0), at(cyl(1.3, 1.3, .14, '#FFFFFF', 22), 0, 1.35, 0),
+                      nameTag(b.tag, 2.5, '#FFFFFF'));
+      at(g, b.x, 0, 0);
+      world.add(pickable(g, b.id, at(hit(2.8, 3.2, 2.8), 0, 1.4, 0)));
+      targets[b.id] = g;
+    });
+    const item = group(at(glow('#FFF3C4', 2.4), 0, 0, 0));
+    let face = at(label('พร้อมแล้ว', { height:.6, bg:'#FFFFFF', color:'#3A3350' }), 0, 0, 0); item.add(face);
+    at(item, 0, 4.4, 2.2); world.add(item);
+    onFrame((dt, t) => { item.position.y = 4.4 + Math.sin(t*2.2)*.16; });
+    return { targets, item,
+      onPrompt(p){
+        item.remove(face); if(face.material.map) face.material.map.dispose(); face.material.dispose();
+        face = at(label(p.item, { height:.62, bg:'#FFFFFF', color:'#3A3350' }), 0, 0, 0); item.add(face);
+        item.position.set(0, 4.4, 2.2); item.visible = true; },
+      onRight(id, p, obj){
+        return tween(item.position, { x:obj.position.x, y:1.9, z:0 }, 650, ease.inOut)
+          .then(() => { item.visible = false; });
+      } };
+  },
+  prompts:[
+    { q:'<b>ไม่รังแกสัตว์</b> ลงตะกร้าใด', item:'ไม่รังแกสัตว์', a:'stop',  fact:'เบญจศีลข้อ ๑ ไม่ฆ่าสัตว์ รังแกสัตว์ → เป็นการ<b>ละเว้นความชั่ว</b>' },
+    { q:'<b>แบ่งขนมให้เพื่อน</b> ลงตะกร้าใด', item:'แบ่งขนมให้เพื่อน', a:'good', fact:'การให้ การแบ่งปัน (ทาน) → เป็นการ<b>ทำความดี</b>' },
+    { q:'<b>สวดมนต์และแผ่เมตตาก่อนนอน</b> ลงตะกร้าใด', item:'สวดมนต์ แผ่เมตตา', a:'clear', fact:'สวดมนต์ แผ่เมตตา นั่งสมาธิ → <b>ทำจิตใจให้ผ่องใสบริสุทธิ์</b>' },
+    { q:'<b>ไม่พูดโกหก</b> ลงตะกร้าใด', item:'ไม่พูดโกหก', a:'stop', fact:'เบญจศีลข้อ ๔ ไม่พูดโกหกหรือหลอกลวงผู้อื่น → <b>ละเว้นความชั่ว</b>' },
+    { q:'<b>ช่วยแม่ถูบ้าน รดน้ำต้นไม้</b> ลงตะกร้าใด', item:'ช่วยแม่ถูบ้าน', a:'good', fact:'มงคลข้อ “คอยรับใช้พ่อแม่” → <b>ทำความดี</b>' },
+    { q:'<b>ไม่หยิบของคนอื่นโดยไม่ขอ</b> ลงตะกร้าใด', item:'ไม่หยิบของคนอื่น', a:'stop', fact:'เบญจศีลข้อ ๒ ไม่ลักทรัพย์ → <b>ละเว้นความชั่ว</b>' },
+    { q:'<b>นั่งสมาธิให้ใจสงบ</b> ลงตะกร้าใด', item:'นั่งสมาธิ', a:'clear', fact:'จิตใจที่สงบทำให้เกิดปัญญา มีความจำดี และมีสติ' },
+    { q:'<b>พูดจาไพเราะกับเพื่อน</b> ลงตะกร้าใด', item:'พูดจาไพเราะ', a:'good', fact:'ปิยวาจา ในสังคหวัตถุ ๔ → <b>ทำความดี</b>' },
+    { q:'<b>ตั้งใจฟังครูอย่างมีสติ</b> ลงตะกร้าใด', item:'ตั้งใจฟังครู', a:'clear', fact:'การฟังอย่างมีสติ คือฟังอย่างตั้งใจ ไม่พูดแทรก → ฝึกใจให้ผ่องใส' },
+  ]},
+
+/* ---------- ๕ บ้านสังคหวัตถุ ๔ ---------- */
+{ id:'houses', name:'บ้าน ๔ หลัง', emoji:'🏠', title:'สังคหวัตถุ ๔ · บ้าน ๔ หลัง',
+  text:'อ่านสถานการณ์แล้วแตะบ้านที่ตรงกับหลักธรรมนั้น ประตูจะเปิดออก',
+  view:{ cam:[0, 6.8, 16], target:[0, 1.8, 0] },
+  know:'<b>สังคหวัตถุ ๔</b> ธรรมสำหรับผูกมิตรไมตรี · <b>ทาน</b> ให้ แบ่งปัน เสียสละ · <b>ปิยวาจา</b> พูดจาสุภาพไพเราะ · <b>อัตถจริยา</b> บำเพ็ญประโยชน์ · <b>สมานัตตตา</b> วางตัวเหมาะสม เป็นกันเองกับเพื่อน นอบน้อมต่อผู้ใหญ่',
+  build(){
+    world.add(ground('#A8DE94', 16));
+    const hs = [
+      { id:'than',  x:-5.4, c:'#FFC9DC', tag:'ทาน' },
+      { id:'piya',  x:-1.8, c:'#BBDCFF', tag:'ปิยวาจา' },
+      { id:'attha', x:1.8,  c:'#C9EFC4', tag:'อัตถจริยา' },
+      { id:'saman', x:5.4,  c:'#FFE2A8', tag:'สมานัตตตา' },
+    ];
+    const targets = {};
+    hs.forEach(h => {
+      const body = at(box(2.5, 2, 2.2, h.c, .1), 0, 1, 0);
+      const roof = at(rot(new THREE.Mesh(new THREE.ConeGeometry(2, 1.1, 4), mat('#E07A5F')), 0, Math.PI/4, 0), 0, 2.6, 0);
+      roof.castShadow = true;
+      const door = at(box(.9, 1.3, .12, '#8A5A3B', .04), .45, .65, 1.12);
+      door.geometry.translate(-.45, 0, 0);                 /* ให้บานพับอยู่ขอบซ้าย */
+      const g = group(body, roof, door, nameTag(h.tag, 3.9, '#FFFFFF'));
+      at(g, h.x, 0, 0);
+      world.add(pickable(g, h.id, at(hit(2.8, 3.6, 2.8), 0, 1.6, 0)));
+      targets[h.id] = g; g.userData.door = door;
+    });
+    return { targets, onRight(id, p, obj){ return tween(obj.userData.door.rotation, { y:-1.25 }, 600, ease.out); } };
+  },
+  prompts:[
+    { q:'เพื่อนไม่ได้เอาขนมมา หนูจึง<b>แบ่งขนมให้</b>', a:'than',  fact:'<b>ทาน</b> = การให้ การแบ่งปัน การเสียสละ การเอื้อเฟื้อเผื่อแผ่' },
+    { q:'หนู<b>พูดจาสุภาพ ไพเราะ อ่อนหวาน</b> กับทุกคน', a:'piya', fact:'<b>ปิยวาจา</b> = พูดจาสุภาพ ไพเราะ พูดแต่สิ่งที่มีประโยชน์' },
+    { q:'หนูช่วยเพื่อน ๆ <b>เก็บขยะบริเวณโรงเรียน</b>', a:'attha', fact:'<b>อัตถจริยา</b> = การบำเพ็ญประโยชน์ เช่น เก็บขยะบริเวณโรงเรียน' },
+    { q:'หนู<b>เป็นกันเองกับเพื่อน และนอบน้อมต่อผู้ใหญ่</b>', a:'saman', fact:'<b>สมานัตตตา</b> = รู้จักทำตัวให้เหมาะสมกับทุกคน' },
+    { q:'เพื่อน<b>ลืมเอาดินสอมา หนูให้ยืม</b>', a:'than', fact:'การให้และแบ่งปันสิ่งของ ก็คือ<b>ทาน</b>' },
+    { q:'หนูเห็นครูถือของหนัก จึง<b>เข้าไปช่วยยก</b>', a:'attha', fact:'การทำประโยชน์ให้ผู้อื่น คือ<b>อัตถจริยา</b>' },
+  ]},
+
+/* ---------- ๖ ดวงจันทร์วันสำคัญ ---------- */
+{ id:'moons', name:'วันสำคัญ', emoji:'🌕', title:'ดวงจันทร์ ๔ ดวง · วันสำคัญ',
+  text:'ท้องฟ้ามีดวงจันทร์ ๔ ดวง แต่ละดวงคือวันสำคัญหนึ่งวัน · อ่านโจทย์แล้วแตะดวงที่ถูก',
+  night:true,
+  view:{ cam:[0, 4.4, 17.5], target:[0, 3.3, 0] },
+  know:'<b>วันสำคัญ ๔ วัน</b> <b>มาฆบูชา</b> ขึ้น ๑๕ ค่ำ เดือน ๓ (จาตุรงคสันนิบาต · พระสงฆ์ ๑,๒๕๐ รูป) · <b>วิสาขบูชา</b> ขึ้น ๑๕ ค่ำ เดือน ๖ (ประสูติ ตรัสรู้ ปรินิพพาน) · <b>อัฏฐมีบูชา</b> แรม ๘ ค่ำ เดือน ๖ (ถวายพระเพลิงพระพุทธสรีระ) · <b>อาสาฬหบูชา</b> ขึ้น ๑๕ ค่ำ เดือน ๘ (แสดงธรรมครั้งแรก · มีพระสงฆ์รูปแรก · พระรัตนตรัยครบ ๓)',
+  build(){
+    world.add(ground('#4A5890', 15));
+    const moons = [
+      { id:'magha',   x:-5.2, y:4.3, half:false, tag:'มาฆบูชา · เดือน ๓' },
+      { id:'visakha', x:-1.8, y:5.3, half:false, tag:'วิสาขบูชา · เดือน ๖' },
+      { id:'atthami', x:1.8,  y:5.3, half:true,  tag:'อัฏฐมีบูชา · แรม ๘ ค่ำ' },
+      { id:'asalha',  x:5.2,  y:4.3, half:false, tag:'อาสาฬหบูชา · เดือน ๘' },
+    ];
+    const targets = {};
+    moons.forEach(m => {
+      const ball = sph(.85, mat('#FFF4CE', { emissive:0xFFE9A8, emissiveIntensity:.55, roughness:.9 }));
+      const g = group(at(ball, 0, 0, 0), at(glow('#FFF0B8', 3.2), 0, 0, 0),
+                      at(label(m.tag, { height:.44, bg:'#FFFFFF', color:'#3A3350' }), 0, -1.35, 0));
+      /* แรม ๘ ค่ำ = จันทร์ครึ่งดวง ใช้เงามืดบังครึ่งหนึ่ง */
+      if(m.half){
+        const shade = at(sph(.87, mat('#2B3566', { roughness:1 })), -.87, 0, 0);
+        shade.castShadow = false; g.add(shade);
+      }
+      at(g, m.x, m.y, 0);
+      world.add(pickable(g, m.id, at(hit(2.2, 2.2, 2.2), 0, 0, 0)));
+      targets[m.id] = g;
+      onFrame((dt, t) => { g.position.y = m.y + Math.sin(t*1.1 + m.x)*.14; });
+    });
+    /* เจดีย์เล็ก ๆ ด้านล่างให้ฉากมีพื้น */
+    const stupa = group(at(cyl(1.5, 1.7, .4, '#E8D9B5', 24), 0, .2, 0), at(cyl(.9, 1.2, 1.1, '#F3E7C9', 24), 0, .95, 0),
+                        at(new THREE.Mesh(new THREE.ConeGeometry(.75, 1.8, 18), mat('#FFD98A')), 0, 2.4, 0));
+    stupa.children.forEach(m => { m.castShadow = true; m.receiveShadow = true; });
+    world.add(at(stupa, 0, 0, 1));
+    return { targets, onRight(id, p, obj){
+      return tween(obj.scale, { x:1.25, y:1.25, z:1.25 }, 250).then(() => tween(obj.scale, { x:1, y:1, z:1 }, 300));
+    } };
+  },
+  prompts:[
+    { q:'วันที่พระสงฆ์ <b>๑,๒๕๐ รูป</b> มาประชุมโดยมิได้นัดหมาย', a:'magha', fact:'<b>วันมาฆบูชา</b> ขึ้น ๑๕ ค่ำ เดือน ๓ · เรียกเหตุการณ์นี้ว่า <b>จาตุรงคสันนิบาต</b>' },
+    { q:'วันคล้ายวัน <b>ประสูติ ตรัสรู้ และปรินิพพาน</b>', a:'visakha', fact:'<b>วันวิสาขบูชา</b> ขึ้น ๑๕ ค่ำ เดือน ๖ · สามเหตุการณ์ตรงกันวันเดียว' },
+    { q:'วันคล้ายวัน <b>ถวายพระเพลิงพระพุทธสรีระ</b>', a:'atthami', fact:'<b>วันอัฏฐมีบูชา</b> <b>แรม</b> ๘ ค่ำ เดือน ๖ · เป็นดวงจันทร์ครึ่งดวง ไม่ใช่วันเพ็ญ' },
+    { q:'วันที่ทรงแสดงธรรมแก่ <b>ปัญจวัคคีย์</b> เป็นครั้งแรก', a:'asalha', fact:'<b>วันอาสาฬหบูชา</b> ขึ้น ๑๕ ค่ำ เดือน ๘ · ท่านอัญญาโกณฑัญญะขอบวช เป็น<b>พระสงฆ์รูปแรกของโลก</b>' },
+    { q:'วันใดที่ <b>พระรัตนตรัยครบ ๓ ประการ</b>', a:'asalha', fact:'เมื่อมีพระสงฆ์รูปแรก จึงครบทั้งพระพุทธ พระธรรม และพระสงฆ์' },
+    { q:'วันใดตรงกับ <b>ขึ้น ๑๕ ค่ำ เดือน ๓</b>', a:'magha', fact:'มาฆะ = เดือน ๓ · จำว่า มา<b>ฆ</b> ๓ · วิสา<b>ข</b> ๖ · อาสา<b>ฬห</b> ๘' },
+    { q:'ดวงใดไม่ใช่วันเพ็ญ (พระจันทร์ไม่เต็มดวง)', a:'atthami', fact:'อัฏฐมี = <b>แรม ๘ ค่ำ</b> จันทร์จึงเหลือครึ่งดวง อีก ๓ วันเป็นวันขึ้น ๑๕ ค่ำ พระจันทร์เต็มดวง' },
+  ]},
+];
+
+/* ============================================================
+   แบบทดสอบท้ายเกม
+   ============================================================ */
+const BANK = [
+ { q:'พระพุทธเจ้าประสูติที่ใด', e:'🌳', opts:[['🇳🇵','ลุมพินีวัน ประเทศเนปาล'],['🇮🇳','พุทธคยา ประเทศอินเดีย'],['🏙️','เมืองกุสินารา'],['🏯','กรุงกบิลพัสดุ์']], why:'ประสูติใต้ต้นสาละ ที่ลุมพินีวัน ปัจจุบันอยู่ในประเทศเนปาล' },
+ { q:'ตรัสรู้ใต้ต้นอะไร', e:'🍃', opts:[['🌳','ต้นพระศรีมหาโพธิ์'],['🌲','ต้นสาละ'],['🥭','ต้นมะม่วง'],['🎍','ต้นไผ่']], why:'ตรัสรู้ใต้ต้นพระศรีมหาโพธิ์ ริมฝั่งแม่น้ำเนรัญชรา' },
+ { q:'ตรัสรู้เมื่อพระชนมายุเท่าใด', e:'🔢', opts:[['3️⃣','๓๕ พรรษา'],['2️⃣','๒๙ พรรษา'],['4️⃣','๔๕ พรรษา'],['8️⃣','๘๐ พรรษา']], why:'ออกผนวช ๒๙ · ตรัสรู้ ๓๕ · เผยแผ่ธรรม ๔๕ ปี · ปรินิพพาน ๘๐' },
+ { q:'ปรินิพพานที่เมืองใด', e:'🏙️', opts:[['🏙️','กุสินารา'],['🏛️','พาราณสี'],['🏘️','สาวัตถี'],['🏯','กบิลพัสดุ์']], why:'ปรินิพพานใต้ต้นสาละ ที่เมืองกุสินารา ประเทศอินเดีย รวมพระชนมายุ ๘๐ พรรษา' },
+ { q:'พระรัตนตรัยประกอบด้วยอะไรบ้าง', e:'💎', opts:[['🪷','พระพุทธ พระธรรม พระสงฆ์'],['👑','พระพุทธ พระธรรม พระราชา'],['🛕','พระพุทธ พระสงฆ์ พระอุโบสถ'],['📿','พระธรรม พระสงฆ์ พระเจดีย์']], why:'พระรัตนตรัย = แก้วอันประเสริฐ ๓ ประการ' },
+ { q:'“พระธรรม” หมายถึงอะไร', e:'📖', opts:[['🗣️','คำสั่งสอนของพระพุทธเจ้า'],['📕','หนังสือเรียนของนักเรียน'],['🙏','สาวกของพระพุทธเจ้า'],['🛕','สถานที่สำคัญทางศาสนา']], why:'พระธรรมสอนให้ละเว้นความชั่ว ทำความดี ทำจิตใจให้ผ่องใส' },
+ { q:'โอวาท ๓ มีอะไรบ้าง', e:'☸️', opts:[['✨','ละเว้นความชั่ว ทำความดี ทำจิตใจให้ผ่องใส'],['🍽️','กินดี อยู่ดี นอนดี'],['📚','ฟัง พูด อ่าน'],['🙏','ทาน ศีล ภาวนา']], why:'โอวาท ๓ คือหัวใจของพระพุทธศาสนา' },
+ { q:'“ไม่ลักทรัพย์” อยู่ในหลักธรรมใด', e:'🚫', opts:[['🚫','เบญจศีล (ละเว้นความชั่ว)'],['🌸','เบญจธรรม (ทำความดี)'],['🤝','สังคหวัตถุ ๔'],['🧘','การทำจิตใจให้ผ่องใส']], why:'เบญจศีลข้อ ๒ · เบญจศีลคือข้อควรละเว้น ๕ ประการ' },
+ { q:'แบ่งขนมให้เพื่อน ตรงกับสังคหวัตถุข้อใด', e:'🍪', opts:[['🎁','ทาน'],['💬','ปิยวาจา'],['🧹','อัตถจริยา'],['🤝','สมานัตตตา']], why:'ทาน = การให้ การแบ่งปัน การเสียสละ' },
+ { q:'เก็บขยะบริเวณโรงเรียน ตรงกับสังคหวัตถุข้อใด', e:'🧹', opts:[['🧹','อัตถจริยา'],['🎁','ทาน'],['💬','ปิยวาจา'],['🤝','สมานัตตตา']], why:'อัตถจริยา = การบำเพ็ญประโยชน์' },
+ { q:'ช่วยพ่อแม่ถูบ้าน รดน้ำต้นไม้ ตรงกับมงคลข้อใด', e:'🧺', opts:[['🧺','คอยรับใช้พ่อแม่'],['👂','ว่าง่าย'],['⭐','การทำตัวดี'],['🙇','กตัญญูกตเวที']], why:'มงคลที่เรียนในชั้นนี้มี ๓ ข้อ: ทำตัวดี · ว่าง่าย · คอยรับใช้พ่อแม่' },
+ { q:'“สติ” หมายถึงอะไร', e:'👁️', opts:[['👁️','ความระลึกได้ว่ากำลังทำอะไรอยู่'],['💪','ความแข็งแรงของร่างกาย'],['🍀','ความโชคดี'],['🧠','ความจำที่ดีเยี่ยม']], why:'การมีสติทำให้จิตใจมั่นคง ไม่ตื่นเต้นตกใจง่าย และควบคุมตนเองได้' },
+ { q:'วันมาฆบูชาตรงกับวันใด', e:'🌝', opts:[['3️⃣','ขึ้น ๑๕ ค่ำ เดือน ๓'],['6️⃣','ขึ้น ๑๕ ค่ำ เดือน ๖'],['8️⃣','ขึ้น ๑๕ ค่ำ เดือน ๘'],['🌗','แรม ๘ ค่ำ เดือน ๖']], why:'มาฆะ = เดือน ๓ · วันที่พระสงฆ์ ๑,๒๕๐ รูปมาประชุมโดยมิได้นัดหมาย' },
+ { q:'วันใดเป็นวันคล้ายวันประสูติ ตรัสรู้ และปรินิพพาน', e:'🌕', opts:[['🌕','วันวิสาขบูชา'],['🌝','วันมาฆบูชา'],['🌗','วันอัฏฐมีบูชา'],['🌖','วันอาสาฬหบูชา']], why:'วันวิสาขบูชา ขึ้น ๑๕ ค่ำ เดือน ๖' },
+ { q:'วันใดมีพระสงฆ์รูปแรกเกิดขึ้นในโลก', e:'🧘', opts:[['🌖','วันอาสาฬหบูชา'],['🌕','วันวิสาขบูชา'],['🌝','วันมาฆบูชา'],['🌗','วันอัฏฐมีบูชา']], why:'ท่านอัญญาโกณฑัญญะขอบวช พระรัตนตรัยจึงครบ ๓ ประการ' },
+ { q:'วันอัฏฐมีบูชาพระจันทร์เป็นอย่างไร', e:'🌗', opts:[['🌗','ครึ่งดวง เพราะเป็นวันแรม ๘ ค่ำ'],['🌕','เต็มดวง เพราะเป็นวันขึ้น ๑๕ ค่ำ'],['🌑','มืดสนิท'],['⭐','ไม่มีพระจันทร์']], why:'วันอัฏฐมีบูชา แรม ๘ ค่ำ เดือน ๖ เป็นวันคล้ายวันถวายพระเพลิงพระพุทธสรีระ' },
+ { q:'สามเณรบัณฑิตเป็นแบบอย่างเรื่องใด', e:'🔍', opts:[['🔍','ช่างสังเกต คิดพิจารณา และขยันหมั่นเพียร'],['💰','ความร่ำรวย'],['🏃','ความเร็ว'],['🍬','การแบ่งขนม']], why:'ท่านสังเกตชาวนาทดน้ำ ช่างศรดัดลูกศร แล้วคิดได้ว่ามนุษย์มีจิตใจย่อมฝึกตนได้' },
+ { q:'สุวัณณสามเป็นแบบอย่างเรื่องใด', e:'🦌', opts:[['🙇','กตัญญูต่อพ่อแม่ เมตตา และให้อภัย'],['🏹','ความเก่งเรื่องยิงธนู'],['💰','การเก็บเงิน'],['🏃','การวิ่งเร็ว']], why:'สุวัณณสามดูแลพ่อแม่ตาบอด และให้อภัยพระเจ้าปิลยักษ์ที่ยิงตน' },
+];
+
+/* ============================================================
+   ตัวเกม
+   ============================================================ */
+let L = null, cur = null, idx = 0, wrongN = 0, order = [], built = null, locked = false;
+
+function clearWorld(){
+  frameOff.forEach(off => off()); frameOff = [];
+  world.traverse(o => {
+    if(o.geometry) o.geometry.dispose();
+    if(o.material){ const ms = Array.isArray(o.material) ? o.material : [o.material];
+      ms.forEach(m => { if(m.map) m.map.dispose(); m.dispose(); }); }
+  });
+  while(world.children.length) world.remove(world.children[0]);
+}
+
+function openLevel(id){
+  if(id === 'quiz'){
+    document.body.classList.add('quizmode');
+    levelBar($('#levels'), LEVELS, { cur:'quiz', stars:st.stars, onPick:openLevel, quiz:true });
+    quiz($('#quiz'), { bank:BANK, count:8, page:'social-quest', title:'หน่วยที่ ๑ พระพุทธศาสนา', subject:'สังคมศึกษา', st,
+      onDone(){ levelBar($('#levels'), LEVELS, { cur:'quiz', stars:st.stars, onPick:openLevel, quiz:true }); } });
+    window.scrollTo({ top:0, behavior:'smooth' });
+    return;
+  }
+  document.body.classList.remove('quizmode');
+  L = LEVELS.find(x => x.id === id) || LEVELS[0];
+  cur = L.id;
+  levelBar($('#levels'), LEVELS, { cur, stars:st.stars, onPick:openLevel, quiz:true });
+  $('#stage').classList.toggle('night', !!L.night);
+  clearWorld();
+  built = L.build();
+  S.setView(L.view.cam, L.view.target, 600);
+  idx = 0; wrongN = 0; locked = false;
+  order = L.prompts.map((p, i) => i);
+  if(!L.ordered) order = shuffle(order);
+  $('#gtitle').textContent = L.emoji + ' ' + L.title;
+  $('#gtext').textContent = L.text;
+  $('#know').className = 'know on'; $('#know').innerHTML = '💡 ' + L.know;
+  $('#medal').className = 'medal';
+  $('#next').hidden = true;
+  $('#result').className = 'result';
+  $('#fact').className = 'factbox';
+  showPrompt();
+}
+
+function P(){ return L.prompts[order[idx]]; }
+
+function showPrompt(){
+  const p = P();
+  $('#now').innerHTML = '<b>' + (idx+1) + '/' + order.length + '</b> · ' + p.q;
+  $('#prog').innerHTML = order.map((_, i) => '<i class="' + (i < idx ? 'done' : i === idx ? 'now' : '') + '">' + (i < idx ? '✓' : i+1) + '</i>').join('');
+  if(built.onPrompt) built.onPrompt(p);
+  speak(cleanSpeech(p.q));
+}
+
+$('#gsay').onclick = () => { if(L && idx < order.length) speak(cleanSpeech(P().q)); };
+
+S.onTap((x, y) => {
+  if(!L || locked || idx >= order.length) return;
+  const h = S.pick(x, y); if(!h) return;
+  const id = h.obj.userData.id, p = P();
+  if(id === p.a) right(h.obj, p); else wrong(h.obj, p);
+});
+
+async function right(obj, p){
+  locked = true;
+  sfx('ok');
+  $('#result').className = 'result ok';
+  $('#result').innerHTML = '✅ ถูกต้อง! เก่งมาก';
+  $('#fact').className = 'factbox on';
+  $('#fact').innerHTML = '<b>จำไว้นะ</b> ' + p.fact;
+  speak(cleanSpeech(p.fact));
+  if(built.onRight) await built.onRight(obj.userData.id, p, obj);
+  await wait(500);
+  idx++;
+  if(idx >= order.length){ finish(); return; }
+  locked = false;
+  $('#result').className = 'result';
+  showPrompt();
+}
+
+function wrong(obj, p){
+  sfx('no');
+  wrongN++;
+  $('#result').className = 'result no';
+  $('#result').innerHTML = '❌ ยังไม่ใช่นะ ลองอีกครั้ง · ' + (p.hint || 'อ่านโจทย์อีกรอบ แล้วดูป้ายชื่อในฉาก');
+  const x0 = obj.position.x;
+  tween(obj.position, { x:x0 + .22 }, 90).then(() => tween(obj.position, { x:x0 - .22 }, 120)).then(() => tween(obj.position, { x:x0 }, 90));
+}
+
+function finish(){
+  locked = true;
+  if(built.onDone) built.onDone(built.targets);
+  const stars = wrongN === 0 ? 3 : wrongN <= 2 ? 2 : 1;
+  st.stars[L.id] = Math.max(st.stars[L.id] || 0, stars); st.save();
+  levelBar($('#levels'), LEVELS, { cur, stars:st.stars, onPick:openLevel, quiz:true });
+  $('#now').innerHTML = '🎉 ผ่านด่านแล้ว!';
+  $('#result').className = 'result';
+  $('#prog').innerHTML = order.map(() => '<i class="done">✓</i>').join('');
+  $('#medal').className = 'medal on';
+  $('#medal').innerHTML = '<div style="font-size:2.6rem">' + (stars === 3 ? '🎉🏆🎉' : '🌈') + '</div>' +
+    '<div class="st">' + '⭐'.repeat(stars) + '☆'.repeat(3 - stars) + '</div>' +
+    '<p>' + (wrongN === 0 ? 'ตอบถูกหมดตั้งแต่ครั้งแรก สุดยอด!' : 'ผ่านแล้ว! ตอบผิด ' + wrongN + ' ครั้ง ลองใหม่ให้ได้ ๓ ดาวนะ') + '</p>';
+  sfx('win'); speak('ผ่านด่านแล้ว เก่งมาก');
+  const i = LEVELS.findIndex(x => x.id === L.id);
+  $('#next').hidden = false;
+  $('#next').textContent = i + 1 < LEVELS.length ? 'ด่านต่อไป ▶' : '📝 ไปทำแบบทดสอบ';
+  $('#next').onclick = () => openLevel(i + 1 < LEVELS.length ? LEVELS[i+1].id : 'quiz');
+  if(window.KP) KP.log({ kind:'game', page:'social-quest', item:'quest-' + L.id,
+    title:'ผจญภัยพระพุทธศาสนา · ' + L.title, stars, mistakes:wrongN });
+}
+
+$('#reset').onclick = () => openLevel(cur);
+openLevel(LEVELS[0].id);
+
+/* สำหรับทดสอบอัตโนมัติ */
+window.__test = { S, LEVELS, BANK, openLevel, get state(){ return { cur, idx, wrongN, total:order.length, locked }; },
+  answer(id){ const p = P(); const o = built.targets[id]; if(id === p.a) return right(o, p); wrong(o, p); },
+  solve(){ return (async () => { while(idx < order.length && L){ const p = P(); await right(built.targets[p.a], p); } })(); },
+  targets(){ return Object.keys(built.targets); } };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>

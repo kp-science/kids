@@ -249,7 +249,7 @@ export function pop(msg, kind='ok'){
    แบบทดสอบ · ทุกข้ออยู่หน้าเดียว แตะตอบแล้วเฉลยทันที
    bank: [{ q, e, opts:[[emoji, ข้อความ], ...] (ตัวแรกถูก), why }]
    ============================================================ */
-export function quiz(el, { bank, count=8, page, title, st, onDone }){
+export function quiz(el, { bank, count=8, page, title, subject='STEM', st, onDone }){
   const qs = shuffle(bank).slice(0, count).map(q => ({ ...q, order:shuffle(q.opts.map((o,i) => i)) }));
   let answered = 0, right = 0; const wrong = [];
   const tints = ['#FFF4F8','#EEF6FF','#F0FAF0','#FFF7EA','#F5F0FF','#EAF8F7'];
@@ -272,12 +272,12 @@ export function quiz(el, { bank, count=8, page, title, st, onDone }){
   function finish(){
     const pct = right/qs.length, stars = pct>=.9 ? 3 : pct>=.7 ? 2 : pct>=.5 ? 1 : 0;
     st.stars.quiz = Math.max(st.stars.quiz||0, stars); st.save();
-    if(window.KP) KP.log({ kind:'test', page, subject:'STEM', title:'แบบทดสอบ '+title, score:right, total:qs.length, stars:Math.max(1, stars), wrong:wrong.slice(0,10) });
+    if(window.KP) KP.log({ kind:'test', page, subject, title:'แบบทดสอบ '+title, score:right, total:qs.length, stars:Math.max(1, stars), wrong:wrong.slice(0,10) });
     const end = el.querySelector('#qend');
     end.innerHTML = '<div class="qdone"><div class="big">'+(stars>=2?'🎉🏆🎉':'🌈')+'</div><div class="stars">'+'⭐'.repeat(stars)+'☆'.repeat(3-stars)+'</div>'+
       '<div class="score">'+right+' / '+qs.length+'</div><p>'+(stars>=2 ? 'เก่งมาก!' : 'ลองกลับไปเล่นด่านทดลองอีกครั้ง แล้วมาทำใหม่นะ')+'</p>'+
       '<button type="button" class="btn go" id="qagain">ทำชุดใหม่ (สุ่มข้อใหม่)</button></div>';
-    end.querySelector('#qagain').onclick = () => { quiz(el, { bank, count, page, title, st, onDone }); window.scrollTo({ top:el.offsetTop-80, behavior:'smooth' }); };
+    end.querySelector('#qagain').onclick = () => { quiz(el, { bank, count, page, title, subject, st, onDone }); window.scrollTo({ top:el.offsetTop-80, behavior:'smooth' }); };
     sfx(stars>=2 ? 'win' : 'ok'); speak('ได้ '+right+' คะแนน จาก '+qs.length+' ข้อ');
     end.scrollIntoView({ behavior:'smooth', block:'center' });
     if(onDone) onDone(stars);
