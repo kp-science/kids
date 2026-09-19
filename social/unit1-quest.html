@@ -117,7 +117,13 @@ function platform(c='#CFE9A8', r=2.3){
   g.children.forEach(m => { m.castShadow = true; m.receiveShadow = true; });
   return g;
 }
-function nameTag(text, y=4.6, bg='#FFFFFF', color='#3A3350'){ return at(label(text, { height:.52, bg, color }), 0, y, 0); }
+/* ป้ายชื่อ · บังคับให้วาดทับวัตถุอื่นเสมอ (สไปรต์ธรรมดาจะถูกใบไม้/หลังคา/ดอกบัวบังได้) */
+function tag(text, { height=.52, bg='#FFFFFF', color='#3A3350' }={}){
+  const sp = label(text, { height, bg, color });
+  sp.material.depthTest = false; sp.material.depthWrite = false; sp.renderOrder = 20;
+  return sp;
+}
+function nameTag(text, y=4.6, bg='#FFFFFF', color='#3A3350'){ return at(tag(text, { bg, color }), 0, y, 0); }
 
 /* ดอกบัว · กลีบชมพูรอบเกสรสีทอง (ไม่ใช้อิโมจิ เพราะบางเครื่องวาดอิโมจิลงผ้าใบไม่ได้) */
 function lotusMesh(s0=1){
@@ -154,6 +160,42 @@ function buddhaSymbol(){
 }
 
 /* ============================================================
+   จัดกล้องให้ป้ายทุกอันอยู่ในกรอบฉาก
+   ป้ายเป็นสไปรต์ ความกว้างบนจอไม่ขึ้นกับขนาดฉาก พอจอแคบ (มือถือ) ป้ายริมจึงล้นออกนอกภาพ
+   วิธีแก้: วัดกรอบป้ายจริงบนจอ แล้วถอยกล้องออกทีละนิดจนไม่มีอันไหนล้น
+   ทำแบบนี้ได้ทุกด่านและทุกขนาดจอ ไม่ต้องจูนมือทีละด่าน
+   ============================================================ */
+const _r3 = new THREE.Vector3(), _u3 = new THREE.Vector3(), _f3 = new THREE.Vector3(), _p3 = new THREE.Vector3();
+function worstOverflow(){
+  const rect = S.renderer.domElement.getBoundingClientRect();
+  if(rect.width < 2 || rect.height < 2) return 1;
+  S.scene.updateMatrixWorld(true);
+  S.camera.matrixWorld.extractBasis(_r3, _u3, _f3);
+  const cx = rect.width/2, cy = rect.height/2;
+  let worst = 1;
+  S.scene.traverse(o => {
+    if(!o.isSprite || o.renderOrder !== 20 || !o.visible) return;
+    const p = o.getWorldPosition(_p3), hw = o.scale.x/2, hh = o.scale.y/2;
+    for(const [sx, sy] of [[-1,-1],[1,-1],[-1,1],[1,1]]){
+      const v = p.clone().addScaledVector(_r3, sx*hw).addScaledVector(_u3, sy*hh), q = S.toScreen(v);
+      worst = Math.max(worst, Math.abs(q.x - cx)/cx, Math.abs(q.y - cy)/cy);
+    }
+  });
+  return worst;
+}
+function fitView(L, tries = 5){
+  const t = L.view.target;
+  let cam = L.view.cam.slice();
+  S.setView(cam, t, 0); S.controls.update();
+  for(let i = 0; i < tries; i++){
+    const over = worstOverflow();
+    if(over <= 1.002) break;
+    cam = cam.map((v, k) => t[k] + (v - t[k]) * Math.min(1.25, over * 1.04));
+    S.setView(cam, t, 0); S.controls.update();
+  }
+}
+
+/* ============================================================
    ๖ ด่าน
    แต่ละด่าน: build() วางของลงฉาก คืน { targets, onRight?, onDone? }
    prompts: { q:'โจทย์', a:'id ที่ถูก', fact:'สิ่งที่ต้องจำ' }
@@ -163,18 +205,19 @@ const LEVELS = [
 /* ---------- ๑ ตามรอยพระพุทธเจ้า ---------- */
 { id:'road', name:'ตามรอย', emoji:'🗺️', title:'ตามรอยพระพุทธเจ้า',
   text:'ในฉากมี ๓ สถานที่สำคัญ · อ่านโจทย์แล้วแตะสถานที่ที่ถูกต้อง ดอกบัวนำทางจะลอยไปหา',
-  view:{ cam:[0, 8.5, 18], target:[0, 1.6, 0] }, ordered:true,
+  view:{ cam:[0, 9, 19], target:[0, 2, 0] }, ordered:true,
   know:'<b>จำง่าย ๆ</b> ประสูติใต้<b>ต้นสาละ</b> ที่<b>ลุมพินีวัน (เนปาล)</b> · ตรัสรู้ใต้<b>ต้นโพธิ์</b> ที่<b>พุทธคยา</b> ริมแม่น้ำเนรัญชรา · ปรินิพพานใต้<b>ต้นสาละ</b> ที่<b>กุสินารา</b> · ทั้งสามเหตุการณ์ตรงกับวัน<b>ขึ้น ๑๕ ค่ำ เดือน ๖</b>',
   build(){
     world.add(ground('#9ADE86', 17));
     const spots = [
-      { id:'lumbini',  x:-5.4, z:1.4, tag:'ลุมพินีวัน · เนปาล', tree:salaTree,  tint:'#FFF0F5' },
-      { id:'bodhgaya', x:0,    z:-3,  tag:'พุทธคยา · อินเดีย',    tree:bodhiTree, tint:'#F0FFF3' },
-      { id:'kusinara', x:5.4,  z:1.4, tag:'กุสินารา · อินเดีย',   tree:salaTree,  tint:'#FFF7E6' },
+      { id:'lumbini',  x:-5,  z:1.4, tag:'ลุมพินีวัน', land:'ประเทศเนปาล',  tree:salaTree,  tint:'#FFF0F5' },
+      { id:'bodhgaya', x:0,    z:-3,  tag:'พุทธคยา',    land:'ประเทศอินเดีย', tree:bodhiTree, tint:'#F0FFF3' },
+      { id:'kusinara', x:5,    z:1.4, tag:'กุสินารา',   land:'ประเทศอินเดีย', tree:salaTree,  tint:'#FFF7E6' },
     ];
     const targets = {};
     spots.forEach(s => {
-      const g = group(platform(), s.tree(), nameTag(s.tag, 4.8, s.tint));
+      const g = group(platform(), s.tree(), nameTag(s.tag, 5.3, s.tint),
+                      at(tag(s.land, { height:.38, bg:'#FFFFFF', color:'#6E6785' }), 0, 4.75, 0));
       at(g, s.x, 0, s.z);
       world.add(pickable(g, s.id, at(hit(4.4, 5.6, 4.4), 0, 2.4, 0)));
       targets[s.id] = g;
@@ -182,7 +225,7 @@ const LEVELS = [
     /* แม่น้ำเนรัญชรา ไหลผ่านหน้าพุทธคยา */
     const river = at(box(9, .14, 1.7, '#5BB8EC', .06, { roughness:.2 }), 0, .06, -.4);
     river.receiveShadow = true; world.add(river);
-    world.add(at(label('แม่น้ำเนรัญชรา', { height:.42, bg:'#DFF2FF', color:'#1F6FA8' }), 0, .9, .9));
+    world.add(at(tag('แม่น้ำเนรัญชรา', { height:.42, bg:'#DFF2FF', color:'#1F6FA8' }), 0, .9, .9));
     /* ดอกบัวนำทาง */
     const lotus = group(at(lotusMesh(1.15), 0, -.1, 0), at(glow('#FFC9E4', 1.7), 0, 0, 0));
     at(lotus, 0, 1.6, 5.2); world.add(lotus);
@@ -212,15 +255,15 @@ const LEVELS = [
     nums.forEach((nm, i) => {
       const h = .8 + i*.72, x = -5.2 + i*2.6;
       const step = at(box(2.2, h, 2.2, nm[2], .12), 0, h/2, 0);
-      const g = group(step, at(label(nm[1], { height:.7, bg:'#FFFFFF', color:'#3A3350' }), 0, h + .62, 0));
+      const g = group(step, at(tag(nm[1], { height:.72 }), 0, h + .95, 0));
       at(g, x, 0, 0); g.userData.top = h;
       world.add(pickable(g, nm[0], at(hit(2.4, h + 1.4, 2.4), 0, (h + 1.4)/2, 0)));
       targets[nm[0]] = g;
     });
-    const walker = at(lotusMesh(1), -5.2, 2, 1.9); world.add(walker);
+    const walker = at(lotusMesh(1), -5.2, 1.05, 1.6); world.add(walker);
     onFrame((dt, t) => { walker.rotation.y = t*.8; });
     return { targets, onRight(id, p, obj){
-      return tween(walker.position, { x:obj.position.x, y:obj.userData.top + .9, z:1.9 }, 600, ease.out);
+      return tween(walker.position, { x:obj.position.x, y:obj.userData.top + .25, z:1.6 }, 600, ease.out);
     } };
   },
   prompts:[
@@ -284,26 +327,26 @@ const LEVELS = [
   build(){
     world.add(ground('#BFE9C4', 15));
     const bins = [
-      { id:'stop',  x:-4.4, c:'#FFC7C7', tag:'๑ ละเว้นความชั่ว' },
+      { id:'stop',  x:-3.8, c:'#FFC7C7', tag:'๑ ละเว้นความชั่ว' },
       { id:'good',  x:0,    c:'#FFE1A8', tag:'๒ ทำความดี' },
-      { id:'clear', x:4.4,  c:'#BBDCFF', tag:'๓ ทำจิตใจให้ผ่องใส' },
+      { id:'clear', x:3.8,  c:'#BBDCFF', tag:'๓ จิตใจผ่องใส' },
     ];
     const targets = {};
     bins.forEach(b => {
       const g = group(at(cyl(1.25, .95, 1.3, b.c, 22), 0, .65, 0), at(cyl(1.3, 1.3, .14, '#FFFFFF', 22), 0, 1.35, 0),
-                      nameTag(b.tag, 2.5, '#FFFFFF'));
+                      at(tag(b.tag, { height:.46 }), 0, 2.5, 0));
       at(g, b.x, 0, 0);
       world.add(pickable(g, b.id, at(hit(2.8, 3.2, 2.8), 0, 1.4, 0)));
       targets[b.id] = g;
     });
     const item = group(at(glow('#FFF3C4', 2.4), 0, 0, 0));
-    let face = at(label('พร้อมแล้ว', { height:.6, bg:'#FFFFFF', color:'#3A3350' }), 0, 0, 0); item.add(face);
+    let face = at(tag('พร้อมแล้ว', { height:.6 }), 0, 0, 0); item.add(face);
     at(item, 0, 4.4, 2.2); world.add(item);
     onFrame((dt, t) => { item.position.y = 4.4 + Math.sin(t*2.2)*.16; });
     return { targets, item,
       onPrompt(p){
         item.remove(face); if(face.material.map) face.material.map.dispose(); face.material.dispose();
-        face = at(label(p.item, { height:.62, bg:'#FFFFFF', color:'#3A3350' }), 0, 0, 0); item.add(face);
+        face = at(tag(p.item, { height:.62 }), 0, 0, 0); item.add(face);
         item.position.set(0, 4.4, 2.2); item.visible = true; },
       onRight(id, p, obj){
         return tween(item.position, { x:obj.position.x, y:1.9, z:0 }, 650, ease.inOut)
@@ -376,7 +419,7 @@ const LEVELS = [
     moons.forEach(m => {
       const ball = sph(.85, mat('#FFF4CE', { emissive:0xFFE9A8, emissiveIntensity:.55, roughness:.9 }));
       const g = group(at(ball, 0, 0, 0), at(glow('#FFF0B8', 3.2), 0, 0, 0),
-                      at(label(m.tag, { height:.44, bg:'#FFFFFF', color:'#3A3350' }), 0, -1.35, 0));
+                      at(tag(m.tag, { height:.44 }), 0, -1.35, 0));
       /* แรม ๘ ค่ำ = จันทร์ครึ่งดวง ใช้เงามืดบังครึ่งหนึ่ง */
       if(m.half){
         const shade = at(sph(.87, mat('#2B3566', { roughness:1 })), -.87, 0, 0);
@@ -462,7 +505,7 @@ function openLevel(id){
   $('#stage').classList.toggle('night', !!L.night);
   clearWorld();
   built = L.build();
-  S.setView(L.view.cam, L.view.target, 600);
+  fitView(L);
   idx = 0; wrongN = 0; locked = false;
   order = L.prompts.map((p, i) => i);
   if(!L.ordered) order = shuffle(order);
@@ -542,6 +585,10 @@ function finish(){
   if(window.KP) KP.log({ kind:'game', page:'social-quest', item:'quest-' + L.id,
     title:'ผจญภัยพระพุทธศาสนา · ' + L.title, stars, mistakes:wrongN });
 }
+
+/* หมุนเครื่องหรือเปลี่ยนขนาดหน้าต่าง แล้วจัดกล้องใหม่ให้ป้ายยังอยู่ในกรอบ */
+let fitTimer = 0;
+new ResizeObserver(() => { clearTimeout(fitTimer); fitTimer = setTimeout(() => { if(L && !document.body.classList.contains('quizmode')) fitView(L); }, 220); }).observe($('#stage'));
 
 $('#reset').onclick = () => openLevel(cur);
 openLevel(LEVELS[0].id);
