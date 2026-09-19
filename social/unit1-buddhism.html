@@ -100,6 +100,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .opt.noem{justify-content:center}
 .opt.noem .lb{font-size:1.12rem}
 .opt .rd{display:block;font-size:.78rem;font-weight:400;color:var(--mute);line-height:1.3;margin-top:1px}
+.opt .say{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#EAF4FF;
+  font-size:.95rem;line-height:1;flex:none;margin-left:auto}
+.opt .say:active{transform:scale(.9)}
+.opts:not(.list) .opt .say{position:absolute;top:6px;right:6px;margin:0}
+.opt.done{cursor:default}
 .opts.list .opt{flex-direction:row;min-height:0;padding:11px 13px;text-align:left;gap:12px}
 .opts.list .opt .lt{position:static;flex-shrink:0}
 .opts.list .opt.noem{justify-content:flex-start}
@@ -107,9 +112,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .opts .opt:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
 .opts .opt:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
 .opts .opt:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
-.opt:not([disabled]):hover{background:#fff;border-color:var(--od)}
-.opt:not([disabled]):active{transform:scale(.97)}
-.opt[disabled]{cursor:default}
+.opt:not(.done):hover{background:#fff;border-color:var(--od)}
+.opt:not(.done):active{transform:scale(.97)}
 .opt.right{border-color:#9EDDB2;background:#EFFAF2}
 .opt.right .lt{background:#5BC07D}
 .opt.wrong{border-color:#FFCBB3;background:#FFF5EF}
@@ -519,6 +523,7 @@ const spoken = t => { const r = readOf(t); return r ? t + ' อ่านว่�
 
 const $=s=>document.querySelector(s);
 const strip=s=>String(s).replace(/<[^>]*>/g,'');
+const attr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 let cur=0, ans={};
 
 const K=id=>'kids-unit1-buddhism-'+id;
@@ -554,7 +559,7 @@ function speak(text){
   if(thVoice) u.voice=thVoice;
   synth.speak(u);
 }
-const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+spoken(q[1][i][1])).join(' … '));
+const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+q[1][i][1]).join(' … '));
 
 function renderTabs(){
   $('#tabs').innerHTML=TABS.map((t,i)=>'<button type="button" style="--tc:'+t.tc+'" class="'+(i===cur?'on':'')+'" data-i="'+i+'">'+t.name+'</button>').join('');
@@ -619,13 +624,19 @@ function render(){
        ORD[k].map((i,pos)=>{ const o=x[1][i];
          return '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
            '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
-           '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span></button>'; }).join('')+
+           '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span>'+
+           (readOf(o[1]) ? '<span class="say" data-say="'+attr(spoken(o[1]))+'" role="button" aria-label="ฟังคำอ่าน">🔊</span>' : '')+
+           '</button>'; }).join('')+
        '</div><div class="fb"></div></div>';
   });
   $('#list').innerHTML=h;
   const Q=questions();
   $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k],+b.dataset.k));
-  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k,+b.dataset.i,true));
+  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=e=>{
+    const sp=e.target.closest('.say');
+    if(sp){ e.stopPropagation(); speak(sp.dataset.say); return; }   /* แตะปุ่ม 🔊 = ฟังคำอ่าน ไม่ใช่ตอบ */
+    pick(+b.dataset.k,+b.dataset.i,true);
+  });
   Object.keys(ans).forEach(k=>show(+k, ans[k]));
   updateScore(false);
 }
@@ -635,7 +646,7 @@ function show(k,i,say){
   const ok=i===q[2];
   el.classList.add(ok?'ok':'no');
   el.querySelectorAll('.opt').forEach(b=>{
-    const j=+b.dataset.i; b.disabled=true;
+    const j=+b.dataset.i; b.classList.add('done');
     if(j===q[2]) b.classList.add('right');
     else if(j===i) b.classList.add('wrong');
     else b.classList.add('dim');

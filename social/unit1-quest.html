@@ -42,6 +42,9 @@
   font-family:'Mali',sans-serif;font-weight:700;font-size:1rem;color:#3A3350;line-height:1.25;white-space:nowrap;
   box-shadow:0 3px 10px rgba(58,51,80,.18)}
 .l3 small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-weight:400;font-size:.76rem;color:#6E6785}
+.l3 .l3s{pointer-events:auto;cursor:pointer;display:inline-grid;place-items:center;vertical-align:middle;
+  width:26px;height:26px;margin-left:6px;border-radius:50%;background:#EAF4FF;font-size:.86rem;line-height:1}
+.l3 .l3s:active{transform:scale(.9)}
 .l3.big{font-size:1.6rem;padding:0 16px}
 .l3.off{display:none}
 .stage.night .l3{box-shadow:0 3px 14px rgba(0,0,0,.35)}
@@ -71,7 +74,7 @@
   </div>
   <div class="panel">
     <div class="card goal">
-      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์และตัวเลือก">🔊</button></h3>
+      <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
       <p id="gtext"></p>
       <div class="prog" id="prog"></div>
       <div class="livesrow"><span class="hearts" id="hearts"></span><small id="livestext"></small></div>
@@ -81,7 +84,8 @@
     </div>
     <div class="medal" id="medal"></div>
     <div class="know" id="know"></div>
-    <div class="card goal"><p class="tips">❤️ แต่ละด่านมีหัวใจ ๕ ดวง · ตอบผิดเสีย ๑ ดวง ตอบถูกไม่เสีย · ถ้าหัวใจหมดก่อนตอบครบจะไม่ผ่านด่าน ต้องเริ่มใหม่</p>
+    <div class="card goal"><p class="tips">🔊 อยากฟังว่าชื่อไหนอ่านว่าอะไร แตะปุ่ม 🔊 <b>บนป้ายชื่อนั้นในฉาก</b>ได้เลย</p>
+      <p class="tips" style="margin-top:6px">❤️ แต่ละด่านมีหัวใจ ๕ ดวง · ตอบผิดเสีย ๑ ดวง ตอบถูกไม่เสีย · ถ้าหัวใจหมดก่อนตอบครบจะไม่ผ่านด่าน ต้องเริ่มใหม่</p>
       <p class="tips" style="margin-top:6px">👆 แตะสิ่งของในฉากเพื่อตอบ · ลากนิ้วเพื่อหมุนดูรอบ ๆ · หยิกนิ้วเพื่อซูมเข้าออก · แตะ 🔊 ให้อ่านโจทย์ให้ฟัง</p><p class="verline" id="verline">รุ่นของเว็บ: กำลังตรวจ…</p><p style="margin-top:8px"><a class="btn" href="unit1-buddhism.html" style="display:inline-block;text-decoration:none">📖 เปิดหน้าสรุป + แบบฝึกเต็ม</a></p></div>
   </div>
 </div>
@@ -197,11 +201,14 @@ function tag3d(parent, pos, name, read, extra, bg, cls){
      (ตั้งบน parent ตรง ๆ เพราะบางด่านเรียก tag3d ก่อน pickable) */
   if(parent !== world && parent.userData)
     parent.userData.say = name + (read ? ' อ่านว่า ' + String(read).replace(/-/g, ' ') : '');
-  const o = { anchor, el, dirty:true, set(name2, read2, extra2){
+  const o = { anchor, el, dirty:true, say:'', set(name2, read2, extra2){
     o.dirty = true;
+    o.say = name2 + (read2 ? ' อ่านว่า ' + String(read2).replace(/-/g, ' ') : '');
     el.innerHTML = '<span>' + name2 + '</span>' +
+      '<button type="button" class="l3s" aria-label="ฟังคำอ่าน">🔊</button>' +
       (read2 ? '<small>อ่านว่า ' + read2 + '</small>' : '') +
       (extra2 ? '<small>' + extra2 + '</small>' : '');
+    el.querySelector('.l3s').onclick = e => { e.stopPropagation(); speak(o.say); };
   } };
   o.set(name, read, extra);
   labels3d.push(o);
@@ -633,16 +640,10 @@ function showPrompt(){
   $('#now').innerHTML = '<b>' + (idx+1) + '/' + order.length + '</b> · ' + p.q;
   $('#prog').innerHTML = order.map((_, i) => '<i class="' + (i < idx ? 'done' : i === idx ? 'now' : '') + '">' + (i < idx ? '✓' : i+1) + '</i>').join('');
   if(built.onPrompt) built.onPrompt(p);
-  speak(cleanSpeech(p.q) + optionsSpeech());
+  speak(cleanSpeech(p.q));
 }
 
-/* อ่านโจทย์ + ชื่อตัวเลือกทุกอันในฉาก (พร้อมคำอ่าน) */
-function optionsSpeech(){
-  if(!built || !built.targets) return '';
-  const names = Object.values(built.targets).map(o => o.userData.say).filter(Boolean);
-  return names.length ? ' … เลือกจาก … ' + names.join(' … ') : '';
-}
-$('#gsay').onclick = () => { if(L && idx < order.length) speak(cleanSpeech(P().q) + optionsSpeech()); };
+$('#gsay').onclick = () => { if(L && idx < order.length) speak(cleanSpeech(P().q)); };
 
 S.onTap((x, y) => {
   if(!L || locked || idx >= order.length) return;
