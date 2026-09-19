@@ -100,18 +100,23 @@ button{font:inherit;color:inherit;cursor:pointer}
 .opt.noem{justify-content:center}
 .opt.noem .lb{font-size:1.12rem}
 .opt .rd{display:block;font-size:.78rem;font-weight:400;color:var(--mute);line-height:1.3;margin-top:1px}
-.opt .say{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#EAF4FF;
-  font-size:.95rem;line-height:1;flex:none;margin-left:auto}
-.opt .say:active{transform:scale(.9)}
-.opts:not(.list) .opt .say{position:absolute;top:6px;right:6px;margin:0}
+.optwrap{display:flex;flex-direction:column;gap:6px}
+.optwrap .opt{flex:1;width:100%}
+.sayb{border:2px solid var(--ob);background:#fff;border-radius:14px;min-height:46px;width:100%;
+  display:grid;place-items:center;font-size:1.15rem;line-height:1;cursor:pointer;color:var(--od)}
+.sayb::after{content:"ฟัง";font-size:.72rem;font-weight:700;margin-left:4px}
+.sayb{grid-auto-flow:column;align-content:center}
+.sayb:active{transform:scale(.97)}
+.opts.list .optwrap{flex-direction:row;align-items:stretch;gap:8px}
+.opts.list .sayb{width:64px;min-height:0;flex:none}
 .opt.done{cursor:default}
 .opts.list .opt{flex-direction:row;min-height:0;padding:11px 13px;text-align:left;gap:12px}
 .opts.list .opt .lt{position:static;flex-shrink:0}
 .opts.list .opt.noem{justify-content:flex-start}
 .opts.list .opt .lb{font-size:1.02rem}
-.opts .opt:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
-.opts .opt:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
-.opts .opt:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
+.opts .optwrap:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
+.opts .optwrap:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
+.opts .optwrap:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
 .opt:not(.done):hover{background:#fff;border-color:var(--od)}
 .opt:not(.done):active{transform:scale(.97)}
 .opt.right{border-color:#9EDDB2;background:#EFFAF2}
@@ -135,6 +140,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   body{font-size:17px}
   .hero h1{font-size:1.32rem}
   .opts{gap:7px}
+  .sayb{min-height:42px;font-size:1.05rem}
   .opt{min-height:104px;padding:8px 3px}
   .opt .em{font-size:2.1rem}
   .opt .lb{font-size:.85rem}
@@ -622,25 +628,24 @@ function render(){
     /* ตัวเลือกยาว ให้เรียงลงมาทีละบรรทัด อ่านง่ายกว่าเรียง 3 คอลัมน์ */
     const longest=Math.max.apply(null, x[1].map(o=>o[1].length));
     h+='<div class="q" style="'+pcv()+'" id="q'+k+'"><div class="qh"><div class="num">'+(k+1)+'</div>'+
-       '<div class="qt">'+x[0]+'</div>'+(x[3]?'<div class="qe">'+x[3]+'</div>':'')+
-       '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button></div>'+
+       '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button>'+
+       '<div class="qt">'+x[0]+'</div>'+(x[3]?'<div class="qe">'+x[3]+'</div>':'')+'</div>'+
        '<div class="opts'+(longest>18?' list':'')+'">'+
        ORD[k].map((i,pos)=>{ const o=x[1][i];
-         return '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
+         return '<div class="optwrap">'+
+           '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
            '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
            '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span>'+
-           '<span class="say" data-say="'+attr(spoken(o[1]))+'" role="button" aria-label="ฟังตัวเลือก '+TL[pos]+'">🔊</span>'+
-           '</button>'; }).join('')+
+           '</button>'+
+           '<button type="button" class="sayb" data-say="'+attr(spoken(o[1]))+'" aria-label="ฟังตัวเลือก '+TL[pos]+'">🔊</button>'+
+           '</div>'; }).join('')+
        '</div><div class="fb"></div></div>';
   });
   $('#list').innerHTML=h;
   const Q=questions();
   $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k],+b.dataset.k));
-  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=e=>{
-    const sp=e.target.closest('.say');
-    if(sp){ e.stopPropagation(); speak(sp.dataset.say); return; }   /* แตะปุ่ม 🔊 = ฟังคำอ่าน ไม่ใช่ตอบ */
-    pick(+b.dataset.k,+b.dataset.i,true);
-  });
+  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k,+b.dataset.i,true));
+  $('#list').querySelectorAll('.sayb').forEach(b=>b.onclick=()=>speak(b.dataset.say));
   Object.keys(ans).forEach(k=>show(+k, ans[k]));
   updateScore(false);
 }
