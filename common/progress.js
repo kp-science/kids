@@ -30,7 +30,6 @@
     { page:'thai',    name:'ภาษาไทย',     e:'📚', url:'thai/p1-review.html' },
     { page:'math',    name:'คณิตศาสตร์',  e:'🔢', url:'math/p1-review.html' },
     { page:'science', name:'วิทยาศาสตร์', e:'🔬', url:'science/p1-review.html' },
-    { page:'social',  name:'สังคมศึกษา',  e:'🏡', url:'social/p1-review.html' },
     { page:'english', name:'ภาษาอังกฤษ',  e:'🔤', url:'english/p1-review.html' },
   ];
   const GAMES = [
