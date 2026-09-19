@@ -26,6 +26,17 @@
 .medal{background:#fff;border-radius:22px;padding:16px;text-align:center;box-shadow:0 8px 22px rgba(58,51,80,.08);display:none}
 .medal.on{display:block}
 .medal .st{font-size:2.2rem;letter-spacing:5px}
+.result .wait{margin-top:6px;font-weight:700;color:#8A4A2A;background:#FFE7D8;border-radius:12px;padding:4px 10px;display:inline-block}
+.lives{background:#fff;border-radius:16px;padding:5px 12px;font-weight:700;font-size:.95rem;letter-spacing:2px;
+  box-shadow:0 3px 10px rgba(58,51,80,.14);white-space:nowrap}
+.lives.low{background:#FFE7D8;color:#B9481C}
+.livesrow{display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:700}
+.livesrow .hearts{font-size:1.15rem;letter-spacing:2px}
+.livesrow small{font-weight:400;color:var(--mute)}
+.medal.fail{background:#FFF3EC}
+.stage.locked::after{content:'⏳ ใจเย็น ๆ อ่านโจทย์ก่อนนะ';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:rgba(255,255,255,.95);color:#8A4A2A;font-family:'Mali',sans-serif;font-weight:700;border-radius:999px;
+  padding:10px 22px;box-shadow:0 10px 30px rgba(58,51,80,.22);pointer-events:none;z-index:6}
 .intro{max-width:860px;margin:0 auto;padding:0 12px}
 .intro .card{margin-bottom:12px}
 .intro ol{margin:8px 0 0 20px}
@@ -42,20 +53,22 @@
 <div class="lab">
   <div class="stage" id="stage">
     <div class="loading" id="loading">กำลังโหลดฉาก 3 มิติ… ⏳</div>
-    <div class="hud"><span class="now" id="now"></span><span class="sp"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
+    <div class="hud"><span class="now" id="now"></span><span class="sp"></span><span class="lives" id="lives"></span><button type="button" id="home">⟲ มุมเดิม</button></div>
   </div>
   <div class="panel">
     <div class="card goal">
       <h3>🎯 <span id="gtitle"></span><button class="spk" type="button" id="gsay" aria-label="ฟังโจทย์">🔊</button></h3>
       <p id="gtext"></p>
       <div class="prog" id="prog"></div>
+      <div class="livesrow"><span class="hearts" id="hearts"></span><small id="livestext"></small></div>
       <div class="factbox" id="fact"></div>
       <div class="result" id="result"></div>
       <div class="row"><button class="btn" type="button" id="reset">↺ เล่นด่านนี้ใหม่</button><button class="btn go" type="button" id="next" hidden>ด่านต่อไป ▶</button></div>
     </div>
     <div class="medal" id="medal"></div>
     <div class="know" id="know"></div>
-    <div class="card goal"><p class="tips">👆 แตะสิ่งของในฉากเพื่อตอบ · ลากนิ้วเพื่อหมุนดูรอบ ๆ · หยิกนิ้วเพื่อซูมเข้าออก · แตะ 🔊 ให้อ่านโจทย์ให้ฟัง</p><p style="margin-top:8px"><a class="btn" href="unit1-buddhism.html" style="display:inline-block;text-decoration:none">📖 เปิดหน้าสรุป + แบบฝึกเต็ม</a></p></div>
+    <div class="card goal"><p class="tips">❤️ แต่ละด่านมีหัวใจ ๕ ดวง · ตอบผิดเสีย ๑ ดวง ตอบถูกไม่เสีย · ถ้าหัวใจหมดก่อนตอบครบจะไม่ผ่านด่าน ต้องเริ่มใหม่</p>
+      <p class="tips" style="margin-top:6px">👆 แตะสิ่งของในฉากเพื่อตอบ · ลากนิ้วเพื่อหมุนดูรอบ ๆ · หยิกนิ้วเพื่อซูมเข้าออก · แตะ 🔊 ให้อ่านโจทย์ให้ฟัง</p><p style="margin-top:8px"><a class="btn" href="unit1-buddhism.html" style="display:inline-block;text-decoration:none">📖 เปิดหน้าสรุป + แบบฝึกเต็ม</a></p></div>
   </div>
 </div>
 
@@ -124,6 +137,15 @@ function tag(text, { height=.52, bg='#FFFFFF', color='#3A3350' }={}){
   return sp;
 }
 function nameTag(text, y=4.6, bg='#FFFFFF', color='#3A3350'){ return at(tag(text, { bg, color }), 0, y, 0); }
+/* ป้ายชื่อ + คำอ่าน (+ บรรทัดขยาย) วางซ้อนกันลงมา · ชื่อยาก ๆ เด็ก ป.1 จะได้อ่านออก */
+function tagStack(y, name, read, extra, bg='#FFFFFF'){
+  const g = new THREE.Group();
+  g.add(at(tag(name, { bg }), 0, y, 0));
+  let k = y - .44;
+  if(read){ g.add(at(tag('อ่านว่า ' + read, { height:.32, color:'#6E6785' }), 0, k, 0)); k -= .36; }
+  if(extra){ g.add(at(tag(extra, { height:.32, color:'#6E6785' }), 0, k, 0)); }
+  return g;
+}
 
 /* ดอกบัว · กลีบชมพูรอบเกสรสีทอง (ไม่ใช้อิโมจิ เพราะบางเครื่องวาดอิโมจิลงผ้าใบไม่ได้) */
 function lotusMesh(s0=1){
@@ -210,14 +232,13 @@ const LEVELS = [
   build(){
     world.add(ground('#9ADE86', 17));
     const spots = [
-      { id:'lumbini',  x:-5,  z:1.4, tag:'ลุมพินีวัน', land:'ประเทศเนปาล',  tree:salaTree,  tint:'#FFF0F5' },
-      { id:'bodhgaya', x:0,    z:-3,  tag:'พุทธคยา',    land:'ประเทศอินเดีย', tree:bodhiTree, tint:'#F0FFF3' },
-      { id:'kusinara', x:5,    z:1.4, tag:'กุสินารา',   land:'ประเทศอินเดีย', tree:salaTree,  tint:'#FFF7E6' },
+      { id:'lumbini',  x:-5,  z:1.4, tag:'ลุมพินีวัน', read:'ลุม-พิ-นี-วัน', land:'ประเทศเนปาล',  tree:salaTree,  tint:'#FFF0F5' },
+      { id:'bodhgaya', x:0,    z:-3,  tag:'พุทธคยา',    read:'พุด-ทะ-คะ-ยา',  land:'ประเทศอินเดีย', tree:bodhiTree, tint:'#F0FFF3' },
+      { id:'kusinara', x:5,    z:1.4, tag:'กุสินารา',   read:'กุ-สิ-นา-รา',   land:'ประเทศอินเดีย', tree:salaTree,  tint:'#FFF7E6' },
     ];
     const targets = {};
     spots.forEach(s => {
-      const g = group(platform(), s.tree(), nameTag(s.tag, 5.3, s.tint),
-                      at(tag(s.land, { height:.38, bg:'#FFFFFF', color:'#6E6785' }), 0, 4.75, 0));
+      const g = group(platform(), s.tree(), tagStack(5.6, s.tag, s.read, s.land, s.tint));
       at(g, s.x, 0, s.z);
       world.add(pickable(g, s.id, at(hit(4.4, 5.6, 4.4), 0, 2.4, 0)));
       targets[s.id] = g;
@@ -225,7 +246,7 @@ const LEVELS = [
     /* แม่น้ำเนรัญชรา ไหลผ่านหน้าพุทธคยา */
     const river = at(box(9, .14, 1.7, '#5BB8EC', .06, { roughness:.2 }), 0, .06, -.4);
     river.receiveShadow = true; world.add(river);
-    world.add(at(tag('แม่น้ำเนรัญชรา', { height:.42, bg:'#DFF2FF', color:'#1F6FA8' }), 0, .9, .9));
+    world.add(at(tag('แม่น้ำเนรัญชรา (เน-รัน-ชะ-รา)', { height:.4, bg:'#DFF2FF', color:'#1F6FA8' }), 0, .9, .9));
     /* ดอกบัวนำทาง */
     const lotus = group(at(lotusMesh(1.15), 0, -.1, 0), at(glow('#FFC9E4', 1.7), 0, 0, 0));
     at(lotus, 0, 1.6, 5.2); world.add(lotus);
@@ -250,12 +271,13 @@ const LEVELS = [
   know:'<b>ตัวเลขสำคัญ</b> พระมารดาสวรรคตหลังประสูติ <b>๗ วัน</b> · ออกผนวช <b>๒๙</b> · ตรัสรู้ <b>๓๕</b> · เผยแผ่ธรรม <b>๔๕ ปี</b> · ปรินิพพาน <b>๘๐ พรรษา</b>',
   build(){
     world.add(ground('#CFE3F7', 16));
-    const nums = [['n7','๗','#FFD9E4'],['n29','๒๙','#FFE9C6'],['n35','๓๕','#D8F2D0'],['n45','๔๕','#D5E8FF'],['n80','๘๐','#E8DCFB']];
+    const nums = [['n7','๗','#FFD9E4','7'],['n29','๒๙','#FFE9C6','29'],['n35','๓๕','#D8F2D0','35'],['n45','๔๕','#D5E8FF','45'],['n80','๘๐','#E8DCFB','80']];
     const targets = {};
     nums.forEach((nm, i) => {
       const h = .8 + i*.72, x = -5.2 + i*2.6;
       const step = at(box(2.2, h, 2.2, nm[2], .12), 0, h/2, 0);
-      const g = group(step, at(tag(nm[1], { height:.72 }), 0, h + .95, 0));
+      const g = group(step, at(tag(nm[1], { height:.72 }), 0, h + 1.15, 0),
+                      at(tag(nm[3], { height:.3, color:'#6E6785' }), 0, h + .7, 0));
       at(g, x, 0, 0); g.userData.top = h;
       world.add(pickable(g, nm[0], at(hit(2.4, h + 1.4, 2.4), 0, (h + 1.4)/2, 0)));
       targets[nm[0]] = g;
@@ -374,9 +396,9 @@ const LEVELS = [
     world.add(ground('#A8DE94', 16));
     const hs = [
       { id:'than',  x:-5.4, c:'#FFC9DC', tag:'ทาน' },
-      { id:'piya',  x:-1.8, c:'#BBDCFF', tag:'ปิยวาจา' },
-      { id:'attha', x:1.8,  c:'#C9EFC4', tag:'อัตถจริยา' },
-      { id:'saman', x:5.4,  c:'#FFE2A8', tag:'สมานัตตตา' },
+      { id:'piya',  x:-1.8, c:'#BBDCFF', tag:'ปิยวาจา',   read:'ปิ-ยะ-วา-จา' },
+      { id:'attha', x:1.8,  c:'#C9EFC4', tag:'อัตถจริยา', read:'อัด-ถะ-จะ-ริ-ยา' },
+      { id:'saman', x:5.4,  c:'#FFE2A8', tag:'สมานัตตตา', read:'สะ-มา-นัด-ตะ-ตา' },
     ];
     const targets = {};
     hs.forEach(h => {
@@ -385,7 +407,7 @@ const LEVELS = [
       roof.castShadow = true;
       const door = at(box(.9, 1.3, .12, '#8A5A3B', .04), .45, .65, 1.12);
       door.geometry.translate(-.45, 0, 0);                 /* ให้บานพับอยู่ขอบซ้าย */
-      const g = group(body, roof, door, nameTag(h.tag, 3.9, '#FFFFFF'));
+      const g = group(body, roof, door, tagStack(4.1, h.tag, h.read));
       at(g, h.x, 0, 0);
       world.add(pickable(g, h.id, at(hit(2.8, 3.6, 2.8), 0, 1.6, 0)));
       targets[h.id] = g; g.userData.door = door;
@@ -410,16 +432,16 @@ const LEVELS = [
   build(){
     world.add(ground('#4A5890', 15));
     const moons = [
-      { id:'magha',   x:-5.2, y:4.3, half:false, tag:'มาฆบูชา · เดือน ๓' },
-      { id:'visakha', x:-1.8, y:5.3, half:false, tag:'วิสาขบูชา · เดือน ๖' },
-      { id:'atthami', x:1.8,  y:5.3, half:true,  tag:'อัฏฐมีบูชา · แรม ๘ ค่ำ' },
-      { id:'asalha',  x:5.2,  y:4.3, half:false, tag:'อาสาฬหบูชา · เดือน ๘' },
+      { id:'magha',   x:-5.2, y:4.5, half:false, tag:'มาฆบูชา',    read:'มา-คะ-บู-ชา',    when:'เดือน ๓' },
+      { id:'visakha', x:-1.8, y:5.5, half:false, tag:'วิสาขบูชา',   read:'วิ-สา-ขะ-บู-ชา', when:'เดือน ๖' },
+      { id:'atthami', x:1.8,  y:5.5, half:true,  tag:'อัฏฐมีบูชา',  read:'อัด-ถะ-มี-บู-ชา', when:'แรม ๘ ค่ำ' },
+      { id:'asalha',  x:5.2,  y:4.5, half:false, tag:'อาสาฬหบูชา', read:'อา-สาน-หะ-บู-ชา', when:'เดือน ๘' },
     ];
     const targets = {};
     moons.forEach(m => {
       const ball = sph(.85, mat('#FFF4CE', { emissive:0xFFE9A8, emissiveIntensity:.55, roughness:.9 }));
       const g = group(at(ball, 0, 0, 0), at(glow('#FFF0B8', 3.2), 0, 0, 0),
-                      at(tag(m.tag, { height:.44 }), 0, -1.35, 0));
+                      tagStack(-1.25, m.tag, m.read, m.when));
       /* แรม ๘ ค่ำ = จันทร์ครึ่งดวง ใช้เงามืดบังครึ่งหนึ่ง */
       if(m.half){
         const shade = at(sph(.87, mat('#2B3566', { roughness:1 })), -.87, 0, 0);
@@ -478,6 +500,19 @@ const BANK = [
    ตัวเกม
    ============================================================ */
 let L = null, cur = null, idx = 0, wrongN = 0, order = [], built = null, locked = false;
+let wrongStreak = 0, waitTimer = 0, tickTimer = 0;
+/* หัวใจประจำด่าน · กดผิดเสีย ๑ ดวง กดถูกไม่เสีย หมดก่อนตอบครบ = ไม่ผ่านด่าน ต้องเริ่มใหม่ */
+const MAX_LIVES = 5;
+let lives = MAX_LIVES, failed = false;
+function drawLives(){
+  const h = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, MAX_LIVES - lives));
+  $('#lives').textContent = h;
+  $('#lives').className = 'lives' + (lives <= 2 ? ' low' : '');
+  $('#hearts').textContent = h;
+  $('#livestext').textContent = failed ? 'หัวใจหมดแล้ว ต้องเริ่มด่านนี้ใหม่'
+    : lives === MAX_LIVES ? 'ตอบผิดได้ ' + MAX_LIVES + ' ครั้ง ถ้าหมดก่อนจบด่านต้องเริ่มใหม่'
+    : 'เหลือโอกาสตอบผิดอีก ' + lives + ' ครั้ง';
+}
 
 function clearWorld(){
   frameOff.forEach(off => off()); frameOff = [];
@@ -503,10 +538,11 @@ function openLevel(id){
   cur = L.id;
   levelBar($('#levels'), LEVELS, { cur, stars:st.stars, onPick:openLevel, quiz:true });
   $('#stage').classList.toggle('night', !!L.night);
+  clearTimeout(waitTimer); clearInterval(tickTimer); $('#stage').classList.remove('locked');
   clearWorld();
   built = L.build();
   fitView(L);
-  idx = 0; wrongN = 0; locked = false;
+  idx = 0; wrongN = 0; locked = false; lives = MAX_LIVES; failed = false; drawLives();
   order = L.prompts.map((p, i) => i);
   if(!L.ordered) order = shuffle(order);
   $('#gtitle').textContent = L.emoji + ' ' + L.title;
@@ -522,6 +558,7 @@ function openLevel(id){
 function P(){ return L.prompts[order[idx]]; }
 
 function showPrompt(){
+  wrongStreak = 0; clearTimeout(waitTimer); clearInterval(tickTimer); $('#stage').classList.remove('locked');
   const p = P();
   $('#now').innerHTML = '<b>' + (idx+1) + '/' + order.length + '</b> · ' + p.q;
   $('#prog').innerHTML = order.map((_, i) => '<i class="' + (i < idx ? 'done' : i === idx ? 'now' : '') + '">' + (i < idx ? '✓' : i+1) + '</i>').join('');
@@ -545,7 +582,7 @@ async function right(obj, p){
   $('#result').innerHTML = '✅ ถูกต้อง! เก่งมาก';
   $('#fact').className = 'factbox on';
   $('#fact').innerHTML = '<b>จำไว้นะ</b> ' + p.fact;
-  speak(cleanSpeech(p.fact));
+  speak('ถูกต้อง เก่งมาก … ' + cleanSpeech(p.fact));
   if(built.onRight) await built.onRight(obj.userData.id, p, obj);
   await wait(500);
   idx++;
@@ -555,19 +592,55 @@ async function right(obj, p){
   showPrompt();
 }
 
+/* กดผิดแล้วต้องรอสักครู่ก่อนกดใหม่ กันเด็กไล่กดมั่วจนถูกเอง
+   ผิดยิ่งหลายครั้งยิ่งรอนานขึ้น และครั้งที่ ๓ จะใบ้คำตอบให้ เพื่อไม่ให้ติดอยู่กับที่ */
 function wrong(obj, p){
   sfx('no');
-  wrongN++;
-  $('#result').className = 'result no';
-  $('#result').innerHTML = '❌ ยังไม่ใช่นะ ลองอีกครั้ง · ' + (p.hint || 'อ่านโจทย์อีกรอบ แล้วดูป้ายชื่อในฉาก');
+  wrongN++; wrongStreak++;
+  locked = true;
+  $('#stage').classList.add('locked');
+  lives--; drawLives();
+  const hint = wrongStreak >= 2 && lives > 0;
   const x0 = obj.position.x;
   tween(obj.position, { x:x0 + .22 }, 90).then(() => tween(obj.position, { x:x0 - .22 }, 120)).then(() => tween(obj.position, { x:x0 }, 90));
+
+  if(lives <= 0){ levelFailed(p); return; }
+
+  $('#result').className = 'result no';
+  $('#result').innerHTML = '💔 ยังไม่ใช่นะ · <b>เสียหัวใจ ๑ ดวง เหลือ ' + lives + ' ดวง</b>' +
+    (hint ? '<br>💡 <b>ใบ้ให้:</b> ' + p.fact : '<br>อ่านโจทย์อีกรอบ แล้วดูป้ายชื่อในฉากก่อนเลือกนะ') +
+    '<div class="wait" id="wait">⏳ รอสักครู่…</div>';
+  speak('ยังไม่ใช่นะ เสียหัวใจหนึ่งดวง เหลือ ' + lives + ' ดวง ' + (hint ? 'ใบ้ให้ ' + cleanSpeech(p.fact) : 'ลองอ่านโจทย์อีกครั้งก่อนเลือก'));
+
+  clearInterval(tickTimer); clearTimeout(waitTimer);
+  waitTimer = setTimeout(() => {
+    locked = false; $('#stage').classList.remove('locked');
+    const w = $('#wait'); if(w) w.textContent = '👉 ลองใหม่ได้เลย';
+  }, 900);
+}
+
+/* หัวใจหมดก่อนตอบครบ = ไม่ผ่านด่าน ไม่ได้ดาว ต้องเริ่มด่านนี้ใหม่ */
+function levelFailed(p){
+  failed = true; locked = true;
+  clearInterval(tickTimer); clearTimeout(waitTimer);
+  $('#stage').classList.remove('locked');
+  $('#now').innerHTML = '💔 หัวใจหมดแล้ว';
+  $('#result').className = 'result no';
+  $('#result').innerHTML = '💔 <b>หัวใจหมด ยังไม่ผ่านด่านนี้</b><br>คำตอบข้อนี้คือสิ่งที่อยู่ในกล่องด้านล่าง ลองอ่านแล้วเริ่มด่านใหม่นะ';
+  $('#fact').className = 'factbox on';
+  $('#fact').innerHTML = '<b>เฉลยข้อนี้</b> ' + p.fact;
+  $('#medal').className = 'medal on fail';
+  $('#medal').innerHTML = '<div style="font-size:2.6rem">💔</div><div class="st">☆☆☆</div>' +
+    '<p>ตอบผิดครบ ' + MAX_LIVES + ' ครั้งแล้ว ยังไม่ผ่านด่านนี้<br>อ่านกล่อง 💡 ด้านล่างก่อน แล้วกดเริ่มด่านใหม่ได้เลย</p>' +
+    '<button type="button" class="btn go" id="retry">↺ เริ่มด่านนี้ใหม่</button>';
+  $('#medal').querySelector('#retry').onclick = () => openLevel(cur);
+  sfx('no'); speak('หัวใจหมดแล้ว ยังไม่ผ่านด่านนี้ ลองเริ่มใหม่อีกครั้งนะ');
 }
 
 function finish(){
   locked = true;
   if(built.onDone) built.onDone(built.targets);
-  const stars = wrongN === 0 ? 3 : wrongN <= 2 ? 2 : 1;
+  const stars = lives === MAX_LIVES ? 3 : lives >= 3 ? 2 : 1;
   st.stars[L.id] = Math.max(st.stars[L.id] || 0, stars); st.save();
   levelBar($('#levels'), LEVELS, { cur, stars:st.stars, onPick:openLevel, quiz:true });
   $('#now').innerHTML = '🎉 ผ่านด่านแล้ว!';
@@ -576,7 +649,8 @@ function finish(){
   $('#medal').className = 'medal on';
   $('#medal').innerHTML = '<div style="font-size:2.6rem">' + (stars === 3 ? '🎉🏆🎉' : '🌈') + '</div>' +
     '<div class="st">' + '⭐'.repeat(stars) + '☆'.repeat(3 - stars) + '</div>' +
-    '<p>' + (wrongN === 0 ? 'ตอบถูกหมดตั้งแต่ครั้งแรก สุดยอด!' : 'ผ่านแล้ว! ตอบผิด ' + wrongN + ' ครั้ง ลองใหม่ให้ได้ ๓ ดาวนะ') + '</p>';
+    '<p>' + (lives === MAX_LIVES ? 'ตอบถูกหมดตั้งแต่ครั้งแรก หัวใจครบ ๕ ดวง สุดยอด!'
+             : 'ผ่านแล้ว! เหลือหัวใจ ' + lives + ' ดวง · ลองใหม่แบบไม่เสียหัวใจเลยจะได้ ๓ ดาวนะ') + '</p>';
   sfx('win'); speak('ผ่านด่านแล้ว เก่งมาก');
   const i = LEVELS.findIndex(x => x.id === L.id);
   $('#next').hidden = false;
@@ -586,6 +660,9 @@ function finish(){
     title:'ผจญภัยพระพุทธศาสนา · ' + L.title, stars, mistakes:wrongN });
 }
 
+/* ป้ายจะวาดตัวเองใหม่เมื่อฟอนต์โหลดเสร็จ (ดู label() ใน stem3d.js) ขนาดจึงเปลี่ยน ต้องจัดกล้องใหม่ */
+if(document.fonts) document.fonts.ready.then(() => { if(L && !document.body.classList.contains('quizmode')) fitView(L); }).catch(() => {});
+
 /* หมุนเครื่องหรือเปลี่ยนขนาดหน้าต่าง แล้วจัดกล้องใหม่ให้ป้ายยังอยู่ในกรอบ */
 let fitTimer = 0;
 new ResizeObserver(() => { clearTimeout(fitTimer); fitTimer = setTimeout(() => { if(L && !document.body.classList.contains('quizmode')) fitView(L); }, 220); }).observe($('#stage'));
@@ -594,8 +671,19 @@ $('#reset').onclick = () => openLevel(cur);
 openLevel(LEVELS[0].id);
 
 /* สำหรับทดสอบอัตโนมัติ */
-window.__test = { S, LEVELS, BANK, openLevel, get state(){ return { cur, idx, wrongN, total:order.length, locked }; },
+window.__test = { S, LEVELS, BANK, openLevel,
+  get state(){ return { cur, idx, wrongN, wrongStreak, lives, failed, total:order.length, locked }; },
+  get prompt(){ return idx < order.length ? P() : null; },
   answer(id){ const p = P(); const o = built.targets[id]; if(id === p.a) return right(o, p); wrong(o, p); },
+  /* แตะจริงผ่านผ้าใบ เหมือนนิ้วเด็ก (ผ่านด่านล็อกกันกดมั่วด้วย) */
+  tap(id){
+    const o = built.targets[id], c = S.renderer.domElement, r = c.getBoundingClientRect();
+    const q = S.toScreen(o.getWorldPosition(new THREE.Vector3()));
+    const x = r.left + q.x, y = r.top + q.y;
+    const opt = { clientX:x, clientY:y, bubbles:true };
+    c.dispatchEvent(new PointerEvent('pointerdown', opt));
+    c.dispatchEvent(new PointerEvent('pointerup', opt));
+  },
   solve(){ return (async () => { while(idx < order.length && L){ const p = P(); await right(built.targets[p.a], p); } })(); },
   targets(){ return Object.keys(built.targets); } };
 </script>

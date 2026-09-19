@@ -99,6 +99,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
 .opt.noem{justify-content:center}
 .opt.noem .lb{font-size:1.12rem}
+.opt .rd{display:block;font-size:.78rem;font-weight:400;color:var(--mute);line-height:1.3;margin-top:1px}
 .opts.list .opt{flex-direction:row;min-height:0;padding:11px 13px;text-align:left;gap:12px}
 .opts.list .opt .lt{position:static;flex-shrink:0}
 .opts.list .opt.noem{justify-content:flex-start}
@@ -495,6 +496,25 @@ const PARTC=[['#F3B95F','#9A6212','#FFF3DE','🪷'],['#8FC9F2','#2A6698','#EAF4F
              ['#A5D6B0','#25724A','#E9F7EE','☸️'],['#D8B4F0','#6A3B9C','#F5EDFF','🛕']];
 const TL=['ก','ข','ค'];
 const PRAISE=['✓ ถูกต้อง เก่งมาก! 🎉','✓ สุดยอดเลย! ⭐','✓ ถูกต้อง! 👏','✓ เยี่ยมมาก! 🌈','✓ ใช่แล้ว! 😄'];
+/* คำอ่านของคำยาก ใส่ไว้ใต้ตัวเลือกให้เด็ก ป.1 อ่านออก (ยึดตามที่หนังสือเรียนกำกับไว้ ที่เหลือตามหลักการอ่านไทย) */
+const READ = {
+  'ลุมพินีวัน':'ลุม-พิ-นี-วัน', 'พุทธคยา':'พุด-ทะ-คะ-ยา', 'กุสินารา':'กุ-สิ-นา-รา', 'เนรัญชรา':'เน-รัน-ชะ-รา',
+  'สิทธัตถะ':'สิด-ทัด-ถะ', 'สุทโธทนะ':'สุด-โท-ทะ-นะ', 'สิริมหามายา':'สิ-ริ-มะ-หา-มา-ยา',
+  'มหาปชาบดีโคตมี':'มะ-หา-ปะ-ชา-บอ-ดี-โค-ตะ-มี', 'วิศวามิตร':'วิด-สะ-วา-มิด', 'ทุกรกิริยา':'ทุก-กะ-ระ-กิ-ริ-ยา',
+  'พระศรีมหาโพธิ์':'พระ-สี-มะ-หา-โพ', 'ปรินิพพาน':'ปะ-ริ-นิบ-พาน', 'พุทธมามกะ':'พุด-ทะ-มา-มะ-กะ',
+  'จาตุรงคสันนิบาต':'จา-ตุ-รง-คะ-สัน-นิ-บาด', 'มาฆบูชา':'มา-คะ-บู-ชา', 'วิสาขบูชา':'วิ-สา-ขะ-บู-ชา',
+  'อัฏฐมีบูชา':'อัด-ถะ-มี-บู-ชา', 'อาสาฬหบูชา':'อา-สาน-หะ-บู-ชา', 'โอวาทปาติโมกข์':'โอ-วาด-ปา-ติ-โมก',
+  'สังคหวัตถุ':'สัง-คะ-หะ-วัด-ถุ', 'ปิยวาจา':'ปิ-ยะ-วา-จา', 'อัตถจริยา':'อัด-ถะ-จะ-ริ-ยา', 'สมานัตตตา':'สะ-มา-นัด-ตะ-ตา',
+  'เบญจศีล':'เบน-จะ-สีน', 'เบญจธรรม':'เบน-จะ-ทำ', 'เบญจางคประดิษฐ์':'เบน-จาง-คะ-ประ-ดิด',
+  'กตัญญูกตเวที':'กะ-ตัน-ยู-กะ-ตะ-เว-ที', 'พระรัตนตรัย':'พระ-รัด-ตะ-นะ-ไตร',
+  'สาวัตถี':'สา-วัด-ถี', 'พระสารีบุตร':'พระ-สา-รี-บุด', 'วัณณุปถชาดก':'วัน-นุ-ปะ-ถะ-ชา-ดก',
+  'สุวัณณสาม':'สุ-วัน-นะ-สาม', 'ปิลยักษ์':'ปิน-ละ-ยัก', 'หิมพานต์':'หิม-มะ-พาน',
+  'อัญญาโกณฑัญญะ':'อัน-ยา-โกน-ดัน-ยะ', 'ปัญจวัคคีย์':'ปัน-จะ-วัก-คี', 'บรรพชา':'บัน-พะ-ชา',
+  'พระอรหันต์':'พระ-อะ-ระ-หัน', 'สัพเพ สัตตา':'สับ-เพ-สัด-ตา', 'ชาดก':'ชา-ดก',
+};
+const READ_KEYS = Object.keys(READ).sort((a,b) => b.length - a.length);
+const readOf = t => { for(const k of READ_KEYS) if(t.indexOf(k) >= 0) return READ[k]; return ''; };
+
 const $=s=>document.querySelector(s);
 const strip=s=>String(s).replace(/<[^>]*>/g,'');
 let cur=0, ans={};
@@ -597,7 +617,7 @@ function render(){
        ORD[k].map((i,pos)=>{ const o=x[1][i];
          return '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
            '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
-           '<span class="lb">'+o[1]+'</span></button>'; }).join('')+
+           '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span></button>'; }).join('')+
        '</div><div class="fb"></div></div>';
   });
   $('#list').innerHTML=h;
@@ -608,7 +628,7 @@ function render(){
   updateScore(false);
 }
 
-function show(k,i){
+function show(k,i,say){
   const q=questions()[k], el=$('#q'+k); if(!q||!el) return;
   const ok=i===q[2];
   el.classList.add(ok?'ok':'no');
@@ -622,11 +642,13 @@ function show(k,i){
   fb.className='fb '+(ok?'ok':'no');
   fb.innerHTML=(ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[ORD[k].indexOf(q[2])]+'. '+q[1][q[2]][1])+
     (q[4]?'<small>'+q[4]+'</small>':'');
+  /* อ่านเฉลยให้ฟังทันทีที่เลือก (ตอนโหลดหน้าเก่าคืนมาไม่ต้องอ่าน) */
+  if(say) speak((ok ? 'ถูกต้อง เก่งมาก' : 'ยังไม่ใช่ คำตอบที่ถูกคือ '+q[1][q[2]][1]) + (q[4] ? ' … '+strip(q[4]) : ''));
 }
 
 function pick(k,i,fresh){
   if(ans[k]!==undefined) return;
-  ans[k]=i; save(); show(k,i); updateScore(fresh);
+  ans[k]=i; save(); show(k,i,fresh); updateScore(fresh);
   if(fresh){
     const nx=$('#q'+(k+1));
     if(nx && ans[k+1]===undefined){

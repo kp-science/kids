@@ -173,15 +173,31 @@ export function sprite(text, { size=.8, bg=null, color='#3A3350', font=110 }={})
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false }));
   s.scale.set(size, size, 1); return s;
 }
-/* ป้ายข้อความทรงแคปซูล กว้างตามข้อความ */
+/* ป้ายข้อความทรงแคปซูล กว้างตามข้อความ
+   ⚠️ ถ้าฟอนต์ Mali ยังโหลดไม่เสร็จตอนสร้างป้าย measureText จะวัดด้วยฟอนต์สำรองซึ่งแคบกว่า
+      ผ้าใบจึงเล็กเกินไปและตัวอักษรถูกตัดหาย → วาดครั้งแรกไปก่อน แล้ววาดซ้ำเมื่อฟอนต์มาถึง */
 export function label(text, { height=.4, bg='#FFFFFF', color='#3A3350' }={}){
-  const c = document.createElement('canvas'), g = c.getContext('2d'), F = '700 64px "Mali","Noto Sans Thai Looped",sans-serif';
-  g.font = F; const w = Math.ceil(g.measureText(text).width) + 56; c.width = w; c.height = 104;
-  g.font = F; g.fillStyle = bg; g.beginPath(); g.roundRect(2, 2, w-4, 100, 50); g.fill();
-  g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, w/2, 56);
-  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false }));
-  s.scale.set(height*w/104, height, 1); return s;
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  const F = '700 64px "Mali","Noto Sans Thai Looped",sans-serif';
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ transparent:true, depthWrite:false }));
+  function paint(){
+    g.font = F;
+    const m = g.measureText(text);
+    /* ใช้ขอบหมึกจริงด้วย เผื่อบางตัวล้ำออกนอกความกว้างที่วัดได้ */
+    const ink = Math.max(m.width, (m.actualBoundingBoxLeft || 0) + (m.actualBoundingBoxRight || 0));
+    const w = Math.ceil(ink) + 64;
+    c.width = w; c.height = 104;
+    g.font = F; g.fillStyle = bg; g.beginPath(); g.roundRect(2, 2, w-4, 100, 50); g.fill();
+    g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, w/2, 56);
+    if(s.material.map) s.material.map.dispose();
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    s.material.map = tex; s.material.needsUpdate = true;
+    s.scale.set(height * w / 104, height, 1);
+  }
+  paint();
+  if(document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(paint).catch(() => {});
+  s.userData.text = text;   /* ไว้ตรวจว่าป้ายกว้างพอกับข้อความจริงไหม */
+  return s;
 }
 /* แสงเรือง (glow) */
 export function glow(color='#FFE27A', size=2){

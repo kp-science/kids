@@ -14,10 +14,12 @@ stickers.html               สมุดสติกเกอร์
 parent.html                 สรุปผลสำหรับพ่อแม่ (ข้อที่ผิดบ่อย ชุดที่ควรทบทวน)
 img/kid.webp                รูปน้องบนหน้าแรก
 
-thai/ math/ science/ social/ english/
+thai/ math/ science/ english/   (สังคมศึกษาไม่มีใบ p1-review แล้ว ใช้ unit1-* แทน)
 thai/reading-reflect.html   อ่านเขียนสะท้อนคิด: คลัง 10 ทักษะ ~170 ข้อ, โหมดหน้าเดียว/ฝึกทีละเรื่อง/ชุดต้นฉบับ, ผจญภัยเกาะ 3 มิติ (thai/reading-island.js ใช้ stem/stem3d.js)
-  p1-review.html            ทบทวนก่อนสอบ ป.1 (5 ไฟล์ใช้เอนจินเดียวกัน แก้เอนจินต้องแก้ทุกไฟล์)
+  p1-review.html            ทบทวนก่อนสอบ ป.1 (4 ไฟล์ใช้เอนจินเดียวกัน แก้เอนจินต้องแก้ทุกไฟล์)
 science/plants-animals-test.html   แบบทดสอบพืชและสัตว์ 40 + 20 ข้อ
+social/unit1-buddhism.html  หน่วยที่ 1 พระพุทธศาสนา: สรุป 4 บท + แบบฝึกรายบท + ข้อสอบรวม (109 ข้อ) · มีคำอ่านใต้ตัวเลือก และอ่านเฉลยให้ฟัง
+social/unit1-quest.html     เกม 3 มิติหน่วยที่ 1: 6 ด่าน + แบบทดสอบ (ใช้ stem/stem3d.js) · กดผิดจะล็อกกันกดมั่ว
 chinese/pinyin-drill.html   ฝึกพินอิน
 brain/games.html            เกมฝึกสมอง 6 + เกมท้าทาย 6 (เปิดตรงด้วย #memory #sudoku ฯลฯ)
 brain/craft.html            บล็อกคราฟต์: สร้างตามแบบ ตอบโจทย์เลขก่อนวางบล็อก
