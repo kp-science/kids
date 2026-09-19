@@ -629,7 +629,7 @@ function render(){
          return '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
            '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
            '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span>'+
-           (readOf(o[1]) ? '<span class="say" data-say="'+attr(spoken(o[1]))+'" role="button" aria-label="ฟังคำอ่าน">🔊</span>' : '')+
+           '<span class="say" data-say="'+attr(spoken(o[1]))+'" role="button" aria-label="ฟังตัวเลือก '+TL[pos]+'">🔊</span>'+
            '</button>'; }).join('')+
        '</div><div class="fb"></div></div>';
   });

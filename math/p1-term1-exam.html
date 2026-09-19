@@ -368,8 +368,12 @@ var sayable = function (t) {
     .replace(/\+/g, ' บวก ').replace(/=/g, ' เท่ากับ ')
     .replace(/\s+/g, ' ').trim();
 };
-/* ปุ่ม 🔊 ของโจทย์ อ่านเฉพาะตัวโจทย์ ตัวเลือกมีปุ่มฟังของตัวเองให้เด็กกดเอง */
-function readQ(q) { speak(sayable(q[0])); }
+/* ปุ่ม 🔊 ของโจทย์ อ่านโจทย์แล้วไล่อ่านตัวเลือก ก ข ค
+   ส่วนลำโพงเล็กในตัวเลือก ไว้ให้เด็กกดฟังซ้ำเฉพาะข้อที่อยากฟังอีกรอบ */
+function readQ(q, k) {
+  speak(sayable(q[0]) + ' … ' +
+    ORD[k].map(function (i, pos) { return TL[pos] + ' ' + optText(q[1][i]); }).join(' … '));
+}
 var attr = function (x) { return String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
 
 /* ---------------- แท็บ ---------------- */
@@ -412,7 +416,7 @@ function render() {
   expandIcons($('#list'));
   var Q = questions();
   $('#list').querySelectorAll('.spk').forEach(function (b) {
-    b.onclick = function () { readQ(Q[+b.getAttribute('data-k')]); }; });
+    b.onclick = function () { var k = +b.getAttribute('data-k'); readQ(Q[k], k); }; });
   $('#list').querySelectorAll('.opt').forEach(function (b) {
     b.onclick = function (e) {
       var sp = e.target.closest ? e.target.closest('.say') : null;
@@ -449,7 +453,7 @@ function pick(k, i, fresh) {
     var nx = $('#q' + (k + 1));
     if (nx && ans[k + 1] === undefined) {
       setTimeout(function () { nx.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if ($('#autoread').checked) readQ(questions()[k + 1]); }, 650);
+        if ($('#autoread').checked) readQ(questions()[k + 1], k + 1); }, 650);
     }
   }
 }
