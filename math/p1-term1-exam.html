@@ -89,11 +89,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 .opt .lb{font-size:1.1rem;font-weight:600;line-height:1.35}
 .opt .lt{position:absolute;top:6px;left:8px;width:26px;height:26px;border-radius:50%;background:var(--od);
   color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.opt .say{position:absolute;top:5px;right:5px;width:30px;height:30px;border-radius:50%;background:#fff;
+  display:grid;place-items:center;font-size:.95rem;line-height:1;box-shadow:0 2px 6px rgba(47,58,78,.14);
+  pointer-events:auto}
+.opt .say:active{transform:scale(.9)}
+.opts.list .opt .say{position:static;margin-left:auto;flex:none}
 .opt.done{cursor:default}
 .opts.list .opt{flex-direction:row;min-height:0;padding:11px 13px 11px 46px;text-align:left;gap:12px;
   align-items:center;justify-content:flex-start}
 .opts.list .opt .lt{left:12px;top:50%;transform:translateY(-50%)}
-.opts.list .opt .lb{font-size:1.04rem}
+.opts.list .opt .lb{font-size:1.04rem;flex:1}
 .opts .opt:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
 .opts .opt:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
 .opts .opt:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
@@ -356,10 +361,16 @@ function speak(text) {
   try { synth.cancel(); var u = new SpeechSynthesisUtterance(text);
     u.lang = 'th-TH'; if (voice) u.voice = voice; u.rate = 0.92; synth.speak(u); } catch (e) {}
 }
-function optText(t) { return isPic(t) ? 'ดูรูป' : strip(t); }
-function readQ(q, k) {
-  speak(strip(q[0]) + ' … ' + ORD[k].map(function (i, pos) { return TL[pos] + ' ' + optText(q[1][i]); }).join(' … '));
-}
+function optText(t) { return isPic(t) ? 'ดูรูป' : sayable(t); }
+/* เสียงพูด: แปลงสัญลักษณ์เป็นคำ เครื่องอ่านไทยจะได้ไม่ข้าม */
+var sayable = function (t) {
+  return strip(String(t).replace(/<span class="mid"><\/span>/g, ' ช่องว่าง '))
+    .replace(/\+/g, ' บวก ').replace(/=/g, ' เท่ากับ ')
+    .replace(/\s+/g, ' ').trim();
+};
+/* ปุ่ม 🔊 ของโจทย์ อ่านเฉพาะตัวโจทย์ ตัวเลือกมีปุ่มฟังของตัวเองให้เด็กกดเอง */
+function readQ(q) { speak(sayable(q[0])); }
+var attr = function (x) { return String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
 
 /* ---------------- แท็บ ---------------- */
 function renderTabs() {
@@ -390,17 +401,25 @@ function render() {
       (x[3] ? figHTML(x[3]) : '') +
       '<div class="opts' + (longest > 16 ? ' list' : '') + '">' +
       ORD[k].map(function (i, pos) {
+        var o = x[1][i], sp = isPic(o) ? '' :
+          '<span class="say" role="button" tabindex="0" aria-label="ฟังคำอ่านตัวเลือก ' + TL[pos] +
+          '" data-say="' + attr(sayable(o)) + '">🔊</span>';
         return '<button type="button" class="opt" data-k="' + k + '" data-i="' + i + '">' +
-          '<span class="lt">' + TL[pos] + '</span><span class="lb">' + x[1][i] + '</span></button>';
+          '<span class="lt">' + TL[pos] + '</span><span class="lb">' + o + '</span>' + sp + '</button>';
       }).join('') + '</div><div class="fb"></div></div>';
   });
   $('#list').innerHTML = h;
   expandIcons($('#list'));
   var Q = questions();
   $('#list').querySelectorAll('.spk').forEach(function (b) {
-    b.onclick = function () { readQ(Q[+b.getAttribute('data-k')], +b.getAttribute('data-k')); }; });
+    b.onclick = function () { readQ(Q[+b.getAttribute('data-k')]); }; });
   $('#list').querySelectorAll('.opt').forEach(function (b) {
-    b.onclick = function () { pick(+b.getAttribute('data-k'), +b.getAttribute('data-i'), true); }; });
+    b.onclick = function (e) {
+      var sp = e.target.closest ? e.target.closest('.say') : null;
+      if (sp) { e.stopPropagation(); speak(sp.getAttribute('data-say')); return; }
+      pick(+b.getAttribute('data-k'), +b.getAttribute('data-i'), true);
+    };
+  });
   Object.keys(ans).forEach(function (k) { show(+k, ans[k]); });
   updateScore(false);
 }
@@ -430,7 +449,7 @@ function pick(k, i, fresh) {
     var nx = $('#q' + (k + 1));
     if (nx && ans[k + 1] === undefined) {
       setTimeout(function () { nx.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if ($('#autoread').checked) readQ(questions()[k + 1], k + 1); }, 650);
+        if ($('#autoread').checked) readQ(questions()[k + 1]); }, 650);
     }
   }
 }
