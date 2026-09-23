@@ -45,6 +45,7 @@
     { id:'plants',  e:'🐢', tag:'test',   text:'ทำแบบทดสอบพืชและสัตว์ 1 ชุด',        url:'science/plants-animals-test.html', done:ev => ev.some(x=>x.page==='plants') },
     { id:'pinyin',  e:'拼', tag:'pinyin', text:'ฝึกพินอินให้จบ 1 รอบ',                url:'chinese/pinyin-drill.html',        done:ev => ev.some(x=>x.kind==='pinyin') },
     { id:'unit1',   e:'🪷', tag:'test',   text:'ทำแบบฝึกหน่วยที่ 1 พระพุทธศาสนา 1 ชุด', url:'social/unit1-buddhism.html',       done:ev => ev.some(x=>x.page==='social-unit1') },
+    { id:'engword', e:'🌱', tag:'test',   text:'เล่นสวนคำศัพท์อังกฤษให้จบ 1 ด่าน',   url:'english/word-quest.html',          done:ev => ev.some(x=>x.page==='english-words') },
     { id:'mathex',  e:'📐', tag:'test',   text:'สุ่มข้อสอบคณิต ป.1 เทอม 1 มาทำให้จบ 1 บท',   url:'math/p1-term1-exam.html',          done:ev => ev.some(x=>x.page==='math-p1-term1') },
   ];
   /* สื่อสาย "ลงมือทำ" ที่ไม่ใช่เกมฝึกสมอง */
