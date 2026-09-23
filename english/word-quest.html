@@ -237,6 +237,22 @@ h2.sec{font-family:'Mali',sans-serif;font-size:1.15rem;margin:18px 4px 8px;color
 .mok{color:var(--ok);font-weight:700} .mno{color:var(--no);font-weight:700}
 .mnote{background:#FFF6E6;border-radius:14px;padding:8px 12px;font-size:.88rem;color:#8A5A15;max-width:460px}
 .spk{font-size:1.6rem;font-weight:700;margin:6px 0}
+.chat{display:flex;flex-direction:column;gap:12px;padding:4px 0 10px}
+.crow{display:flex;gap:8px;align-items:flex-end}
+.crow.me{flex-direction:row-reverse}
+.av{width:46px;height:46px;border-radius:50%;background:var(--l);display:grid;place-items:center;font-size:1.6rem;flex:none;overflow:hidden;font-family:var(--emo);box-shadow:0 3px 10px rgba(58,51,80,.1)}
+.av img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.bub{max-width:78%;text-align:left;background:#fff;border-radius:22px 22px 22px 6px;padding:8px 15px 10px;box-shadow:0 4px 14px rgba(58,51,80,.08);
+  font-family:'Andika','Mali',sans-serif;font-size:1.25rem;font-weight:700;line-height:1.35}
+.bub small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-size:.72rem;color:var(--mute);font-weight:700}
+.crow.me .bub{border-radius:22px 22px 6px 22px;background:var(--l)}
+.bub.wait{background:#fff;outline:3px dashed var(--c)}
+.bub.skipd{opacity:.75}
+.bub .fr{display:block}
+.bub .cth{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-size:.85rem;color:var(--mute);font-weight:600}
+.cpic{align-self:center;background:#fff;border-radius:22px;padding:10px 18px;font-size:84px;box-shadow:0 4px 14px rgba(58,51,80,.08)}
+.kidctl{background:#fff;border-radius:24px;box-shadow:0 6px 18px rgba(58,51,80,.08);padding:10px;margin-top:6px;text-align:center}
+.kidctl:empty{display:none}
 @media (max-width:520px){
   .bigpic{font-size:92px} .meet .bigpic{font-size:104px}
   .pcard{font-size:58px;min-height:100px}
@@ -434,6 +450,7 @@ if(synth){ pickVoices(); synth.onvoiceschanged=pickVoices; }
 function say(t,o){ o=o||{}; if(!synth) return;
   if(!o.queue){ try{ synth.cancel(); }catch(e){} }
   const u=new SpeechSynthesisUtterance(t); u.lang=o.th?'th-TH':'en-US'; u.rate=o.rate||(o.th?0.95:0.8);
+  if(o.pitch) u.pitch=o.pitch; if(o.end) u.onend=o.end;
   const v=o.th?thV:enV; if(v) u.voice=v; synth.speak(u); }
 const spellOut=w=>w.replace(/[^A-Za-z]/g,'').toUpperCase().split('').join(', ');
 let AC=null;
@@ -513,7 +530,7 @@ function micPanel(el,cfg){
   const mic=el.querySelector('.mic'), tip=el.querySelector('.mtip'), heardEl=el.querySelector('.heard'), res=el.querySelector('.mres');
   const idle=()=>{ tip.textContent=SPEAKMODE==='sr'?'แตะไมค์ แล้วพูดเป็นภาษาอังกฤษ':'แตะไมค์ แล้วพูด · อัดเสียงได้ 5 วินาที'; };
   idle();
-  const chips=hit=>'<div class="wchk">'+C.map((t,i)=>'<span class="'+(hit[i]?'y':'n')+'">'+(hit[i]?'✓ ':'')+esc(t)+'</span>').join('')+'</div>';
+  const chips=(hit,words)=>'<div class="wchk">'+(words||C).map((t,i)=>'<span class="'+(hit[i]?'y':'n')+'">'+(hit[i]?'✓ ':'')+esc(t)+'</span>').join('')+'</div>';
   mic.onclick=async()=>{
     if(busy){ stopMic(); return; }
     if(SPEAKMODE==='sr'){
@@ -523,10 +540,10 @@ function micPanel(el,cfg){
         if(err==='not-allowed'||err==='service-not-allowed'||err==='audio-capture'||err==='language-not-supported'){
           SPEAKMODE='rec'; res.innerHTML='<div class="mnote">เครื่องนี้ยังฟังเสียงอัตโนมัติไม่ได้ (ต้องอนุญาตไมโครโฟน และเปิด Siri/การป้อนตามคำบอกในไอแพด) · เปลี่ยนเป็นอัดเสียงแล้วฟังเทียบแทน</div>'; idle(); return; }
         if(!alts){ tip.textContent=err==='network'?'ต่อเน็ตไม่ได้ ลองใหม่อีกครั้งนะ':'ไม่ได้ยินเสียงเลย พูดดัง ๆ ใกล้ ๆ เครื่องนะ'; return; }
-        const j=judge(cfg.target,alts,cfg.key,cfg.neg); heardEl.textContent='ได้ยินว่า “'+j.text+'”';
-        if(j.pass){ res.innerHTML=chips(j.hit)+'<div class="mok">พูดได้ชัดเลย! 🎉</div>'; mic.style.display='none'; tip.textContent=''; cfg.onPass&&cfg.onPass(); }
+        const j=cfg.check?cfg.check(alts):judge(cfg.target,alts,cfg.key,cfg.neg); heardEl.textContent='ได้ยินว่า “'+j.text+'”';
+        if(j.pass){ res.innerHTML=chips(j.hit,j.words)+'<div class="mok">พูดได้ชัดเลย! 🎉</div>'; mic.style.display='none'; tip.textContent=''; cfg.onPass&&cfg.onPass(j); }
         else { tries++; const why=!j.negOK?'ได้ยินคำว่า “'+j.badNeg+'” ด้วย · ':!j.keyOK?'ยังไม่ได้ยินคำว่า “'+j.missKey+'” · ':'';
-          res.innerHTML=chips(j.hit)+'<div class="mno">'+why+'ฟังแล้วลองพูดอีกครั้งนะ</div>';
+          res.innerHTML=chips(j.hit,j.words)+'<div class="mno">'+why+'ฟังแล้วลองพูดอีกครั้งนะ</div>';
           if(cfg.model) later(()=>say(cfg.model,{rate:cfg.rate||.72}),500);
           cfg.onFail&&cfg.onFail(tries);
           if(cfg.onSkip && tries>=(cfg.maxTry||3) && !el.querySelector('.skip')){
@@ -676,6 +693,7 @@ const STAGES=[
  {k:'build', e:'🧩', n:'ต่อประโยค',     d:'แตะคำเรียงให้เป็นประโยค ระวังคำหลอก 1 คำ'},
  {k:'qa',    e:'💬', n:'ถาม-ตอบ',       d:'ดูภาพ ฟังคำถาม เลือกคำตอบที่ถูก'},
  {k:'speak', e:'🎤', n:'ฝึกพูด',        d:'พูดคำจากภาพ พูดตามประโยค และตอบคำถามด้วยเสียง'},
+ {k:'talk',  e:'🗣️', n:'บทสนทนา',      d:'คุยกับเพนนีเพนกวิน ผลัดกันถาม-ตอบด้วยเสียง'},
  {k:'boss',  e:'🏆', n:'ด่านท้าทาย',    d:'รวมทุกแบบ 10 ข้อ มีหัวใจ 5 ดวง'},
 ];
 const needFirst=(list,n)=>shuf(list).sort((a,b)=>box(a)-box(b)).slice(0,n);
@@ -730,7 +748,7 @@ function topbar(title,backFn){
   if(backFn){ b.removeAttribute('href'); b.onclick=e=>{ e.preventDefault(); try{ synth&&synth.cancel(); }catch(err){} backFn(); }; }
   else { b.href='../index.html#ภาษาอังกฤษ'; b.onclick=null; }
 }
-function go(fn){ clearT(); stopMic(); try{ synth&&synth.cancel(); }catch(e){} fn(); window.scrollTo({top:0}); }
+function go(fn){ clearT(); stopMic(); TK=null; try{ synth&&synth.cancel(); }catch(e){} fn(); window.scrollTo({top:0}); }
 
 function home(){
   view={v:'home'}; setUnitColor(null); topbar('สวนคำศัพท์อังกฤษ');
@@ -805,6 +823,7 @@ function meet(ui,i){
 /* ---------- ตัวเดินเกม ---------- */
 let R=null;
 function startRun(ui,k){
+  if(k==='talk') return startTalk(ui);
   const qs=k==='review'?reviewQs():makeQs(ui,k);
   R={ui,k,qs,i:0,ok:0,mist:0,hearts:k==='boss'?5:null,wrong:[],dead:false};
   setUnitColor(ui);
@@ -1010,6 +1029,172 @@ function QQA(q,c){
     if(!ok && miss(m.x||null)) return; solved(m.x||null); });
 }
 
+/* =================================================================
+   🗣️ บทสนทนา — คุยกับตัวละครผลัดกันพูด ตามสถานการณ์ในหนังสือแต่ละ Unit
+   บทพูด = รายการของ  B(ประโยค, ใคร) ตัวละครพูด · P(html) ภาพประกอบ · K({...}) ตาหนูพูด
+   K: say = ประโยคที่ยอมรับ · free = {need:[คำที่ต้องมี], any:[ต้องมีคำใดคำหนึ่ง]} สำหรับคำตอบส่วนตัว
+      frame = โครงประโยคที่โชว์ให้ · th = ความหมาย · model = ตัวอย่าง · key/neg · reply(H) = ตัวละครตอบกลับตามที่หนูพูด
+   ================================================================= */
+const CH={ penny:{e:'🐧',n:'Penny',pitch:1.45}, teacher:{e:'👩‍🏫',n:'Teacher',pitch:1.05}, cook:{e:'👩‍🍳',n:'Cook',pitch:1.15}, misty:{e:'👧',n:'Misty',pitch:1.3} };
+const B=(b,who)=>({b,who:who||'penny'}), P=h=>({pic:h}), K=o=>({k:o});
+const lastTok=w=>{ const c=contentOf(w); return c[c.length-1]; };
+const heardWord=(H,list)=>H?list.find(x=>heardHas(H,lastTok(x.w||x))):null;
+const aw=w=>art(w)+' '+w;
+function checkTurn(k,alts){
+  let best=null;
+  (alts||[]).forEach(a=>{ const H=toks(a);
+    (k.say||[]).forEach(t=>{ const j=judge(t,[a],k.key,k.neg); j.words=contentOf(t); j.H=H; if(!best||j.sc>best.sc) best=j; });
+    if(k.free){ const need=k.free.need||[], any=k.free.any, hitN=need.map(n=>heardHas(H,n)), anyHit=any?any.find(w=>heardHas(H,w)):true;
+      const hit=hitN.concat(any?[!!anyHit]:[]), words=need.concat(any?[anyHit||'…']:[]), pass=hit.every(Boolean)&&!(k.neg||[]).some(n=>H.includes(n));
+      const sc=(pass?10:0)+hit.filter(Boolean).length/Math.max(1,hit.length);
+      if(!best||sc>best.sc) best={pass,hit,words,text:a,sc,H,keyOK:hitN.every(Boolean),negOK:true,missKey:need.find((n,i)=>!hitN[i])||(any&&!anyHit?'…':'')}; }
+  });
+  return best||{pass:false,hit:[],words:[],text:'',sc:0};
+}
+const TALK=[
+ /* Unit 1 — เกมทายของ + ห้องเรียน */
+ [ ()=>{ const [x,y,z,w]=shuf(G(0,'sch'));
+     return [B("Let's play the guessing game!"),P(pic(x.p)),B("What's this?"),
+       K({say:["It's "+aw(x.w)+'.'],frame:"It's a ___.",th:'ตอบว่า มันคือ'+x.th}),
+       B('Hmm… is it '+aw(y.w)+'?'),
+       K({say:["No, it isn't. It's "+aw(x.w)+'.',"No, it isn't."],key:['no'],frame:"No, it ___.",th:'ตอบว่า ไม่ใช่ (มันไม่ใช่'+y.th+')'}),
+       B('Oh! OK. Your turn. Ask me!'),P(pic(z.p)),
+       K({say:["What's this?"],frame:"What's ___?",th:'ถามเพนนีว่า นี่คืออะไร'}),
+       B('Is it '+aw(w.w)+'?'),K({say:["No, it isn't."],key:['no'],frame:"No, ___.",th:'ตอบว่า ไม่ใช่'}),
+       B('Is it '+aw(z.w)+'?'),K({say:['Yes, it is.'],key:['yes'],frame:'Yes, ___.',th:'ตอบว่า ใช่'}),
+       B('Yay! I win!')]; },
+   ()=>{ const x=W(0,pick(['pen','pencil','eraser'])), y=W(0,pick(['ruler','notebook','book']));
+     return [B('Good morning, class! Sit at your desk, please.','teacher'),B('Can you help me? Pass me '+aw(x.w)+', please.','teacher'),P(pic(x.p)),
+       K({say:['Here you go.'],frame:'Here you ___.',th:'ตอบตอนยื่นของให้ครู (นี่ค่ะ/นี่ครับ)'}),
+       B('Thank you! Now you are the teacher. Ask me for '+aw(y.w)+'.','teacher'),P(pic(y.p)),
+       K({say:['Pass me '+aw(y.w)+', please.'],key:[lastTok(y.w)],frame:'Pass me a ___, please.',th:'ขอให้ครูส่ง'+y.th+'ให้'}),
+       B('Here you go.','teacher'),K({say:['Thank you.'],frame:'Thank ___.',th:'ขอบคุณ'}),
+       B("You're welcome! Open your book, please.",'teacher')]; } ],
+ /* Unit 2 — ทำความรู้จักเพื่อน */
+ [ ()=>{ const toys=G(1,'toy');
+     return [B("Hello! I'm Penny. What's your name?"),
+       K({free:{need:['name']},frame:"My name's ___.",th:'บอกชื่อของหนู',model:"My name's Mia.",reply:()=>[B('Nice to meet you!')]}),
+       B('How old are you?'),
+       K({free:{need:[],any:NUMW.slice(4,13)},frame:"I'm ___.",th:'บอกอายุของหนู',model:"I'm seven."}),
+       B("What's your favorite toy?"),
+       K({free:{need:['favorite'],any:toys.map(t=>lastTok(t.w))},frame:"My favorite toy's my ___.",th:'บอกของเล่นที่หนูชอบที่สุด',model:"My favorite toy's my doll.",
+         reply:H=>{ const t=heardWord(H,toys); return [B(t?(t.w==='computer game'?'A computer game':'A '+t.w)+'! Cool!':'Cool!')]; }}),
+       B('Now ask me about my favorite toy!'),
+       K({say:["What's your favorite toy?"],key:['favorite'],frame:"What's your ___ ___?",th:'ถามเพนนีว่า ของเล่นที่ชอบที่สุดคืออะไร'}),
+       B("My favorite toy's my kite. It's a big blue kite!")]; },
+   ()=>{ const p=person(), h=p.boy?'He':'She', hs=p.boy?'His':'Her';
+     return [B('This is my friend. Look at the card!','misty'),P(profPic(p)),B("What's "+hs.toLowerCase()+' name?','misty'),
+       K({say:[hs+" name's "+p.name+'.'],key:[hs.toLowerCase()],neg:[p.boy?'her':'his'],frame:'___ name\'s '+p.name+'.',th:(p.boy?'เขา':'เธอ')+'ชื่ออะไร (ผู้'+(p.boy?'ชาย ใช้ His':'หญิง ใช้ Her')+')'}),
+       B('How old is '+h.toLowerCase()+'?','misty'),
+       K({say:[h+"'s "+NUMW[p.age]+'.'],key:[NUMW[p.age]],frame:h+"'s ___.",th:(p.boy?'เขา':'เธอ')+'อายุเท่าไร'}),
+       B("What's "+hs.toLowerCase()+' favorite toy?','misty'),
+       K({say:[hs+" favorite toy's "+hs.toLowerCase()+' '+p.toy.w+'.'],key:[lastTok(p.toy.w)],frame:hs+" favorite toy's "+hs.toLowerCase()+' ___.',th:'ของเล่นที่'+(p.boy?'เขา':'เธอ')+'ชอบที่สุด'}),
+       B('Yes! Well done!','misty')]; } ],
+ /* Unit 3 — ประกวดสัตว์เลี้ยง */
+ [ ()=>{ const [a1,a2]=shuf(G(2,'ani')), p1=pick(['in','on','under']), o1=pick(PREP_OBJ[p1]), p2=pick(['in','on','under'].filter(z=>z!==p1)), o2=pick(PREP_OBJ[p2]), anis=G(2,'ani');
+     return [B('Oh, no! Where\'s my '+a1.w+'?'),P(scene(a1.p,o1[1],p1)),
+       K({say:["It's "+p1+' the '+o1[0]+'.',"It's "+p1+' my '+o1[0]+'.'],key:[p1],neg:['in','on','under'].filter(z=>z!==p1),frame:"It's ___ the "+o1[0]+'.',th:a1.th+'อยู่ตรงไหน'}),
+       B('Thank you! And where\'s the '+a2.w+'?'),P(scene(a2.p,o2[1],p2)),
+       K({say:["It's "+p2+' the '+o2[0]+'.',"It's "+p2+' my '+o2[0]+'.'],key:[p2],neg:['in','on','under'].filter(z=>z!==p2),frame:"It's ___ the "+o2[0]+'.',th:a2.th+'อยู่ตรงไหน'}),
+       B('I like '+PL(a1.w)+'. What about you?'),
+       K({free:{need:['like'],any:anis.map(x=>x.w)},frame:"I like ___. / I don't like ___.",th:'บอกว่าหนูชอบหรือไม่ชอบสัตว์อะไร',model:"I don't like spiders.",
+         reply:H=>{ const a=heardWord(H,anis); if(!a) return [B('Me too!')]; return [B(H.includes('not')?"You don't like "+PL(a.w)+'? Oh!':'You like '+PL(a.w)+'? Me too!')]; }}),
+       B('Now you ask me!'),K({say:['What about you?'],frame:'What about ___?',th:'ถามกลับว่า แล้วเธอล่ะ'}),
+       B("I like frogs. Croak, croak! I don't like big frogs!")]; },
+   ()=>{ const a=pick(G(2,'ani')), n=3+rnd(6);
+     return [B('Come to the pet show! Look at all the pets!','misty'),P(many(a.p,n)),B('How many '+PL(a.w)+'?','misty'),
+       K({say:['There are '+NUMW[n]+' '+PL(a.w)+'.'],key:[NUMW[n]],frame:'There are ___ '+PL(a.w)+'.',th:'มี'+a.th+'กี่ตัว (นับดูนะ)'}),
+       B('Wow! What does a fish need?','misty'),P('🐟'),
+       K({say:['Water.','It needs water.','A fish needs water.'],key:['water'],frame:'___.',th:'ปลาต้องการอะไร (น้ำ)'}),
+       B('Yes! And a duck needs a pond.','misty')]; } ],
+ /* Unit 4 — มื้อกลางวัน */
+ [ ()=>{ const f=shuf(G(3,'food')), inB=f.slice(0,4), x=pick(inB), y=f[5], mine=shuf(FOODS_A()).slice(0,3);
+     return [B("I'm hungry! Let's look in the fridge."),P('<span class="pic"><span class="basket">'+inB.map(z=>pic(z.p)).join('')+'</span></span>'),
+       B('Do we have any '+ANY[x.w]+'?'),K({say:['Yes, we do.'],key:['yes'],neg:['no','not'],frame:'Yes, we ___.',th:'มี'+x.th+'ไหม'}),
+       B('Do we have any '+ANY[y.w]+'?'),K({say:["No, we don't."],key:['no'],frame:"No, we ___.",th:'มี'+y.th+'ไหม'}),
+       B("Oh, no! We don't have any "+ANY[y.w]+'. What do you have in your lunch box?'),P('<span class="pic"><span class="basket lunch">'+mine.map(z=>pic(z.p)).join('')+'</span></span>'),
+       K({free:{need:['have'],any:mine.map(z=>lastTok(z.w))},neg:['not'],frame:'I have a ___.',th:'บอกว่าในกล่องข้าวหนูมีอะไร (ดูในภาพ)',model:'I have '+aw(mine[0].w)+'.',
+         reply:H=>{ const t=heardWord(H,mine); return [B(t?'Mmm… '+t.w+'! Yummy!':'Yummy!')]; }}),
+       B('Can I have one, please?'),K({say:['Here you go.'],frame:'Here you ___.',th:'ยื่นให้เพนนี'}),B('Thank you!')]; },
+   ()=>{ const menu=shuf(G(3,'food').filter(z=>!['cake','steak'].includes(z.w))).slice(0,4), no=W(3,'pizza'), m=menu.filter(z=>z.w!=='pizza');
+     const order=()=>K({free:{need:['please'],any:G(3,'food').map(z=>lastTok(z.w))},frame:'___, please.',th:'สั่งอาหารที่อยากกิน ตามด้วย please',model:m[0].w==='peas'?'Peas, please.':cap(m[0].w)+', please.',
+       reply:H=>{ const t=heardWord(H,G(3,'food')); if(!H||!t) return [B('Here you go!','cook'),K({say:['Thank you.'],frame:'Thank ___.',th:'ขอบคุณ'})];
+         if(!menu.includes(t)||t===no) return [B("Sorry. We don't have "+ANY[t.w]+'. Look at the menu!','cook'),order()];
+         return [B('Here you go!','cook'),K({say:['Thank you.'],frame:'Thank ___.',th:'ขอบคุณ'})]; }});
+     return [B("Lunchtime! What's for lunch? Here's the menu.",'cook'),P('<span class="pic"><span class="basket lunch">'+m.map(z=>pic(z.p)).join('')+'<span class="nope">'+pic(no.p)+'</span></span></span>'),
+       B('What do you want?','cook'),order(),B("You're welcome. Enjoy your lunch!",'cook')]; } ],
+ /* Unit 5 — วันว่าง */
+ [ ()=>{ const plan=weekPlan(), [d1,d2,d3]=shuf([0,1,2,3,4,5]), yes=rnd(2)===0, a=yes?plan[d2]:plan[(d2+1)%7];
+     return [B("Look at your week! It's your plan."),P(weekPic(plan,-1)),
+       B('What do you do on '+DAYS[d1]+'s?'),K({say:['I '+plan[d1].w+' on '+DAYS[d1]+'s.'],key:[lastTok(plan[d1].w)],frame:'I ___ on '+DAYS[d1]+'s.',th:'วัน'+W(4,DAYS[d1]).th.slice(3)+'หนูทำอะไร (ดูตาราง)'}),
+       B('Do you '+a.w.replace('my','your')+' on '+DAYS[d2]+'s?'),K({say:[yes?'Yes, I do.':"No, I don't."],key:[yes?'yes':'no'],neg:yes?['no','not']:[],frame:yes?'Yes, I ___.':"No, I ___.",th:'วัน'+W(4,DAYS[d2]).th.slice(3)+' หนู'+a.th+'ไหม (ดูตาราง)'}),
+       B('Now ask me about Sunday!'),K({say:['What do you do on Sundays?'],key:['sundays'],frame:'What do you do on ___?',th:'ถามเพนนีว่า วันอาทิตย์ทำอะไร'}),
+       B('I go fishing on Sundays! I like fishing.')]; },
+   ()=>{ const acts=ACTS();
+     return [B('Do you ride your bike on the weekend?','misty'),
+       K({free:{need:[],any:['yes','no']},frame:"Yes, I do. / No, I don't.",th:'หนูขี่จักรยานวันเสาร์อาทิตย์ไหม (ตอบตามจริง)',model:'Yes, I do.',
+         reply:H=>[B(H&&H.includes('no')?'Oh, OK!':"Me too! Let's ride together!",'misty')]}),
+       B('What do you do on Saturdays?','misty'),
+       K({free:{need:['saturdays'],any:acts.map(x=>lastTok(x.w))},frame:'I ___ on Saturdays.',th:'วันเสาร์หนูทำอะไร (ตอบตามจริง)',model:'I play soccer on Saturdays.',
+         reply:H=>{ const t=heardWord(H,acts); return [B(t?'You '+t.w.replace('my','your')+'? Fantastic!':'Fantastic!','misty')]; }}),
+       B('The day after Saturday is…?','misty'),K({say:['Sunday.',"It's Sunday."],key:['sunday'],frame:'___.',th:'วันถัดจากวันเสาร์คือวันอะไร'}),
+       B("Yes! Sunday's the best. We just play and rest!",'misty')]; } ],
+];
+
+/* ตัวเดินบทสนทนา */
+let TK=null;
+function startTalk(ui){
+  clearT(); stopMic();
+  const turns=shuf(TALK[ui]).flatMap(f=>f());
+  R={ui,k:'talk',qs:turns.filter(t=>t.k),i:0,ok:0,mist:0,hearts:null,wrong:[],dead:false};
+  TK={turns,ti:0};
+  setUnitColor(ui); topbar('🗣️ บทสนทนา · Unit '+(ui+1), ()=>go(()=>unit(ui)));
+  app.innerHTML='<div class="phead"><div class="prog"><i id="tp" style="width:0"></i></div><span class="small" id="tc"></span></div>'+
+    '<div class="chat" id="chat"></div><div class="kidctl" id="kc"></div>';
+  step();
+}
+const kidAv='<span class="av me"><img src="../img/kid.webp" alt=""></span>';
+function chatAdd(html){ const d=document.createElement('div'); d.innerHTML=html; const el=d.firstChild; $('#chat').appendChild(el);
+  later(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),30); return el; }
+function botSay(text,who,cb){
+  const c=CH[who]; let done=false; const fin=()=>{ if(done) return; done=true; cb&&cb(); };
+  const el=chatAdd('<div class="crow"><span class="av">'+c.e+'</span><button class="bub"><small>'+c.n+' 🔊</small>'+esc(text)+'</button></div>');
+  el.querySelector('.bub').onclick=()=>say(text,{pitch:c.pitch,rate:.8});
+  say(text,{pitch:c.pitch,rate:.8,end:()=>later(fin,250)}); later(fin,1400+text.length*75);
+}
+function step(){
+  if(!TK||TK.ti>=TK.turns.length){ later(finish,1000); return; }
+  $('#tp').style.width=(R.i/R.qs.length*100)+'%'; $('#tc').textContent=R.i+'/'+R.qs.length;
+  const t=TK.turns[TK.ti++];
+  if(t.pic){ chatAdd('<div class="cpic">'+pic(t.pic)+'</div>'); later(step,350); }
+  else if(t.b) botSay(t.b,t.who,step);
+  else kidTurn(t.k);
+}
+function kidTurn(k){
+  let first=true;
+  const model=k.model||(k.say&&k.say[0]);
+  const bub=chatAdd('<div class="crow me">'+kidAv+'<div class="bub wait"><small>ตาหนูพูดแล้ว 🎤</small><span class="fr">'+esc(k.frame)+'</span><span class="cth">'+k.th+'</span></div></div>');
+  const kc=$('#kc');
+  kc.innerHTML='<div class="mbtns"><button class="say" id="kh">💡 ดูตัวอย่าง</button><button class="say" id="ks">🔊 ฟังตัวอย่าง</button></div><div class="micbox" id="kmb"></div>';
+  $('#kh').onclick=()=>{ bub.querySelector('.fr').textContent=model; };
+  $('#ks').onclick=()=>say(model,{rate:.75});
+  const done=(text,ok)=>{
+    if(ok&&first) R.ok++; R.i++;
+    const b=bub.querySelector('.bub'); b.classList.remove('wait'); if(!ok) b.classList.add('skipd');
+    b.innerHTML='<small>'+(ok?'หนูพูดว่า ✓':'ประโยคตัวอย่าง')+'</small>'+esc(text);
+    kc.innerHTML='';
+    let extra=k.reply?k.reply(ok?toksOf(text):null):null;
+    if(extra&&extra.length){ TK.turns.splice(TK.ti,0,...extra); extra.filter(t=>t.k).forEach(t=>R.qs.push(t)); }
+    if(ok){ sfxOK(); }
+    later(step,ok?700:400);
+  };
+  const toksOf=t=>t==null?null:toks(t);
+  micPanel($('#kmb'),{target:model,check:alts=>checkTurn(k,alts),model,
+    onPass:j=>done(j&&j.text?j.text:model,true),
+    onFail:n=>{ if(first){ first=false; R.mist++; } if(n>=2) bub.querySelector('.fr').textContent=model; },
+    onSkip:()=>done(model,false) });
+}
+
 /* ---------- จบด่าน ---------- */
 function finish(){
   clearT(); const n=R.qs.length, pct=R.ok/n;
@@ -1045,7 +1230,7 @@ function fail(){
 /* เปิดตรงไปยัง Unit ได้ด้วย #u1 … #u5 */
 const hm=location.hash.match(/^#u([1-5])$/);
 if(hm) unit(+hm[1]-1); else home();
-window.__test={U,S,R:()=>R,makeQs,QA,BUILD,startRun,unit,home,meet,finish};
+window.__test={TALK,checkTurn,startTalk,TK:()=>TK,U,S,R:()=>R,makeQs,QA,BUILD,startRun,unit,home,meet,finish};
 </script>
 <script src="../common/progress.js"></script>
 </body>
