@@ -225,6 +225,18 @@ h2.sec{font-family:'Mali',sans-serif;font-size:1.15rem;margin:18px 4px 8px;color
 .miss{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
 .miss button{background:var(--nobg);border-radius:999px;padding:4px 12px;font-family:'Andika',sans-serif;font-weight:700}
 
+.micbox{margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.mic{width:86px;height:86px;border-radius:50%;background:var(--d);color:#fff;font-size:2.4rem;box-shadow:0 8px 20px rgba(58,51,80,.22);font-family:var(--emo)}
+.mic.on{background:#E0605A;animation:pulse 1s infinite}
+.small-mic .mic{width:64px;height:64px;font-size:1.8rem}
+.mtip{font-size:.9rem;color:var(--mute);font-weight:600}
+.heard{font-family:'Andika','Mali',sans-serif;font-size:1.15rem;min-height:1.4em}
+.wchk{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0}
+.wchk span{border-radius:999px;padding:2px 12px;font-family:'Andika',sans-serif;font-weight:700}
+.wchk .y{background:var(--okbg);color:var(--ok)} .wchk .n{background:#F1EEF5;color:#9C95AA}
+.mok{color:var(--ok);font-weight:700} .mno{color:var(--no);font-weight:700}
+.mnote{background:#FFF6E6;border-radius:14px;padding:8px 12px;font-size:.88rem;color:#8A5A15;max-width:460px}
+.spk{font-size:1.6rem;font-weight:700;margin:6px 0}
 @media (max-width:520px){
   .bigpic{font-size:92px} .meet .bigpic{font-size:104px}
   .pcard{font-size:58px;min-height:100px}
@@ -433,6 +445,111 @@ const sfxOK=()=>{ tone(660,.14); tone(990,.22,'sine',.12,.1); };
 const sfxNo=()=>tone(200,.25,'triangle',.1);
 const sfxTap=()=>tone(520,.06,'sine',.06);
 
+/* =================================================================
+   🎤 ฝึกพูด — ใช้ระบบฟังเสียงของเบราว์เซอร์ (iPad = Siri/Dictation ต้องต่อเน็ต)
+   ถ้าเครื่องไม่รองรับหรือไม่ได้อนุญาตไมค์ → โหมดอัดเสียง ฟังเทียบกับเสียงต้นแบบ (ไม่ตรวจอัตโนมัติ)
+   ตรวจแบบใจดีสำหรับเด็ก: ดูเฉพาะคำหลัก (ไม่นับ a/an/the/is/it) ได้ ≥60% ก็ผ่าน
+   คำที่สะกดต่างกัน 1 ตัว (2 ตัวถ้าคำยาว) ถือว่าพูดถูก · key = คำที่ต้องได้ยิน · neg = คำที่ต้องไม่ได้ยิน
+   ================================================================= */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let SPEAKMODE=SR?'sr':'rec';
+const STOPW=new Set(['a','an','the','is','it','are','please','am']);
+const ALIAS={ate:'eight',too:'two',to:'two',for:'four',won:'one',sex:'six',tree:'three',then:'ten',fore:'four'};
+function toks(s){
+  s=String(s).toLowerCase().replace(/[’‘]/g,"'")
+   .replace(/\bit's\b/g,'it is').replace(/\bisn't\b/g,'is not').replace(/\bdon't\b/g,'do not').replace(/\bi'm\b/g,'i am')
+   .replace(/\b(what|where|he|she|here|that|there)'s\b/g,'$1 is').replace(/(\w)'s\b/g,'$1 is')
+   .replace(/-/g,' ').replace(/\b(\d+)\b/g,(m,d)=>NUMW[+d]||d).replace(/[^a-z' ]/g,' ').replace(/'/g,'');
+  return s.split(/\s+/).filter(Boolean);
+}
+function lev(a,b){ const m=a.length,n=b.length; if(!m) return n; if(!n) return m; let p=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; } return p[n]; }
+function near(t,h){ if(!h) return false; if(t===h) return true; if(t.length<3) return false;
+  const d=lev(t,h); return t.length>=7?d<=2 : t.length>=4?d<=1 : (d<=1&&t[0]===h[0]&&t.length===h.length); }
+const heardHas=(H,t)=>H.some(h=>near(t,h)||near(t,ALIAS[h]));
+function contentOf(s){ const T=toks(s), c=T.filter(t=>!STOPW.has(t)); return c.length?c:T; }
+/* ตรวจเสียงที่ได้ยิน (หลายแบบ) กับประโยคเป้าหมาย */
+function judge(target,alts,key,neg){
+  const C=contentOf(target); let best=null;
+  key=(key||[]).concat(C.filter(t=>t==='not'||t==='no'||t==='yes'));
+  (alts||[]).forEach(a=>{ const H=toks(a), hit=C.map(t=>heardHas(H,t));
+    const joined=H.join('').includes(C.join(''));
+    const missKey=key.find(k=>!heardHas(H,k)), badNeg=(neg||[]).find(n=>H.includes(n)), keyOK=!missKey, negOK=!badNeg;
+    const ratio=joined?1:hit.filter(Boolean).length/C.length, pass=ratio>=0.6&&keyOK&&negOK;
+    const sc=(pass?10:0)+ratio; if(!best||sc>best.sc) best={sc,pass,hit:joined?C.map(()=>true):hit,text:a,keyOK,negOK,missKey,badNeg}; });
+  return best||{pass:false,hit:C.map(()=>false),text:'',sc:0};
+}
+/* คำที่ใช้แยกคำตอบถูกออกจากตัวหลอกตัวแรก */
+function contrast(right,wrong){ const R=contentOf(right), Wt=contentOf(wrong||'');
+  return {key:R.filter(t=>!Wt.includes(t)), neg:Wt.filter(t=>!R.includes(t))}; }
+
+let REC=null, RECMEDIA=null;
+function stopMic(){ try{ REC&&REC.abort(); }catch(e){} REC=null; try{ RECMEDIA&&RECMEDIA.stop(); }catch(e){} }
+function hear(onPartial,onDone){
+  try{ synth&&synth.cancel(); }catch(e){}
+  let r; try{ r=new SR(); }catch(e){ onDone(null,'not-allowed'); return; }
+  REC=r; r.lang='en-US'; r.interimResults=true; r.maxAlternatives=5; r.continuous=false;
+  let alts=null, last='', err=null, ended=false;
+  r.onresult=e=>{ const res=[...e.results]; last=res.map(x=>x[0].transcript).join(' ').trim(); onPartial(last);
+    const fin=res[res.length-1]; if(fin.isFinal){ const pre=res.slice(0,-1).map(x=>x[0].transcript).join(' ');
+      alts=[...fin].map(a=>(pre+' '+a.transcript).trim()); } };
+  r.onerror=e=>{ err=e.error; };
+  r.onend=()=>{ if(ended) return; ended=true; if(REC===r) REC=null; onDone(alts||(last?[last]:null),err); };
+  try{ r.start(); }catch(e){ ended=true; REC=null; onDone(null,'not-allowed'); return; }
+  later(()=>{ try{ r.stop(); }catch(e){} },7000);
+}
+async function recordClip(onStart){
+  const st=await navigator.mediaDevices.getUserMedia({audio:true});
+  return new Promise(res=>{ const mr=new MediaRecorder(st), ch=[]; RECMEDIA=mr;
+    mr.ondataavailable=e=>{ if(e.data.size) ch.push(e.data); };
+    mr.onstop=()=>{ st.getTracks().forEach(t=>t.stop()); RECMEDIA=null; res(URL.createObjectURL(new Blob(ch,{type:mr.mimeType||'audio/mp4'}))); };
+    mr.start(); onStart(mr); later(()=>{ if(mr.state==='recording') mr.stop(); },5000); });
+}
+/* แผงไมค์ใช้ร่วมกัน  cfg = {target, key, neg, model, rate, onPass, onFail(n), onSkip, maxTry} */
+function micPanel(el,cfg){
+  let tries=0, busy=false;
+  const C=contentOf(cfg.target);
+  el.innerHTML='<button class="mic" type="button">🎤</button><div class="mtip"></div><div class="heard"></div><div class="mres"></div>';
+  const mic=el.querySelector('.mic'), tip=el.querySelector('.mtip'), heardEl=el.querySelector('.heard'), res=el.querySelector('.mres');
+  const idle=()=>{ tip.textContent=SPEAKMODE==='sr'?'แตะไมค์ แล้วพูดเป็นภาษาอังกฤษ':'แตะไมค์ แล้วพูด · อัดเสียงได้ 5 วินาที'; };
+  idle();
+  const chips=hit=>'<div class="wchk">'+C.map((t,i)=>'<span class="'+(hit[i]?'y':'n')+'">'+(hit[i]?'✓ ':'')+esc(t)+'</span>').join('')+'</div>';
+  mic.onclick=async()=>{
+    if(busy){ stopMic(); return; }
+    if(SPEAKMODE==='sr'){
+      busy=true; mic.classList.add('on'); tip.textContent='👂 กำลังฟัง… พูดเลย (แตะไมค์อีกครั้งเมื่อพูดจบ)'; heardEl.textContent=''; res.innerHTML='';
+      hear(t=>{ heardEl.textContent='“'+t+'”'; },(alts,err)=>{
+        busy=false; mic.classList.remove('on'); idle();
+        if(err==='not-allowed'||err==='service-not-allowed'||err==='audio-capture'||err==='language-not-supported'){
+          SPEAKMODE='rec'; res.innerHTML='<div class="mnote">เครื่องนี้ยังฟังเสียงอัตโนมัติไม่ได้ (ต้องอนุญาตไมโครโฟน และเปิด Siri/การป้อนตามคำบอกในไอแพด) · เปลี่ยนเป็นอัดเสียงแล้วฟังเทียบแทน</div>'; idle(); return; }
+        if(!alts){ tip.textContent=err==='network'?'ต่อเน็ตไม่ได้ ลองใหม่อีกครั้งนะ':'ไม่ได้ยินเสียงเลย พูดดัง ๆ ใกล้ ๆ เครื่องนะ'; return; }
+        const j=judge(cfg.target,alts,cfg.key,cfg.neg); heardEl.textContent='ได้ยินว่า “'+j.text+'”';
+        if(j.pass){ res.innerHTML=chips(j.hit)+'<div class="mok">พูดได้ชัดเลย! 🎉</div>'; mic.style.display='none'; tip.textContent=''; cfg.onPass&&cfg.onPass(); }
+        else { tries++; const why=!j.negOK?'ได้ยินคำว่า “'+j.badNeg+'” ด้วย · ':!j.keyOK?'ยังไม่ได้ยินคำว่า “'+j.missKey+'” · ':'';
+          res.innerHTML=chips(j.hit)+'<div class="mno">'+why+'ฟังแล้วลองพูดอีกครั้งนะ</div>';
+          if(cfg.model) later(()=>say(cfg.model,{rate:cfg.rate||.72}),500);
+          cfg.onFail&&cfg.onFail(tries);
+          if(cfg.onSkip && tries>=(cfg.maxTry||3) && !el.querySelector('.skip')){
+            const b=document.createElement('button'); b.className='btn gh skip'; b.textContent='ข้ามไปก่อน ▶'; b.onclick=()=>{ stopMic(); cfg.onSkip(); }; el.appendChild(b); } }
+      });
+    } else {
+      if(!navigator.mediaDevices||!window.MediaRecorder){ res.innerHTML='<div class="mnote">เครื่องนี้อัดเสียงไม่ได้ ให้พูดตามเสียงต้นแบบดัง ๆ แทนนะ</div>';
+        if(!el.querySelector('.done')){ const b=document.createElement('button'); b.className='btn done'; b.textContent='พูดแล้ว ✓'; b.onclick=()=>{ b.remove(); cfg.onPass&&cfg.onPass(); }; el.appendChild(b); } return; }
+      try{
+        busy=true; heardEl.textContent=''; res.innerHTML='';
+        const url=await recordClip(mr=>{ mic.classList.add('on'); tip.textContent='🔴 กำลังอัด… พูดเลย (แตะไมค์เพื่อหยุด)'; });
+        busy=false; mic.classList.remove('on'); idle();
+        res.innerHTML='<div class="mbtns"><button class="say big" type="button" data-a="me">▶️ ฟังเสียงหนู</button><button class="say big" type="button" data-a="model">🔊 ฟังต้นแบบ</button></div>'+
+          '<div class="small">ฟังเทียบกัน เหมือนไหม? ถ้ายังไม่เหมือน แตะไมค์อัดใหม่ได้</div>';
+        const au=new Audio(url);
+        res.querySelector('[data-a=me]').onclick=()=>{ try{ au.currentTime=0; au.play(); }catch(e){} };
+        res.querySelector('[data-a=model]').onclick=()=>say(cfg.model||cfg.target,{rate:cfg.rate||.8});
+        if(!el.querySelector('.done')){ const b=document.createElement('button'); b.className='btn done'; b.textContent='พูดได้แล้ว ✓'; b.onclick=()=>{ b.remove(); mic.style.display='none'; cfg.onPass&&cfg.onPass(); }; el.appendChild(b); }
+      }catch(e){ busy=false; mic.classList.remove('on'); res.innerHTML='<div class="mnote">เปิดไมโครโฟนไม่ได้ ต้องกดอนุญาตให้ใช้ไมโครโฟนก่อนนะ</div>'; }
+    }
+  };
+}
+
 /* ---------- ตัวจับเวลา (ล้างทุกครั้งที่เปลี่ยนหน้า) ---------- */
 let T=[];
 const later=(fn,ms)=>T.push(setTimeout(fn,ms));
@@ -558,6 +675,7 @@ const STAGES=[
  {k:'spell', e:'🔤', n:'สะกดคำ',        d:'ฟังเสียงกลางคำ แล้วเรียงตัวอักษรเป็นคำ'},
  {k:'build', e:'🧩', n:'ต่อประโยค',     d:'แตะคำเรียงให้เป็นประโยค ระวังคำหลอก 1 คำ'},
  {k:'qa',    e:'💬', n:'ถาม-ตอบ',       d:'ดูภาพ ฟังคำถาม เลือกคำตอบที่ถูก'},
+ {k:'speak', e:'🎤', n:'ฝึกพูด',        d:'พูดคำจากภาพ พูดตามประโยค และตอบคำถามด้วยเสียง'},
  {k:'boss',  e:'🏆', n:'ด่านท้าทาย',    d:'รวมทุกแบบ 10 ข้อ มีหัวใจ 5 ดวง'},
 ];
 const needFirst=(list,n)=>shuf(list).sort((a,b)=>box(a)-box(b)).slice(0,n);
@@ -574,12 +692,20 @@ function makeQs(ui,k){
   if(k==='spell')  return [vowelQ(ui),vowelQ(ui),vowelQ(ui)].concat(needFirst(spellPool(ui),6).map(x=>({t:'sp',x})));
   if(k==='build')  return buildQs(ui,6);
   if(k==='qa')     return qaQs(ui,8);
+  if(k==='speak')  return speakQs(ui);
   if(k==='boss'){
     const w=needFirst(all,3), sp=needFirst(spellPool(ui),2);
     return shuf([{t:'pp',x:w[0]},{t:'pw',x:w[1]},{t:'my',x:pick(mystPool(ui))},{t:'sp',x:sp[0]},{t:'sp',x:sp[1]},vowelQ(ui)]
       .concat(buildQs(ui,2)).concat(qaQs(ui,2)));
   }
   return [];
+}
+function speakQs(ui){
+  const ws=needFirst(U[ui].W.filter(x=>x.g!=='prep'),3).map(x=>({t:'sk',kind:'word',target:x.w,p:x.p,th:x.th,x}));
+  const rep=buildQs(ui,3).map(b=>({t:'sk',kind:'rep',target:b.s.en,p:b.s.p,th:b.s.th}));
+  const ans=qaQs(ui,12).map(q=>q.m).filter(m=>/[?.]$/.test(m.q)&&m.q!=='My lunch box').slice(0,2).map(m=>{
+    const c=contrast(m.opts[0],m.opts[1]); return {t:'sk',kind:'ans',target:m.opts[0].replace(/\.$/,''),q:m.q,p:m.p,th:m.th,key:c.key,neg:c.neg}; });
+  return ws.concat(rep,ans);
 }
 function reviewQs(){
   return dueList().slice(0,10).map((x,i)=>x.f.includes('s')&&box(x)>=1 ? {t:'sp',x} : {t:i%2?'pw':'pp',x});
@@ -604,7 +730,7 @@ function topbar(title,backFn){
   if(backFn){ b.removeAttribute('href'); b.onclick=e=>{ e.preventDefault(); try{ synth&&synth.cancel(); }catch(err){} backFn(); }; }
   else { b.href='../index.html#ภาษาอังกฤษ'; b.onclick=null; }
 }
-function go(fn){ clearT(); try{ synth&&synth.cancel(); }catch(e){} fn(); window.scrollTo({top:0}); }
+function go(fn){ clearT(); stopMic(); try{ synth&&synth.cancel(); }catch(e){} fn(); window.scrollTo({top:0}); }
 
 function home(){
   view={v:'home'}; setUnitColor(null); topbar('สวนคำศัพท์อังกฤษ');
@@ -651,6 +777,7 @@ function meet(ui,i){
     const x=u.W[i]; seen(x);
     body='<div class="bigpic">'+pic(x.p)+'</div><div class="word">'+colorWord(x.w)+'</div><div class="th">'+x.th+'</div>'+
       '<div class="mbtns"><button class="say big" id="s1">🔊 ฟัง</button><button class="say big" id="s2">🐢 ช้า ๆ</button><button class="say big" id="s3">🔤 สะกด</button></div>'+
+      '<div class="micbox small-mic" id="mb"></div>'+
       '<p class="small">ตัว<b style="color:#D2693C">สีส้ม</b>คือสระ ส่วนที่ต้องจำให้ดีเวลาสะกด · พูดตามดัง ๆ 1 ครั้งนะ</p>';
     later(()=>say(x.w),250);
   } else if(i===n){
@@ -667,7 +794,8 @@ function meet(ui,i){
     '<div class="nav"><button class="btn gh" id="prev"'+(i===0?' style="visibility:hidden"':'')+'>◀ ก่อนหน้า</button><span class="dots">'+(i+1)+' / '+total+'</span>'+
     '<button class="btn" id="nx">'+(i===total-1?'เสร็จแล้ว ✓':'ถัดไป ▶')+'</button></div>';
   if(i<n){ const x=u.W[i]; $('#s1').onclick=()=>say(x.w); $('#s2').onclick=()=>say(x.w,{rate:.5});
-    $('#s3').onclick=()=>{ say(spellOut(x.w),{rate:.7}); say(x.w,{queue:true}); }; }
+    $('#s3').onclick=()=>{ say(spellOut(x.w),{rate:.7}); say(x.w,{queue:true}); };
+    micPanel($('#mb'),{target:x.w,model:x.w,onPass:()=>sfxOK()}); }
   if(i===n) app.querySelectorAll('.sayb').forEach(b=>b.onclick=()=>say(u.sents[+b.dataset.k][0]));
   if(i===n+1){ $('#ph').onclick=()=>say(u.phon[0].replace(/[\[\]]/g,''),{rate:.75}); app.querySelectorAll('.cvc button').forEach(b=>b.onclick=()=>{ const w=u.phon[+b.dataset.k+1][0]; say(w); say(spellOut(w),{queue:true,rate:.7}); say(w,{queue:true}); }); }
   $('#prev').onclick=()=>go(()=>meet(ui,i-1));
@@ -692,7 +820,7 @@ function showQ(){
   hearts();
   const c=$('#qc');
   if(q.t==='pp') QPP(q,c); else if(q.t==='pw') QPW(q,c); else if(q.t==='my') QMY(q,c);
-  else if(q.t==='sp') QSP(q,c); else if(q.t==='vw') QVW(q,c); else if(q.t==='bd') QBD(q,c); else QQA(q,c);
+  else if(q.t==='sp') QSP(q,c); else if(q.t==='sk') QSK(q,c); else if(q.t==='vw') QVW(q,c); else if(q.t==='bd') QBD(q,c); else QQA(q,c);
 }
 function hearts(){ const h=$('#hearts'); if(h) h.textContent='❤️'.repeat(Math.max(0,R.hearts))+'🤍'.repeat(5-Math.max(0,R.hearts)); }
 function fb(t,cls){ const f=$('#fb'); f.className='fb '+(cls||''); f.innerHTML=t; }
@@ -847,6 +975,27 @@ function QBD(q,c){
   };
   $('#sq').onclick=()=>say(s.en); later(()=>say(s.en),300);
   draw();
+}
+/* 🎤 ฝึกพูด */
+function QSK(q,c){
+  const model=q.kind==='ans'?q.target+'.':q.target;
+  const head= q.kind==='word' ? '<div class="qtop"><span>ภาพนี้ภาษาอังกฤษพูดว่าอะไร</span></div>'
+            : q.kind==='rep'  ? '<div class="qtop">'+speakBtn('sq','ฟังต้นแบบ')+'<span>ฟังแล้วพูดตาม</span></div>'
+            :                   '<div class="qtop">'+speakBtn('sq','ฟังคำถาม')+'<span class="en">'+esc(q.q)+'</span></div>';
+  const txt = q.kind==='word' ? '<div class="mbtns"><button class="say" id="hw">👀 ดูคำ</button><button class="say" id="hs">🔊 ฟังเสียง</button></div><div class="word" id="wd" style="display:none">'+colorWord(q.target)+'</div>'
+            : q.kind==='rep'  ? '<div class="spk en">'+esc(q.target)+'</div><div class="thline">'+q.th+'</div>'
+            :                   '<div class="thline">'+q.th+' · ตอบเป็นประโยคนะ</div><div class="mbtns"><button class="say" id="ha">💡 ดูคำตอบ</button></div><div class="spk en" id="an" style="display:none">'+esc(model)+'</div>';
+  c.innerHTML=head+'<div class="bigpic" style="font-size:'+(q.kind==='word'?110:84)+'px">'+pic(q.p)+'</div>'+txt+'<div class="micbox" id="mb"></div>';
+  if($('#sq')) $('#sq').onclick=()=>say(q.kind==='ans'?q.q.replace('...',''):model,{rate:.8});
+  if(q.kind==='rep') later(()=>say(model,{rate:.8}),300);
+  if(q.kind==='ans') later(()=>say(q.q.replace('...','')),300);
+  if($('#hw')) $('#hw').onclick=()=>{ $('#wd').style.display='block'; };
+  if($('#hs')) $('#hs').onclick=()=>say(model);
+  if($('#ha')) $('#ha').onclick=()=>{ $('#an').style.display='block'; say(model,{rate:.8}); };
+  micPanel($('#mb'),{target:q.target,key:q.key,neg:q.neg,model,
+    onPass:()=>{ if(q.kind==='word') $('#wd').style.display='block'; if(q.kind==='ans') $('#an').style.display='block'; solved(null); },
+    onFail:n=>{ R.first=false; if(n===1){ R.mist++; if(q.x&&!R.wrong.includes(q.x)) R.wrong.push(q.x); } if(q.kind==='word'&&n>=2) $('#wd').style.display='block'; if(q.kind==='ans'&&n>=2) $('#an').style.display='block'; },
+    onSkip:()=>{ R.lock=true; next(); } });
 }
 /* 💬 ถาม-ตอบ */
 function QQA(q,c){
