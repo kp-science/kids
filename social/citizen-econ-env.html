@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>สังคม ป.1 หน้าที่พลเมือง · เศรษฐศาสตร์ · สิ่งแวดล้อม · สรุป + แบบฝึก</title>
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#3A3350; --mute:#6E6785; --line:#EBE6F0;
+  --ac:#C0587A; --acs:#FFF0F4;
+  --ok:#2F9E5B; --no:#D2693C; --gold:#E7B84B;
+}
+body{background:#FFFBF4;color:var(--ink);font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;
+  font-size:18px;line-height:1.65;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle at 0% 12%,#FFE9D6 0 130px,transparent 131px),
+             radial-gradient(circle at 100% 34%,#FFF1D6 0 110px,transparent 111px),
+             radial-gradient(circle at 0% 70%,#F3E9FF 0 140px,transparent 141px),
+             radial-gradient(circle at 100% 90%,#E6F8EE 0 120px,transparent 121px)}
+button{font:inherit;color:inherit;cursor:pointer}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(255,251,244,.93);backdrop-filter:blur(6px);
+  box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:900px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.back{text-decoration:none;color:var(--ac);background:#fff;border:none;border-radius:999px;
+  padding:5px 14px;font-size:.9rem;font-weight:700;white-space:nowrap;box-shadow:0 3px 12px rgba(58,51,80,.12)}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.score{background:#fff;color:var(--ac);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.9rem;
+  white-space:nowrap;box-shadow:0 3px 12px rgba(58,51,80,.12)}
+
+.wrap{max-width:900px;margin:0 auto;padding:12px 14px 70px}
+.hero{position:relative;overflow:hidden;border-radius:30px;margin-top:8px;padding:20px 18px 76px;
+  background:linear-gradient(180deg,#9FDCF5,#E9F8FF);box-shadow:0 12px 30px rgba(58,51,80,.10);text-align:center}
+.hero svg{position:absolute;left:0;bottom:0;width:100%;height:86px}
+.hero .deco{position:relative;font-size:2.2rem;letter-spacing:6px;display:block;margin-bottom:2px}
+.hero h1{position:relative;font-family:'Mali',sans-serif;font-size:1.65rem;line-height:1.3;color:#fff;
+  text-shadow:0 2px 8px rgba(30,90,130,.45)}
+.hero p{position:relative;color:#2A6698;font-weight:600;font-size:.95rem}
+
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 14px}
+.tabs button{border:none;background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;font-size:.95rem;
+  box-shadow:0 4px 14px rgba(58,51,80,.10);color:var(--ink)}
+.tabs button.on{background:var(--tc,#C98A2E);color:#fff}
+
+.tools{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px;
+  font-size:.9rem;color:var(--mute)}
+.tools label{display:flex;align-items:center;gap:6px}
+.tools input{width:20px;height:20px;accent-color:var(--ac)}
+.btn{border:none;background:var(--ac);color:#fff;border-radius:999px;padding:9px 20px;font-weight:700;margin:4px;
+  box-shadow:0 6px 16px rgba(58,51,80,.16)}
+.btn.gh{background:#fff;color:var(--ac);box-shadow:0 3px 12px rgba(58,51,80,.10)}
+
+/* ---------------- สรุป ---------------- */
+.lead{background:#fff;border-radius:24px;padding:14px 16px;margin-bottom:14px;color:var(--mute);
+  box-shadow:0 6px 18px rgba(58,51,80,.07);font-size:.98rem}
+.sum{background:#fff;border-radius:26px;padding:6px 16px 16px;margin-bottom:16px;box-shadow:0 6px 18px rgba(58,51,80,.07)}
+.sum .sh{display:flex;align-items:center;gap:10px;margin:-6px -16px 12px;padding:12px 16px;border-radius:26px 26px 0 0;
+  background:var(--pl)}
+.sum .sh .pe{width:44px;height:44px;flex-shrink:0;border-radius:15px;background:#fff;display:grid;place-items:center;
+  font-size:1.5rem;box-shadow:0 3px 10px rgba(58,51,80,.08)}
+.sum .sh h2{flex:1;font-family:'Mali',sans-serif;font-size:1.15rem;color:var(--pcd);line-height:1.35}
+.sum h3{font-family:'Mali',sans-serif;font-size:1.05rem;color:var(--pcd);margin:14px 0 6px;display:flex;gap:8px;align-items:center}
+.sum h3:first-of-type{margin-top:4px}
+.sum ul{list-style:none;margin:0 0 2px}
+.sum li{position:relative;padding-left:20px;margin-bottom:5px}
+.sum li::before{content:"";position:absolute;left:4px;top:.72em;width:8px;height:8px;border-radius:50%;background:var(--pc)}
+.sum b{color:var(--pcd)}
+.ft{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;background:var(--pl);border-radius:18px;padding:12px 14px;margin:6px 0 2px}
+.ft dt{font-weight:700;color:var(--pcd);white-space:nowrap}
+.ft dd{margin:0}
+.spk{flex-shrink:0;border:none;background:var(--pl);border-radius:12px;width:42px;height:42px;font-size:1.2rem}
+.spk:active{transform:scale(.94)}
+
+/* ---------------- คำถาม ---------------- */
+.part{margin:22px 0 12px;background:var(--pl);color:var(--pcd);border-radius:20px;padding:8px 14px 8px 8px;
+  font-family:'Mali',sans-serif;font-weight:700;font-size:1.12rem;display:flex;align-items:center;gap:10px}
+.part .pe{width:40px;height:40px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:1.3rem;
+  box-shadow:0 3px 10px rgba(58,51,80,.08)}
+.q{background:#fff;border-radius:24px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(58,51,80,.07);transition:.2s}
+.q.ok{box-shadow:0 0 0 3px #BDEBCB,0 6px 18px rgba(58,51,80,.07)}
+.q.no{box-shadow:0 0 0 3px #FFD9C6,0 6px 18px rgba(58,51,80,.07)}
+.qh{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.num{flex-shrink:0;width:38px;height:38px;border-radius:13px;background:var(--pl);color:var(--pcd);
+  display:grid;place-items:center;font-weight:700;font-size:1.05rem}
+.qt{flex:1;font-weight:700;font-size:1.08rem;padding-top:4px}
+.qe{font-size:2rem;line-height:1}
+
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opts.list{grid-template-columns:1fr}
+.opt{position:relative;border:2px solid transparent;background:var(--ob);border-radius:16px;padding:10px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-height:118px;transition:.12s}
+.opt .em{font-size:2.5rem;line-height:1.15}
+.opt .lb{font-size:.96rem;font-weight:600;line-height:1.35}
+.opt .lt{position:absolute;top:6px;left:8px;width:26px;height:26px;border-radius:50%;background:var(--od);
+  color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.opt.noem{justify-content:center}
+.opt.noem .lb{font-size:1.12rem}
+.opt .rd{display:block;font-size:.78rem;font-weight:400;color:var(--mute);line-height:1.3;margin-top:1px}
+.optwrap{display:flex;flex-direction:column;gap:6px}
+.optwrap .opt{flex:1;width:100%}
+.sayb{border:2px solid var(--ob);background:#fff;border-radius:14px;min-height:46px;width:100%;
+  display:grid;place-items:center;font-size:1.15rem;line-height:1;cursor:pointer;color:var(--od)}
+.sayb::after{content:"ฟัง";font-size:.72rem;font-weight:700;margin-left:4px}
+.sayb{grid-auto-flow:column;align-content:center}
+.sayb:active{transform:scale(.97)}
+.opts.list .optwrap{flex-direction:row;align-items:stretch;gap:8px}
+.opts.list .sayb{width:64px;min-height:0;flex:none}
+.opt.done{cursor:default}
+.opts.list .opt{flex-direction:row;min-height:0;padding:11px 13px;text-align:left;gap:12px}
+.opts.list .opt .lt{position:static;flex-shrink:0}
+.opts.list .opt.noem{justify-content:flex-start}
+.opts.list .opt .lb{font-size:1.02rem}
+.opts .optwrap:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
+.opts .optwrap:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
+.opts .optwrap:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
+.opt:not(.done):hover{background:#fff;border-color:var(--od)}
+.opt:not(.done):active{transform:scale(.97)}
+.opt.right{border-color:#9EDDB2;background:#EFFAF2}
+.opt.right .lt{background:#5BC07D}
+.opt.wrong{border-color:#FFCBB3;background:#FFF5EF}
+.opt.wrong .lt{background:#F29B72}
+.opt.dim{opacity:.5}
+.fb{margin-top:9px;font-family:'Mali',sans-serif;font-size:1.02rem;font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+.fb small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-weight:400;color:var(--mute);font-size:.92rem;margin-top:2px}
+
+.qpic{margin:0 0 12px;text-align:center}
+.qpic img{max-width:100%;width:340px;aspect-ratio:3/2;object-fit:cover;border-radius:18px;box-shadow:0 4px 14px rgba(58,51,80,.12);background:var(--pl)}
+.qpic figcaption{font-size:.8rem;color:var(--mute);margin-top:2px}
+.pics{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:8px 0 4px}
+.pics figure{margin:0;background:var(--pl);border-radius:16px;overflow:hidden;text-align:center}
+.pics img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.pics figcaption{font-size:.88rem;padding:5px 6px 7px;line-height:1.35}
+.credit{margin-top:28px;font-size:.72rem;color:var(--mute);line-height:1.5;text-align:center}
+.credit a{color:inherit}
+.result{background:#fff;border-radius:30px;padding:22px;text-align:center;margin-top:20px;
+  box-shadow:0 16px 40px rgba(58,51,80,.14)}
+.result .cheer{font-size:2.6rem}
+.result .stars{font-size:2.3rem;letter-spacing:4px}
+.result .big{font-family:'Mali',sans-serif;font-size:2.2rem;font-weight:700;color:var(--ac)}
+.result p{margin:4px 0 12px}
+.hide{display:none}
+
+@media (max-width:480px){
+  body{font-size:17px}
+  .hero h1{font-size:1.32rem}
+  .opts{gap:7px}
+  .sayb{min-height:42px;font-size:1.05rem}
+  .opt{min-height:104px;padding:8px 3px}
+  .opt .em{font-size:2.1rem}
+  .opt .lb{font-size:.85rem}
+  .opt .lt{width:22px;height:22px;font-size:.75rem;top:4px;left:4px}
+  .qt{font-size:1rem}
+  .ft{grid-template-columns:1fr;gap:2px 0}
+  .ft dd{margin-bottom:6px}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="back" href="../">‹ หน้ารวม</a>
+  <div class="tt" id="tt">สังคมศึกษา ป.1</div>
+  <span class="score hide" id="score">0 / 0</span>
+</div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <svg viewBox="0 0 600 86" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 50 Q130 18 270 44 T600 34 V86 H0Z" fill="#8FD46B"/>
+      <path d="M0 68 Q180 42 370 64 T600 58 V86 H0Z" fill="#6CC04A"/>
+    </svg>
+    <span class="deco" aria-hidden="true">🏫🙏💰🐷🌳</span>
+    <h1>หน้าที่พลเมือง · เศรษฐศาสตร์ · สิ่งแวดล้อม</h1>
+    <p>สังคมศึกษา ป.1 (หนังสือเรียนหน้า 50–115) · อ่านสรุปก่อน แล้วลองทำแบบฝึกทีละหน่วย จากนั้นไปทำข้อสอบเตรียมสอบ</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tools" id="tools">
+    <label><input type="checkbox" id="autoread"> อ่านโจทย์ให้ฟังอัตโนมัติ</label>
+    <button class="btn gh" id="reset" type="button" style="padding:5px 16px;margin:0">เริ่มชุดนี้ใหม่</button>
+  </div>
+  <div id="list"></div>
+  <div id="result" class="result hide"></div>
+  <div class="credit" id="credit"></div>
+</div>
+
+<script>
+/* สังคมศึกษา ป.1 หน้าที่พลเมือง · เศรษฐศาสตร์ · สิ่งแวดล้อม (หนังสือเรียนหน้า 50–115)
+   สร้างจาก guild/social-p1/web_build.py + web_data.py · เอนจินเดียวกับ science/unit1-body.html */
+
+const SUMMARY=[{"e": "🏫", "c": ["#8FC9F2", "#2A6698", "#EAF4FF"], "t": "หน้าที่พลเมือง", "blocks": [{"h": "สมาชิกในโรงเรียน ทำหน้าที่อะไร", "dl": [["👨‍💼 ผู้อำนวยการ", "<b>บริหารโรงเรียน</b> ร่วมมือกับครูพัฒนานักเรียน · มีสิทธิวางแผนงาน <b>ออกกฎระเบียบ</b>"], ["👩‍🏫 ครู", "<b>สอนนักเรียน</b>ให้เป็นคนดี มีความรู้ · มีสิทธิให้นักเรียนทำการบ้าน รักษาความสะอาด"], ["🧒 นักเรียน", "<b>ตั้งใจเรียน</b> ฟังคำสอนครู ทำตามข้อตกลง"], ["🧹 ภารโรง", "<b>ดูแลความสะอาด</b>เรียบร้อยในโรงเรียน"], ["🍳 แม่ครัว", "<b>ทำอาหาร</b>ให้สมาชิกในโรงเรียน"]]}, {"h": "สิทธิของนักเรียน", "li": ["ใช้ห้องสมุด · เล่นกีฬา · ใช้โต๊ะเก้าอี้ · เลือกหัวหน้าห้อง/ประธานนักเรียน", "ใช้สิทธิได้ แต่ <b>ต้องไม่ละเมิดสิทธิผู้อื่น</b> ไม่ทำให้คนอื่นเดือดร้อน", "ครูมีอำนาจลงโทษนักเรียนที่ทำผิดข้อตกลง <b>อย่างเหมาะสม</b> เช่น ให้ช่วยทำความสะอาดห้อง"]}, {"h": "สมาชิกที่ดีของครอบครัวและโรงเรียน", "li": ["<b>กตัญญูกตเวที</b> รู้คุณและตอบแทนพ่อแม่ ครู ญาติผู้ใหญ่", "<b>รับฟังคำแนะนำ</b> ของพ่อแม่ ครู → ตัดสินใจทำสิ่งที่ถูกต้องได้ง่าย", "<b>มีสัมมาคารวะ</b> ไหว้และกล่าว “สวัสดี” เมื่อพบผู้ใหญ่", "<b>ทำตามข้อตกลง</b> มีระเบียบวินัย รับฟังความคิดเห็นผู้อื่น มีน้ำใจ ร่วมกิจกรรม"]}, {"h": "ขอบคุณ · ขอบใจ · ขอโทษ", "dl": [["🙏 ขอบคุณ", "พูดกับผู้ที่ <b>อายุมากกว่า</b> เช่น พ่อแม่ ครู ปู่ย่า (พร้อมไหว้)"], ["😊 ขอบใจ", "พูดกับผู้ที่ <b>อายุเท่ากันหรือน้อยกว่า</b> เช่น เพื่อน น้อง"], ["🙇 ขอโทษ", "พูดเมื่อ <b>ทำผิด</b> เช่น เดินชน ทำของเพื่อนเสียหาย"]]}, {"h": "ความดี 7 อย่าง", "dl": [["📏 มีระเบียบวินัย", "ทำตามข้อตกลง กฎระเบียบ เช่น เข้าแถวซื้ออาหาร"], ["💝 กตัญญูกตเวที", "รู้คุณและตอบแทนคุณ เช่น ช่วยพ่อแม่ทำงานบ้าน"], ["✅ รับผิดชอบ", "ทำงานที่ได้รับมอบหมายให้เสร็จตามเวลา ยอมรับผิด"], ["💪 ขยัน", "ตั้งใจทำอย่างต่อเนื่อง อดทน ไม่ย่อท้อ"], ["🤝 เอื้อเฟื้อเผื่อแผ่", "แบ่งปันสิ่งของ แรงกาย ช่วยผู้อื่น เช่น ให้เพื่อนยืมดินสอ"], ["🪙 ซื่อสัตย์", "พูดจริง ทำจริง ไม่เอาของคนอื่น เช่น เก็บของได้ส่งครู"], ["🐱 เมตตากรุณา", "อยากให้ผู้อื่นมีสุข ช่วยให้พ้นทุกข์ เช่น ให้อาหารสัตว์"]]}, {"h": "ประชาธิปไตย", "li": ["ทุกคน <b>มีส่วนร่วม</b> คิด ตัดสินใจ และทำกิจกรรม · แบ่งหน้าที่กันทำ", "ตัดสินใจตาม <b>เสียงข้างมาก</b> และรับฟังเหตุผลของเสียงข้างน้อย", "เลือกหัวหน้าห้อง → คนที่ได้ <b>คะแนนมากที่สุด</b> ได้เป็นหัวหน้า ทุกคนต้องยอมรับผล"]}]}, {"e": "💰", "c": ["#F3C46B", "#8A5A15", "#FFF5DC"], "t": "เศรษฐศาสตร์น่ารู้", "blocks": [{"h": "สินค้าและการบริการ", "dl": [["🛍️ สินค้า", "สิ่งของที่ <b>จับต้องได้</b> เช่น เสื้อผ้า อาหาร ดินสอ ยาสีฟัน รองเท้า"], ["💇 การบริการ", "สิ่งที่ <b>จับต้องไม่ได้</b> ทำให้สะดวกสบาย เช่น ตัดผม ขับแท็กซี่ หมอรักษาโรค"]]}, {"h": "สินค้าทำจากทรัพยากร", "li": ["✏️ ดินสอ ทำจาก <b>ไม้</b> และ <b>แร่แกรไฟต์</b> · 🖊️ ปากกา ทำจาก <b>พลาสติก</b> และ <b>น้ำหมึก</b>", "ทรัพยากร <b>ใช้แล้วหมดไป</b> จึงต้องใช้อย่างประหยัด คุ้มค่า", "ของส่วนตัว → ใช้ให้หมด กินให้หมด · ของส่วนรวม → ปิดไฟ ปิดก๊อกน้ำ ไม่ขีดเขียนโต๊ะ", "บางอย่างได้มาโดย <b>ไม่ต้องใช้เงิน</b> เช่น สวนสาธารณะ ห้องสมุด ของรางวัล"]}, {"h": "การออม", "li": ["<b>การออม</b> = เก็บเงินส่วนหนึ่งไว้ใช้ในอนาคต (กระปุกออมสิน หรือฝากธนาคาร ได้ <b>ดอกเบี้ย</b>)", "ใช้จ่าย <b>ไม่เกินตัว</b> = ใช้ไม่เกินเงินที่มี → มีเงินเหลือเก็บ", "ใช้จ่าย <b>เกินตัว</b> → ไม่มีเงินเก็บ มีหนี้สิน ไม่มีเงินยามฉุกเฉิน", "อยากได้ของแพงกว่าเงินที่มี → <b>ออมให้ครบก่อน</b> แล้วค่อยซื้อ", "ค่าใช้จ่ายส่วนของสังคม เช่น ทำบุญ งานศพ งานแต่งงาน บริจาค"]}, {"h": "การทำงาน", "li": ["<b>การทำงาน</b> = การทำมาหาเลี้ยงชีพ ประกอบอาชีพ", "งานที่ <b>มีรายได้</b>: ค้าขาย รับราชการ พนักงานบริษัท เกษตรกร", "งานที่ <b>ไม่มีรายได้</b>: งานบ้าน ล้างจาน ซักผ้า ปลูกผักไว้กินเอง", "ต้องทำ <b>อาชีพสุจริต</b> ไม่ผิดกฎหมาย · อาชีพไม่สุจริต เช่น ค้าสิ่งเสพติด หลอกลวงผู้อื่น", "ทุกอาชีพมีประโยชน์ เช่น หมอ → รักษาโรค · คนกวาดถนน → บ้านเมืองสะอาด"]}]}, {"e": "🌳", "c": ["#A5D6B0", "#25724A", "#E9F7EE"], "t": "เรียนรู้สิ่งแวดล้อม", "blocks": [{"h": "สิ่งแวดล้อมรอบตัว 2 แบบ", "dl": [["🌳 เกิดเองตามธรรมชาติ", "ป่าไม้ สัตว์ป่า ดิน น้ำ อากาศ ภูเขา แม่น้ำ ทะเล"], ["🏠 มนุษย์สร้างขึ้น", "เป็นวัตถุ: ถนน บ้าน โรงเรียน เขื่อน ยานพาหนะ สวนสาธารณะ · ไม่ใช่วัตถุ: ประเพณี ความเชื่อ กฎหมาย"]]}, {"h": "ประโยชน์", "li": ["ป่าไม้ → แหล่งอาหาร ที่อยู่ของสัตว์ป่า แหล่งกำเนิดแม่น้ำ", "สัตว์ป่า → บางชนิดช่วยขยายพันธุ์พืช", "ยานพาหนะ → เดินทางสะดวกรวดเร็ว · สวนสาธารณะ → พักผ่อน ออกกำลังกาย"]}, {"h": "ทุกอย่างเกี่ยวข้องกัน", "li": ["ตัดไม้ทำลายป่า → สัตว์ป่าไม่มีบ้าน → ดินพังทลาย → น้ำซึมลงดินน้อย → ลำธารแห้ง ป่าแห้งแล้ง"]}, {"h": "ธรรมชาติทำให้คนอยู่ต่างกัน", "dl": [["🏡 บ้าน", "ใช้วัสดุในท้องถิ่น (ไม้ไผ่ ไม้) · ฝนตกชุก → <b>หลังคาลาดชัน</b> · ใกล้น้ำ → <b>เรือนแพ</b> · ริมทะเล → <b>ยกพื้นสูง</b>"], ["👕 เสื้อผ้า", "อากาศหนาว → เสื้อผ้า <b>หนา</b> · อากาศร้อน → เสื้อผ้า <b>บาง</b>"], ["🍲 อาหาร", "หาจากท้องถิ่น · ใกล้ป่า → ผักผลไม้ป่า · ริมทะเล → กุ้ง หอย ปู ปลา"]]}]}];
+
+const CV=[{"part": "ตอนที่ 1 สมาชิกในโรงเรียน", "e": "🏫"}, ["ใครมีหน้าที่สอนนักเรียนให้เป็นคนดี มีความรู้", [["👩‍🏫", "ครู"], ["🧹", "ภารโรง"], ["🍳", "แม่ครัว"]], 0, "📚", "ครูมีหน้าที่สอนนักเรียน"], ["ใครมีหน้าที่ดูแลความสะอาดเรียบร้อยในโรงเรียน", [["🍳", "แม่ครัว"], ["🧹", "ภารโรง"], ["👨‍💼", "ผู้อำนวยการ"]], 1, "✨", "ภารโรงดูแลความสะอาด"], ["ใครมีหน้าที่ทำอาหารให้สมาชิกในโรงเรียน", [["🧒", "นักเรียน"], ["👩‍🏫", "ครู"], ["🍳", "แม่ครัว"]], 2, "🍱", "แม่ครัวทำอาหาร"], ["ใครมีหน้าที่บริหารโรงเรียน", [["👨‍💼", "ผู้อำนวยการ"], ["🧹", "ภารโรง"], ["🧒", "นักเรียน"]], 0, "🏫", "ผู้อำนวยการบริหารโรงเรียน"], ["ข้อใดเป็นหน้าที่ของนักเรียน", [["📖", "ตั้งใจเรียน ฟังคำสอนของครู"], ["📜", "ออกกฎระเบียบของโรงเรียน"], ["🍳", "ทำอาหารกลางวัน"]], 0, "🧒", ""], ["ข้อใดเป็นสิทธิของนักเรียน", [["📚", "ใช้ห้องสมุดของโรงเรียน"], ["✏️", "ขีดเขียนโต๊ะเรียน"], ["🛝", "แย่งเครื่องเล่นจากเพื่อน"]], 0, "", "ใช้สิทธิต้องไม่ทำของเสียหาย และไม่ทำให้คนอื่นเดือดร้อน"], ["เพื่อนกำลังเล่นชิงช้าอยู่ แล้วเราอยากเล่นบ้าง ควรทำอย่างไร", [["🙋", "รอคิว หรือขอเล่นด้วยอย่างสุภาพ"], ["✋", "ผลักเพื่อนลงจากชิงช้า"], ["😭", "ร้องไห้ให้เพื่อนยอมลง"]], 0, "🛝", "เคารพสิทธิของเพื่อนที่เล่นอยู่ก่อน"], {"part": "ตอนที่ 2 สมาชิกที่ดี", "e": "🙏"}, ["คุณครูให้ดินสอเป็นรางวัล ควรไหว้และพูดว่าอะไร", [["🙏", "ขอบคุณครับ/ค่ะ"], ["😊", "ขอบใจนะ"], ["🙇", "ขอโทษครับ/ค่ะ"]], 0, "✏️", "ครูอายุมากกว่า ใช้ “ขอบคุณ”"], ["น้องหยิบยางลบให้ เราควรพูดว่าอะไร", [["🙏", "ขอบคุณครับ/ค่ะ"], ["😊", "ขอบใจนะ"], ["👋", "สวัสดี"]], 1, "🧒", "น้องอายุน้อยกว่า ใช้ “ขอบใจ”"], ["วิ่งชนเพื่อนจนหนังสือตก ควรพูดว่าอะไร", [["😊", "ขอบใจนะ"], ["👋", "สวัสดี"], ["🙇", "ขอโทษนะ"]], 2, "📕", "ทำผิดต่อผู้อื่น ต้องขอโทษ"], ["เมื่อพบคุณครูตอนเช้า ควรทำอย่างไร", [["🙏", "ไหว้และกล่าวสวัสดี"], ["🚶", "เดินผ่านไปเฉย ๆ"], ["👋", "โบกมือทักทาย"]], 0, "🌞", "การมีสัมมาคารวะ"], ["ข้อใดเป็นการปฏิบัติตนเป็นสมาชิกที่ดีของครอบครัว", [["🧹", "ช่วยพ่อแม่ทำงานบ้าน"], ["📺", "ดูโทรทัศน์จนดึกทุกวัน"], ["🧸", "ขอเงินซื้อของเล่นทุกวัน"]], 0, "🏠", ""], ["ข้อใดเป็นการทำตามกฎระเบียบของโรงเรียน", [["👔", "แต่งเครื่องแบบให้เรียบร้อย"], ["⏰", "มาโรงเรียนสายเป็นประจำ"], ["🖍️", "ขีดเขียนผนังห้องน้ำ"]], 0, "🏫", ""], ["การรู้คุณและตอบแทนบุญคุณพ่อแม่ เรียกว่าอะไร", [["💝", "ความกตัญญูกตเวที"], ["💪", "ความขยัน"], ["📏", "ความมีระเบียบวินัย"]], 0, "👨‍👩‍👧", ""], {"part": "ตอนที่ 3 ความดีและประชาธิปไตย", "e": "⭐"}, ["เก็บกระเป๋าเงินได้ แล้วนำไปส่งครู คือความดีข้อใด", [["🪙", "ความซื่อสัตย์"], ["💪", "ความขยัน"], ["🐱", "ความเมตตากรุณา"]], 0, "👛", "ไม่เอาของของผู้อื่น"], ["ทำการบ้านเสร็จและส่งครูตรงเวลา คือความดีข้อใด", [["🤝", "ความเอื้อเฟื้อเผื่อแผ่"], ["✅", "ความรับผิดชอบ"], ["🐱", "ความเมตตากรุณา"]], 1, "📒", ""], ["ให้อาหารแมวจรที่หิวโหย คือความดีข้อใด", [["📏", "ความมีระเบียบวินัย"], ["🪙", "ความซื่อสัตย์"], ["🐱", "ความเมตตากรุณา"]], 2, "🐈", ""], ["ให้เพื่อนยืมดินสอ คือความดีข้อใด", [["🤝", "ความเอื้อเฟื้อเผื่อแผ่"], ["✅", "ความรับผิดชอบ"], ["💪", "ความขยัน"]], 0, "✏️", ""], ["เข้าแถวซื้ออาหารตามลำดับ คือความดีข้อใด", [["📏", "ความมีระเบียบวินัย"], ["💝", "ความกตัญญูกตเวที"], ["🐱", "ความเมตตากรุณา"]], 0, "🍜", ""], ["เลือกหัวหน้าห้อง: มานะ 11 คะแนน มานี 17 คะแนน ปิติ 9 คะแนน ใครได้เป็นหัวหน้าห้อง", [["👦", "มานะ"], ["👧", "มานี"], ["🧒", "ปิติ"]], 1, "🗳️", "มานีได้คะแนนมากที่สุด"], ["ปิติไม่ได้เป็นหัวหน้าห้อง ปิติควรทำอย่างไร", [["🤝", "ยอมรับผลและช่วยหัวหน้าห้อง"], ["😠", "ไม่ยอมทำตามหัวหน้าห้อง"], ["🔁", "ขอให้เลือกใหม่จนกว่าจะชนะ"]], 0, "🗳️", "ยอมรับเสียงข้างมาก"], ["ข้อใดเป็นการทำงานกลุ่มแบบประชาธิปไตย", [["🙌", "ทุกคนช่วยกันออกความคิดและแบ่งงานกันทำ"], ["🙋", "หัวหน้ากลุ่มทำคนเดียวทั้งหมด"], ["📢", "คนที่พูดเสียงดังที่สุดเป็นคนตัดสิน"]], 0, "👫", ""]];
+const EC=[{"part": "ตอนที่ 1 สินค้าและการบริการ", "e": "🛍️"}, ["สินค้า หมายถึงข้อใด", [["📦", "สิ่งของที่จับต้องได้"], ["💨", "สิ่งที่จับต้องไม่ได้"], ["🤝", "การช่วยเหลือผู้อื่น"]], 0, "🛍️", ""], ["ข้อใดเป็นสินค้า", [["✏️", "ดินสอ"], ["💇", "การตัดผม"], ["🩺", "การรักษาโรค"]], 0, "", "ดินสอจับต้องได้"], ["ข้อใดเป็นการบริการ", [["👟", "รองเท้า"], ["🪥", "ยาสีฟัน"], ["🚕", "คนขับแท็กซี่ขับรถส่งผู้โดยสาร"]], 2, "", "การขับรถส่งคนจับต้องไม่ได้"], ["ข้อใดเป็นสินค้าทั้งหมด", [["👕", "เสื้อผ้า อาหาร รองเท้า"], ["💇", "ตัดผม ขับแท็กซี่ ร้องเพลง"], ["🩺", "รักษาโรค สอนหนังสือ ยาสีฟัน"]], 0, "", ""], ["ข้อใดเป็นการบริการทั้งหมด", [["📓", "สมุด ดินสอ ปากกา"], ["🩺", "หมอรักษาคนไข้ ช่างตัดผมให้ลูกค้า"], ["🧼", "สบู่ แชมพู ยาสีฟัน"]], 1, "", ""], ["ดินสอทำจากทรัพยากรใด", [["🪵", "ไม้และแร่แกรไฟต์"], ["🧴", "พลาสติกและน้ำหมึก"], ["🧵", "ผ้าและด้าย"]], 0, "✏️", "ไม้ทำแท่ง แร่แกรไฟต์ทำไส้"], ["ทำไมต้องใช้ดินสอและปากกาอย่างประหยัด", [["♻️", "ทำจากทรัพยากรที่ใช้แล้วหมดไป"], ["🚫", "ครูห้ามใช้"], ["🏪", "หาซื้อไม่ได้แล้ว"]], 0, "🖊️", ""], ["ข้อใดเป็นการใช้ของส่วนรวมอย่างประหยัด", [["🚰", "ปิดก๊อกน้ำให้สนิทหลังใช้"], ["💡", "เปิดไฟทิ้งไว้ทั้งวัน"], ["🌀", "เปิดพัดลมตอนไม่มีคนอยู่"]], 0, "🏫", ""], ["ข้อใดใช้สิ่งของส่วนตัวอย่างคุ้มค่า", [["📓", "ใช้สมุดให้หมดทุกหน้า"], ["✈️", "ฉีกสมุดมาพับเครื่องบินเล่น"], ["🍛", "ตักอาหารมากแล้วกินไม่หมด"]], 0, "", ""], {"part": "ตอนที่ 2 จ่ายเป็น ออมได้", "e": "🐷"}, ["การออม หมายถึงข้อใด", [["🐷", "เก็บเงินส่วนหนึ่งไว้ใช้ในอนาคต"], ["🧸", "ใช้เงินซื้อของเล่นจนหมด"], ["🤲", "ยืมเงินเพื่อนมาใช้"]], 0, "💰", ""], ["ฝากเงินกับธนาคาร จะได้ผลตอบแทนเรียกว่าอะไร", [["💵", "ดอกเบี้ย"], ["🪙", "เงินทอน"], ["🍬", "ค่าขนม"]], 0, "🏦", ""], ["ได้ค่าขนม 20 บาท ใช้ไป 12 บาท เหลือเงินออมกี่บาท", [["🪙", "8 บาท"], ["🪙", "12 บาท"], ["🪙", "32 บาท"]], 0, "🐷", "20 − 12 = 8"], ["ออมเงินวันละ 5 บาท 4 วัน จะมีเงินออมกี่บาท", [["🪙", "20 บาท"], ["🪙", "9 บาท"], ["🪙", "15 บาท"]], 0, "🐷", "5+5+5+5 = 20"], ["อยากได้หนังสือ 30 บาท มีเงินอยู่ 20 บาท ต้องออมเพิ่มอีกกี่บาท", [["🪙", "10 บาท"], ["🪙", "20 บาท"], ["🪙", "50 บาท"]], 0, "📘", "30 − 20 = 10"], ["ได้ค่าขนม 15 บาท แต่ใช้ไป 20 บาท เป็นการใช้จ่ายแบบใด", [["😰", "ใช้จ่ายเกินตัว"], ["😊", "ใช้จ่ายไม่เกินตัว"], ["🐷", "การออมเงิน"]], 0, "", "ใช้มากกว่าเงินที่มี"], ["ข้อใดเป็นโทษของการใช้จ่ายเงินเกินตัว", [["📉", "มีหนี้สิน"], ["🐷", "มีเงินออมมากขึ้น"], ["😊", "ไม่ต้องขอเงินพ่อแม่"]], 0, "", ""], {"part": "ตอนที่ 3 การทำงาน", "e": "👷"}, ["ข้อใดเป็นงานที่มีรายได้", [["🍜", "ขายก๋วยเตี๋ยว"], ["🍽️", "ล้างจานที่บ้าน"], ["👕", "ซักผ้าของตัวเอง"]], 0, "💵", ""], ["ข้อใดเป็นงานที่ไม่มีรายได้", [["🧹", "ช่วยแม่กวาดบ้าน"], ["👩‍🏫", "ครูสอนหนังสือ"], ["🩺", "หมอรักษาคนไข้"]], 0, "🏠", "งานบ้านทำเพื่อความสุขของครอบครัว"], ["อาชีพใดทำให้บ้านเมืองสะอาด", [["🧹", "คนกวาดถนน"], ["🚌", "คนขับรถโดยสาร"], ["🧵", "คนทอผ้า"]], 0, "🏙️", ""], ["อาชีพใดทำให้ผู้คนเดินทางได้สะดวก", [["🩺", "หมอ"], ["🚌", "คนขับรถโดยสาร"], ["🧹", "คนกวาดถนน"]], 1, "🗺️", ""], ["ข้อใดเป็นอาชีพที่ไม่สุจริต", [["💊", "ค้าสิ่งเสพติด"], ["🍎", "ขายผลไม้"], ["🚕", "ขับรถรับจ้าง"]], 0, "⚠️", "ผิดกฎหมาย เป็นภัยต่อสังคม"]];
+const EN=[{"part": "ตอนที่ 1 ธรรมชาติหรือมนุษย์สร้าง", "e": "🌳"}, ["ข้อใดเกิดขึ้นเองตามธรรมชาติ", [["🌳", "ต้นไม้"], ["🛣️", "ถนน"], ["🏠", "บ้าน"]], 0, "", ""], ["ข้อใดมนุษย์สร้างขึ้น", [["🏞️", "แม่น้ำ"], ["⛰️", "ภูเขา"], ["🏫", "โรงเรียน"]], 2, "", ""], ["ข้อใดเกิดขึ้นเองตามธรรมชาติทั้งหมด", [["🌍", "ดิน น้ำ อากาศ"], ["🏗️", "ถนน บ้าน เขื่อน"], ["🚆", "รถไฟ เรือ เครื่องบิน"]], 0, "", ""], ["ข้อใดมนุษย์สร้างขึ้นทั้งหมด", [["🛣️", "ถนน เขื่อน รถไฟ"], ["🐘", "ป่าไม้ สัตว์ป่า ภูเขา"], ["🌊", "แม่น้ำ ทะเล ต้นไม้"]], 0, "", ""], ["ข้อใดมนุษย์สร้างขึ้น แต่ไม่ใช่สิ่งของ", [["🎎", "ประเพณี"], ["🚆", "รถไฟ"], ["🏗️", "เขื่อน"]], 0, "", "ประเพณี ความเชื่อ กฎหมาย ไม่ใช่วัตถุ"], {"part": "ตอนที่ 2 ประโยชน์และความเกี่ยวข้องกัน", "e": "🌿"}, ["ป่าไม้มีประโยชน์อย่างไร", [["🦌", "เป็นที่อยู่ของสัตว์ป่า"], ["🅿️", "เป็นที่จอดรถ"], ["🚀", "ช่วยให้เดินทางเร็ว"]], 0, "🌲", ""], ["ยานพาหนะมีประโยชน์อย่างไร", [["🚆", "ช่วยให้เดินทางสะดวกรวดเร็ว"], ["🍎", "เป็นแหล่งอาหาร"], ["🦌", "เป็นที่อยู่ของสัตว์"]], 0, "", ""], ["สวนสาธารณะมีประโยชน์อย่างไร", [["🏃", "เป็นที่พักผ่อนและออกกำลังกาย"], ["⛵", "เป็นที่จอดเรือ"], ["🏭", "เป็นโรงงาน"]], 0, "🌳", ""], ["ถ้าป่าไม้ถูกตัด สัตว์ป่าจะเป็นอย่างไร", [["😢", "ไม่มีบ้านและไม่มีอาหาร"], ["😋", "มีอาหารมากขึ้น"], ["🏠", "มีบ้านใหม่ที่ใหญ่ขึ้น"]], 0, "🪓", ""], ["ตัดไม้ทำลายป่ามาก ๆ ลำธารจะเป็นอย่างไร", [["🏜️", "มีน้ำน้อย ป่าแห้งแล้ง"], ["🌊", "มีน้ำมากขึ้น"], ["🐟", "มีปลามากขึ้น"]], 0, "🪓", "ดินเก็บน้ำได้น้อย ลำธารแห้ง"], {"part": "ตอนที่ 3 ธรรมชาติกับความเป็นอยู่", "e": "🏡"}, ["อากาศหนาวเย็น ควรแต่งกายอย่างไร", [["🧥", "สวมเสื้อผ้าหนา"], ["👕", "สวมเสื้อผ้าบาง"], ["🩳", "ใส่กางเกงขาสั้น"]], 0, "❄️", ""], ["อากาศร้อน ควรแต่งกายอย่างไร", [["🧥", "สวมเสื้อกันหนาว"], ["👕", "สวมเสื้อผ้าบาง"], ["🧤", "สวมถุงมือ"]], 1, "☀️", ""], ["บ้านในที่ที่ฝนตกชุก มักมีหลังคาแบบใด", [["🏠", "หลังคาลาดชัน"], ["🟫", "หลังคาแบนราบ"], ["⬜", "ไม่มีหลังคา"]], 0, "🌧️", "น้ำฝนไหลลงได้เร็ว"], ["บ้านที่ลอยอยู่บนน้ำ เรียกว่าอะไร", [["🛶", "เรือนแพ"], ["🏢", "ตึกสูง"], ["⛺", "เต็นท์"]], 0, "🌊", ""], ["ท้องถิ่นที่มีต้นไผ่มาก มักสร้างบ้านด้วยอะไร", [["🎋", "ไม้ไผ่"], ["🧊", "ก้อนน้ำแข็ง"], ["🧱", "เหล็ก"]], 0, "", "ใช้วัสดุที่หาได้ง่ายในท้องถิ่น"], ["คนที่อยู่ริมทะเล มักกินอาหารอะไร", [["🦐", "กุ้ง ปู ปลาทะเล"], ["🍄", "เห็ดจากป่าบนภูเขา"], ["🌵", "ผลไม้จากทะเลทราย"]], 0, "🏖️", ""], ["บ้านริมทะเลหรือริมน้ำ มักยกพื้นสูงเพื่ออะไร", [["🌊", "กันน้ำขึ้นสูงท่วมบ้าน"], ["👀", "ดูวิวได้ไกล"], ["🏰", "ให้บ้านดูใหญ่"]], 0, "🏠", ""]];
+const CREDITS=[];
+
+const TABS=[
+ {id:'sum', name:'📖 สรุป', tc:'#2A6698', summary:true},
+ {id:'cv', name:'🏫 หน้าที่พลเมือง', tc:'#2A6698', title:'แบบฝึก หน้าที่พลเมือง', items:CV},
+ {id:'ec', name:'💰 เศรษฐศาสตร์', tc:'#8A5A15', title:'แบบฝึก เศรษฐศาสตร์น่ารู้', items:EC},
+ {id:'en', name:'🌳 สิ่งแวดล้อม', tc:'#25724A', title:'แบบฝึก เรียนรู้สิ่งแวดล้อม', items:EN},
+];
+
+/* สีประจำตอน: [สีหลัก, สีเข้ม, สีอ่อน, รูป] */
+const PARTC=[['#8FC9F2','#2A6698','#EAF4FF','🏫'],['#F3C46B','#8A5A15','#FFF5DC','💰'],
+             ['#A5D6B0','#25724A','#E9F7EE','🌳'],['#F3A5B8','#A23A5A','#FFF0F4','⭐']];
+const TL=['ก','ข','ค'];
+const PRAISE=['✓ ถูกต้อง เก่งมาก! 🎉','✓ สุดยอดเลย! ⭐','✓ ถูกต้อง! 👏','✓ เยี่ยมมาก! 🌈','✓ ใช่แล้ว! 😄'];
+/* คำอ่านของคำยาก ใส่ไว้ใต้ตัวเลือก (หน่วยนี้คำไม่ยาก ใส่เท่าที่จำเป็น) */
+const READ = {
+  'กตัญญูกตเวที':'กะ-ตัน-ยู-กะ-ตะ-เว-ที', 'แกรไฟต์':'แกร-ไฟ',
+};
+const READ_KEYS = Object.keys(READ).sort((a,b) => b.length - a.length);
+const readOf = t => { for(const k of READ_KEYS) if(t.indexOf(k) >= 0) return READ[k]; return ''; };
+/* เวลาพูดตัวเลือก ให้ต่อคำอ่านไปด้วย เครื่องจะได้อ่านคำยากได้ถูก (แปลงขีดเป็นเว้นวรรค) */
+const spoken = t => { const r = readOf(t); return r ? t + ' อ่านว่า ' + r.replace(/-/g, ' ') : t; };
+
+const $=s=>document.querySelector(s);
+/* ภาพถ่ายจริง: ใส่ 'pic:ชื่อ' ในช่องอิโมจิโจทย์ ไฟล์อยู่ที่ img/sci/ชื่อ.webp (ที่มาของภาพอยู่ใน CREDITS) */
+const isPic=v=>typeof v==='string' && v.indexOf('pic:')===0;
+const picHTML=v=>'<figure class="qpic"><img src="../img/sci/'+v.slice(4)+'.webp" alt="" loading="lazy"></figure>';
+const strip=s=>String(s).replace(/<[^>]*>/g,'');
+const attr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+let cur=0, ans={};
+
+const K=id=>'kids-soc-cee-'+id;
+function load(){ try{ ans=JSON.parse(localStorage.getItem(K(TABS[cur].id))||'{}')||{}; }catch(e){ ans={}; } }
+function save(){ try{ localStorage.setItem(K(TABS[cur].id), JSON.stringify(ans)); }catch(e){} }
+function questions(){ return (TABS[cur].items||[]).filter(x=>Array.isArray(x)); }
+
+/* ข้อสอบ: สุ่มจากคลังตอนละ n ข้อ เก็บชุดที่สุ่มไว้ระหว่างทำ พอเริ่มใหม่ค่อยสุ่มชุดใหม่ */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function buildExam(fresh){
+  const T=TABS[cur]; if(!T.pool) return;
+  const key=K(T.id)+'-pick';
+  let pick=null;
+  try{ pick=fresh?null:JSON.parse(localStorage.getItem(key)||'null'); }catch(e){ pick=null; }
+  const okPick=Array.isArray(pick) && pick.length===T.pool.length &&
+    pick.every((p,i)=>Array.isArray(p) && p.length===T.pool[i].n && p.every(j=>T.pool[i].qs[j]));
+  if(!okPick){
+    /* ชุดคละมีโจทย์ขึ้นต้นเหมือนกันจากต่างระดับ ไม่ให้โผล่ซ้ำในชุดเดียว */
+    const seen=new Set();
+    pick=T.pool.map(p=>shuffle(p.qs.map((q,i)=>i)).filter(i=>!seen.has(p.qs[i][0]) && seen.add(p.qs[i][0])).slice(0,p.n));
+    try{ localStorage.setItem(key, JSON.stringify(pick)); }catch(e){}
+  }
+  T.items=[];
+  T.pool.forEach((p,pi)=>{ T.items.push({part:p.part, e:p.e}); pick[pi].forEach(j=>T.items.push(p.qs[j])); });
+}
+
+/* สลับตำแหน่งตัวเลือกใหม่ทุกครั้งที่เริ่มชุด และจำไว้ระหว่างทำ */
+let ORD=[];
+function loadOrder(fresh){
+  const key=K(TABS[cur].id)+'-order', qs=questions();
+  try{ ORD=fresh?null:JSON.parse(localStorage.getItem(key)||'null'); }catch(e){ ORD=null; }
+  if(!Array.isArray(ORD) || ORD.length!==qs.length){
+    ORD=qs.map(q=>{ const a=q[1].map((o,i)=>i);
+      for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; });
+    try{ localStorage.setItem(key, JSON.stringify(ORD)); }catch(e){}
+  }
+}
+try{ const t=localStorage.getItem('kids-soc-cee-tab'); if(t!==null && TABS[+t]) cur=+t; }catch(e){}
+/* ลิงก์จากหน้ารวมเปิดแท็บได้ตรง ๆ เช่น #c1 หรือ #l2 */
+const tabOfHash=()=>TABS.findIndex(t=>t.id===decodeURIComponent(location.hash.slice(1)));
+if(tabOfHash()>=0) cur=tabOfHash();
+function goTab(i){ cur=i; try{ localStorage.setItem('kids-soc-cee-tab', cur); }catch(e){} render(); window.scrollTo({top:0}); }
+window.addEventListener('hashchange',()=>{ const i=tabOfHash(); if(i>=0 && i!==cur) goTab(i); });
+try{ $('#autoread').checked = localStorage.getItem('kids-soc-cee-read')==='1'; }catch(e){}
+$('#autoread').onchange=e=>{ try{ localStorage.setItem('kids-soc-cee-read', e.target.checked?'1':'0'); }catch(err){} };
+
+/* ---- อ่านออกเสียงภาษาไทย ---- */
+const synth=window.speechSynthesis;
+let thVoice=null;
+function pickVoice(){ if(!synth) return; const v=synth.getVoices().filter(x=>/^th/i.test(x.lang));
+  thVoice=v.find(x=>/Kanya|Narisa|Premwadee|Achara/i.test(x.name))||v[0]||null; }
+if(synth){ pickVoice(); synth.onvoiceschanged=pickVoice; }
+function speak(text){
+  if(!synth) return;
+  try{ synth.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(text); u.lang='th-TH'; u.rate=0.9;
+  if(thVoice) u.voice=thVoice;
+  synth.speak(u);
+}
+const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+q[1][i][1]).join(' … '));
+
+/* ชุดที่ทำได้ 90% ขึ้นไปแล้วติด ✅ ที่แท็บ ทำครบแต่ยังไม่ถึงติด ✔️ */
+function bestMark(t){ let b=0; try{ b=+(localStorage.getItem(K(t.id)+'-best')||0); }catch(e){} return b>=.9?' ✅':b>0?' ✔️':''; }
+function renderTabs(){
+  $('#tabs').innerHTML=TABS.map((t,i)=>'<button type="button" style="--tc:'+t.tc+'" class="'+(i===cur?'on':'')+'" data-i="'+i+'">'+t.name+bestMark(t)+'</button>').join('');
+  $('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    goTab(+b.dataset.i);
+  });
+}
+
+/* ---------------- หน้าสรุป ---------------- */
+function renderSummary(){
+  $('#tt').textContent='สรุป หน้าที่พลเมือง · เศรษฐศาสตร์ · สิ่งแวดล้อม';
+  $('#score').className='score hide';
+  $('#tools').className='tools hide';
+  $('#result').className='result hide';
+  let h='<div class="lead">📌 อ่านสรุปนี้ก่อน แล้วกดแท็บ <b>🏫 หน้าที่พลเมือง</b> <b>💰 เศรษฐศาสตร์</b> <b>🌳 สิ่งแวดล้อม</b> เพื่อทำแบบฝึก จากนั้นไปที่ <a href="exam-prep.html">📝 ข้อสอบเตรียมสอบ</a> · แตะปุ่ม 🔊 ให้อ่านออกเสียงให้ฟังได้</div>';
+  SUMMARY.forEach((s,si)=>{
+    h+='<div class="sum" style="--pc:'+s.c[0]+';--pcd:'+s.c[1]+';--pl:'+s.c[2]+'">'+
+       '<div class="sh"><span class="pe">'+s.e+'</span><h2>'+s.t+'</h2>'+
+       '<button class="spk" type="button" data-s="'+si+'" aria-label="อ่าน'+strip(s.t)+'">🔊</button></div>';
+    s.blocks.forEach(b=>{
+      h+='<h3>'+b.h+'</h3>';
+      if(b.li) h+='<ul>'+b.li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+      if(b.dl) h+='<dl class="ft">'+b.dl.map(p=>'<dt>'+p[0]+'</dt><dd>'+p[1]+'</dd>').join('')+'</dl>';
+      if(b.pics) h+='<div class="pics">'+b.pics.map(p=>'<figure><img src="../img/sci/'+p[0]+'.webp" alt="" loading="lazy"><figcaption>'+p[1]+'</figcaption></figure>').join('')+'</div>';
+    });
+    h+='</div>';
+  });
+  $('#list').innerHTML=h;
+  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>{
+    const s=SUMMARY[+b.dataset.s];
+    let t=strip(s.t)+' … ';
+    s.blocks.forEach(bl=>{
+      t+=strip(bl.h)+' … ';
+      if(bl.li) t+=bl.li.map(strip).join(' … ')+' … ';
+      if(bl.dl) t+=bl.dl.map(p=>strip(p[0])+' คือ '+strip(p[1])).join(' … ')+' … ';
+    });
+    speak(t);
+  });
+}
+
+/* ---------------- หน้าแบบฝึก ---------------- */
+function render(){
+  renderTabs();
+  if(TABS[cur].summary){ renderSummary(); return; }
+  load(); buildExam(!Object.keys(ans).length); loadOrder(!Object.keys(ans).length);
+  $('#score').className='score';
+  $('#tools').className='tools';
+  const T=TABS[cur];
+  $('#tt').textContent=T.title;
+  let n=0, h='', pi=0, pc=PARTC[0];
+  const pcv=()=>'--pc:'+pc[0]+';--pcd:'+pc[1]+';--pl:'+pc[2];
+  T.items.forEach(x=>{
+    if(!Array.isArray(x)){ pc=PARTC[pi++%PARTC.length];
+      h+='<div class="part" style="'+pcv()+'"><span class="pe">'+(x.e||pc[3])+'</span>'+x.part+'</div>'; return; }
+    const k=n++;
+    /* ตัวเลือกยาว ให้เรียงลงมาทีละบรรทัด อ่านง่ายกว่าเรียง 3 คอลัมน์ */
+    const longest=Math.max.apply(null, x[1].map(o=>o[1].length));
+    h+='<div class="q" style="'+pcv()+'" id="q'+k+'"><div class="qh"><div class="num">'+(k+1)+'</div>'+
+       '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button>'+
+       '<div class="qt">'+x[0]+'</div>'+(x[3]&&!isPic(x[3])?'<div class="qe">'+x[3]+'</div>':'')+'</div>'+
+       (isPic(x[3])?picHTML(x[3]):'')+
+       '<div class="opts'+(longest>18?' list':'')+'">'+
+       ORD[k].map((i,pos)=>{ const o=x[1][i];
+         return '<div class="optwrap">'+
+           '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
+           '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
+           '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span>'+
+           '</button>'+
+           '<button type="button" class="sayb" data-say="'+attr(spoken(o[1]))+'" aria-label="ฟังตัวเลือก '+TL[pos]+'">🔊</button>'+
+           '</div>'; }).join('')+
+       '</div><div class="fb"></div></div>';
+  });
+  $('#list').innerHTML=h;
+  const Q=questions();
+  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k],+b.dataset.k));
+  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k,+b.dataset.i,true));
+  $('#list').querySelectorAll('.sayb').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+  Object.keys(ans).forEach(k=>show(+k, ans[k]));
+  updateScore(false);
+}
+
+function show(k,i,say){
+  const q=questions()[k], el=$('#q'+k); if(!q||!el) return;
+  const ok=i===q[2];
+  el.classList.add(ok?'ok':'no');
+  el.querySelectorAll('.opt').forEach(b=>{
+    const j=+b.dataset.i; b.classList.add('done');
+    if(j===q[2]) b.classList.add('right');
+    else if(j===i) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb=el.querySelector('.fb');
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[ORD[k].indexOf(q[2])]+'. '+q[1][q[2]][1])+
+    (q[4]?'<small>'+q[4]+'</small>':'');
+  /* อ่านเฉลยให้ฟังทันทีที่เลือก (ตอนโหลดหน้าเก่าคืนมาไม่ต้องอ่าน) */
+  if(say) speak((ok ? 'ถูกต้อง เก่งมาก … '+spoken(q[1][q[2]][1]) : 'ยังไม่ใช่ คำตอบที่ถูกคือ '+spoken(q[1][q[2]][1])) + (q[4] ? ' … '+strip(q[4]) : ''));
+}
+
+function pick(k,i,fresh){
+  if(ans[k]!==undefined) return;
+  ans[k]=i; save(); show(k,i,fresh); updateScore(fresh);
+  if(fresh){
+    const nx=$('#q'+(k+1));
+    if(nx && ans[k+1]===undefined){
+      setTimeout(()=>{ nx.scrollIntoView({behavior:'smooth',block:'center'});
+        if($('#autoread').checked) readQ(questions()[k+1],k+1); },650);
+    }
+  }
+}
+
+function updateScore(fresh){
+  const Q=questions(), keys=Object.keys(ans);
+  const right=keys.filter(k=>ans[k]===Q[k][2]).length;
+  $('#score').textContent=right+' / '+Q.length;
+  const r=$('#result');
+  if(keys.length<Q.length){ r.className='result hide'; return; }
+  const pct=right/Q.length;
+  const stars = pct>=.9?'⭐⭐⭐' : pct>=.7?'⭐⭐' : pct>=.5?'⭐' : '💪';
+  const msg = pct>=.9?'เก่งมาก! พร้อมสอบแล้ว' : pct>=.7?'ดีมาก! ทบทวนข้อที่ผิดอีกนิดนะ'
+            : pct>=.5?'ผ่านแล้ว ลองอ่านสรุปอีกรอบแล้วทำใหม่นะ' : 'ไม่เป็นไร กลับไปอ่านสรุปก่อน แล้วค่อยลองใหม่นะ';
+  r.className='result';
+  r.innerHTML='<div class="cheer">'+(pct>=.7?'🎉🏆🎉':'🌈')+'</div><div class="stars">'+stars+'</div>'+
+    '<div class="big">'+right+' / '+Q.length+'</div><p>'+msg+'</p>'+
+    '<button class="btn" type="button" id="again">'+(TABS[cur].pool?'🎲 สุ่มข้อสอบชุดใหม่':'ทำชุดนี้ใหม่')+'</button>'+
+    '<button class="btn gh" type="button" id="toSum">กลับไปอ่านสรุป</button>'+
+    '<a class="btn gh" href="exam-prep.html" style="display:inline-block;text-decoration:none">📝 ข้อสอบเตรียมสอบ</a>';
+  $('#again').onclick=resetCur;
+  $('#toSum').onclick=()=>goTab(0);
+  if(fresh) setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'center'}),700);
+  if(fresh){ try{ const bk=K(TABS[cur].id)+'-best'; if(pct>+(localStorage.getItem(bk)||0)) localStorage.setItem(bk, pct); }catch(e){} renderTabs(); }
+  if(fresh && window.KP){
+    const wrong=keys.filter(k=>ans[k]!==Q[k][2]).map(k=>strip(Q[k][0])).slice(0,15);
+    KP.log({ kind:'test', page:'social-cee', subject:'สังคมศึกษา', title:'สังคม ป.1 · '+TABS[cur].title,
+             score:right, total:Q.length, stars: pct>=.9?3 : pct>=.7?2 : 1, wrong });
+  }
+}
+
+function resetCur(){ ans={}; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+$('#reset').onclick=()=>{ if(!Object.keys(ans).length || confirm('ล้างคำตอบของชุดนี้แล้วเริ่มใหม่?')) resetCur(); };
+
+render();
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>

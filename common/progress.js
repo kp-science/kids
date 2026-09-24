@@ -48,6 +48,8 @@
     { id:'engword', e:'🌱', tag:'test',   text:'เล่นสวนคำศัพท์อังกฤษให้จบ 1 ด่าน',   url:'english/word-quest.html',          done:ev => ev.some(x=>x.page==='english-words') },
     { id:'sciu1',   e:'🫀', tag:'test',   text:'ทำแบบฝึกวิทย์หน่วยที่ 1 ตัวเรา พืช และสัตว์ 1 ชุด', url:'science/unit1-body.html', done:ev => ev.some(x=>x.page==='science-unit1') },
     { id:'sciex',   e:'📝', tag:'test',   text:'ทำข้อสอบเตรียมสอบวิทย์ให้จบ 1 ชุด', url:'science/exam-prep.html', done:ev => ev.some(x=>x.page==='science-exam') },
+    { id:'socu',    e:'🏫', tag:'test',   text:'ทำแบบฝึกสังคม หน้าที่พลเมือง/เศรษฐศาสตร์/สิ่งแวดล้อม 1 ชุด', url:'social/citizen-econ-env.html', done:ev => ev.some(x=>x.page==='social-cee') },
+    { id:'socex',   e:'📝', tag:'test',   text:'ทำข้อสอบเตรียมสอบสังคมให้จบ 1 ชุด', url:'social/exam-prep.html', done:ev => ev.some(x=>x.page==='social-exam') },
     { id:'mathex',  e:'📐', tag:'test',   text:'สุ่มข้อสอบคณิต ป.1 เทอม 1 มาทำให้จบ 1 บท',   url:'math/p1-term1-exam.html',          done:ev => ev.some(x=>x.page==='math-p1-term1') },
   ];
   /* สื่อสาย "ลงมือทำ" ที่ไม่ใช่เกมฝึกสมอง */
