@@ -4,7 +4,7 @@
    วิธีทำงาน: เปิดเว็บครั้งแรกตอนมีเน็ต → เก็บทุกไฟล์ไว้ในเครื่อง → ครั้งต่อไปเปิดจากในเครื่อง
    พออัปเดตเว็บ เลขรุ่นจะเปลี่ยน ตัวนี้จะโหลดชุดใหม่มาเก็บแล้วลบชุดเก่าทิ้ง
    ============================================================ */
-const VERSION = '2026-09-24-d42779a1';
+const VERSION = '2026-09-24-d3d43807';
 const CACHE = 'kids-' + VERSION;
 const ASSETS = [
   "./",
@@ -23,6 +23,16 @@ const ASSETS = [
   "favicon.png",
   "img/kid-full.webp",
   "img/kid.webp",
+  "img/sci/bird.webp",
+  "img/sci/buffalo.webp",
+  "img/sci/croc.webp",
+  "img/sci/dog.webp",
+  "img/sci/elephant.webp",
+  "img/sci/goldfish.webp",
+  "img/sci/hermit.webp",
+  "img/sci/rabbit.webp",
+  "img/sci/snake.webp",
+  "img/sci/tortoise.webp",
   "index.html",
   "math/p1-review.html",
   "math/p1-term1-exam.html",
