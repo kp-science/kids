@@ -386,10 +386,12 @@ const LEVELS = [
 /* ---------- ๓ แก้วความดี ---------- */
 { id:'good', name:'แก้วความดี', emoji:'💎', title:'แก้วความดี ๖ ดวง',
   text:'แก้วแต่ละดวงคือความดีหนึ่งอย่าง · อ่านเรื่องแล้วแตะแก้วความดีที่ตรงกัน',
-  view:{ cam:[0, 7.5, 13], target:[0, 1.4, 0] },
+  view:{ cam:[0, 12, 11], target:[0, 1, -.2] },
   know:'<b>ซื่อสัตย์</b> ไม่เอาของคนอื่น · <b>รับผิดชอบ</b> ทำงานเสร็จตามเวลา · <b>ขยัน</b> ทำต่อเนื่องไม่ย่อท้อ · <b>เอื้อเฟื้อเผื่อแผ่</b> แบ่งปัน · <b>เมตตากรุณา</b> ช่วยให้พ้นทุกข์ · <b>กตัญญูกตเวที</b> ตอบแทนบุญคุณ · และ <b>มีระเบียบวินัย</b> ทำตามข้อตกลง',
   build(){
-    world.add(ground('#F3E3C2', 15));
+    world.add(ground('#F3E3C2', 17));
+    const narrow = $('#stage').clientWidth < 560;
+    this.view = narrow ? { cam:[0, 15, 10], target:[0, 1, 0] } : { cam:[0, 12, 11], target:[0, 1, -.2] };
     const gs = [
       { id:'honest', c:'#FFD86B', tag:'ซื่อสัตย์' },
       { id:'resp',   c:'#9BE3A8', tag:'รับผิดชอบ' },
@@ -400,7 +402,10 @@ const LEVELS = [
     ];
     const targets = {};
     gs.forEach((gm, i) => {
-      const x = -4 + (i % 3) * 4, z = i < 3 ? -1.8 : 1.6;
+      /* จอกว้าง: ๒ แถว แถวละ ๓ · จอแคบ (มือถือ): ๓ แถว แถวละ ๒
+         เว้นระยะมาก + มุมกล้องสูง ป้ายแถวหลังจะไม่ทับแก้วแถวหน้า */
+      const x = narrow ? (i % 2 ? 2.6 : -2.6) : -4.6 + (i % 3) * 4.6;
+      const z = narrow ? -4.6 + Math.floor(i / 2) * 4.2 : (i < 3 ? -3.4 : 2.6);
       const crystal = new THREE.Mesh(new THREE.OctahedronGeometry(.7), mat(gm.c, { roughness:.2, metalness:.15, transparent:true, opacity:.92 }));
       crystal.castShadow = true;
       const g = group(at(cyl(.7, .85, .5, '#C8A76A', 20), 0, .25, 0), at(crystal, 0, 1.75, 0), at(glow(gm.c, 2.4), 0, 1.75, 0));
