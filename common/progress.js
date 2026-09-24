@@ -60,6 +60,7 @@
     { id:'code',    e:'🤖', tag:'code', text:'ทำภารกิจในห้องทดลองโค้ดบล็อก 1 ข้อ',   url:'stem/code.html',       done:ev => ev.some(x=>x.kind==='game' && x.page==='code') },
     { id:'craft',   e:'🧱', tag:'game', text:'ต่อบล็อกคราฟต์ให้ครบ 1 แบบ',           url:'brain/craft.html',     done:ev => ev.some(x=>x.kind==='game' && x.page==='craft') },
     { id:'quest',   e:'🪷', tag:'game', text:'เล่นผจญภัยพระพุทธศาสนา 3 มิติ 1 ด่าน', url:'social/unit1-quest.html', done:ev => ev.some(x=>x.kind==='game' && x.page==='social-quest') },
+    { id:'ceeq',    e:'🏫', tag:'game', text:'เล่นผจญภัยสังคม 3 มิติ 1 ด่าน', url:'social/cee-quest.html', done:ev => ev.some(x=>x.kind==='game' && x.page==='social-cee-quest') },
   ];
   /* โบนัสวันหยุด · ต้องมีคนเล่นด้วย จึงไม่นับรวมตอนตัดสินว่าภารกิจครบ */
   const BONUS = [
