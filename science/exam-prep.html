@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>ข้อสอบเตรียมสอบ วิทยาศาสตร์ ป.1 · 4 ชุด ง่ายไปยาก</title>
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#3A3350; --mute:#6E6785; --line:#EBE6F0;
+  --ac:#C0587A; --acs:#FFF0F4;
+  --ok:#2F9E5B; --no:#D2693C; --gold:#E7B84B;
+}
+body{background:#FFFBF4;color:var(--ink);font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;
+  font-size:18px;line-height:1.65;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle at 0% 12%,#FFE9D6 0 130px,transparent 131px),
+             radial-gradient(circle at 100% 34%,#FFF1D6 0 110px,transparent 111px),
+             radial-gradient(circle at 0% 70%,#F3E9FF 0 140px,transparent 141px),
+             radial-gradient(circle at 100% 90%,#E6F8EE 0 120px,transparent 121px)}
+button{font:inherit;color:inherit;cursor:pointer}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(255,251,244,.93);backdrop-filter:blur(6px);
+  box-shadow:0 4px 18px rgba(58,51,80,.06);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:900px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.back{text-decoration:none;color:var(--ac);background:#fff;border:none;border-radius:999px;
+  padding:5px 14px;font-size:.9rem;font-weight:700;white-space:nowrap;box-shadow:0 3px 12px rgba(58,51,80,.12)}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.score{background:#fff;color:var(--ac);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.9rem;
+  white-space:nowrap;box-shadow:0 3px 12px rgba(58,51,80,.12)}
+
+.wrap{max-width:900px;margin:0 auto;padding:12px 14px 70px}
+.hero{position:relative;overflow:hidden;border-radius:30px;margin-top:8px;padding:20px 18px 76px;
+  background:linear-gradient(180deg,#9FDCF5,#E9F8FF);box-shadow:0 12px 30px rgba(58,51,80,.10);text-align:center}
+.hero svg{position:absolute;left:0;bottom:0;width:100%;height:86px}
+.hero .deco{position:relative;font-size:2.2rem;letter-spacing:6px;display:block;margin-bottom:2px}
+.hero h1{position:relative;font-family:'Mali',sans-serif;font-size:1.65rem;line-height:1.3;color:#fff;
+  text-shadow:0 2px 8px rgba(30,90,130,.45)}
+.hero p{position:relative;color:#2A6698;font-weight:600;font-size:.95rem}
+
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 14px}
+.tabs button{border:none;background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;font-size:.95rem;
+  box-shadow:0 4px 14px rgba(58,51,80,.10);color:var(--ink)}
+.tabs button.on{background:var(--tc,#C98A2E);color:#fff}
+
+.tools{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:16px;
+  font-size:.9rem;color:var(--mute)}
+.tools label{display:flex;align-items:center;gap:6px}
+.tools input{width:20px;height:20px;accent-color:var(--ac)}
+.btn{border:none;background:var(--ac);color:#fff;border-radius:999px;padding:9px 20px;font-weight:700;margin:4px;
+  box-shadow:0 6px 16px rgba(58,51,80,.16)}
+.btn.gh{background:#fff;color:var(--ac);box-shadow:0 3px 12px rgba(58,51,80,.10)}
+
+/* ---------------- สรุป ---------------- */
+.lead{background:#fff;border-radius:24px;padding:14px 16px;margin-bottom:14px;color:var(--mute);
+  box-shadow:0 6px 18px rgba(58,51,80,.07);font-size:.98rem}
+.sum{background:#fff;border-radius:26px;padding:6px 16px 16px;margin-bottom:16px;box-shadow:0 6px 18px rgba(58,51,80,.07)}
+.sum .sh{display:flex;align-items:center;gap:10px;margin:-6px -16px 12px;padding:12px 16px;border-radius:26px 26px 0 0;
+  background:var(--pl)}
+.sum .sh .pe{width:44px;height:44px;flex-shrink:0;border-radius:15px;background:#fff;display:grid;place-items:center;
+  font-size:1.5rem;box-shadow:0 3px 10px rgba(58,51,80,.08)}
+.sum .sh h2{flex:1;font-family:'Mali',sans-serif;font-size:1.15rem;color:var(--pcd);line-height:1.35}
+.sum h3{font-family:'Mali',sans-serif;font-size:1.05rem;color:var(--pcd);margin:14px 0 6px;display:flex;gap:8px;align-items:center}
+.sum h3:first-of-type{margin-top:4px}
+.sum ul{list-style:none;margin:0 0 2px}
+.sum li{position:relative;padding-left:20px;margin-bottom:5px}
+.sum li::before{content:"";position:absolute;left:4px;top:.72em;width:8px;height:8px;border-radius:50%;background:var(--pc)}
+.sum b{color:var(--pcd)}
+.ft{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;background:var(--pl);border-radius:18px;padding:12px 14px;margin:6px 0 2px}
+.ft dt{font-weight:700;color:var(--pcd);white-space:nowrap}
+.ft dd{margin:0}
+.spk{flex-shrink:0;border:none;background:var(--pl);border-radius:12px;width:42px;height:42px;font-size:1.2rem}
+.spk:active{transform:scale(.94)}
+
+/* ---------------- คำถาม ---------------- */
+.part{margin:22px 0 12px;background:var(--pl);color:var(--pcd);border-radius:20px;padding:8px 14px 8px 8px;
+  font-family:'Mali',sans-serif;font-weight:700;font-size:1.12rem;display:flex;align-items:center;gap:10px}
+.part .pe{width:40px;height:40px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:1.3rem;
+  box-shadow:0 3px 10px rgba(58,51,80,.08)}
+.q{background:#fff;border-radius:24px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(58,51,80,.07);transition:.2s}
+.q.ok{box-shadow:0 0 0 3px #BDEBCB,0 6px 18px rgba(58,51,80,.07)}
+.q.no{box-shadow:0 0 0 3px #FFD9C6,0 6px 18px rgba(58,51,80,.07)}
+.qh{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.num{flex-shrink:0;width:38px;height:38px;border-radius:13px;background:var(--pl);color:var(--pcd);
+  display:grid;place-items:center;font-weight:700;font-size:1.05rem}
+.qt{flex:1;font-weight:700;font-size:1.08rem;padding-top:4px}
+.qe{font-size:2rem;line-height:1}
+
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opts.list{grid-template-columns:1fr}
+.opt{position:relative;border:2px solid transparent;background:var(--ob);border-radius:16px;padding:10px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-height:118px;transition:.12s}
+.opt .em{font-size:2.5rem;line-height:1.15}
+.opt .lb{font-size:.96rem;font-weight:600;line-height:1.35}
+.opt .lt{position:absolute;top:6px;left:8px;width:26px;height:26px;border-radius:50%;background:var(--od);
+  color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.opt.noem{justify-content:center}
+.opt.noem .lb{font-size:1.12rem}
+.opt .rd{display:block;font-size:.78rem;font-weight:400;color:var(--mute);line-height:1.3;margin-top:1px}
+.optwrap{display:flex;flex-direction:column;gap:6px}
+.optwrap .opt{flex:1;width:100%}
+.sayb{border:2px solid var(--ob);background:#fff;border-radius:14px;min-height:46px;width:100%;
+  display:grid;place-items:center;font-size:1.15rem;line-height:1;cursor:pointer;color:var(--od)}
+.sayb::after{content:"ฟัง";font-size:.72rem;font-weight:700;margin-left:4px}
+.sayb{grid-auto-flow:column;align-content:center}
+.sayb:active{transform:scale(.97)}
+.opts.list .optwrap{flex-direction:row;align-items:stretch;gap:8px}
+.opts.list .sayb{width:64px;min-height:0;flex:none}
+.opt.done{cursor:default}
+.opts.list .opt{flex-direction:row;min-height:0;padding:11px 13px;text-align:left;gap:12px}
+.opts.list .opt .lt{position:static;flex-shrink:0}
+.opts.list .opt.noem{justify-content:flex-start}
+.opts.list .opt .lb{font-size:1.02rem}
+.opts .optwrap:nth-child(1){--ob:#FFF1F6;--od:#F07AA6}
+.opts .optwrap:nth-child(2){--ob:#EEF6FF;--od:#5AA0E6}
+.opts .optwrap:nth-child(3){--ob:#FFF8E1;--od:#E0AE2B}
+.opt:not(.done):hover{background:#fff;border-color:var(--od)}
+.opt:not(.done):active{transform:scale(.97)}
+.opt.right{border-color:#9EDDB2;background:#EFFAF2}
+.opt.right .lt{background:#5BC07D}
+.opt.wrong{border-color:#FFCBB3;background:#FFF5EF}
+.opt.wrong .lt{background:#F29B72}
+.opt.dim{opacity:.5}
+.fb{margin-top:9px;font-family:'Mali',sans-serif;font-size:1.02rem;font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--no)}
+.fb small{display:block;font-family:'Noto Sans Thai Looped',sans-serif;font-weight:400;color:var(--mute);font-size:.92rem;margin-top:2px}
+
+.result{background:#fff;border-radius:30px;padding:22px;text-align:center;margin-top:20px;
+  box-shadow:0 16px 40px rgba(58,51,80,.14)}
+.result .cheer{font-size:2.6rem}
+.result .stars{font-size:2.3rem;letter-spacing:4px}
+.result .big{font-family:'Mali',sans-serif;font-size:2.2rem;font-weight:700;color:var(--ac)}
+.result p{margin:4px 0 12px}
+.hide{display:none}
+
+@media (max-width:480px){
+  body{font-size:17px}
+  .hero h1{font-size:1.32rem}
+  .opts{gap:7px}
+  .sayb{min-height:42px;font-size:1.05rem}
+  .opt{min-height:104px;padding:8px 3px}
+  .opt .em{font-size:2.1rem}
+  .opt .lb{font-size:.85rem}
+  .opt .lt{width:22px;height:22px;font-size:.75rem;top:4px;left:4px}
+  .qt{font-size:1rem}
+  .ft{grid-template-columns:1fr;gap:2px 0}
+  .ft dd{margin-bottom:6px}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="back" href="../">‹ หน้ารวม</a>
+  <div class="tt" id="tt">ข้อสอบเตรียมสอบ วิทยาศาสตร์</div>
+  <span class="score hide" id="score">0 / 0</span>
+</div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <svg viewBox="0 0 600 86" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 50 Q130 18 270 44 T600 34 V86 H0Z" fill="#8FD46B"/>
+      <path d="M0 68 Q180 42 370 64 T600 58 V86 H0Z" fill="#6CC04A"/>
+    </svg>
+    <span class="deco" aria-hidden="true">📝⭐🧠🫀👂</span>
+    <h1>ข้อสอบเตรียมสอบ วิทยาศาสตร์ ป.1</h1>
+    <p>หน่วยที่ 1 · อวัยวะภายนอก–ภายในและหน้าที่ · ประสาทสัมผัสทั้ง 5 · การดูแลรักษาอวัยวะ · 4 ชุด เรียงจากง่ายไปยาก สุ่มข้อใหม่ทุกรอบ</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="lead" id="note"></div>
+  <div class="tools" id="tools">
+    <label><input type="checkbox" id="autoread"> อ่านโจทย์ให้ฟังอัตโนมัติ</label>
+    <button class="btn gh" id="reset" type="button" style="padding:5px 16px;margin:0">เริ่มชุดนี้ใหม่</button>
+  </div>
+  <div id="list"></div>
+  <div id="result" class="result hide"></div>
+</div>
+
+<script>
+/* ============================================================
+   หน่วยการเรียนรู้ที่ 1 ตัวเรา พืช และสัตว์ · วิทยาศาสตร์ ป.1
+   บทที่ 2 ถอดจากหนังสือเรียนที่ผู้ใช้ถ่ายมา หน้า 30–41 (ส่วนต่าง ๆ ของสัตว์ + สรุปสาระสำคัญ)
+   บทที่ 1 ยึดตามหน้าสรุปสาระสำคัญ (หน้า 41) และใบทบทวน science/p1-review.html
+   ข้อสอบยึดขอบเขตที่ครูแจ้ง: บทที่ 1 อวัยวะภายนอก–ภายในและหน้าที่
+                            บทที่ 2 การดูแลรักษาอวัยวะ · ประสาทสัมผัสทั้ง 5
+
+   โครงข้อมูล
+   - SUMMARY : การ์ดสรุปรายบท  { h:'หัวข้อ', li:[...] }  หรือ  { h:'หัวข้อ', dl:[[คำ, ความหมาย], ...] }
+   - แบบฝึก  : [โจทย์, [[อิโมจิ, ตัวเลือก], ...], ลำดับที่ถูก (0/1/2), อิโมจิโจทย์, คำอธิบายเฉลย]
+               ตัวเลือกจะถูกสลับตำแหน่งใหม่ทุกครั้งที่เริ่มชุด
+   - {part:'ชื่อตอน'} = หัวตอนคั่นกลาง
+   - ข้อสอบ  : EXAM_POOL = ตอนละคลัง { part, n, qs } สุ่มมาตอนละ n ข้อทุกครั้งที่เริ่มชุดใหม่
+   ============================================================ */
+
+const SUMMARY=[];
+
+/* ---------------- ชุดที่ 1 เริ่มต้น: ถามตรง อวัยวะไหน ทำอะไร ----------------
+   ทุกชุด: คลังตอนละหลายข้อ สุ่มมาตอนละ n ข้อ ทุกครั้งที่เริ่มชุดใหม่ได้ข้อสอบไม่ซ้ำเดิม */
+const L1=[
+ { part:'ตอนที่ 1 อวัยวะภายนอกและอวัยวะภายใน', e:'🧒', n:5, qs:[
+  ['ข้อใดเป็นอวัยวะภายนอก',[['👂','หู'],['🫀','หัวใจ'],['🫁','ปอด']],0,'','หูอยู่นอกร่างกาย มองเห็นได้'],
+  ['ข้อใด ไม่ใช่ อวัยวะภายนอก',[['👃','จมูก'],['✋','มือ'],['🧠','สมอง']],2,'','สมองอยู่ภายในศีรษะ เป็นอวัยวะภายใน'],
+  ['ข้อใดเป็นอวัยวะภายในทั้งหมด',[['🫀','หัวใจ ปอด สมอง'],['👀','ตา หู ปาก'],['🦶','มือ เท้า ผิวหนัง']],0,'',''],
+  ['ข้อใดเป็นอวัยวะภายนอกทั้งหมด',[['🍲','กระเพาะอาหาร ลำไส้'],['👀','ตา จมูก มือ'],['🫁','ปอด หัวใจ']],1,'',''],
+  ['อวัยวะภายในมีลักษณะอย่างไร',[['👀','มองเห็นได้จากภายนอก'],['🫀','อยู่ในร่างกาย มองไม่เห็นจากภายนอก'],['💇','งอกออกมานอกร่างกาย']],1,'',''],
+  ['ข้อใดเป็นอวัยวะภายใน',[['🍲','กระเพาะอาหาร'],['👄','ปาก'],['🖐️','ผิวหนัง']],0,'',''],
+  ['หัวใจอยู่ส่วนใดของร่างกาย',[['🧑','ในศีรษะ'],['🫀','ในช่องอก'],['🦵','ในขา']],1,'','หัวใจและปอดอยู่ในช่องอก'],
+  ['สมองอยู่ส่วนใดของร่างกาย',[['🧑','ในศีรษะ'],['🫀','ในช่องอก'],['🍲','ในช่องท้อง']],0,'',''],
+  ['กระเพาะอาหารอยู่ส่วนใดของร่างกาย',[['🧑','ในศีรษะ'],['✋','ในมือ'],['🍲','ในช่องท้อง']],2,'',''],
+ ]},
+ { part:'ตอนที่ 2 หน้าที่ของอวัยวะ', e:'🫀', n:5, qs:[
+  ['ตาทำหน้าที่อะไร',[['👀','ดูสิ่งต่าง ๆ'],['👂','ฟังเสียง'],['👅','รับรส']],0,'',''],
+  ['จมูกทำหน้าที่อะไร',[['🍽️','เคี้ยวอาหาร'],['👃','หายใจและดมกลิ่น'],['✋','หยิบจับสิ่งของ']],1,'',''],
+  ['ปากทำหน้าที่อะไร',[['👀','มองดูสิ่งต่าง ๆ'],['🦶','รับน้ำหนักตัว'],['🗣️','พูดและรับประทานอาหาร']],2,'',''],
+  ['มือทำหน้าที่อะไร',[['✋','หยิบจับสิ่งของ'],['👃','ดมกลิ่น'],['👂','ฟังเสียง']],0,'',''],
+  ['เท้าทำหน้าที่อะไร',[['👅','รับรส'],['🦶','เคลื่อนที่และรับน้ำหนักตัว'],['🧠','คิดและจำ']],1,'',''],
+  ['สมองทำหน้าที่อะไร',[['🍲','ย่อยอาหาร'],['💨','หายใจ'],['🧠','ควบคุมการทำงานของร่างกาย']],2,'',''],
+  ['หัวใจทำหน้าที่อะไร',[['🫀','สูบฉีดเลือดไปเลี้ยงร่างกาย'],['🍲','ย่อยอาหาร'],['👀','มองเห็น']],0,'',''],
+  ['ปอดทำหน้าที่อะไร',[['🍲','ย่อยอาหาร'],['🫁','หายใจ'],['🧠','คิดและจำ']],1,'',''],
+  ['กระเพาะอาหารทำหน้าที่อะไร',[['🫀','สูบฉีดเลือด'],['💨','หายใจ'],['🍲','ย่อยอาหาร']],2,'',''],
+  ['เวลาน้องท่องสูตรคูณ อวัยวะใดทำงานมากที่สุด',[['🧠','สมอง'],['🍲','กระเพาะอาหาร'],['🦶','เท้า']],0,'','สมองใช้คิดและจำ'],
+  ['เวลาเตะฟุตบอล อวัยวะใดทำหน้าที่เคลื่อนที่',[['👂','หู'],['🦶','ขาและเท้า'],['👃','จมูก']],1,'⚽',''],
+  ['เวลาวิ่งเหนื่อย ๆ แล้วหายใจแรง อวัยวะภายในใดทำงานหนักขึ้น',[['🫁','ปอดและหัวใจ'],['🍲','กระเพาะอาหาร'],['🌀','ลำไส้']],0,'🏃',''],
+ ]},
+ { part:'ตอนที่ 3 ประสาทสัมผัสทั้ง 5', e:'👂', n:5, qs:[
+  ['ประสาทสัมผัสของคนเรามีกี่อย่าง',[['3️⃣','3 อย่าง'],['4️⃣','4 อย่าง'],['5️⃣','5 อย่าง']],2,'',''],
+  ['ข้อใดเป็นอวัยวะรับสัมผัสทั้ง 5 อย่างถูกต้อง',[['👀','ตา หู จมูก ลิ้น ผิวหนัง'],['🫀','หัวใจ ปอด สมอง ตา หู'],['✋','มือ เท้า ขา แขน ผม']],0,'',''],
+  ['ได้กลิ่นหอมของดอกมะลิ เพราะอวัยวะใด',[['👂','หู'],['👃','จมูก'],['👅','ลิ้น']],1,'🌼',''],
+  ['ได้ยินเสียงไก่ขันตอนเช้า เพราะอวัยวะใด',[['👀','ตา'],['🖐️','ผิวหนัง'],['👂','หู']],2,'🐓',''],
+  ['รู้ว่ามะนาวมีรสเปรี้ยว เพราะอวัยวะใด',[['👅','ลิ้น'],['👂','หู'],['👀','ตา']],0,'🍋',''],
+  ['มองเห็นท้องฟ้าสีฟ้า เพราะอวัยวะใด',[['👃','จมูก'],['👀','ตา'],['👅','ลิ้น']],1,'🌤️',''],
+  ['จับตุ๊กตาแล้วรู้ว่านุ่ม เพราะอวัยวะใด',[['👂','หู'],['👃','จมูก'],['🖐️','ผิวหนัง']],2,'🧸',''],
+  ['ลิ้นช่วยให้เรารับรู้สิ่งใด',[['🍬','รสหวาน เปรี้ยว เค็ม'],['🎵','เสียงดัง เสียงค่อย'],['🌈','สีต่าง ๆ']],0,'',''],
+  ['ผิวหนังช่วยให้เรารับรู้สิ่งใด',[['🌸','กลิ่นหอม'],['🔥','ร้อน เย็น นุ่ม แข็ง'],['🍬','รสหวาน']],1,'',''],
+  ['ถ้าเป็นหวัดคัดจมูก จะรับรู้สิ่งใดได้น้อยลง',[['👀','การมองเห็น'],['👂','การได้ยิน'],['👃','การได้กลิ่น']],2,'🤧',''],
+  ['กินส้มตำ ใช้ประสาทสัมผัสใดบ้าง',[['👀','ตามอง จมูกดมกลิ่น ลิ้นรับรส'],['👂','หูอย่างเดียว'],['🦶','เท้าอย่างเดียว']],0,'🥗','การกินอาหารใช้ประสาทสัมผัสหลายอย่างร่วมกัน'],
+ ]},
+ { part:'ตอนที่ 4 การดูแลรักษาอวัยวะ', e:'🪥', n:5, qs:[
+  ['ข้อใดเป็นการดูแลรักษาตาที่ถูกต้อง',[['👊','ขยี้ตาแรง ๆ'],['📖','อ่านหนังสือในที่มีแสงสว่างพอ'],['📱','เล่นมือถือในที่มืด']],1,'👀',''],
+  ['ข้อใดเป็นการดูแลรักษาหูที่ถูกต้อง',[['🔇','ไม่ใช้ไม้หรือของแหลมแคะหู'],['📢','ใส่หูฟังเสียงดังมาก ๆ'],['🥢','แคะหูด้วยไม้ทุกวัน']],0,'👂',''],
+  ['ข้อใดเป็นการดูแลรักษาจมูกที่ถูกต้อง',[['🥜','เอาเมล็ดถั่วใส่จมูก'],['💨','สั่งน้ำมูกแรง ๆ'],['🤧','ไม่สั่งน้ำมูกแรง ๆ']],2,'👃',''],
+  ['ข้อใดเป็นการดูแลรักษาฟันที่ถูกต้อง',[['🪥','แปรงฟันวันละ 2 ครั้ง'],['🍭','อมลูกอมก่อนนอน'],['🚫','แปรงฟันสัปดาห์ละครั้ง']],0,'🦷',''],
+  ['ข้อใดเป็นการดูแลรักษาผิวหนังที่ถูกต้อง',[['🛁','อาบน้ำอย่างน้อยวันละ 2 ครั้ง'],['👕','ใส่เสื้อผ้าเปียกชื้นทั้งวัน'],['💅','เกาแรง ๆ จนเป็นแผล']],0,'',''],
+  ['ก่อนรับประทานอาหาร ควรทำอย่างไร',[['🎮','เล่นเกม'],['🧼','ล้างมือให้สะอาด'],['🐶','จับสุนัขเล่น']],1,'🍛',''],
+  ['เมื่อออกนอกบ้าน ควรดูแลเท้าอย่างไร',[['🦶','เดินเท้าเปล่า'],['🧦','ใส่ถุงเท้าเปียก'],['👟','สวมรองเท้า']],2,'🏠',''],
+  ['ข้อใด ไม่ควร ทำ',[['🥢','ใช้ไม้แคะหู'],['🪥','แปรงฟันก่อนนอน'],['✂️','ตัดเล็บให้สั้น']],0,'','การใช้ไม้แคะหูอาจทำให้หูเป็นแผล'],
+  ['ข้อใดเป็นสิ่งที่ ไม่ควร ทำ',[['🧼','ล้างมือก่อนกินข้าว'],['👊','ขยี้ตาแรง ๆ เมื่อฝุ่นเข้าตา'],['🛁','อาบน้ำทุกวัน']],1,'','เมื่อฝุ่นเข้าตา ควรกะพริบตาหรือล้างด้วยน้ำสะอาด'],
+  ['ทำอย่างไรให้อวัยวะภายในแข็งแรง',[['🍟','กินขนมแทนข้าว'],['🌙','นอนดึกทุกคืน'],['🥦','กินอาหารครบ 5 หมู่ ออกกำลังกาย นอนหลับพอ']],2,'💪',''],
+  ['ทำไมเราต้องดูแลรักษาอวัยวะ',[['⭐','เพราะอวัยวะมีความสำคัญ ต้องใช้ทำกิจกรรมทุกวัน'],['🎁','เพราะจะได้ของขวัญ'],['😴','เพราะจะได้นอนทั้งวัน']],0,'',''],
+ ]},
+];
+
+/* ---------------- ชุดที่ 2 ปานกลาง: สถานการณ์ในชีวิตประจำวัน ---------------- */
+const L2=[
+ { part:'ตอนที่ 1 อวัยวะภายนอกและอวัยวะภายใน', e:'🧒', n:5, qs:[
+  ['หมอใช้หูฟังฟังเสียงเต้นตุบ ๆ ที่หน้าอก เป็นเสียงของอวัยวะใด',[['🫀','หัวใจ'],['🍲','กระเพาะอาหาร'],['🧠','สมอง']],0,'🩺',''],
+  ['เวลาส่องกระจก เรามองเห็นอวัยวะใดได้',[['👃','จมูก'],['🫀','หัวใจ'],['🧠','สมอง']],0,'🪞','จมูกเป็นอวัยวะภายนอก จึงมองเห็นได้'],
+  ['อวัยวะใดที่เรามองไม่เห็นในกระจก เพราะอยู่ในร่างกาย',[['🫁','ปอด'],['👂','หู'],['✋','มือ']],0,'🪞','ปอดเป็นอวัยวะภายใน'],
+  ['กินข้าวแล้ว อาหารจะลงไปที่อวัยวะภายในใดก่อน',[['🍲','กระเพาะอาหาร'],['🫀','หัวใจ'],['🫁','ปอด']],0,'🍚',''],
+  ['การใส่หมวกกันน็อกช่วยป้องกันอวัยวะภายในใด',[['🧠','สมอง'],['🍲','กระเพาะอาหาร'],['🌀','ลำไส้']],0,'⛑️','สมองอยู่ในศีรษะ'],
+  ['เอามือแตะหน้าอกแล้วรู้สึกตุบ ๆ เป็นการทำงานของอวัยวะใด',[['🫀','หัวใจ'],['🧠','สมอง'],['🍲','กระเพาะอาหาร']],0,'',''],
+  ['หายใจเข้าลึก ๆ แล้วหน้าอกพองขึ้น เพราะอวัยวะใดรับอากาศเข้าไป',[['🫁','ปอด'],['🫀','หัวใจ'],['🌀','ลำไส้']],0,'💨',''],
+  ['ข้อใดจับคู่อวัยวะกับกลุ่มได้ถูกต้อง',[['👀','ตา – อวัยวะภายนอก'],['🫁','ปอด – อวัยวะภายนอก'],['✋','มือ – อวัยวะภายใน']],0,'',''],
+ ]},
+ { part:'ตอนที่ 2 หน้าที่ของอวัยวะ', e:'🫀', n:5, qs:[
+  ['น้องเตะลูกบอล ใช้อวัยวะใดมากที่สุด',[['🦶','เท้า'],['👂','หู'],['👃','จมูก']],0,'⚽',''],
+  ['น้องปรบมือตามจังหวะเพลง ใช้อวัยวะใด',[['👏','มือ'],['🦶','เท้า'],['👄','ปาก']],0,'🎵',''],
+  ['น้องร้องเพลงชาติ ใช้อวัยวะใดส่งเสียง',[['👄','ปาก'],['👂','หู'],['👀','ตา']],0,'🇹🇭',''],
+  ['น้องจำเบอร์โทรศัพท์ของแม่ได้ เพราะอวัยวะใด',[['🧠','สมอง'],['🫀','หัวใจ'],['🫁','ปอด']],0,'📞','สมองใช้คิดและจำ'],
+  ['หลังกินข้าวเที่ยง อวัยวะใดทำหน้าที่ย่อยอาหาร',[['🍲','กระเพาะอาหาร'],['🫁','ปอด'],['🧠','สมอง']],0,'🍛',''],
+  ['เราดำน้ำนาน ๆ ไม่ได้ เพราะอวัยวะใดต้องการอากาศหายใจ',[['🫁','ปอด'],['🍲','กระเพาะอาหาร'],['🧠','สมอง']],0,'🏊',''],
+  ['ขณะนอนหลับ อวัยวะใดยังทำงานอยู่ตลอดเวลา',[['🫀','หัวใจ'],['✋','มือ'],['👀','ตา']],0,'😴','หัวใจเต้นตลอดเวลา แม้ตอนเราหลับ'],
+  ['น้องเคี้ยวข้าวให้ละเอียด ใช้ส่วนใดในปาก',[['🦷','ฟัน'],['👃','จมูก'],['👂','หู']],0,'',''],
+ ]},
+ { part:'ตอนที่ 3 ประสาทสัมผัสทั้ง 5', e:'👂', n:5, qs:[
+  ['ได้ยินเสียงแม่เรียกจากในครัว ใช้ประสาทสัมผัสด้านใด',[['👂','การได้ยิน'],['👅','การรับรส'],['👀','การมองเห็น']],0,'',''],
+  ['รู้ว่ามีขนมปังอบอยู่ในเตา ทั้งที่ยังไม่เห็น เพราะอะไร',[['👃','จมูกได้กลิ่นหอม'],['👅','ลิ้นรับรส'],['🖐️','ผิวหนังรู้สึก']],0,'🍞',''],
+  ['เอามือไปใกล้หม้อที่ตั้งไฟ รู้สึกร้อน เพราะอวัยวะใด',[['🖐️','ผิวหนัง'],['👀','ตา'],['👂','หู']],0,'🍲',''],
+  ['ชิมน้ำแกงแล้วรู้ว่าเค็มไป ใช้อวัยวะใด',[['👅','ลิ้น'],['👃','จมูก'],['👂','หู']],0,'🥄',''],
+  ['มองสัญญาณไฟจราจรแล้วรู้ว่าเป็นไฟแดง ใช้อวัยวะใด',[['👀','ตา'],['👂','หู'],['🖐️','ผิวหนัง']],0,'🚦',''],
+  ['ปิดตาแล้วคลำของในถุง รู้ว่าเป็นลูกบอลกลม ๆ ใช้ประสาทสัมผัสด้านใด',[['🖐️','การสัมผัส'],['👀','การมองเห็น'],['👃','การได้กลิ่น']],0,'🛍️',''],
+  ['ได้ยินเสียงแล้วรู้ว่าเป็นแมวร้อง ใช้อวัยวะใด',[['👂','หู'],['👃','จมูก'],['👅','ลิ้น']],0,'🐱',''],
+  ['ได้กลิ่นเหม็นไหม้ในบ้าน อวัยวะใดช่วยให้เรารู้',[['👃','จมูก'],['👂','หู'],['👅','ลิ้น']],0,'🔥','ได้กลิ่นไหม้ต้องรีบบอกผู้ใหญ่'],
+ ]},
+ { part:'ตอนที่ 4 การดูแลรักษาอวัยวะ', e:'🪥', n:5, qs:[
+  ['ฝุ่นเข้าตา ควรทำอย่างไร',[['💧','กะพริบตา หรือล้างตาด้วยน้ำสะอาด'],['👊','ขยี้ตาแรง ๆ'],['☝️','เอานิ้วแคะตา']],0,'👀',''],
+  ['เป็นหวัดมีน้ำมูก ควรทำอย่างไร',[['🤧','สั่งน้ำมูกเบา ๆ'],['💨','สั่งน้ำมูกแรง ๆ'],['☝️','ใช้นิ้วแคะจมูก']],0,'',''],
+  ['รู้สึกคันหู ควรทำอย่างไร',[['🙋','บอกผู้ใหญ่ ไม่แคะหูเอง'],['🥢','ใช้ไม้จิ้มฟันแคะ'],['✏️','ใช้ดินสอแคะ']],0,'👂',''],
+  ['จะออกไปวิ่งเล่นที่สนาม ควรสวมอะไรที่เท้า',[['👟','รองเท้า'],['🦶','ไม่ต้องสวมอะไร'],['🧤','ถุงมือ']],0,'🏃',''],
+  ['เล่นดินทรายเสร็จแล้วจะกินขนม ควรทำอะไรก่อน',[['🧼','ล้างมือด้วยสบู่'],['👕','เช็ดมือกับเสื้อ'],['🍪','กินเลย']],0,'',''],
+  ['ดูการ์ตูนในแท็บเล็ต ควรทำอย่างไร',[['⏰','ไม่ดูนานเกินไป และถือให้ห่างจากตา'],['🌑','ดูในห้องมืด'],['📱','ถือชิดตา']],0,'📺',''],
+  ['ก่อนเข้านอน ควรทำอะไรเพื่อดูแลฟัน',[['🪥','แปรงฟัน'],['🍭','อมลูกอม'],['🧃','ดื่มน้ำหวาน']],0,'🌙',''],
+  ['เพื่อนเปิดเพลงดังมากข้างหู น้องควรทำอย่างไร',[['🔉','ขอให้เบาเสียงลง'],['🔊','เอาหูไปใกล้ลำโพง'],['🎧','ใส่หูฟังเปิดให้ดังกว่า']],0,'',''],
+  ['อาบน้ำตอนเช้าและตอนเย็น เป็นการดูแลอวัยวะใด',[['🖐️','ผิวหนัง'],['🫀','หัวใจ'],['🧠','สมอง']],0,'🛁',''],
+ ]},
+];
+
+/* ---------------- ชุดที่ 3 ยาก: ข้อใดไม่ใช่ · ทั้งหมด · เหตุผล · หลายอวัยวะ ---------------- */
+const L3=[
+ { part:'ตอนที่ 1 อวัยวะภายนอกและอวัยวะภายใน', e:'🧒', n:5, qs:[
+  ['ข้อใดเป็นอวัยวะภายในทั้งหมด',[['🧠','สมอง ปอด กระเพาะอาหาร'],['🫀','หัวใจ ตา ปอด'],['🌀','สมอง หู ลำไส้']],0,'','ตาและหูเป็นอวัยวะภายนอก'],
+  ['ข้อใดเป็นอวัยวะภายนอกทั้งหมด',[['👀','ตา ลิ้น ผิวหนัง'],['👂','หู ปาก หัวใจ'],['✋','มือ เท้า ปอด']],0,'','หัวใจและปอดเป็นอวัยวะภายใน'],
+  ['ข้อใดจัดกลุ่ม ผิด',[['🫁','ปอด – อวัยวะภายนอก'],['👂','หู – อวัยวะภายนอก'],['🧠','สมอง – อวัยวะภายใน']],0,'','ปอดอยู่ในช่องอก เป็นอวัยวะภายใน'],
+  ['อวัยวะคู่ใดอยู่ในช่องอกทั้งสองอย่าง',[['🫀','หัวใจ และ ปอด'],['🧠','หัวใจ และ สมอง'],['🍲','ปอด และ กระเพาะอาหาร']],0,'',''],
+  ['อวัยวะคู่ใดอยู่ในช่องท้องทั้งสองอย่าง',[['🍲','กระเพาะอาหาร และ ลำไส้'],['🫁','ปอด และ ลำไส้'],['🫀','หัวใจ และ กระเพาะอาหาร']],0,'',''],
+  ['ข้อใดกล่าว ถูกต้อง',[['🫀','อวัยวะภายในมองไม่เห็นจากภายนอก'],['🫁','ปอดเป็นอวัยวะภายนอก'],['👀','ตาเป็นอวัยวะภายใน']],0,'',''],
+  ['ข้อใดกล่าว ไม่ถูกต้อง',[['🫀','หัวใจอยู่ในศีรษะ'],['🧠','สมองอยู่ในศีรษะ'],['🫁','ปอดอยู่ในช่องอก']],0,'','หัวใจอยู่ในช่องอก'],
+  ['“ตา จมูก หัวใจ” อวัยวะใดไม่เข้าพวก',[['🫀','หัวใจ'],['👀','ตา'],['👃','จมูก']],0,'🤔','หัวใจเป็นอวัยวะภายใน ส่วนตาและจมูกเป็นอวัยวะภายนอก'],
+ ]},
+ { part:'ตอนที่ 2 หน้าที่ของอวัยวะ', e:'🫀', n:5, qs:[
+  ['ข้อใดจับคู่อวัยวะกับหน้าที่ถูกต้องทั้งสองคู่',[['🫁','ปอด – หายใจ · สมอง – คิดและจำ'],['🫀','หัวใจ – ย่อยอาหาร · ตา – มองเห็น'],['🍲','กระเพาะอาหาร – หายใจ · หู – ฟังเสียง']],0,'',''],
+  ['ข้อใดจับคู่อวัยวะกับหน้าที่ ผิด',[['🫁','ปอด – ย่อยอาหาร'],['🫀','หัวใจ – สูบฉีดเลือด'],['🧠','สมอง – ควบคุมร่างกาย']],0,'','ปอดใช้หายใจ ส่วนกระเพาะอาหารย่อยอาหาร'],
+  ['ข้อใดจับคู่อวัยวะภายนอกกับหน้าที่ ไม่ถูกต้อง',[['✋','มือ – ดมกลิ่น'],['🦶','เท้า – รับน้ำหนักตัว'],['👄','ปาก – พูด']],0,'','มือใช้หยิบจับ จมูกใช้ดมกลิ่น'],
+  ['จมูกทำหน้าที่ 2 อย่าง คือข้อใด',[['👃','หายใจ และ ดมกลิ่น'],['👅','ดมกลิ่น และ รับรส'],['👂','หายใจ และ ฟังเสียง']],0,'',''],
+  ['ปากทำหน้าที่ 2 อย่าง คือข้อใด',[['👄','พูด และ รับประทานอาหาร'],['👃','พูด และ ดมกลิ่น'],['👀','มองดู และ กินอาหาร']],0,'',''],
+  ['ตอนกินข้าว อวัยวะทำงานเรียงลำดับอย่างไร',[['👀','ตามอง → มือตัก → ปากเคี้ยว → กระเพาะอาหารย่อย'],['🍲','กระเพาะอาหารย่อย → ปากเคี้ยว → มือตัก → ตามอง'],['👄','ปากเคี้ยว → ตามอง → กระเพาะอาหารย่อย → มือตัก']],0,'🍚','อวัยวะหลายส่วนทำงานร่วมกันตามลำดับ'],
+  ['ถ้าหัวใจหยุดเต้น จะเกิดอะไรขึ้น',[['🫀','เลือดไม่ไปเลี้ยงร่างกาย ร่างกายทำงานไม่ได้'],['👀','มองไม่เห็นสีเท่านั้น'],['👂','ได้ยินเสียงดังขึ้น']],0,'',''],
+  ['การวิ่งเล่น ต้องใช้อวัยวะใดทำงานร่วมกัน',[['🏃','ขา เท้า ปอด หัวใจ'],['👃','หู จมูก ลิ้น'],['🦷','ฟัน ลิ้น กระเพาะอาหาร']],0,'','วิ่งต้องใช้ขาและเท้า ปอดหายใจแรงขึ้น หัวใจเต้นเร็วขึ้น'],
+  ['ทำไมร่างกายของเราต้องมีอวัยวะหลายส่วน',[['🧩','แต่ละส่วนทำหน้าที่ต่างกัน และทำงานร่วมกัน'],['🎀','เพื่อให้ดูสวยงาม'],['🔄','เพราะใช้แทนกันได้ทุกส่วน']],0,'',''],
+ ]},
+ { part:'ตอนที่ 3 ประสาทสัมผัสทั้ง 5', e:'👂', n:5, qs:[
+  ['ข้อใดจับคู่อวัยวะกับประสาทสัมผัส ผิด',[['👂','หู – การได้กลิ่น'],['👀','ตา – การมองเห็น'],['👅','ลิ้น – การรับรส']],0,'','หูใช้ได้ยิน จมูกใช้ได้กลิ่น'],
+  ['ข้อใดใช้ประสาทสัมผัสด้านเดียวกันทั้งคู่',[['👂','ได้ยินเสียงนกร้อง และ ฟังเพลง'],['👃','ดมดอกไม้ และ ชิมขนม'],['👀','มองรุ้ง และ จับน้ำแข็ง']],0,'','ทั้งสองอย่างใช้หูได้ยิน'],
+  ['ข้อใดรับรู้ได้ด้วยผิวหนังทั้งหมด',[['🖐️','ร้อน เย็น นุ่ม'],['👅','หวาน เค็ม เปรี้ยว'],['👂','เสียงดัง เสียงค่อย']],0,'',''],
+  ['ถ้าปิดตาและปิดจมูก แล้วชิมผลไม้ จะยังรับรู้สิ่งใดได้',[['👅','รสชาติ'],['🌈','สีของผลไม้'],['🌸','กลิ่นของผลไม้']],0,'🍓','ลิ้นยังรับรสได้'],
+  ['ถ้าหูได้ยินไม่ชัด จะมีผลอย่างไร',[['👂','ฟังครูสอนได้ไม่ชัด'],['👀','มองกระดานไม่เห็น'],['👅','ชิมอาหารไม่รู้รส']],0,'',''],
+  ['คนที่มองไม่เห็น ใช้ประสาทสัมผัสใดช่วยอ่านอักษรเบรลล์',[['☝️','การสัมผัสด้วยปลายนิ้ว'],['👃','การได้กลิ่น'],['👅','การรับรส']],0,'📖','อักษรเบรลล์เป็นจุดนูน อ่านด้วยการสัมผัส'],
+  ['เมื่ออยู่ในห้องมืดสนิท ประสาทสัมผัสใดใช้ได้น้อยที่สุด',[['👀','การมองเห็น'],['👂','การได้ยิน'],['🖐️','การสัมผัส']],0,'🌑',''],
+  ['ข้อใดใช้ประสาทสัมผัสมากกว่า 1 ด้าน',[['🍦','กินไอศกรีม เห็นสี ได้กลิ่น รู้รสหวานเย็น'],['🔔','ฟังเสียงกริ่ง'],['🖼️','มองดูภาพ']],0,'',''],
+  ['ข้อใดกล่าว ถูกต้อง',[['👅','ลิ้นรับรส และผิวหนังรับสัมผัส'],['👀','เราใช้ตาฟังเสียง'],['👂','เราใช้หูดมกลิ่น']],0,'',''],
+ ]},
+ { part:'ตอนที่ 4 การดูแลรักษาอวัยวะ', e:'🪥', n:5, qs:[
+  ['ข้อใดเป็นการดูแลอวัยวะที่ถูกต้องทั้งหมด',[['🪥','แปรงฟันวันละ 2 ครั้ง · ล้างมือก่อนกินข้าว'],['👊','ขยี้ตาแรง ๆ · แปรงฟันก่อนนอน'],['🥢','ใช้ไม้แคะหู · อาบน้ำทุกวัน']],0,'',''],
+  ['ข้อใดเป็นการดูแลอวัยวะที่ ไม่ถูกต้อง',[['🌑','อ่านหนังสือในที่แสงน้อย'],['👟','สวมรองเท้าเมื่อออกนอกบ้าน'],['✂️','ตัดเล็บให้สั้น']],0,'','อ่านหนังสือในที่แสงน้อยทำให้ปวดตา'],
+  ['ทำไมไม่ควรใช้ไม้แคะหู',[['👂','อาจทำให้หูเป็นแผล หรือได้ยินไม่ชัด'],['💰','เพราะไม้ราคาแพง'],['👀','เพราะทำให้ตาเจ็บ']],0,'',''],
+  ['ทำไมต้องล้างมือก่อนรับประทานอาหาร',[['🦠','เพื่อไม่ให้เชื้อโรคเข้าสู่ร่างกาย'],['😋','เพื่อให้อาหารอร่อยขึ้น'],['✋','เพื่อให้มือนุ่ม']],0,'',''],
+  ['ทำไมไม่ควรสั่งน้ำมูกแรง ๆ',[['👃','อาจทำให้หูอื้อหรือจมูกบาดเจ็บ'],['💇','ทำให้ผมร่วง'],['🦷','ทำให้ฟันผุ']],0,'',''],
+  ['ถ้าไม่แปรงฟันเป็นเวลานาน จะเกิดอะไรขึ้น',[['🦷','ฟันผุ มีกลิ่นปาก'],['👀','มองไม่เห็น'],['👂','หูอื้อ']],0,'',''],
+  ['ข้อใดช่วยให้หัวใจและปอดแข็งแรง',[['🏃','ออกกำลังกายสม่ำเสมอ อยู่ห่างควันบุหรี่'],['🎮','นั่งเล่นเกมทั้งวัน'],['🚬','อยู่ใกล้คนสูบบุหรี่']],0,'',''],
+  ['ข้อใดช่วยดูแลสมอง',[['⛑️','นอนหลับให้เพียงพอ และใส่หมวกกันน็อกเมื่อซ้อนรถ'],['🌙','นอนดึกทุกคืน'],['🛵','ซ้อนมอเตอร์ไซค์โดยไม่ใส่หมวก']],0,'🧠',''],
+  ['ข้อใด ไม่ใช่ การดูแลผิวหนัง',[['👕','ใส่เสื้อผ้าที่เปียกชื้นทั้งวัน'],['🧼','อาบน้ำฟอกสบู่'],['🛁','อาบน้ำอย่างน้อยวันละ 2 ครั้ง']],0,'',''],
+ ]},
+];
+
+/* ---------------- ชุดที่ 4 จำลองสอบจริง: คละทุกระดับ ---------------- */
+const L4=L1.map((p,i)=>({ part:p.part, e:p.e, n:5, qs:p.qs.concat(L2[i].qs, L3[i].qs) }));
+const nOf=pool=>pool.reduce((t,p)=>t+p.n,0);
+
+const TABS=[
+ {id:'l1', name:'⭐ ชุดที่ 1', tc:'#2F9E5B', title:'ชุดที่ 1 เริ่มต้น · '+nOf(L1)+' ข้อ', pool:L1,
+  note:'⭐ <b>ชุดที่ 1 เริ่มต้น</b> — ถามตรง ๆ ว่าอวัยวะไหนเป็นอวัยวะภายนอก–ภายใน และทำหน้าที่อะไร · ทำให้ได้ 3 ดาวก่อน แล้วค่อยไปชุดที่ 2'},
+ {id:'l2', name:'⭐⭐ ชุดที่ 2', tc:'#3E7DB5', title:'ชุดที่ 2 ปานกลาง · '+nOf(L2)+' ข้อ', pool:L2,
+  note:'⭐⭐ <b>ชุดที่ 2 ปานกลาง</b> — โจทย์เป็นเรื่องในชีวิตประจำวัน ต้องคิดก่อนว่าใช้อวัยวะไหน'},
+ {id:'l3', name:'⭐⭐⭐ ชุดที่ 3', tc:'#C0587A', title:'ชุดที่ 3 ยาก · '+nOf(L3)+' ข้อ', pool:L3,
+  note:'⭐⭐⭐ <b>ชุดที่ 3 ยาก</b> — มีข้อ “ข้อใดไม่ใช่ / ข้อใดผิด / ทั้งหมด” และถามเหตุผล อ่านโจทย์ให้ครบทุกคำก่อนตอบ'},
+ {id:'l4', name:'🏆 ชุดที่ 4', tc:'#8A5A15', title:'ชุดที่ 4 จำลองสอบจริง · '+nOf(L4)+' ข้อ', pool:L4,
+  note:'🏆 <b>ชุดที่ 4 จำลองสอบจริง</b> — คละข้อง่ายถึงยากจากทุกชุด ครบทุกหัวข้อที่ครูแจ้ง ลองทำเองโดยไม่เปิดสรุป'},
+];
+
+/* สีประจำตอน: [สีหลัก, สีเข้ม, สีอ่อน, รูป] */
+const PARTC=[['#F3A5B8','#A23A5A','#FFF0F4','🧒'],['#8FC9F2','#2A6698','#EAF4FF','🫀'],
+             ['#F3C46B','#8A5A15','#FFF5DC','👂'],['#A5D6B0','#25724A','#E9F7EE','🪥']];
+const TL=['ก','ข','ค'];
+const PRAISE=['✓ ถูกต้อง เก่งมาก! 🎉','✓ สุดยอดเลย! ⭐','✓ ถูกต้อง! 👏','✓ เยี่ยมมาก! 🌈','✓ ใช่แล้ว! 😄'];
+/* คำอ่านของคำยาก ใส่ไว้ใต้ตัวเลือก (หน่วยนี้คำไม่ยาก ใส่เท่าที่จำเป็น) */
+const READ = {
+  'ผสมเกสร':'ผะ-สม-เก-สอน', 'ปูเสฉวน':'ปู-เส-ฉวน',
+};
+const READ_KEYS = Object.keys(READ).sort((a,b) => b.length - a.length);
+const readOf = t => { for(const k of READ_KEYS) if(t.indexOf(k) >= 0) return READ[k]; return ''; };
+/* เวลาพูดตัวเลือก ให้ต่อคำอ่านไปด้วย เครื่องจะได้อ่านคำยากได้ถูก (แปลงขีดเป็นเว้นวรรค) */
+const spoken = t => { const r = readOf(t); return r ? t + ' อ่านว่า ' + r.replace(/-/g, ' ') : t; };
+
+const $=s=>document.querySelector(s);
+const strip=s=>String(s).replace(/<[^>]*>/g,'');
+const attr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+let cur=0, ans={};
+
+const K=id=>'kids-sci-exam-'+id;
+function load(){ try{ ans=JSON.parse(localStorage.getItem(K(TABS[cur].id))||'{}')||{}; }catch(e){ ans={}; } }
+function save(){ try{ localStorage.setItem(K(TABS[cur].id), JSON.stringify(ans)); }catch(e){} }
+function questions(){ return (TABS[cur].items||[]).filter(x=>Array.isArray(x)); }
+
+/* ข้อสอบ: สุ่มจากคลังตอนละ n ข้อ เก็บชุดที่สุ่มไว้ระหว่างทำ พอเริ่มใหม่ค่อยสุ่มชุดใหม่ */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function buildExam(fresh){
+  const T=TABS[cur]; if(!T.pool) return;
+  const key=K(T.id)+'-pick';
+  let pick=null;
+  try{ pick=fresh?null:JSON.parse(localStorage.getItem(key)||'null'); }catch(e){ pick=null; }
+  const okPick=Array.isArray(pick) && pick.length===T.pool.length &&
+    pick.every((p,i)=>Array.isArray(p) && p.length===T.pool[i].n && p.every(j=>T.pool[i].qs[j]));
+  if(!okPick){
+    /* ชุดคละมีโจทย์ขึ้นต้นเหมือนกันจากต่างระดับ ไม่ให้โผล่ซ้ำในชุดเดียว */
+    const seen=new Set();
+    pick=T.pool.map(p=>shuffle(p.qs.map((q,i)=>i)).filter(i=>!seen.has(p.qs[i][0]) && seen.add(p.qs[i][0])).slice(0,p.n));
+    try{ localStorage.setItem(key, JSON.stringify(pick)); }catch(e){}
+  }
+  T.items=[];
+  T.pool.forEach((p,pi)=>{ T.items.push({part:p.part, e:p.e}); pick[pi].forEach(j=>T.items.push(p.qs[j])); });
+}
+
+/* สลับตำแหน่งตัวเลือกใหม่ทุกครั้งที่เริ่มชุด และจำไว้ระหว่างทำ */
+let ORD=[];
+function loadOrder(fresh){
+  const key=K(TABS[cur].id)+'-order', qs=questions();
+  try{ ORD=fresh?null:JSON.parse(localStorage.getItem(key)||'null'); }catch(e){ ORD=null; }
+  if(!Array.isArray(ORD) || ORD.length!==qs.length){
+    ORD=qs.map(q=>{ const a=q[1].map((o,i)=>i);
+      for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; });
+    try{ localStorage.setItem(key, JSON.stringify(ORD)); }catch(e){}
+  }
+}
+try{ const t=localStorage.getItem('kids-sci-exam-tab'); if(t!==null && TABS[+t]) cur=+t; }catch(e){}
+/* ลิงก์จากหน้ารวมเปิดแท็บได้ตรง ๆ เช่น #c1 หรือ #l2 */
+const tabOfHash=()=>TABS.findIndex(t=>t.id===decodeURIComponent(location.hash.slice(1)));
+if(tabOfHash()>=0) cur=tabOfHash();
+function goTab(i){ cur=i; try{ localStorage.setItem('kids-sci-exam-tab', cur); }catch(e){} render(); window.scrollTo({top:0}); }
+window.addEventListener('hashchange',()=>{ const i=tabOfHash(); if(i>=0 && i!==cur) goTab(i); });
+try{ $('#autoread').checked = localStorage.getItem('kids-sci-exam-read')==='1'; }catch(e){}
+$('#autoread').onchange=e=>{ try{ localStorage.setItem('kids-sci-exam-read', e.target.checked?'1':'0'); }catch(err){} };
+
+/* ---- อ่านออกเสียงภาษาไทย ---- */
+const synth=window.speechSynthesis;
+let thVoice=null;
+function pickVoice(){ if(!synth) return; const v=synth.getVoices().filter(x=>/^th/i.test(x.lang));
+  thVoice=v.find(x=>/Kanya|Narisa|Premwadee|Achara/i.test(x.name))||v[0]||null; }
+if(synth){ pickVoice(); synth.onvoiceschanged=pickVoice; }
+function speak(text){
+  if(!synth) return;
+  try{ synth.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(text); u.lang='th-TH'; u.rate=0.9;
+  if(thVoice) u.voice=thVoice;
+  synth.speak(u);
+}
+const readQ=(q,k)=>speak(q[0]+' … '+ORD[k].map((i,pos)=>TL[pos]+' '+q[1][i][1]).join(' … '));
+
+/* ชุดที่ทำได้ 90% ขึ้นไปแล้วติด ✅ ที่แท็บ ทำครบแต่ยังไม่ถึงติด ✔️ */
+function bestMark(t){ let b=0; try{ b=+(localStorage.getItem(K(t.id)+'-best')||0); }catch(e){} return b>=.9?' ✅':b>0?' ✔️':''; }
+function renderTabs(){
+  $('#tabs').innerHTML=TABS.map((t,i)=>'<button type="button" style="--tc:'+t.tc+'" class="'+(i===cur?'on':'')+'" data-i="'+i+'">'+t.name+bestMark(t)+'</button>').join('');
+  $('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    goTab(+b.dataset.i);
+  });
+}
+
+/* ---------------- หน้าสรุป ---------------- */
+function renderSummary(){
+  $('#tt').textContent='สรุปหน่วยที่ 1 ตัวเรา พืช และสัตว์';
+  $('#score').className='score hide';
+  $('#tools').className='tools hide';
+  $('#result').className='result hide';
+  let h='<div class="lead">📌 อ่านสรุปนี้ก่อน แล้วกดแท็บ <b>บทที่ 1</b> และ <b>บทที่ 2</b> เพื่อลองทำแบบฝึก จากนั้นกด <b>📝 ข้อสอบ</b> เพื่อวัดความพร้อม (ข้อสอบสุ่มใหม่ทุกครั้งที่เริ่มชุด) · แตะปุ่ม 🔊 ให้อ่านออกเสียงให้ฟังได้</div>';
+  SUMMARY.forEach((s,si)=>{
+    h+='<div class="sum" style="--pc:'+s.c[0]+';--pcd:'+s.c[1]+';--pl:'+s.c[2]+'">'+
+       '<div class="sh"><span class="pe">'+s.e+'</span><h2>'+s.t+'</h2>'+
+       '<button class="spk" type="button" data-s="'+si+'" aria-label="อ่าน'+strip(s.t)+'">🔊</button></div>';
+    s.blocks.forEach(b=>{
+      h+='<h3>'+b.h+'</h3>';
+      if(b.li) h+='<ul>'+b.li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+      if(b.dl) h+='<dl class="ft">'+b.dl.map(p=>'<dt>'+p[0]+'</dt><dd>'+p[1]+'</dd>').join('')+'</dl>';
+    });
+    h+='</div>';
+  });
+  $('#list').innerHTML=h;
+  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>{
+    const s=SUMMARY[+b.dataset.s];
+    let t=strip(s.t)+' … ';
+    s.blocks.forEach(bl=>{
+      t+=strip(bl.h)+' … ';
+      if(bl.li) t+=bl.li.map(strip).join(' … ')+' … ';
+      if(bl.dl) t+=bl.dl.map(p=>strip(p[0])+' คือ '+strip(p[1])).join(' … ')+' … ';
+    });
+    speak(t);
+  });
+}
+
+/* ---------------- หน้าแบบฝึก ---------------- */
+function render(){
+  renderTabs();
+  if(TABS[cur].summary){ renderSummary(); return; }
+  load(); buildExam(!Object.keys(ans).length); loadOrder(!Object.keys(ans).length);
+  $('#score').className='score';
+  $('#tools').className='tools';
+  const T=TABS[cur];
+  $('#tt').textContent=T.title;
+  $('#note').innerHTML=T.note||'';
+  let n=0, h='', pi=0, pc=PARTC[0];
+  const pcv=()=>'--pc:'+pc[0]+';--pcd:'+pc[1]+';--pl:'+pc[2];
+  T.items.forEach(x=>{
+    if(!Array.isArray(x)){ pc=PARTC[pi++%PARTC.length];
+      h+='<div class="part" style="'+pcv()+'"><span class="pe">'+(x.e||pc[3])+'</span>'+x.part+'</div>'; return; }
+    const k=n++;
+    /* ตัวเลือกยาว ให้เรียงลงมาทีละบรรทัด อ่านง่ายกว่าเรียง 3 คอลัมน์ */
+    const longest=Math.max.apply(null, x[1].map(o=>o[1].length));
+    h+='<div class="q" style="'+pcv()+'" id="q'+k+'"><div class="qh"><div class="num">'+(k+1)+'</div>'+
+       '<button class="spk" type="button" data-k="'+k+'" aria-label="อ่านโจทย์ข้อ '+(k+1)+'">🔊</button>'+
+       '<div class="qt">'+x[0]+'</div>'+(x[3]?'<div class="qe">'+x[3]+'</div>':'')+'</div>'+
+       '<div class="opts'+(longest>18?' list':'')+'">'+
+       ORD[k].map((i,pos)=>{ const o=x[1][i];
+         return '<div class="optwrap">'+
+           '<button type="button" class="opt'+(o[0]?'':' noem')+'" data-k="'+k+'" data-i="'+i+'">'+
+           '<span class="lt">'+TL[pos]+'</span>'+(o[0]?'<span class="em">'+o[0]+'</span>':'')+
+           '<span class="lb">'+o[1]+(readOf(o[1]) ? '<span class="rd">อ่านว่า '+readOf(o[1])+'</span>' : '')+'</span>'+
+           '</button>'+
+           '<button type="button" class="sayb" data-say="'+attr(spoken(o[1]))+'" aria-label="ฟังตัวเลือก '+TL[pos]+'">🔊</button>'+
+           '</div>'; }).join('')+
+       '</div><div class="fb"></div></div>';
+  });
+  $('#list').innerHTML=h;
+  const Q=questions();
+  $('#list').querySelectorAll('.spk').forEach(b=>b.onclick=()=>readQ(Q[+b.dataset.k],+b.dataset.k));
+  $('#list').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k,+b.dataset.i,true));
+  $('#list').querySelectorAll('.sayb').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+  Object.keys(ans).forEach(k=>show(+k, ans[k]));
+  updateScore(false);
+}
+
+function show(k,i,say){
+  const q=questions()[k], el=$('#q'+k); if(!q||!el) return;
+  const ok=i===q[2];
+  el.classList.add(ok?'ok':'no');
+  el.querySelectorAll('.opt').forEach(b=>{
+    const j=+b.dataset.i; b.classList.add('done');
+    if(j===q[2]) b.classList.add('right');
+    else if(j===i) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb=el.querySelector('.fb');
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML=(ok ? PRAISE[k%PRAISE.length] : '✗ คำตอบที่ถูกคือ '+TL[ORD[k].indexOf(q[2])]+'. '+q[1][q[2]][1])+
+    (q[4]?'<small>'+q[4]+'</small>':'');
+  /* อ่านเฉลยให้ฟังทันทีที่เลือก (ตอนโหลดหน้าเก่าคืนมาไม่ต้องอ่าน) */
+  if(say) speak((ok ? 'ถูกต้อง เก่งมาก … '+spoken(q[1][q[2]][1]) : 'ยังไม่ใช่ คำตอบที่ถูกคือ '+spoken(q[1][q[2]][1])) + (q[4] ? ' … '+strip(q[4]) : ''));
+}
+
+function pick(k,i,fresh){
+  if(ans[k]!==undefined) return;
+  ans[k]=i; save(); show(k,i,fresh); updateScore(fresh);
+  if(fresh){
+    const nx=$('#q'+(k+1));
+    if(nx && ans[k+1]===undefined){
+      setTimeout(()=>{ nx.scrollIntoView({behavior:'smooth',block:'center'});
+        if($('#autoread').checked) readQ(questions()[k+1],k+1); },650);
+    }
+  }
+}
+
+function updateScore(fresh){
+  const Q=questions(), keys=Object.keys(ans);
+  const right=keys.filter(k=>ans[k]===Q[k][2]).length;
+  $('#score').textContent=right+' / '+Q.length;
+  const r=$('#result');
+  if(keys.length<Q.length){ r.className='result hide'; return; }
+  const pct=right/Q.length;
+  const stars = pct>=.9?'⭐⭐⭐' : pct>=.7?'⭐⭐' : pct>=.5?'⭐' : '💪';
+  const msg = pct>=.9?'เก่งมาก! พร้อมสอบแล้ว' : pct>=.7?'ดีมาก! ทบทวนข้อที่ผิดอีกนิดนะ'
+            : pct>=.5?'ผ่านแล้ว ลองอ่านสรุปอีกรอบแล้วทำใหม่นะ' : 'ไม่เป็นไร กลับไปอ่านสรุปก่อน แล้วค่อยลองใหม่นะ';
+  r.className='result';
+  r.innerHTML='<div class="cheer">'+(pct>=.7?'🎉🏆🎉':'🌈')+'</div><div class="stars">'+stars+'</div>'+
+    '<div class="big">'+right+' / '+Q.length+'</div><p>'+msg+'</p>'+
+    '<button class="btn" type="button" id="again">'+(TABS[cur].pool?'🎲 สุ่มข้อสอบชุดใหม่':'ทำชุดนี้ใหม่')+'</button>'+
+    (TABS[cur+1]?'<button class="btn gh" type="button" id="toNext">ไปชุดถัดไป ▶</button>':'')+
+    '<a class="btn gh" href="unit1-body.html#sum" style="display:inline-block;text-decoration:none">กลับไปอ่านสรุป</a>';
+  $('#again').onclick=resetCur;
+  const nx=$('#toNext'); if(nx) nx.onclick=()=>goTab(cur+1);
+  if(fresh) setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'center'}),700);
+  if(fresh){ try{ const bk=K(TABS[cur].id)+'-best'; if(pct>+(localStorage.getItem(bk)||0)) localStorage.setItem(bk, pct); }catch(e){} renderTabs(); }
+  if(fresh && window.KP){
+    const wrong=keys.filter(k=>ans[k]!==Q[k][2]).map(k=>strip(Q[k][0])).slice(0,15);
+    KP.log({ kind:'test', page:'science-exam', subject:'วิทยาศาสตร์', title:'ข้อสอบเตรียมสอบ · '+TABS[cur].title,
+             score:right, total:Q.length, stars: pct>=.9?3 : pct>=.7?2 : 1, wrong });
+  }
+}
+
+function resetCur(){ ans={}; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+$('#reset').onclick=()=>{ if(!Object.keys(ans).length || confirm('ล้างคำตอบของชุดนี้แล้วเริ่มใหม่?')) resetCur(); };
+
+render();
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>
