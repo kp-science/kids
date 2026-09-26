@@ -51,6 +51,7 @@
     { id:'socu',    e:'🏫', tag:'test',   text:'ทำแบบฝึกสังคม หน้าที่พลเมือง/เศรษฐศาสตร์/สิ่งแวดล้อม 1 ชุด', url:'social/citizen-econ-env.html', done:ev => ev.some(x=>x.page==='social-cee') },
     { id:'socex',   e:'📝', tag:'test',   text:'ทำข้อสอบเตรียมสอบสังคมให้จบ 1 ชุด', url:'social/exam-prep.html', done:ev => ev.some(x=>x.page==='social-exam') },
     { id:'mathex',  e:'📐', tag:'test',   text:'สุ่มข้อสอบคณิต ป.1 เทอม 1 มาทำให้จบ 1 บท',   url:'math/p1-term1-exam.html',          done:ev => ev.some(x=>x.page==='math-p1-term1') },
+    { id:'mathprep', e:'🧮', tag:'test',   text:'ทำข้อสอบเตรียมสอบคณิตให้จบ 1 ชุด',        url:'math/exam-prep.html',              done:ev => ev.some(x=>x.page==='math-exam') },
   ];
   /* สื่อสาย "ลงมือทำ" ที่ไม่ใช่เกมฝึกสมอง */
   const HANDS = [

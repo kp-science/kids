@@ -4,7 +4,7 @@
    วิธีทำงาน: เปิดเว็บครั้งแรกตอนมีเน็ต → เก็บทุกไฟล์ไว้ในเครื่อง → ครั้งต่อไปเปิดจากในเครื่อง
    พออัปเดตเว็บ เลขรุ่นจะเปลี่ยน ตัวนี้จะโหลดชุดใหม่มาเก็บแล้วลบชุดเก่าทิ้ง
    ============================================================ */
-const VERSION = '2026-09-24-50aee6a6';
+const VERSION = '2026-09-26-6717e22f';
 const CACHE = 'kids-' + VERSION;
 const ASSETS = [
   "./",
@@ -34,6 +34,8 @@ const ASSETS = [
   "img/sci/snake.webp",
   "img/sci/tortoise.webp",
   "index.html",
+  "math/exam-prep-gen.js",
+  "math/exam-prep.html",
   "math/p1-review.html",
   "math/p1-term1-exam.html",
   "math/p1-term1-gen.js",
