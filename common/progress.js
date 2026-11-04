@@ -9,6 +9,37 @@
   const KEY = 'kids-progress', TICK = 15;
   const root = (document.currentScript && document.currentScript.src || '').replace(/common\/progress\.js.*$/, '');
 
+  /* ---------------- ย้ายบ้านไป kids.kpscience.com ----------------
+     ข้อมูลใน localStorage ผูกกับชื่อเว็บ ย้ายโดเมนแล้วดาว/สติกเกอร์จะหาย
+     บ้านเก่า (github.io): พอบ้านใหม่เปิดได้จริง ห่อทุก key ที่ขึ้นต้น kids- ส่งไปทาง #kp-move= ครั้งแรกครั้งเดียว
+     (หลังเปลี่ยนโดเมน หน้าบ้านเก่ายังเปิดได้จาก service worker ในเครื่อง โค้ดนี้จึงยังได้ทำงาน)
+     บ้านใหม่: รับของ ใส่เฉพาะ key ที่ยังไม่มี แล้วโหลดหน้าใหม่ครั้งเดียว */
+  const NEW_HOME = 'https://kids.kpscience.com';
+  const b64 = s => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
+  const unb64 = s => new TextDecoder().decode(Uint8Array.from(atob(s), c => c.charCodeAt(0)));
+  if(location.hash.startsWith('#kp-move=')){
+    try{
+      const got = JSON.parse(unb64(decodeURIComponent(location.hash.slice(9))));
+      Object.keys(got).forEach(k => { if(k.startsWith('kids-') && localStorage.getItem(k)===null) localStorage.setItem(k, got[k]); });
+    }catch(e){}
+    history.replaceState(null, '', location.pathname + location.search);
+    location.reload();
+  } else if(location.hostname === 'kp-science.github.io'){
+    fetch(NEW_HOME + '/common/progress.js', { cache:'no-store' }).then(r => {
+      if(!r.ok) return;
+      let tag = '';
+      try{
+        if(!localStorage.getItem('kids-moved')){
+          const all = {};
+          for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k.startsWith('kids-')) all[k] = localStorage.getItem(k); }
+          tag = '#kp-move=' + encodeURIComponent(b64(JSON.stringify(all)));
+          localStorage.setItem('kids-moved', '1');
+        }
+      }catch(e){}
+      location.replace(NEW_HOME + location.pathname.replace(/^\/kids/, '') + location.search + (tag || location.hash));
+    }).catch(() => {});
+  }
+
   /* ---------------- ข้อมูล ---------------- */
   const load = () => { try{ return JSON.parse(localStorage.getItem(KEY)||'{}') || {}; }catch(e){ return {}; } };
   const save = d => { try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} };
