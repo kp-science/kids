@@ -75,7 +75,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะเลนนั้นตอนโน้ตถึงวงกลม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
     <div class="speeds" id="cats"></div>
     <div class="speeds" id="speeds"></div>
-    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
+    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="fxBtn">✨ เสียงเอฟเฟกต์: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
     <div class="songs" id="songs"></div>
     <div class="pickbox"><label class="btn soft" id="pickBtn">🎧 เลือกเพลงจากเครื่อง<input type="file" id="pick" accept="audio/*" hidden></label>
       <small>ใช้ไฟล์เพลงที่มีอยู่ในไอแพด (mp3, m4a) เกมจะฟังจังหวะแล้วสร้างโน้ตให้ · ไฟล์อยู่ในเครื่องนี้เท่านั้น</small></div>
@@ -407,6 +407,7 @@ const inCat = s => cat==='all' || (cat==='times') === /^times/.test(s.id);
 function renderMenu(){
   $('#cats').innerHTML = CATS.map(([k,n]) => '<button type="button" data-c="'+k+'" class="'+(k===cat?'on':'')+'">'+n+'</button>').join('');
   $('#cats').querySelectorAll('button').forEach(b => b.onclick = () => { cat = b.dataset.c; history.replaceState(null, '', cat==='all' ? location.pathname : '#'+cat); say(b.textContent.replace(/^\S+\s/, '')); renderMenu(); });
+  $('#fxBtn').textContent = fxOn ? '✨ เสียงเอฟเฟกต์: เปิด' : '🔕 เสียงเอฟเฟกต์: ปิด'; $('#fxBtn').classList.toggle('on', fxOn);
   $('#band').textContent = backing ? '🥁 ดนตรีประกอบ: เปิด' : '🔇 ดนตรีประกอบ: ปิด'; $('#band').classList.toggle('on', backing);
   $('#speeds').innerHTML = SPEEDS.map((s,i) => '<button type="button" data-s="'+i+'" class="'+(i===spI?'on':'')+'">'+s.n+'</button>').join('');
   $('#speeds').querySelectorAll('button').forEach(b => b.onclick = () => { spI = +b.dataset.s; say(SPEEDS[spI].n.slice(3)); renderMenu(); });
@@ -439,6 +440,7 @@ $('#calGo').onclick = async () => {
   }, (st + 12*gap - a.currentTime)*1000 + 400);
 };
 $('#pad').addEventListener('pointerdown', e => { e.preventDefault(); const p = $('#pad'); p.classList.add('hit'); setTimeout(() => p.classList.remove('hit'), 90); if(calRun) calRun.taps.push(ac().currentTime); });
+$('#fxBtn').onclick = () => { fxOn = !fxOn; try{ localStorage.setItem('kids-rhythm-fx', fxOn ? '1' : '0'); }catch(e){} if(fxOn) hitFx('perf'); renderMenu(); };
 $('#band').onclick = () => { backing = !backing; try{ localStorage.setItem('kids-rhythm-band', backing ? '1' : '0'); }catch(e){} say(backing ? 'เปิดดนตรีประกอบ' : 'ปิดดนตรีประกอบ'); renderMenu(); };
 /* เพลงจากไอแพด: เล่นในเครื่องนี้เท่านั้น ไม่ส่งไฟล์ไปไหน */
 $('#pick').onchange = async e => {
@@ -487,6 +489,20 @@ $('#quit').onclick = () => {
 $('#back').onclick = () => { stopPlay(); $('#play').hidden = true; $('#menu').hidden = false; renderMenu(); };
 $('#again').onclick = () => start(song.id, false);
 
+/* เสียงเอฟเฟกต์ตอนกดถูก: เยี่ยม = ติ๊ง-ติ๊ง วิบวับ · ดี = ติ๊งเบา ๆ · ยาวเยี่ยม = ไล่โน้ตขึ้น · ทุก 10 คอมโบ = ฉลองสั้น ๆ */
+let fxOn = true;
+try{ fxOn = localStorage.getItem('kids-rhythm-fx') !== '0'; }catch(e){}
+function chime(f, at, dur, vol){ const a = ac(), o = a.createOscillator(), g = a.createGain();
+  o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(vol, at + .005);
+  g.gain.exponentialRampToValueAtTime(.001, at + dur); o.connect(g); g.connect(a.destination); o.start(at); o.stop(at + dur + .02); }
+function hitFx(kind){
+  if(!fxOn) return;
+  const t = ac().currentTime;
+  if(kind==='perf'){ chime(1568, t, .18, .07); chime(2093, t + .06, .25, .06); noise(t, .08, .03, 'highpass', 8000); }
+  else if(kind==='good') chime(1319, t, .18, .05);
+  else if(kind==='long') [1047, 1319, 1568, 2093].forEach((f,i) => chime(f, t + i*.06, .22, .06));
+  else if(kind==='combo') { [1047, 1319, 1568].forEach(f => chime(f, t, .45, .05)); chime(2093, t + .12, .5, .06); noise(t, .25, .04, 'highpass', 7000); }
+}
 function judge(n, kind){
   n.judged = true; n.res = kind; cnt[kind]++;
   if(kind==='miss'){ combo = 0; life = Math.max(0, life - 12); pop(n.lane, 'พลาด', '#FFB4B4');
@@ -494,6 +510,7 @@ function judge(n, kind){
     return; }
   combo++; score += (kind==='perf' ? 100 : 60) + Math.min(combo, 30)*2; life = Math.min(100, life + (kind==='perf' ? 3 : 1));
   pop(n.lane, kind==='perf' ? 'เยี่ยม!' : 'ดี!', kind==='perf' ? '#FFE27A' : '#B8F2D8'); burst(n.lane);
+  hitFx(combo % 10 === 0 ? 'combo' : kind);
 }
 function pop(l, txt, col, big){ pops.push({ l, txt, col, big, t:performance.now() }); }
 function burst(l, n=12){ for(let i=0;i<n;i++){ const a = Math.random()*Math.PI*2, v = 80+Math.random()*160;
@@ -513,14 +530,14 @@ function hitLane(l){
   G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
   if(!best){ tick(ac().currentTime, false); return; }
   const off = Math.abs(best.t - t);
-  if(best.midi==null) tone(LANE_MIDI[l], ac().currentTime, .05, .09); else best.stop = tone(best.midi, ac().currentTime, best.d);
+  if(best.midi==null){ if(!fxOn) tone(LANE_MIDI[l], ac().currentTime, .05, .09); } else best.stop = tone(best.midi, ac().currentTime, best.d);
   if(best.hold){ best.held = true; best.pressT = t; }
   judge(best, off <= sp.perf ? 'perf' : 'good');
 }
 function releaseLane(l){
   press.delete(l); if(!G) return;
   const t = now();
-  G.notes.forEach(n => { if(n.held && n.lane===l){ n.held = false; if(t < n.t + n.d - .12 && n.stop) n.stop(ac().currentTime); if(t >= n.t + n.d*.7){ score += 50; pop(l, 'ยาวเยี่ยม!', '#FFE27A'); } } });
+  G.notes.forEach(n => { if(n.held && n.lane===l){ n.held = false; if(t < n.t + n.d - .12 && n.stop) n.stop(ac().currentTime); if(t >= n.t + n.d*.7){ score += 50; pop(l, 'ยาวเยี่ยม!', '#FFE27A'); hitFx('long'); } } });
 }
 /* แตะได้หลายนิ้วพร้อมกัน · คอมพิวเตอร์ใช้ปุ่ม D F J K */
 const ptr = new Map();
@@ -553,7 +570,7 @@ function frame(){
     if(demo && n.midi!=null && !n.sched && n.t - t < .25 + lag()){ n.sched = true; n.stop = tone(n.midi, Math.max(a.currentTime, t0 + n.t), n.d); }   /* ตัวอย่าง: ตั้งเวลาเสียงให้ตรงจังหวะดนตรี */
     if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
     if(!n.judged && t - n.t > sp.good) judge(n, 'miss');
-    if(n.held && t >= n.t + n.d){ n.held = false; score += 50; pop(n.lane, 'ยาวเยี่ยม!', '#FFE27A'); }
+    if(n.held && t >= n.t + n.d){ n.held = false; score += 50; pop(n.lane, 'ยาวเยี่ยม!', '#FFE27A'); if(!demo) hitFx('long'); }
   });
   if(G.notes.length > 400) G.notes = G.notes.filter(n => !(n.judged && !n.held && t - n.t > 4));
   if(!demo) while(tier < MILES.length && t >= MILES[tier]) levelUp(tier+1);
