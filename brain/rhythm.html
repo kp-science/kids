@@ -153,20 +153,24 @@ function build(song, sp){
 }
 function addLoop(G){
   if(G.audio){
-    /* เพลงเสียงจริงเร่งความเร็วไม่ได้ (เสียงจะเพี้ยน) จึงเพิ่มความถี่ของโน้ตแทน: รอบแรกเฉพาะจังหวะหนัก → ทุกจังหวะ → ครึ่งจังหวะ */
-    const k = G.loops, ch = G.chart, thr = [ch.q50, ch.q30, ch.q50, ch.q30][Math.min(k, 3)], halfOk = k >= 2;
-    let last = -9, l1 = -1, l2 = -1; const used = [0,0,0,0];
-    ch.cands.forEach(c0 => {
-      if(c0.t < G.ls || c0.t >= G.ls + G.len - .05) return;
-      const c = Object.assign({}, c0, { t:c0.t - G.ls });
-      if(!c.r || c.r < thr || (c.half && !halfOk) || c.t - last < .22) return;
-      /* เลนตามช่วงเสียงที่ดังขึ้น แต่ถ้าเลนไหนใช้บ่อยเกินไปให้ขยับไปเลนถัดไป เพื่อให้ใช้ครบทั้ง 4 นิ้ว */
+    /* เพลงเสียงจริงเร่งความเร็วไม่ได้ (เสียงจะเพี้ยน) จึงเพิ่มความถี่ของโน้ตแทน · โน้ตทุกตัวลงบนจังหวะเคาะของเพลง
+       รอบ 1 ทุก 2 จังหวะ → รอบ 2 ทุกจังหวะ → รอบ 3+ เพิ่มครึ่งจังหวะตรงที่ดนตรีเน้น
+       ตารางจังหวะนับจากต้นช่วง loop (ตั้งไว้ตรงจังหวะแรกของห้อง) หรือจากจังหวะแรกที่หาได้ */
+    const k = G.loops, ch = G.chart, P = ch.P, base = G.ls ? G.ls : ch.cands[0].t;
+    const halfThr = k >= 3 ? ch.q30 : ch.q50, used = [0,0,0,0];
+    let l1 = -1, l2 = -1;
+    for(let h=0; base + h*P/2 < G.ls + G.len - .05; h++){
+      const ta = base + h*P/2; if(ta < G.ls) continue;
+      const onBeat = h%2===0, beat = h/2;
+      const c = ch.cands.reduce((b,x) => Math.abs(x.t-ta) < Math.abs(b.t-ta) ? x : b, ch.cands[0]);
+      if(!c.r) continue;   /* ช่วงเงียบ */
+      if(onBeat){ if(k===0 && beat%2) continue; }
+      else if(k < 2 || c.r < halfThr) continue;
       const lo = Math.min(...used);
       let lane = c.order.find(b => used[b] <= lo + 2 && !(b===l1 && b===l2)); if(lane==null) lane = c.order[0];
-      used[lane]++;
-      G.notes.push({ t:G.end+c.t, d:.1, midi:null, lane, hold:false, judged:false, res:'', held:false, stop:null, loop:k });
-      last = c.t; l2 = l1; l1 = lane;
-    });
+      used[lane]++; l2 = l1; l1 = lane;
+      G.notes.push({ t:G.end + ta - G.ls, d:.1, midi:null, lane, hold:false, judged:false, res:'', held:false, stop:null, loop:k });
+    }
     G.audioQ.push(G.end); G.end += G.len; G.loops++; return;
   }
   const spb = G.spb0 / Math.min(1.8, Math.pow(1.08, G.loops)), t0 = G.end; let beat = 0;
