@@ -25,6 +25,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .speeds{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
 .speeds button{border:3px solid var(--line);background:#fff;border-radius:999px;padding:6px 18px;font-weight:700}
 .speeds button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.cal{position:fixed;inset:0;z-index:60;background:rgba(43,35,80,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.cal[hidden]{display:none}
+.cal .card{background:#fff;border-radius:28px;padding:20px;text-align:center;max-width:420px;width:100%}
+.cal h2{font-family:'Mali',sans-serif;color:var(--ac)}
+.cal p{color:var(--mute);font-weight:600;margin:6px 0 14px}
+.cal .pad{width:180px;height:180px;border-radius:50%;border:0;background:#FFC75F;font-family:'Mali',sans-serif;font-size:2rem;font-weight:800;box-shadow:0 8px 0 #D99A2B;touch-action:manipulation;margin-bottom:16px}
+.cal .pad.hit{transform:translateY(6px);box-shadow:0 2px 0 #D99A2B}
+.cal .pad.beat{background:#FFE27A}
+.cal .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .pickbox{text-align:center;margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .pickbox small{color:var(--mute);font-weight:600;font-size:.8rem;max-width:460px}
 .pickbox .btn{cursor:pointer}
@@ -65,7 +74,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <section id="menu">
     <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะเลนนั้นตอนโน้ตถึงวงกลม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
     <div class="speeds" id="speeds"></div>
-    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button></div>
+    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
     <div class="songs" id="songs"></div>
     <div class="pickbox"><label class="btn soft" id="pickBtn">🎧 เลือกเพลงจากเครื่อง<input type="file" id="pick" accept="audio/*" hidden></label>
       <small>ใช้ไฟล์เพลงที่มีอยู่ในไอแพด (mp3, m4a) เกมจะฟังจังหวะแล้วสร้างโน้ตให้ · ไฟล์อยู่ในเครื่องนี้เท่านั้น</small></div>
@@ -83,6 +92,11 @@ button{font:inherit;color:inherit;cursor:pointer}
   </section>
 </main>
 
+<div class="cal" id="cal" hidden><div class="card">
+  <h2>🎯 ตั้งจังหวะนิ้ว</h2><p id="calTx">ฟังเสียงเคาะ แล้วแตะปุ่มใหญ่ให้พร้อมเสียงทุกครั้ง 12 ครั้ง</p>
+  <button type="button" class="pad" id="pad">แตะ!</button>
+  <div class="row"><button type="button" class="btn" id="calGo">▶ เริ่ม</button><button type="button" class="btn soft" id="calReset">ใช้ค่าเดิมของเครื่อง</button><button type="button" class="btn soft" id="calClose">✖ ปิด</button></div>
+</div></div>
 <script>
 const $ = s => document.querySelector(s);
 function say(t){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'th-TH'; speechSynthesis.speak(u); }catch(e){} }
@@ -119,8 +133,8 @@ const SONGS = [
     m:'E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4:1.5 C4:.5 E4:.5 A4:.5 B4:1.5 E4:.5 G#4:.5 B4:.5 C5:1.5 E4:.5 E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4:1.5 C4:.5 E4:.5 A4:.5 B4:1.5 E4:.5 C5:.5 B4:.5 A4:3' },
   /* เพลงมีเสียงร้อง แต่งด้วย ElevenLabs Music (เป็นของเราเอง) · โน้ตสร้างจากการฟังจังหวะตอนเปิด */
   { id:'times2', n:'สูตรคูณแม่ 2', e:'✖️', lv:1, c:'#FFF3CC', audio:'../audio/times2.mp3' },
-  /* แม่ 3 เร็กเก้ ~90.5 BPM: วนช่วง 5.43–53.17 วินาที = 18 ห้องพอดี (ตัดอินโทรและตอนจบที่เงียบลง) · ตรวจเนื้อร้องครบ 3×1–3×12 แล้ว */
-  { id:'times3', n:'สูตรคูณแม่ 3 (เร็กเก้)', e:'🌴', lv:1, c:'#E3F7DF', audio:'../audio/times3.mp3', loop:[5.43, 5.43 + 72*.6630] },
+  /* แม่ 3 เร็กเก้ ~90.5 BPM: วนจากจังหวะที่ใกล้ 5.43 วินาที ยาว 72 จังหวะ = 18 ห้องพอดี (ตัดอินโทรและตอนจบที่เงียบลง) · ตรวจเนื้อร้องครบ 3×1–3×12 แล้ว */
+  { id:'times3', n:'สูตรคูณแม่ 3 (เร็กเก้)', e:'🌴', lv:1, c:'#E3F7DF', audio:'../audio/times3.mp3', loop:{ at:5.43, beats:72 } },
 ];
 SONGS.sort((a,b) => (b.audio?1:0)-(a.audio?1:0) || a.lv-b.lv);
 const SPEEDS = [
@@ -138,7 +152,9 @@ const hz = m => 440 * Math.pow(2, (m-69)/12);
 function build(song, sp){
   if(song.chart){   /* เพลงจากไฟล์เสียง: โน้ตมาจากการฟังจังหวะ (analyze) */
     /* loop:[เริ่ม, จบ] = ช่วงที่ตัดให้ลงตัวเป็นจำนวนห้องพอดี วนต่อกันได้ไม่สะดุด · ไม่ใส่ = ทั้งไฟล์ */
-    const [ls, le] = song.loop || [0, song.buf.duration];
+    /* loop:{at, beats} → เริ่มที่จังหวะที่ใกล้ at ที่สุด ยาว beats จังหวะพอดี */
+    let ls = 0, le = song.buf.duration;
+    if(song.loop){ const P0 = song.chart.P, ph0 = song.chart.cands[0].t; ls = ph0 + Math.round((song.loop.at - ph0)/P0)*P0; le = ls + song.loop.beats*P0; }
     const P = song.chart.P, G = { audio:true, buf:song.buf, chart:song.chart, spb0:P, spb:P, ls, len:le-ls, notes:[], beats:[], loops:0, end:0, audioQ:[], srcs:[] };
     for(let b=4;b>=1;b--) G.beats.push({ t:-b*P, strong:b===4 });
     addLoop(G); return G;
@@ -288,8 +304,27 @@ async function analyze(buf){
     v *= 1 - Math.abs(bpm-110)/400;
     if(v > vBest){ vBest = v; lagBest = lag; }
   }
-  const P = lagBest*dt; let ph = 0, pBest = -1;
+  let P = lagBest*dt, ph = 0, pBest = -1;
   for(let o=0; o<P; o+=dt){ let v = 0; for(let t=o; t<buf.duration; t+=P) v += comb[Math.round(t/dt)]||0; if(v > pBest){ pBest = v; ph = o; } }
+  /* ปรับให้ตรงเสียงกลองจริง: หาจุดดังขึ้นใกล้จังหวะที่คาดไว้ทุกจังหวะ (ละเอียดกว่า 1 เฟรมด้วยพาราโบลา)
+     แล้วลากเส้นตรง เวลา = ph + k·P แบบถ่วงน้ำหนัก ตัดจุดที่เบี่ยงเกิน 40 ms ออกแล้วทำซ้ำ */
+  for(let it=0; it<3; it++){
+    const pts = [];
+    for(let k=0; ph + k*P < buf.duration - .1; k++){
+      const c = (ph + k*P)/dt, i0 = Math.max(1, Math.round(c - .07/dt)), i1 = Math.min(nF-2, Math.round(c + .07/dt));
+      let m = 0, mi = -1; for(let i=i0;i<=i1;i++) if(comb[i] > m){ m = comb[i]; mi = i; }
+      if(mi < 0 || m < 1) continue;
+      const a = comb[mi-1], b = comb[mi], cc = comb[mi+1], den = a - 2*b + cc, sub = den ? .5*(a - cc)/den : 0;
+      const t = (mi + Math.max(-.5, Math.min(.5, sub)))*dt;
+      if(it===0 || Math.abs(t - (ph + k*P)) < .04) pts.push([k, t, m]);
+    }
+    if(pts.length < 8) break;
+    let W = 0, Sk = 0, St = 0, Skk = 0, Skt = 0;
+    pts.forEach(([k,t,w]) => { W += w; Sk += w*k; St += w*t; Skk += w*k*k; Skt += w*k*t; });
+    const nP = (W*Skt - Sk*St) / (W*Skk - Sk*Sk); if(!(nP > P*.95 && nP < P*1.05)) break;
+    P = nP; ph = (St - P*Sk) / W;
+  }
+  while(ph - P > -.02) ph -= P; if(ph < 0) ph += P;
   const cands = [];
   for(let k=0, t=ph; t < buf.duration - .2; k++, t = ph + k*P/2){
     const i0 = Math.max(0, Math.round((t-.04)/dt)), i1 = Math.min(nF-1, Math.round((t+.04)/dt));
@@ -329,6 +364,28 @@ function renderMenu(){
   $('#songs').querySelectorAll('[data-play]').forEach(b => b.onclick = () => start(b.dataset.play, false, b));
   $('#songs').querySelectorAll('[data-demo]').forEach(b => b.onclick = () => start(b.dataset.demo, true, b));
 }
+/* เคาะตาม 12 ครั้ง วัดว่าเสียงที่หูได้ยิน + นิ้ว ช้ากว่านาฬิกาเสียงเท่าไร (ใช้ค่ากลาง ไม่นับ 2 ครั้งแรก) */
+const calText = () => calib!=null ? 'ตั้งไว้: ช้า '+Math.round(calib*1000)+' ms' : 'ยังใช้ค่าของเครื่อง ('+Math.round(lag()*1000)+' ms)';
+let calRun = null;
+$('#calBtn').onclick = () => { $('#cal').hidden = false; $('#calTx').textContent = 'ฟังเสียงเคาะ แล้วแตะปุ่มใหญ่ให้พร้อมเสียงทุกครั้ง 12 ครั้ง · '+calText(); };
+$('#calClose').onclick = () => { $('#cal').hidden = true; calRun = null; renderMenu(); };
+$('#calReset').onclick = () => { calib = null; try{ localStorage.removeItem('kids-rhythm-offset'); }catch(e){} $('#calTx').textContent = calText(); };
+$('#calGo').onclick = async () => {
+  const a = ac(); try{ await a.resume(); }catch(e){}
+  const gap = .6, st = a.currentTime + 1, clicks = Array.from({length:12}, (_,i) => st + i*gap);
+  clicks.forEach((c,i) => { tick(c, i%4===0); setTimeout(() => { $('#pad').classList.add('beat'); setTimeout(() => $('#pad').classList.remove('beat'), 120); }, (c - a.currentTime)*1000); });
+  calRun = { clicks, taps:[] }; $('#calTx').textContent = 'แตะพร้อมเสียงเคาะ…';
+  setTimeout(() => {
+    if(!calRun) return;
+    const d = calRun.taps.map(t => { const c = clicks.reduce((b,x) => Math.abs(x-t) < Math.abs(b-t) ? x : b); return [clicks.indexOf(c), t - c]; })
+      .filter(([i,v]) => i >= 2 && Math.abs(v) < gap/2).map(x => x[1]).sort((x,y) => x-y);
+    if(d.length < 5){ $('#calTx').textContent = 'แตะน้อยไป ลองอีกครั้งนะ'; say('ลองอีกครั้งนะ'); calRun = null; return; }
+    calib = Math.max(-.05, Math.min(.35, d[Math.floor(d.length/2)]));
+    try{ localStorage.setItem('kids-rhythm-offset', String(calib)); }catch(e){}
+    $('#calTx').textContent = 'เรียบร้อย! '+calText(); say('ตั้งจังหวะเรียบร้อย'); calRun = null;
+  }, (st + 12*gap - a.currentTime)*1000 + 400);
+};
+$('#pad').addEventListener('pointerdown', e => { e.preventDefault(); const p = $('#pad'); p.classList.add('hit'); setTimeout(() => p.classList.remove('hit'), 90); if(calRun) calRun.taps.push(ac().currentTime); });
 $('#band').onclick = () => { backing = !backing; try{ localStorage.setItem('kids-rhythm-band', backing ? '1' : '0'); }catch(e){} say(backing ? 'เปิดดนตรีประกอบ' : 'ปิดดนตรีประกอบ'); renderMenu(); };
 /* เพลงจากไอแพด: เล่นในเครื่องนี้เท่านั้น ไม่ส่งไฟล์ไปไหน */
 $('#pick').onchange = async e => {
@@ -345,7 +402,11 @@ const press = new Set(), fx = [], pops = [];
 function size(){ const r = $('#stage').getBoundingClientRect(); DPR = Math.min(2, devicePixelRatio||1); W = r.width; H = r.height; cv.width = W*DPR; cv.height = H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
 new ResizeObserver(() => { if(!$('#play').hidden) size(); }).observe($('#stage'));
 const hitY = () => H - 96, laneW = () => W / LANES;
-const now = () => ac().currentTime - t0;
+/* เวลาที่ "ได้ยิน" จริง = นาฬิกาเสียง − ดีเลย์ลำโพง/หูฟัง · ตั้งจากการเคาะตาม (🎯) ได้ ไม่ตั้ง = ใช้ค่าที่เครื่องบอก */
+let calib = null;
+try{ const v = parseFloat(localStorage.getItem('kids-rhythm-offset')); if(isFinite(v)) calib = v; }catch(e){}
+const lag = () => calib!=null ? calib : Math.min(.3, (AC && (AC.outputLatency || AC.baseLatency)) || 0);
+const now = () => ac().currentTime - t0 - lag();
 const mmss = s => Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 
 async function start(id, isDemo, btn){
@@ -436,7 +497,8 @@ function frame(){
   }
   while(bi < G.beats.length && t0 + G.beats[bi].t < a.currentTime + .25){ const at = t0 + G.beats[bi].t; if(at >= a.currentTime){ const bt = G.beats[bi]; if(backing && bt.chord) playBeat(at, bt); else tick(at, bt.strong); } bi++; }
   G.notes.forEach(n => {
-    if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; if(n.midi!=null) n.stop = tone(n.midi, a.currentTime, n.d); burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
+    if(demo && n.midi!=null && !n.sched && n.t - t < .25 + lag()){ n.sched = true; n.stop = tone(n.midi, Math.max(a.currentTime, t0 + n.t), n.d); }   /* ตัวอย่าง: ตั้งเวลาเสียงให้ตรงจังหวะดนตรี */
+    if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
     if(!n.judged && t - n.t > sp.good) judge(n, 'miss');
     if(n.held && t >= n.t + n.d){ n.held = false; score += 50; pop(n.lane, 'ยาวเยี่ยม!', '#FFE27A'); }
   });
@@ -538,7 +600,7 @@ function finish(why){
 }
 
 renderMenu();
-window.__test = { harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
+window.__test = { lag, setCalib:v => { calib = v; }, harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
 </script>
 <script src="../common/progress.js"></script>
 </body>
