@@ -73,6 +73,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <main class="wrap">
   <section id="menu">
     <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะเลนนั้นตอนโน้ตถึงวงกลม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
+    <div class="speeds" id="cats"></div>
     <div class="speeds" id="speeds"></div>
     <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
     <div class="songs" id="songs"></div>
@@ -399,11 +400,17 @@ const KEY = 'kids-rhythm', MILES = [60, 120, 180, 240];   /* ⭐ 1 นาที 
 const best = (() => { try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
 const tierText = k => k>=4 ? '👑 มงกุฎ' : k ? '⭐'.repeat(k)+'☆'.repeat(3-k) : '☆☆☆';
 let spI = 1, song = null, demo = false;
+/* หมวดเพลง · เปิดตรงหมวดได้ด้วย #times (สูตรคูณ) หรือ #tunes (ทำนอง) */
+const CATS = [['all','🎵 ทั้งหมด'], ['times','✖️ เพลงสูตรคูณ'], ['tunes','🎹 เพลงทำนอง']];
+let cat = CATS.some(c => '#'+c[0]===location.hash) ? location.hash.slice(1) : 'all';
+const inCat = s => cat==='all' || (cat==='times') === /^times/.test(s.id);
 function renderMenu(){
+  $('#cats').innerHTML = CATS.map(([k,n]) => '<button type="button" data-c="'+k+'" class="'+(k===cat?'on':'')+'">'+n+'</button>').join('');
+  $('#cats').querySelectorAll('button').forEach(b => b.onclick = () => { cat = b.dataset.c; history.replaceState(null, '', cat==='all' ? location.pathname : '#'+cat); say(b.textContent.replace(/^\S+\s/, '')); renderMenu(); });
   $('#band').textContent = backing ? '🥁 ดนตรีประกอบ: เปิด' : '🔇 ดนตรีประกอบ: ปิด'; $('#band').classList.toggle('on', backing);
   $('#speeds').innerHTML = SPEEDS.map((s,i) => '<button type="button" data-s="'+i+'" class="'+(i===spI?'on':'')+'">'+s.n+'</button>').join('');
   $('#speeds').querySelectorAll('button').forEach(b => b.onclick = () => { spI = +b.dataset.s; say(SPEEDS[spI].n.slice(3)); renderMenu(); });
-  $('#songs').innerHTML = SONGS.map(s => { const b = best[s.id+'/'+spI]||0;
+  $('#songs').innerHTML = SONGS.filter(inCat).map(s => { const b = best[s.id+'/'+spI]||0;
     return '<div class="song" style="--sl:'+s.c+'"><span class="se">'+s.e+'</span><h3>'+s.n+'</h3><small>'+(s.audio||s.file ? '🎤 มีเสียงร้อง · ' : '')+'ความยาก '+'🎵'.repeat(s.lv)+'</small>'+
       '<span class="best">'+tierText(b)+'</span>'+
       '<div class="row"><button class="btn" data-play="'+s.id+'" type="button">▶ เล่น</button><button class="btn soft" data-demo="'+s.id+'" type="button">👂 ฟังก่อน</button></div></div>'; }).join('');
