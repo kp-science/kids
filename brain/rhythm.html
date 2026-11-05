@@ -65,6 +65,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <section id="menu">
     <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะเลนนั้นตอนโน้ตถึงวงกลม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
     <div class="speeds" id="speeds"></div>
+    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button></div>
     <div class="songs" id="songs"></div>
     <div class="pickbox"><label class="btn soft" id="pickBtn">🎧 เลือกเพลงจากเครื่อง<input type="file" id="pick" accept="audio/*" hidden></label>
       <small>ใช้ไฟล์เพลงที่มีอยู่ในไอแพด (mp3, m4a) เกมจะฟังจังหวะแล้วสร้างโน้ตให้ · ไฟล์อยู่ในเครื่องนี้เท่านั้น</small></div>
@@ -96,7 +97,7 @@ const SONGS = [
     m:'C4:1 D4:1 E4:1 C4:1 C4:1 D4:1 E4:1 C4:1 E4:1 F4:1 G4:2 E4:1 F4:1 G4:2 G4:.5 A4:.5 G4:.5 F4:.5 E4:1 C4:1 G4:.5 A4:.5 G4:.5 F4:.5 E4:1 C4:1 C4:1 G3:1 C4:2 C4:1 G3:1 C4:2' },
   { id:'joy', n:'เพลงแห่งความสุข', e:'🌈', lv:2, bpm:112, c:'#E3F4FC',
     m:'E4:1 E4:1 F4:1 G4:1 G4:1 F4:1 E4:1 D4:1 C4:1 C4:1 D4:1 E4:1 E4:1.5 D4:.5 D4:2 E4:1 E4:1 F4:1 G4:1 G4:1 F4:1 E4:1 D4:1 C4:1 C4:1 D4:1 E4:1 D4:1.5 C4:.5 C4:2' },
-  { id:'boat', n:'พายเรือเล่น', e:'⛵', lv:3, bpm:92, c:'#EFE5FF',
+  { id:'boat', n:'พายเรือเล่น', e:'⛵', lv:3, bpm:92, bar:3, c:'#EFE5FF',
     m:'C4:1.5 C4:1.5 C4:1 D4:.5 E4:1.5 E4:1 D4:.5 E4:1 F4:.5 G4:3 C5:.5 C5:.5 C5:.5 G4:.5 G4:.5 G4:.5 E4:.5 E4:.5 E4:.5 C4:.5 C4:.5 C4:.5 G4:1 F4:.5 E4:1 D4:.5 C4:3' },
   { id:'saints', n:'นักบุญเดินแถว', e:'🎺', lv:1, bpm:120, c:'#FFF3CC',
     m:'C4:1 E4:1 F4:1 G4:4 C4:1 E4:1 F4:1 G4:4 C4:1 E4:1 F4:1 G4:2 E4:2 C4:2 E4:2 D4:4 E4:1 E4:1 D4:1 C4:3 C4:1 E4:1 G4:2 G4:1 F4:3 E4:1 F4:1 G4:2 E4:2 C4:2 D4:2 C4:4' },
@@ -104,17 +105,17 @@ const SONGS = [
     m:'G4:1.5 A4:.5 G4:1 F4:1 E4:1 F4:1 G4:2 D4:1 E4:1 F4:2 E4:1 F4:1 G4:2 G4:1.5 A4:.5 G4:1 F4:1 E4:1 F4:1 G4:2 D4:2 G4:2 E4:1 C4:3' },
   { id:'farm', n:'คุณลุงมีฟาร์ม', e:'🐄', lv:2, bpm:116, c:'#E3F7DF',
     m:'G4:1 G4:1 G4:1 D4:1 E4:1 E4:1 D4:2 B4:1 B4:1 A4:1 A4:1 G4:3 D4:1 G4:1 G4:1 G4:1 D4:1 E4:1 E4:1 D4:2 B4:1 B4:1 A4:1 A4:1 G4:3 D4:.5 D4:.5 G4:1 G4:1 G4:1 D4:.5 D4:.5 G4:1 G4:1 G4:2 G4:.5 G4:.5 G4:1 G4:.5 G4:.5 G4:1 G4:.5 G4:.5 G4:.5 G4:.5 G4:1 G4:1 G4:1 G4:1 G4:1 D4:1 E4:1 E4:1 D4:2 B4:1 B4:1 A4:1 A4:1 G4:4' },
-  { id:'spider', n:'แมงมุมตัวจิ๋ว', e:'🕷️', lv:2, bpm:100, c:'#FFE4E0',
+  { id:'spider', n:'แมงมุมตัวจิ๋ว', e:'🕷️', lv:2, bpm:100, bar:3, pick:.5, c:'#FFE4E0',
     m:'G3:.5 C4:1 C4:.5 C4:1 D4:.5 E4:1.5 E4:1 E4:.5 D4:1 C4:.5 D4:1 E4:.5 C4:3 E4:1.5 E4:1 F4:.5 G4:1.5 G4:1.5 F4:1 E4:.5 F4:1 G4:.5 E4:3 C4:1.5 C4:1 D4:.5 E4:1.5 E4:1.5 D4:1 C4:.5 D4:1 E4:.5 C4:1.5 G3:1.5 G3:1 C4:.5 C4:1 C4:.5 C4:1 D4:.5 E4:1.5 E4:1 E4:.5 D4:1 C4:.5 D4:1 E4:.5 C4:3' },
   { id:'jingle', n:'กระดิ่งรถเลื่อน', e:'🔔', lv:2, bpm:132, c:'#E3F7DF',
     m:'E4:1 E4:1 E4:2 E4:1 E4:1 E4:2 E4:1 G4:1 C4:1.5 D4:.5 E4:4 F4:1 F4:1 F4:1.5 F4:.5 F4:1 E4:1 E4:1 E4:.5 E4:.5 E4:1 D4:1 D4:1 E4:1 D4:2 G4:2 E4:1 E4:1 E4:2 E4:1 E4:1 E4:2 E4:1 G4:1 C4:1.5 D4:.5 E4:4 F4:1 F4:1 F4:1.5 F4:.5 F4:1 E4:1 E4:1 E4:.5 E4:.5 G4:1 G4:1 F4:1 D4:1 C4:4' },
   { id:'yankee', n:'แยงกี้ดูเดิล', e:'🥁', lv:2, bpm:120, c:'#FFF3CC',
     m:'C4:1 C4:1 D4:1 E4:1 C4:1 E4:1 D4:1 G3:1 C4:1 C4:1 D4:1 E4:1 C4:2 B3:2 C4:1 C4:1 D4:1 E4:1 F4:1 E4:1 D4:1 C4:1 B3:1 G3:1 A3:1 B3:1 C4:2 C4:2' },
-  { id:'birthday', n:'สุขสันต์วันเกิด', e:'🎂', lv:2, bpm:100, c:'#FFE4E0',
+  { id:'birthday', n:'สุขสันต์วันเกิด', e:'🎂', lv:2, bpm:100, bar:3, pick:1, c:'#FFE4E0',
     m:'G4:.75 G4:.25 A4:1 G4:1 C5:1 B4:2 G4:.75 G4:.25 A4:1 G4:1 D5:1 C5:2 G4:.75 G4:.25 G5:1 E5:1 C5:1 B4:1 A4:2 F5:.75 F5:.25 E5:1 C5:1 D5:1 C5:3' },
-  { id:'lullaby', n:'เพลงกล่อมนอนบราห์มส์', e:'🌙', lv:3, bpm:96, c:'#EFE5FF',
+  { id:'lullaby', n:'เพลงกล่อมนอนบราห์มส์', e:'🌙', lv:3, bpm:96, bar:3, pick:1, c:'#EFE5FF',
     m:'E4:.5 E4:.5 G4:2 E4:.5 E4:.5 G4:2 E4:.5 G4:.5 C5:1 B4:1.5 A4:.5 A4:1 G4:1 D4:.5 E4:.5 F4:1 D4:1 D4:.5 E4:.5 F4:2 D4:.5 F4:.5 B4:.5 A4:.5 G4:1 B4:1 C5:3' },
-  { id:'elise', n:'เพลงถึงเอลีส', e:'🎹', lv:3, bpm:84, c:'#E3F4FC',
+  { id:'elise', n:'เพลงถึงเอลีส', e:'🎹', lv:3, bpm:84, bar:3, pick:1.5, minor:true, c:'#E3F4FC',
     m:'E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4:1.5 C4:.5 E4:.5 A4:.5 B4:1.5 E4:.5 G#4:.5 B4:.5 C5:1.5 E4:.5 E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4:1.5 C4:.5 E4:.5 A4:.5 B4:1.5 E4:.5 C5:.5 B4:.5 A4:3' },
   /* เพลงมีเสียงร้อง แต่งด้วย ElevenLabs Music (เป็นของเราเอง) · โน้ตสร้างจากการฟังจังหวะตอนเปิด */
   { id:'times2', n:'สูตรคูณแม่ 2', e:'✖️', lv:1, c:'#FFF3CC', audio:'../audio/times2.mp3' },
@@ -142,7 +143,7 @@ function build(song, sp){
   const pitches = [...new Set(raw.filter(x => x.p!=='R').map(x => midiOf(x.p)))].sort((a,b) => a-b);
   const laneOf = m => Math.min(LANES-1, Math.floor(pitches.indexOf(m) * LANES / pitches.length));
   const spb0 = 60 / (song.bpm * sp.tempo), len = raw.reduce((t,x) => t+x.b, 0);
-  const G = { raw, laneOf, spb0, spb:spb0, len, notes:[], beats:[], loops:0, end:0 };
+  const G = { raw, laneOf, spb0, spb:spb0, len, notes:[], beats:[], loops:0, end:0, bar:song.bar||4, pick:song.pick||0, chords:harmonize(song, raw, len) };
   for(let b=4;b>=1;b--) G.beats.push({ t:-b*spb0, strong:b===4 });   /* เคาะนำ 4 ครั้ง */
   addLoop(G); return G;
 }
@@ -168,7 +169,9 @@ function addLoop(G){
       G.notes.push({ t:t0+beat*spb, d:x.b*spb, midi:m, lane:G.laneOf(m), hold:x.b>=2, judged:false, res:'', held:false, stop:null, loop:G.loops }); }
     beat += x.b;
   });
-  for(let b=0;b<Math.ceil(G.len);b++) G.beats.push({ t:t0+b*spb, strong:b%4===0 });
+  /* จังหวะของดนตรีประกอบ: นับจากจังหวะแรกของห้องแรก (หลังโน้ตเกริ่น) */
+  for(let j=0; G.pick + j < G.len - 1e-6; j++){ const inBar = j % G.bar, bar = Math.floor(j / G.bar);
+    G.beats.push({ t:t0+(G.pick+j)*spb, strong:inBar===0, inBar, chord:G.chords[Math.min(G.chords.length-1, bar)], spb }); }
   G.end = t0 + G.len*spb; G.spb = spb; G.loops++;
 }
 
@@ -191,6 +194,55 @@ function tick(when, strong){
   o.type = 'sine'; o.frequency.setValueAtTime(strong ? 140 : 900, when); if(strong) o.frequency.exponentialRampToValueAtTime(50, when+.12);
   g.gain.setValueAtTime(strong ? .35 : .05, when); g.gain.exponentialRampToValueAtTime(.001, when + (strong ? .15 : .04));
   o.connect(g); g.connect(a.destination); o.start(when); o.stop(when+.2);
+}
+
+/* ---------------- ดนตรีประกอบ (สังเคราะห์ในเครื่อง) ----------------
+   เลือกคอร์ดทีละห้องจากโน้ตทำนองในห้องนั้น: I IV V vi ii (ไมเนอร์: i iv V VI III) · คีย์ = โน้ตตัวสุดท้ายของเพลง */
+function harmonize(song, raw, len){
+  const notes = []; let beat = 0;
+  raw.forEach(x => { if(x.p!=='R') notes.push({ s:beat, e:beat+x.b, pc:midiOf(x.p)%12 }); beat += x.b; });
+  const tonic = notes[notes.length-1].pc, bar = song.bar||4, pick = song.pick||0;
+  const SET = song.minor ? [[0,'m',.3],[5,'m',.1],[7,'M',.15],[8,'M',0],[3,'M',0]] : [[0,'M',.3],[5,'M',.1],[7,'M',.15],[9,'m',0],[2,'m',0]];
+  const tones = (r,q) => [r, (r+(q==='M'?4:3))%12, (r+7)%12];
+  const nBars = Math.ceil((len - pick)/bar), out = [];
+  for(let k=0;k<nBars;k++){
+    const a = pick + k*bar, b = a + bar;
+    let best = null, bs = -1e9;
+    SET.forEach(([iv, q, prior]) => {
+      const r = (tonic + iv) % 12, tt = tones(r, q); let sc = prior;
+      notes.forEach(n => { const d = Math.min(n.e, b) - Math.max(n.s, a); if(d > 0) sc += d * (n.pc===r ? 1.2 : tt.includes(n.pc) ? 1 : -.4); });
+      if(sc > bs){ bs = sc; best = { r, q }; }
+    });
+    out.push(k===nBars-1 ? { r:tonic, q:song.minor ? 'm' : 'M' } : best);
+  }
+  return out;
+}
+let NB;   /* เสียงซ่าสำหรับกลองสแนร์/ฉาบ */
+function noise(when, dur, vol, type, freq){
+  const a = ac();
+  if(!NB){ NB = a.createBuffer(1, a.sampleRate*.5, a.sampleRate); const d = NB.getChannelData(0); for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1; }
+  const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  s.buffer = NB; f.type = type; f.frequency.value = freq; g.gain.setValueAtTime(vol, when); g.gain.exponentialRampToValueAtTime(.001, when+dur);
+  s.connect(f); f.connect(g); g.connect(a.destination); s.start(when); s.stop(when+dur+.02);
+}
+function kick(when){ const a = ac(), o = a.createOscillator(), g = a.createGain();
+  o.frequency.setValueAtTime(130, when); o.frequency.exponentialRampToValueAtTime(45, when+.12);
+  g.gain.setValueAtTime(.32, when); g.gain.exponentialRampToValueAtTime(.001, when+.18); o.connect(g); g.connect(a.destination); o.start(when); o.stop(when+.2); }
+function pluck(midi, when, dur, vol, type='triangle'){ const a = ac(), o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.value = hz(midi); g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(vol, when+.01);
+  g.gain.exponentialRampToValueAtTime(.001, when+dur); o.connect(g); g.connect(a.destination); o.start(when); o.stop(when+dur+.05); }
+let backing = true;
+try{ backing = localStorage.getItem('kids-rhythm-band') !== '0'; }catch(e){}
+/* หนึ่งจังหวะ: กลองเตะจังหวะ 1 (และ 3) · ปรบมือจังหวะ 2 4 · ฉาบทุกครึ่งจังหวะ · เบสต้นห้อง · คอร์ดอูมป้า */
+function playBeat(at, bt){
+  const { inBar, chord, spb } = bt, three = G && G.bar===3, root = chord.r, third = (root + (chord.q==='M'?4:3)) % 12, fifth = (root+7) % 12;
+  const near = (pc, lo) => lo + ((pc - lo%12) + 12) % 12;
+  if(inBar===0 || (!three && inBar===2)) kick(at);
+  if(three ? inBar!==0 : inBar%2===1) noise(at, .09, .12, 'bandpass', 1800);
+  noise(at, .03, .035, 'highpass', 7000); noise(at + spb/2, .03, .025, 'highpass', 7000);
+  if(inBar===0) pluck(near(root, 36), at, spb*1.6, .2, 'sine');
+  else if(!three && inBar===2) pluck(near(fifth, 36), at, spb*1.4, .16, 'sine');
+  if(inBar!==0) [root, third, fifth].forEach(pc => pluck(near(pc, 55), at, spb*.5, .035));
 }
 
 let MG;   /* ระดับเสียงเพลงจากไฟล์ (หรี่ลงชั่วครู่ตอนกดพลาด) */
@@ -257,6 +309,7 @@ const best = (() => { try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }
 const tierText = k => k>=4 ? '👑 มงกุฎ' : k ? '⭐'.repeat(k)+'☆'.repeat(3-k) : '☆☆☆';
 let spI = 1, song = null, demo = false;
 function renderMenu(){
+  $('#band').textContent = backing ? '🥁 ดนตรีประกอบ: เปิด' : '🔇 ดนตรีประกอบ: ปิด'; $('#band').classList.toggle('on', backing);
   $('#speeds').innerHTML = SPEEDS.map((s,i) => '<button type="button" data-s="'+i+'" class="'+(i===spI?'on':'')+'">'+s.n+'</button>').join('');
   $('#speeds').querySelectorAll('button').forEach(b => b.onclick = () => { spI = +b.dataset.s; say(SPEEDS[spI].n.slice(3)); renderMenu(); });
   $('#songs').innerHTML = SONGS.map(s => { const b = best[s.id+'/'+spI]||0;
@@ -266,6 +319,7 @@ function renderMenu(){
   $('#songs').querySelectorAll('[data-play]').forEach(b => b.onclick = () => start(b.dataset.play, false, b));
   $('#songs').querySelectorAll('[data-demo]').forEach(b => b.onclick = () => start(b.dataset.demo, true, b));
 }
+$('#band').onclick = () => { backing = !backing; try{ localStorage.setItem('kids-rhythm-band', backing ? '1' : '0'); }catch(e){} say(backing ? 'เปิดดนตรีประกอบ' : 'ปิดดนตรีประกอบ'); renderMenu(); };
 /* เพลงจากไอแพด: เล่นในเครื่องนี้เท่านั้น ไม่ส่งไฟล์ไปไหน */
 $('#pick').onchange = async e => {
   const f = e.target.files && e.target.files[0]; if(!f) return;
@@ -363,7 +417,7 @@ function frame(){
   const sp = SPEEDS[spI], t = now(), a = ac(); lastT = Math.max(0, t);
   if(!demo && G.end - t < sp.fall + 4) addLoop(G);
   while(G.audioQ && G.audioQ.length){ const s = a.createBufferSource(); s.buffer = G.buf; s.connect(musicGain()); s.start(Math.max(a.currentTime, t0 + G.audioQ.shift())); G.srcs.push(s); }
-  while(bi < G.beats.length && t0 + G.beats[bi].t < a.currentTime + .25){ const at = t0 + G.beats[bi].t; if(at >= a.currentTime) tick(at, G.beats[bi].strong); bi++; }
+  while(bi < G.beats.length && t0 + G.beats[bi].t < a.currentTime + .25){ const at = t0 + G.beats[bi].t; if(at >= a.currentTime){ const bt = G.beats[bi]; if(backing && bt.chord) playBeat(at, bt); else tick(at, bt.strong); } bi++; }
   G.notes.forEach(n => {
     if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; if(n.midi!=null) n.stop = tone(n.midi, a.currentTime, n.d); burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
     if(!n.judged && t - n.t > sp.good) judge(n, 'miss');
@@ -467,7 +521,7 @@ function finish(why){
 }
 
 renderMenu();
-window.__test = { SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
+window.__test = { harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
 </script>
 <script src="../common/progress.js"></script>
 </body>
