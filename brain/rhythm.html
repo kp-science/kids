@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../favicon.png">
+<title>เกมจังหวะดนตรี</title>
+<link rel="stylesheet" href="../vendor/fonts/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--paper:#FFF8F2;--ink:#2A2440;--mute:#7A7290;--line:#EDE4F0;--ac:#6E3CC0}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans Thai Looped','Noto Sans Thai',sans-serif;
+  font-size:18px;line-height:1.5;-webkit-text-size-adjust:100%;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,248,242,.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:980px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:8px}
+.pill{text-decoration:none;color:var(--ink);border:2px solid var(--ink);background:#fff;border-radius:12px;padding:3px 12px;font-size:.9rem;font-weight:700;white-space:nowrap}
+.top .tt{flex:1;font-family:'Mali',sans-serif;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wrap{max-width:980px;margin:0 auto;padding:14px 14px 50px}
+.hero{text-align:center;margin-bottom:12px}
+.hero h1{font-family:'Mali',sans-serif;font-size:1.7rem;color:var(--ac)}
+.hero p{color:var(--mute);font-size:.95rem}
+.speeds{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.speeds button{border:3px solid var(--line);background:#fff;border-radius:999px;padding:6px 18px;font-weight:700}
+.speeds button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.songs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.song{border:0;background:#fff;border-radius:24px;padding:14px;text-align:left;box-shadow:0 10px 26px rgba(42,36,64,.08);display:flex;flex-direction:column;gap:6px}
+.song .se{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:1.9rem;background:var(--sl)}
+.song h3{font-family:'Mali',sans-serif;font-size:1.15rem;line-height:1.3}
+.song small{color:var(--mute);font-weight:600;font-size:.8rem}
+.song .best{font-size:.9rem}
+.song .row{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.song .row .btn{flex:1 1 auto;white-space:nowrap;padding:9px 12px}
+.btn{border:0;border-radius:999px;padding:9px 18px;font-weight:700;background:var(--ac);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.btn.soft{background:#fff;color:var(--ac);border:2px solid var(--ac);box-shadow:none}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.stage{position:relative;height:calc(100vh - 90px - env(safe-area-inset-top));min-height:420px;max-width:720px;margin:0 auto;border-radius:26px;overflow:hidden;
+  background:linear-gradient(180deg,#2B2350 0%,#3B2F6B 55%,#4B3B7E 100%);touch-action:none}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.hud{position:absolute;left:12px;right:12px;top:10px;display:flex;align-items:center;gap:8px;pointer-events:none;color:#fff;font-weight:800}
+.hud .sc{background:rgba(255,255,255,.15);border-radius:999px;padding:2px 12px}
+.hud .nm{flex:1;text-align:center;font-family:'Mali',sans-serif;font-size:.95rem;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud .x{pointer-events:auto;border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;width:40px;height:40px;font-size:1.1rem}
+.res{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(43,35,80,.55);padding:16px}
+.res.show{display:flex}
+.res .card{background:#fff;border-radius:28px;padding:20px;text-align:center;max-width:380px;width:100%}
+.res .stars{font-size:2.6rem;letter-spacing:4px;margin:4px 0}
+.res h2{font-family:'Mali',sans-serif;color:var(--ac)}
+.res .cnt{display:flex;justify-content:center;gap:14px;font-weight:700;margin:8px 0 14px;flex-wrap:wrap}
+.res .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+[hidden]{display:none!important}
+@media (max-width:560px){.stage{border-radius:0;margin:0 -14px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in"><a class="pill" href="../#%E0%B9%80%E0%B8%81%E0%B8%A1">‹ หน้ารวม</a>
+  <div class="tt">🎵 เกมจังหวะดนตรี</div><button class="pill" id="mute" type="button">🔊</button></div></header>
+
+<main class="wrap">
+  <section id="menu">
+    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะเลนนั้นตอนโน้ตถึงวงกลม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้</p></div>
+    <div class="speeds" id="speeds"></div>
+    <div class="songs" id="songs"></div>
+  </section>
+
+  <section id="play" hidden>
+    <div class="stage" id="stage"><canvas id="cv"></canvas>
+      <div class="hud"><span class="sc" id="score">0</span><span class="nm" id="sname"></span><button class="x" id="quit" type="button" aria-label="ออก">✖</button></div>
+      <div class="res" id="res"><div class="card">
+        <h2 id="rtitle">เก่งมาก!</h2><div class="stars" id="rstars"></div>
+        <div class="cnt" id="rcnt"></div>
+        <div class="row"><button class="btn" id="again" type="button">🔁 เล่นอีกครั้ง</button><button class="btn soft" id="back" type="button">🎵 เลือกเพลง</button></div>
+      </div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+function say(t){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'th-TH'; speechSynthesis.speak(u); }catch(e){} }
+
+/* ---------------- เพลง (ทำนองหมดลิขสิทธิ์ เขียนเป็น โน้ต:จังหวะ · R = เงียบ) ---------------- */
+const SONGS = [
+  { id:'twinkle', n:'ดาวน้อยกระพริบ', e:'⭐', lv:1, bpm:96, c:'#FFF3CC',
+    m:'C4:1 C4:1 G4:1 G4:1 A4:1 A4:1 G4:2 F4:1 F4:1 E4:1 E4:1 D4:1 D4:1 C4:2 G4:1 G4:1 F4:1 F4:1 E4:1 E4:1 D4:2 G4:1 G4:1 F4:1 F4:1 E4:1 E4:1 D4:2 C4:1 C4:1 G4:1 G4:1 A4:1 A4:1 G4:2 F4:1 F4:1 E4:1 E4:1 D4:1 D4:1 C4:2' },
+  { id:'lamb', n:'แมรี่มีลูกแกะ', e:'🐑', lv:1, bpm:104, c:'#E3F7DF',
+    m:'E4:1 D4:1 C4:1 D4:1 E4:1 E4:1 E4:2 D4:1 D4:1 D4:2 E4:1 G4:1 G4:2 E4:1 D4:1 C4:1 D4:1 E4:1 E4:1 E4:1 E4:1 D4:1 D4:1 E4:1 D4:1 C4:4' },
+  { id:'bell', n:'ระฆังยามเช้า', e:'🔔', lv:2, bpm:104, c:'#FFE4E0',
+    m:'C4:1 D4:1 E4:1 C4:1 C4:1 D4:1 E4:1 C4:1 E4:1 F4:1 G4:2 E4:1 F4:1 G4:2 G4:.5 A4:.5 G4:.5 F4:.5 E4:1 C4:1 G4:.5 A4:.5 G4:.5 F4:.5 E4:1 C4:1 C4:1 G3:1 C4:2 C4:1 G3:1 C4:2' },
+  { id:'joy', n:'เพลงแห่งความสุข', e:'🌈', lv:2, bpm:112, c:'#E3F4FC',
+    m:'E4:1 E4:1 F4:1 G4:1 G4:1 F4:1 E4:1 D4:1 C4:1 C4:1 D4:1 E4:1 E4:1.5 D4:.5 D4:2 E4:1 E4:1 F4:1 G4:1 G4:1 F4:1 E4:1 D4:1 C4:1 C4:1 D4:1 E4:1 D4:1.5 C4:.5 C4:2' },
+  { id:'boat', n:'พายเรือเล่น', e:'⛵', lv:3, bpm:92, c:'#EFE5FF',
+    m:'C4:1.5 C4:1.5 C4:1 D4:.5 E4:1.5 E4:1 D4:.5 E4:1 F4:.5 G4:3 C5:.5 C5:.5 C5:.5 G4:.5 G4:.5 G4:.5 E4:.5 E4:.5 E4:.5 C4:.5 C4:.5 C4:.5 G4:1 F4:.5 E4:1 D4:.5 C4:3' },
+];
+const SPEEDS = [
+  { n:'🐢 ช้า',   tempo:.8,  fall:2.3, perf:.13, good:.26 },
+  { n:'🐰 ปกติ',  tempo:1,   fall:1.8, perf:.10, good:.20 },
+  { n:'🚀 เร็ว',  tempo:1.15, fall:1.4, perf:.08, good:.16 },
+];
+const LANES = 4, LC = ['#FF8FB1','#FFC75F','#7FD8BE','#8EC5FF'];
+const NAMES = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+const midiOf = s => NAMES[s[0]] + 12*(+s.slice(-1)+1) + (s[1]==='#' ? 1 : 0);
+const hz = m => 440 * Math.pow(2, (m-69)/12);
+
+/* แปลงเพลงเป็นโน้ตที่ไหลลงมา: โน้ตต่ำไปเลนซ้าย สูงไปเลนขวา · ยาวตั้งแต่ 2 จังหวะ = เส้นกดค้าง */
+function build(song, sp){
+  const spb = 60 / (song.bpm * sp.tempo);
+  const raw = song.m.split(/\s+/).map(x => { const [p, b] = x.split(':'); return { p, b:+b }; });
+  const pitches = [...new Set(raw.filter(x => x.p!=='R').map(x => midiOf(x.p)))].sort((a,b) => a-b);
+  const laneOf = m => Math.min(LANES-1, Math.floor(pitches.indexOf(m) * LANES / pitches.length));
+  let beat = 0; const notes = [];
+  raw.forEach(x => {
+    if(x.p!=='R'){ const m = midiOf(x.p);
+      notes.push({ t:beat*spb, d:x.b*spb, beats:x.b, midi:m, lane:laneOf(m), hold:x.b>=2, judged:false, res:'', held:false, stop:null }); }
+    beat += x.b;
+  });
+  return { notes, spb, beats:beat, end:beat*spb };
+}
+
+/* ---------------- เสียง ---------------- */
+let AC;
+const ac = () => { AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); return AC; };
+function tone(midi, when, dur, vol=.22){
+  const a = ac(), o = a.createOscillator(), o2 = a.createOscillator(), g = a.createGain();
+  o.type = 'triangle'; o.frequency.value = hz(midi); o2.type = 'sine'; o2.frequency.value = hz(midi)*2;
+  const g2 = a.createGain(); g2.gain.value = .25; o2.connect(g2); g2.connect(g); o.connect(g); g.connect(a.destination);
+  const end = when + Math.max(.35, dur);
+  g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(vol, when+.01);
+  g.gain.exponentialRampToValueAtTime(vol*.5, when+.15); g.gain.exponentialRampToValueAtTime(.001, end);
+  o.start(when); o2.start(when); o.stop(end+.05); o2.stop(end+.05);
+  return t => { try{ g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(.0001, t, .04); o.stop(t+.25); o2.stop(t+.25); }catch(e){} };
+}
+function tick(when, strong){
+  const a = ac(); when = Math.max(when, a.currentTime);
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(strong ? 140 : 900, when); if(strong) o.frequency.exponentialRampToValueAtTime(50, when+.12);
+  g.gain.setValueAtTime(strong ? .35 : .05, when); g.gain.exponentialRampToValueAtTime(.001, when + (strong ? .15 : .04));
+  o.connect(g); g.connect(a.destination); o.start(when); o.stop(when+.2);
+}
+
+/* ---------------- เมนู ---------------- */
+const KEY = 'kids-rhythm';
+const best = (() => { try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+let spI = 1, song = null, demo = false;
+function renderMenu(){
+  $('#speeds').innerHTML = SPEEDS.map((s,i) => '<button type="button" data-s="'+i+'" class="'+(i===spI?'on':'')+'">'+s.n+'</button>').join('');
+  $('#speeds').querySelectorAll('button').forEach(b => b.onclick = () => { spI = +b.dataset.s; say(SPEEDS[spI].n.slice(3)); renderMenu(); });
+  $('#songs').innerHTML = SONGS.map(s => { const b = best[s.id+'/'+spI]||0;
+    return '<div class="song" style="--sl:'+s.c+'"><span class="se">'+s.e+'</span><h3>'+s.n+'</h3><small>ความยาก '+'🎵'.repeat(s.lv)+'</small>'+
+      '<span class="best">'+(b ? '⭐'.repeat(b)+'☆'.repeat(3-b) : '☆☆☆')+'</span>'+
+      '<div class="row"><button class="btn" data-play="'+s.id+'" type="button">▶ เล่น</button><button class="btn soft" data-demo="'+s.id+'" type="button">👂 ฟังก่อน</button></div></div>'; }).join('');
+  $('#songs').querySelectorAll('[data-play]').forEach(b => b.onclick = () => start(b.dataset.play, false));
+  $('#songs').querySelectorAll('[data-demo]').forEach(b => b.onclick = () => start(b.dataset.demo, true));
+}
+
+/* ---------------- เล่น ---------------- */
+const cv = $('#cv'), cx = cv.getContext('2d');
+let W = 0, H = 0, DPR = 1, G = null, t0 = 0, nextBeat = 0, raf = 0, score = 0, combo = 0, cnt = {};
+const press = new Set(), fx = [], pops = [];
+function size(){ const r = $('#stage').getBoundingClientRect(); DPR = Math.min(2, devicePixelRatio||1); W = r.width; H = r.height; cv.width = W*DPR; cv.height = H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
+new ResizeObserver(() => { if(!$('#play').hidden) size(); }).observe($('#stage'));
+const hitY = () => H - 96, laneW = () => W / LANES;
+const now = () => ac().currentTime - t0;
+
+function start(id, isDemo){
+  song = SONGS.find(s => s.id===id); demo = isDemo; const sp = SPEEDS[spI];
+  G = build(song, sp); score = 0; combo = 0; cnt = { perf:0, good:0, miss:0 }; fx.length = 0; pops.length = 0;
+  $('#menu').hidden = true; $('#play').hidden = false; $('#res').classList.remove('show');
+  $('#sname').textContent = (demo ? '👂 ' : '')+song.e+' '+song.n; $('#score').textContent = demo ? 'ฟังตัวอย่าง' : '0';
+  size(); window.scrollTo(0, 0);
+  t0 = ac().currentTime + sp.fall + 1.2; nextBeat = -Math.ceil((sp.fall+1.2)/G.spb);   /* เคาะนำก่อนโน้ตแรกถึงเส้น */
+  say(demo ? 'ฟังก่อนนะ' : 'พร้อมไหม');
+  cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
+}
+function stopPlay(){ cancelAnimationFrame(raf); G && G.notes.forEach(n => n.stop && n.stop(ac().currentTime)); G = null; }
+$('#quit').onclick = () => { stopPlay(); $('#play').hidden = true; $('#menu').hidden = false; renderMenu(); };
+$('#back').onclick = $('#quit').onclick;
+$('#again').onclick = () => start(song.id, false);
+
+function judge(n, kind){
+  n.judged = true; n.res = kind; cnt[kind]++;
+  if(kind==='miss'){ combo = 0; pop(n.lane, 'พลาด', '#FFB4B4'); return; }
+  combo++; score += (kind==='perf' ? 100 : 60) + Math.min(combo, 30)*2;
+  pop(n.lane, kind==='perf' ? 'เยี่ยม!' : 'ดี!', kind==='perf' ? '#FFE27A' : '#B8F2D8'); burst(n.lane);
+}
+function pop(l, txt, col){ pops.push({ l, txt, col, t:performance.now() }); }
+function burst(l){ for(let i=0;i<12;i++){ const a = Math.random()*Math.PI*2, v = 80+Math.random()*160;
+  fx.push({ x:(l+.5)*laneW(), y:hitY(), vx:Math.cos(a)*v, vy:Math.sin(a)*v-80, life:1, c:LC[l] }); } }
+
+function hitLane(l){
+  if(!G || demo) return;
+  press.add(l);
+  const t = now(), sp = SPEEDS[spI];
+  let best = null;
+  G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
+  if(!best){ tick(ac().currentTime, false); return; }
+  const off = Math.abs(best.t - t);
+  best.stop = tone(best.midi, ac().currentTime, best.d);
+  if(best.hold){ best.held = true; best.pressT = t; }
+  judge(best, off <= sp.perf ? 'perf' : 'good');
+}
+function releaseLane(l){
+  press.delete(l); if(!G) return;
+  const t = now();
+  G.notes.forEach(n => { if(n.held && n.lane===l){ n.held = false; if(t < n.t + n.d - .12 && n.stop) n.stop(ac().currentTime); if(t >= n.t + n.d*.7){ score += 50; pop(l, 'ยาวเยี่ยม!', '#FFE27A'); } } });
+}
+/* แตะได้หลายนิ้วพร้อมกัน · คอมพิวเตอร์ใช้ปุ่ม D F J K */
+const ptr = new Map();
+$('#stage').addEventListener('pointerdown', e => {
+  if(e.target.closest('.hud .x, .res')) return;
+  e.preventDefault(); const r = $('#stage').getBoundingClientRect();
+  const l = Math.max(0, Math.min(LANES-1, Math.floor((e.clientX - r.left) / (r.width/LANES))));
+  ptr.set(e.pointerId, l); hitLane(l);
+});
+const up = e => { if(ptr.has(e.pointerId)){ releaseLane(ptr.get(e.pointerId)); ptr.delete(e.pointerId); } };
+addEventListener('pointerup', up); addEventListener('pointercancel', up);
+const KEYS = { d:0, f:1, j:2, k:3 };
+addEventListener('keydown', e => { const l = KEYS[e.key]; if(l!=null && !e.repeat && !press.has(l)) hitLane(l); });
+addEventListener('keyup', e => { const l = KEYS[e.key]; if(l!=null) releaseLane(l); });
+
+function frame(){
+  if(!G) return;
+  const sp = SPEEDS[spI], t = now(), a = ac();
+  /* เคาะจังหวะนำล่วงหน้า */
+  while(t0 + nextBeat*G.spb < a.currentTime + .25 && nextBeat < G.beats){
+    const at = t0 + nextBeat*G.spb; if(at >= a.currentTime) tick(at, ((nextBeat%4)+4)%4===0); nextBeat++; }
+  G.notes.forEach(n => {
+    if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; n.stop = tone(n.midi, a.currentTime, n.d); burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
+    if(!n.judged && t - n.t > sp.good) judge(n, 'miss');
+    if(n.held && t >= n.t + n.d){ n.held = false; score += 50; pop(n.lane, 'ยาวเยี่ยม!', '#FFE27A'); }
+  });
+  draw(t, sp);
+  if(!demo) $('#score').textContent = score;
+  if(t > G.end + 1.2) return finish();
+  raf = requestAnimationFrame(frame);
+}
+function draw(t, sp){
+  const lw = laneW(), hy = hitY(), pps = (hy + 30) / sp.fall;
+  cx.clearRect(0, 0, W, H);
+  for(let l=0;l<LANES;l++){
+    cx.fillStyle = press.has(l) ? 'rgba(255,255,255,.14)' : (l%2 ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.08)');
+    cx.fillRect(l*lw, 0, lw, H);
+  }
+  /* แถบความคืบหน้า */
+  cx.fillStyle = 'rgba(255,255,255,.18)'; cx.fillRect(0, 0, W, 5);
+  cx.fillStyle = '#FFE27A'; cx.fillRect(0, 0, W*Math.max(0, Math.min(1, t/G.end)), 5);
+  /* โน้ต */
+  G.notes.forEach(n => {
+    const y = hy - (n.t - t)*pps;
+    if(y < -40 && !n.hold) return;
+    const x = n.lane*lw + lw*.14, w = lw*.72;
+    if(n.hold){
+      const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? hy : y;
+      if(bot > top && !(n.judged && !n.held && n.res!=='miss' && t > n.t + .05)){
+        cx.globalAlpha = n.res==='miss' ? .2 : .55; cx.fillStyle = LC[n.lane];
+        rr(x + w*.28, top, w*.44, bot - top, w*.22); cx.fill(); cx.globalAlpha = 1;
+      }
+    }
+    if(n.judged && n.res!=='miss') return;
+    if(y > H + 30) return;
+    cx.globalAlpha = n.res==='miss' ? .3 : 1;
+    cx.fillStyle = LC[n.lane]; rr(x, y-14, w, 28, 14); cx.fill();
+    cx.fillStyle = 'rgba(255,255,255,.6)'; rr(x+6, y-10, w-12, 8, 4); cx.fill();
+    cx.globalAlpha = 1;
+  });
+  /* เส้นตี + วงกลม */
+  cx.strokeStyle = 'rgba(255,255,255,.5)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke();
+  for(let l=0;l<LANES;l++){
+    const cxp = (l+.5)*lw, r = Math.min(34, lw*.3);
+    cx.beginPath(); cx.arc(cxp, hy, r, 0, Math.PI*2);
+    cx.fillStyle = press.has(l) ? LC[l] : 'rgba(255,255,255,.12)'; cx.fill();
+    cx.lineWidth = 4; cx.strokeStyle = LC[l]; cx.stroke();
+  }
+  /* ประกาย */
+  for(let i=fx.length-1;i>=0;i--){ const p = fx[i]; p.x += p.vx/60; p.y += p.vy/60; p.vy += 6; p.life -= .03;
+    if(p.life<=0){ fx.splice(i,1); continue; } cx.globalAlpha = p.life; cx.fillStyle = p.c; cx.beginPath(); cx.arc(p.x, p.y, 5*p.life+1, 0, Math.PI*2); cx.fill(); }
+  cx.globalAlpha = 1;
+  /* คำชม */
+  const ms = performance.now();
+  cx.textAlign = 'center'; cx.font = '800 22px Mali, sans-serif';
+  for(let i=pops.length-1;i>=0;i--){ const p = pops[i], k = (ms - p.t)/700; if(k>1){ pops.splice(i,1); continue; }
+    cx.globalAlpha = 1-k; cx.fillStyle = p.col; cx.fillText(p.txt, (p.l+.5)*lw, hy - 60 - k*30); }
+  cx.globalAlpha = 1;
+  if(combo >= 3){ cx.font = '800 40px Mali, sans-serif'; cx.fillStyle = 'rgba(255,255,255,.85)'; cx.fillText(combo, W/2, H*.32); cx.font = '700 15px sans-serif'; cx.fillText('คอมโบ', W/2, H*.32 + 22); }
+  /* นับถอยหลัง */
+  if(t < 0){ const c = Math.ceil(-t / G.spb); if(c <= 4){ cx.font = '800 64px Mali, sans-serif'; cx.fillStyle = '#fff'; cx.fillText(c, W/2, H*.5); } }
+}
+function rr(x, y, w, h, r){ r = Math.min(r, w/2, h/2); cx.beginPath(); cx.moveTo(x+r, y); cx.arcTo(x+w, y, x+w, y+h, r); cx.arcTo(x+w, y+h, x, y+h, r); cx.arcTo(x, y+h, x, y, r); cx.arcTo(x, y, x+w, y, r); cx.closePath(); }
+
+function finish(){
+  cancelAnimationFrame(raf);
+  if(demo){ G = null; $('#play').hidden = true; $('#menu').hidden = false; renderMenu(); say('ลองเล่นเองเลย'); return; }
+  const total = G.notes.length, acc = (cnt.perf + cnt.good*.6) / total;
+  const stars = acc >= .9 ? 3 : acc >= .7 ? 2 : acc >= .4 ? 1 : 0;
+  const k = song.id+'/'+spI; if(stars > (best[k]||0)){ best[k] = stars; try{ localStorage.setItem(KEY, JSON.stringify(best)); }catch(e){} }
+  $('#rtitle').textContent = stars===3 ? 'สุดยอดนักดนตรี!' : stars ? 'เก่งมาก!' : 'ลองอีกครั้งนะ';
+  $('#rstars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+  $('#rcnt').innerHTML = '<span>✨ เยี่ยม '+cnt.perf+'</span><span>👍 ดี '+cnt.good+'</span><span>💨 พลาด '+cnt.miss+'</span><span>🏆 '+score+'</span>';
+  $('#res').classList.add('show');
+  say(stars ? 'เก่งมาก ได้ '+stars+' ดาว' : 'ลองอีกครั้งนะ ใช้ความเร็วช้าก่อนก็ได้');
+  if(window.KP && stars) KP.log({ kind:'game', page:'rhythm', subject:'เกม', title:'เกมจังหวะ · '+song.n+' ('+SPEEDS[spI].n.slice(3)+')',
+    score:cnt.perf+cnt.good, total, stars });
+  G = null;
+}
+
+renderMenu();
+window.__test = { SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt };
+</script>
+<script src="../common/progress.js"></script>
+</body>
+</html>
