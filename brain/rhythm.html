@@ -119,6 +119,8 @@ const SONGS = [
     m:'E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4:1.5 C4:.5 E4:.5 A4:.5 B4:1.5 E4:.5 G#4:.5 B4:.5 C5:1.5 E4:.5 E5:.5 D#5:.5 E5:.5 D#5:.5 E5:.5 B4:.5 D5:.5 C5:.5 A4:1.5 C4:.5 E4:.5 A4:.5 B4:1.5 E4:.5 C5:.5 B4:.5 A4:3' },
   /* เพลงมีเสียงร้อง แต่งด้วย ElevenLabs Music (เป็นของเราเอง) · โน้ตสร้างจากการฟังจังหวะตอนเปิด */
   { id:'times2', n:'สูตรคูณแม่ 2', e:'✖️', lv:1, c:'#FFF3CC', audio:'../audio/times2.mp3' },
+  /* แม่ 3 เร็กเก้ ~90.5 BPM: วนช่วง 5.43–53.17 วินาที = 18 ห้องพอดี (ตัดอินโทรและตอนจบที่เงียบลง) · ตรวจเนื้อร้องครบ 3×1–3×12 แล้ว */
+  { id:'times3', n:'สูตรคูณแม่ 3 (เร็กเก้)', e:'🌴', lv:1, c:'#E3F7DF', audio:'../audio/times3.mp3', loop:[5.43, 5.43 + 72*.6630] },
 ];
 SONGS.sort((a,b) => (b.audio?1:0)-(a.audio?1:0) || a.lv-b.lv);
 const SPEEDS = [
@@ -135,7 +137,9 @@ const hz = m => 440 * Math.pow(2, (m-69)/12);
    มาราธอน: เพลงวนต่อเรื่อย ๆ แต่ละรอบเร็วขึ้น 8% (สูงสุด 1.8 เท่า) */
 function build(song, sp){
   if(song.chart){   /* เพลงจากไฟล์เสียง: โน้ตมาจากการฟังจังหวะ (analyze) */
-    const P = song.chart.P, G = { audio:true, buf:song.buf, chart:song.chart, spb0:P, spb:P, len:song.buf.duration, notes:[], beats:[], loops:0, end:0, audioQ:[], srcs:[] };
+    /* loop:[เริ่ม, จบ] = ช่วงที่ตัดให้ลงตัวเป็นจำนวนห้องพอดี วนต่อกันได้ไม่สะดุด · ไม่ใส่ = ทั้งไฟล์ */
+    const [ls, le] = song.loop || [0, song.buf.duration];
+    const P = song.chart.P, G = { audio:true, buf:song.buf, chart:song.chart, spb0:P, spb:P, ls, len:le-ls, notes:[], beats:[], loops:0, end:0, audioQ:[], srcs:[] };
     for(let b=4;b>=1;b--) G.beats.push({ t:-b*P, strong:b===4 });
     addLoop(G); return G;
   }
@@ -152,7 +156,9 @@ function addLoop(G){
     /* เพลงเสียงจริงเร่งความเร็วไม่ได้ (เสียงจะเพี้ยน) จึงเพิ่มความถี่ของโน้ตแทน: รอบแรกเฉพาะจังหวะหนัก → ทุกจังหวะ → ครึ่งจังหวะ */
     const k = G.loops, ch = G.chart, thr = [ch.q50, ch.q30, ch.q50, ch.q30][Math.min(k, 3)], halfOk = k >= 2;
     let last = -9, l1 = -1, l2 = -1; const used = [0,0,0,0];
-    ch.cands.forEach(c => {
+    ch.cands.forEach(c0 => {
+      if(c0.t < G.ls || c0.t >= G.ls + G.len - .05) return;
+      const c = Object.assign({}, c0, { t:c0.t - G.ls });
       if(!c.r || c.r < thr || (c.half && !halfOk) || c.t - last < .22) return;
       /* เลนตามช่วงเสียงที่ดังขึ้น แต่ถ้าเลนไหนใช้บ่อยเกินไปให้ขยับไปเลนถัดไป เพื่อให้ใช้ครบทั้ง 4 นิ้ว */
       const lo = Math.min(...used);
@@ -416,7 +422,14 @@ function frame(){
   if(!G) return;
   const sp = SPEEDS[spI], t = now(), a = ac(); lastT = Math.max(0, t);
   if(!demo && G.end - t < sp.fall + 4) addLoop(G);
-  while(G.audioQ && G.audioQ.length){ const s = a.createBufferSource(); s.buffer = G.buf; s.connect(musicGain()); s.start(Math.max(a.currentTime, t0 + G.audioQ.shift())); G.srcs.push(s); }
+  /* แต่ละรอบเล่นช่วง loop ของไฟล์ · เกลี่ยเสียง 10 มิลลิวินาทีตรงรอยต่อ (รอบเก่าค่อย ๆ หาย รอบใหม่ค่อย ๆ เข้า) */
+  while(G.audioQ && G.audioQ.length){
+    const st = t0 + G.audioQ.shift(), at = Math.max(a.currentTime, st), off = G.ls + (at - st), X = .01;
+    const s = a.createBufferSource(), g = a.createGain(); s.buffer = G.buf; s.connect(g); g.connect(musicGain());
+    g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(1, at + X);
+    g.gain.setValueAtTime(1, st + G.len); g.gain.linearRampToValueAtTime(0, st + G.len + X);
+    s.start(at, off, G.len - (at - st) + X); G.srcs.push(s);
+  }
   while(bi < G.beats.length && t0 + G.beats[bi].t < a.currentTime + .25){ const at = t0 + G.beats[bi].t; if(at >= a.currentTime){ const bt = G.beats[bi]; if(backing && bt.chord) playBeat(at, bt); else tick(at, bt.strong); } bi++; }
   G.notes.forEach(n => {
     if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; if(n.midi!=null) n.stop = tone(n.midi, a.currentTime, n.d); burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
