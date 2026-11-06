@@ -55,6 +55,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hud .sc{background:rgba(255,255,255,.15);border-radius:999px;padding:2px 12px}
 .hud .nm{flex:1;text-align:center;font-family:'Mali',sans-serif;font-size:.95rem;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hud .x{pointer-events:auto;border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;width:40px;height:40px;font-size:1.1rem}
+.count{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;
+  font-family:'Mali',sans-serif;font-weight:800;font-size:120px;color:#FFE27A;text-shadow:0 6px 0 rgba(0,0,0,.25)}
+.count[hidden]{display:none}
+.count.pulse{animation:cnt .7s ease-out}
+@keyframes cnt{0%{transform:scale(1.6);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:.85}}
 .res{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(43,35,80,.55);padding:16px}
 .res.show{display:flex}
 .res .card{background:#fff;border-radius:28px;padding:20px;text-align:center;max-width:380px;width:100%}
@@ -82,7 +87,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   </section>
 
   <section id="play" hidden>
-    <div class="stage" id="stage"><canvas id="cv"></canvas>
+    <div class="stage" id="stage"><canvas id="cv"></canvas><div class="count" id="count" hidden></div>
       <div class="hud"><span class="sc" id="score">0</span><span class="nm" id="sname"></span><button class="x" id="quit" type="button" aria-label="ออก">✖</button></div>
       <div class="res" id="res"><div class="card">
         <h2 id="rtitle">เก่งมาก!</h2><div class="stars" id="rstars"></div>
@@ -171,7 +176,9 @@ function build(song, sp){
     /* loop:{at, beats} → เริ่มที่จังหวะที่ใกล้ at ที่สุด ยาว beats จังหวะพอดี */
     let ls = 0, le = song.buf.duration;
     if(song.loop){ const P0 = song.chart.P, ph0 = song.chart.cands[0].t; ls = ph0 + Math.round((song.loop.at - ph0)/P0)*P0; le = ls + song.loop.beats*P0; }
-    const P = song.chart.P, G = { lyr:song.lyr, audio:true, buf:song.buf, chart:song.chart, spb0:P, spb:P, ls, len:le-ls, notes:[], beats:[], loops:0, end:0, audioQ:[], srcs:[] };
+    /* pre = ดนตรีก่อนจุดวนที่เล่นนำในรอบแรก (สูงสุด 1 ห้อง) · lead = รอบแรกไม่มีโน้ตก่อนดนตรีขึ้นอย่างน้อย 2 จังหวะ */
+    const pre = Math.min(ls, 4*song.chart.P), lead = Math.max(0, 2*song.chart.P - pre);
+    const P = song.chart.P, G = { pre, lead, lyr:song.lyr, audio:true, buf:song.buf, chart:song.chart, spb0:P, spb:P, ls, len:le-ls, notes:[], beats:[], loops:0, end:0, audioQ:[], srcs:[] };
     for(let b=4;b>=1;b--) G.beats.push({ t:-b*P, strong:b===4 });
     addLoop(G); return G;
   }
@@ -193,7 +200,7 @@ function addLoop(G){
     const halfThr = k >= 3 ? ch.q30 : ch.q50, used = [0,0,0,0];
     let l1 = -1, l2 = -1;
     for(let h=0; base + h*P/2 < G.ls + G.len - .05; h++){
-      const ta = base + h*P/2; if(ta < G.ls) continue;
+      const ta = base + h*P/2; if(ta < G.ls || (k===0 && ta - G.ls < G.lead)) continue;
       const onBeat = h%2===0, beat = h/2;
       const c = ch.cands.reduce((b,x) => Math.abs(x.t-ta) < Math.abs(b.t-ta) ? x : b, ch.cands[0]);
       if(!c.r) continue;   /* ช่วงเงียบ */
@@ -204,7 +211,7 @@ function addLoop(G){
       used[lane]++; l2 = l1; l1 = lane;
       G.notes.push({ t:G.end + ta - G.ls, d:.1, midi:null, lane, hold:false, judged:false, res:'', held:false, stop:null, loop:k });
     }
-    G.audioQ.push(G.end); G.end += G.len; G.loops++; return;
+    G.audioQ.push({ t:G.end, pre:G.loops ? 0 : G.pre }); G.end += G.len; G.loops++; return;
   }
   const spb = G.spb0 / Math.min(1.8, Math.pow(1.08, G.loops)), t0 = G.end; let beat = 0;
   G.raw.forEach(x => {
@@ -235,7 +242,7 @@ function addLyricLoop(G){
   picks.sort((a,b) => a.s - b.s);
   const lastIn = [-9,-9,-9,-9], notes = [];
   picks.forEach(p => {
-    const t = snap(p.s + (p.v ? .08 : 0)); if(t < G.ls || t >= G.ls + G.len - .05) return;
+    const t = snap(p.s + (p.v ? .08 : 0)); if(k===0 && t - G.ls < G.lead) return; if(t < G.ls || t >= G.ls + G.len - .05) return;
     if(notes.length && t - notes[notes.length-1].tq < .12) return;
     let lane = p.lane; if(t - lastIn[lane] < .3) lane = [1,2,3,0].find(l => t - lastIn[l] >= .3) ?? lane;
     const dur = p.e - p.s, hold = dur >= .55;
@@ -245,7 +252,7 @@ function addLyricLoop(G){
   /* ปุ่มกดค้างห้ามทับปุ่มถัดไปในเลนเดียวกัน */
   notes.forEach((n,i) => { if(!n.hold) return; const nx = notes.slice(i+1).find(m => m.lane===n.lane); if(nx && n.tq + n.d > nx.tq - .15){ n.d = nx.tq - .15 - n.tq; if(n.d < .4){ n.hold = false; n.d = .1; } } });
   notes.forEach(n => G.notes.push({ t:G.end + n.tq - G.ls, d:n.d, midi:null, lane:n.lane, hold:n.hold, judged:false, res:'', held:false, stop:null, loop:k }));
-  G.audioQ.push(G.end); G.end += G.len; G.loops++;
+  G.audioQ.push({ t:G.end, pre:G.loops ? 0 : G.pre }); G.end += G.len; G.loops++;
 }
 
 /* ---------------- เสียง ---------------- */
@@ -478,12 +485,38 @@ async function start(id, isDemo, btn){
   $('#menu').hidden = true; $('#play').hidden = false; $('#res').classList.remove('show');
   $('#sname').textContent = (demo ? '👂 ' : '')+song.e+' '+song.n; $('#score').textContent = demo ? 'ฟังตัวอย่าง' : '0';
   size(); window.scrollTo(0, 0);
+  cancelAnimationFrame(raf); cx.clearRect(0, 0, W, H);
+  const myG = G;
+  await countdown(demo);
+  if(G !== myG) return;   /* กดออกระหว่างนับ */
   t0 = ac().currentTime + sp.fall + .3;
-  say(demo ? 'ฟังก่อนนะ' : 'อยู่ให้ถึงหนึ่งนาที ได้หนึ่งดาว');
-  cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
+  raf = requestAnimationFrame(frame);
+}
+/* พูดให้จบก่อน แล้วนับ 3 2 1 ตัวใหญ่ พร้อมเสียงเคาะ จึงค่อยปล่อยโน้ต */
+function sayDone(t){
+  return new Promise(res => {
+    let done = false; const fin = () => { if(!done){ done = true; res(); } };
+    try{
+      if(!window.speechSynthesis || (window.KP && KP.isMuted && KP.isMuted())) return setTimeout(fin, 200);
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'th-TH';
+      u.onend = fin; u.onerror = fin; speechSynthesis.speak(u);
+    }catch(e){ fin(); }
+    setTimeout(fin, 3000);
+  });
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function countdown(isDemo){
+  const el = $('#count'), myG = G; el.hidden = false; el.textContent = isDemo ? '👂' : '🎵';
+  await sayDone(isDemo ? 'ฟังก่อนนะ' : 'พร้อมไหม');
+  for(const n of ['3','2','1']){
+    if(G !== myG) break;
+    el.textContent = n; el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+    tick(ac().currentTime, n==='3'); await wait(700);
+  }
+  el.textContent = 'เริ่ม!'; setTimeout(() => { el.hidden = true; }, 600);
 }
 function stopAudio(){ if(!G) return; G.notes.forEach(n => n.stop && n.stop(ac().currentTime)); (G.srcs||[]).forEach(s => { try{ s.stop(); }catch(e){} }); }
-function stopPlay(){ cancelAnimationFrame(raf); stopAudio(); G = null; }
+function stopPlay(){ cancelAnimationFrame(raf); stopAudio(); G = null; $('#count').hidden = true; }
 $('#quit').onclick = () => {
   if(G && !demo && lastT > 5){ finish('quit'); return; }   /* ออกกลางทาง ยังได้ดาวตามเวลาที่อยู่ได้ */
   stopPlay(); $('#play').hidden = true; $('#menu').hidden = false; renderMenu();
@@ -561,11 +594,11 @@ function frame(){
   if(!demo && G.end - t < sp.fall + 4) addLoop(G);
   /* แต่ละรอบเล่นช่วง loop ของไฟล์ · เกลี่ยเสียง 10 มิลลิวินาทีตรงรอยต่อ (รอบเก่าค่อย ๆ หาย รอบใหม่ค่อย ๆ เข้า) */
   while(G.audioQ && G.audioQ.length){
-    const st = t0 + G.audioQ.shift(), at = Math.max(a.currentTime, st), off = G.ls + (at - st), X = .01;
+    const q = G.audioQ.shift(), st = t0 + q.t - q.pre, dur = G.len + q.pre, at = Math.max(a.currentTime, st), off = G.ls - q.pre + (at - st), X = .01;
     const s = a.createBufferSource(), g = a.createGain(); s.buffer = G.buf; s.connect(g); g.connect(musicGain());
     g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(1, at + X);
-    g.gain.setValueAtTime(1, st + G.len); g.gain.linearRampToValueAtTime(0, st + G.len + X);
-    s.start(at, off, G.len - (at - st) + X); G.srcs.push(s);
+    g.gain.setValueAtTime(1, st + dur); g.gain.linearRampToValueAtTime(0, st + dur + X);
+    s.start(at, off, dur - (at - st) + X); G.srcs.push(s);
   }
   while(bi < G.beats.length && t0 + G.beats[bi].t < a.currentTime + .25){ const at = t0 + G.beats[bi].t; if(at >= a.currentTime){ const bt = G.beats[bi]; if(backing && bt.chord) playBeat(at, bt); else tick(at, bt.strong); } bi++; }
   G.notes.forEach(n => {
@@ -652,7 +685,7 @@ function draw(t, sp){
   cx.globalAlpha = 1;
   if(combo >= 3){ cx.font = '800 40px Mali, sans-serif'; cx.fillStyle = 'rgba(255,255,255,.85)'; cx.fillText(combo, W/2, H*.3); cx.font = '700 15px sans-serif'; cx.fillText('คอมโบ', W/2, H*.3 + 22); }
   /* นับถอยหลัง */
-  if(t < 0){ const c = Math.ceil(-t / G.spb0); if(c <= 4){ cx.font = '800 64px Mali, sans-serif'; cx.fillStyle = '#fff'; cx.fillText(c, W/2, H*.5); } }
+
 }
 function currentLoop(t){ let k = 0; G.notes.forEach(n => { if(n.t <= t && n.loop > k) k = n.loop; }); return k; }
 function rr(x, y, w, h, r){ r = Math.min(r, w/2, h/2); cx.beginPath(); cx.moveTo(x+r, y); cx.arcTo(x+w, y, x+w, y+h, r); cx.arcTo(x+w, y+h, x, y+h, r); cx.arcTo(x, y+h, x, y, r); cx.arcTo(x, y, x+w, y, r); cx.closePath(); }
