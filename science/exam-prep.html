@@ -425,6 +425,7 @@ const spoken = t => { const r = readOf(t); return r ? t + ' อ่านว่�
 
 const $=s=>document.querySelector(s);
 /* ภาพถ่ายจริง: ใส่ 'pic:ชื่อ' ในช่องอิโมจิโจทย์ ไฟล์อยู่ที่ img/sci/ชื่อ.webp (ที่มาของภาพอยู่ใน CREDITS) */
+const CREDITS=[["ช้าง", "Timothy A. Gonsalves", "CC BY-SA 4.0", "https://commons.wikimedia.org/w/index.php?curid=119671316"], ["ควาย", "Fabian Roudra Baroi", "CC BY-SA 4.0", "https://commons.wikimedia.org/w/index.php?curid=127989442"], ["เต่า", "Zeynel Cebeci", "CC BY-SA 4.0", "https://commons.wikimedia.org/w/index.php?curid=52525988"], ["ปลาทอง", "James St. John", "CC BY 2.0", "https://commons.wikimedia.org/w/index.php?curid=95119266"], ["ปูเสฉวน", "Pseudopanax at English Wikipedia", "Public domain", "https://commons.wikimedia.org/w/index.php?curid=175451672"], ["งู", "HCA", "CC BY-SA 3.0", "https://commons.wikimedia.org/w/index.php?curid=4590431"], ["นกนางนวล", "Arnold Paul", "CC BY-SA 2.5", "https://commons.wikimedia.org/w/index.php?curid=450703"], ["สุนัข", "Canarian", "CC BY-SA 4.0", "https://commons.wikimedia.org/w/index.php?curid=93444451"], ["กระต่าย", "JM Ligero Loarte", "CC BY 3.0", "https://commons.wikimedia.org/w/index.php?curid=24986245"], ["จระเข้", "Leonora (Ellie) Enking", "CC BY-SA 2.0", "https://commons.wikimedia.org/w/index.php?curid=189051117"]];
 const isPic=v=>typeof v==='string' && v.indexOf('pic:')===0;
 const picHTML=v=>'<figure class="qpic"><img src="../img/sci/'+v.slice(4)+'.webp" alt="" loading="lazy"></figure>';
 const strip=s=>String(s).replace(/<[^>]*>/g,'');
