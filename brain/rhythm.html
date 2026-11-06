@@ -488,6 +488,7 @@ async function start(id, isDemo, btn){
   $('#sname').textContent = (demo ? '👂 ' : '')+song.e+' '+song.n; $('#score').textContent = demo ? 'ฟังตัวอย่าง' : '0';
   size(); window.scrollTo(0, 0);
   cancelAnimationFrame(raf); cx.clearRect(0, 0, W, H);
+  t0 = ac().currentTime + 1e6;   /* ระหว่างนับถอยหลัง นาฬิกาเกมยังไม่เดิน แตะไปก็ไม่นับ */
   const myG = G;
   await countdown(demo);
   if(G !== myG) return;   /* กดออกระหว่างนับ */
