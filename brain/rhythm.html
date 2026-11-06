@@ -77,10 +77,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 <main class="wrap">
   <section id="menu">
-    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะเลนนั้นตอนโน้ตถึงวงกลม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
+    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะจอตอนโน้ตถึงช่องสี่เหลี่ยม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
     <div class="speeds" id="cats"></div>
     <div class="speeds" id="speeds"></div>
-    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="fxBtn">✨ เสียงเอฟเฟกต์: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
+    <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="anyBtn">👆 แตะตรงไหนก็ได้</button><button type="button" id="fxBtn">✨ เสียงเอฟเฟกต์: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
     <div class="songs" id="songs"></div>
     <div class="pickbox"><label class="btn soft" id="pickBtn">🎧 เลือกเพลงจากเครื่อง<input type="file" id="pick" accept="audio/*" hidden></label>
       <small>ใช้ไฟล์เพลงที่มีอยู่ในไอแพด (mp3, m4a) เกมจะฟังจังหวะแล้วสร้างโน้ตให้ · ไฟล์อยู่ในเครื่องนี้เท่านั้น</small></div>
@@ -414,6 +414,7 @@ const inCat = s => cat==='all' || (cat==='times') === /^times/.test(s.id);
 function renderMenu(){
   $('#cats').innerHTML = CATS.map(([k,n]) => '<button type="button" data-c="'+k+'" class="'+(k===cat?'on':'')+'">'+n+'</button>').join('');
   $('#cats').querySelectorAll('button').forEach(b => b.onclick = () => { cat = b.dataset.c; history.replaceState(null, '', cat==='all' ? location.pathname : '#'+cat); say(b.textContent.replace(/^\S+\s/, '')); renderMenu(); });
+  $('#anyBtn').textContent = anyTap ? '👆 แตะตรงไหนก็ได้' : '🎯 แตะให้ตรงช่อง'; $('#anyBtn').classList.toggle('on', anyTap);
   $('#fxBtn').textContent = fxOn ? '✨ เสียงเอฟเฟกต์: เปิด' : '🔕 เสียงเอฟเฟกต์: ปิด'; $('#fxBtn').classList.toggle('on', fxOn);
   $('#band').textContent = backing ? '🥁 ดนตรีประกอบ: เปิด' : '🔇 ดนตรีประกอบ: ปิด'; $('#band').classList.toggle('on', backing);
   $('#speeds').innerHTML = SPEEDS.map((s,i) => '<button type="button" data-s="'+i+'" class="'+(i===spI?'on':'')+'">'+s.n+'</button>').join('');
@@ -447,6 +448,7 @@ $('#calGo').onclick = async () => {
   }, (st + 12*gap - a.currentTime)*1000 + 400);
 };
 $('#pad').addEventListener('pointerdown', e => { e.preventDefault(); const p = $('#pad'); p.classList.add('hit'); setTimeout(() => p.classList.remove('hit'), 90); if(calRun) calRun.taps.push(ac().currentTime); });
+$('#anyBtn').onclick = () => { anyTap = !anyTap; try{ localStorage.setItem('kids-rhythm-any', anyTap ? '1' : '0'); }catch(e){} say(anyTap ? 'แตะตรงไหนก็ได้' : 'แตะให้ตรงช่อง'); renderMenu(); };
 $('#fxBtn').onclick = () => { fxOn = !fxOn; try{ localStorage.setItem('kids-rhythm-fx', fxOn ? '1' : '0'); }catch(e){} if(fxOn) hitFx('perf'); renderMenu(); };
 $('#band').onclick = () => { backing = !backing; try{ localStorage.setItem('kids-rhythm-band', backing ? '1' : '0'); }catch(e){} say(backing ? 'เปิดดนตรีประกอบ' : 'ปิดดนตรีประกอบ'); renderMenu(); };
 /* เพลงจากไอแพด: เล่นในเครื่องนี้เท่านั้น ไม่ส่งไฟล์ไปไหน */
@@ -557,17 +559,22 @@ function levelUp(k){
   const a = ac(), at = a.currentTime; [72, 76, 79, 84].forEach((m,i) => tone(m, at + i*.09, .3, .15));
 }
 
+/* แตะตรงไหนก็ได้ (ค่าเริ่มต้น) = นับให้โน้ตที่ใกล้จังหวะที่สุดทุกเลน · ปิดแล้วต้องแตะให้ตรงเลน */
+let anyTap = true;
+try{ anyTap = localStorage.getItem('kids-rhythm-any') !== '0'; }catch(e){}
 function hitLane(l){
-  if(!G || demo) return;
-  press.add(l);
+  if(!G || demo) return l;
   const t = now(), sp = SPEEDS[spI];
   let best = null;
-  G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
-  if(!best){ tick(ac().currentTime, false); return; }
+  G.notes.forEach(n => { if(!n.judged && (anyTap || n.lane===l) && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
+  if(best) l = best.lane;   /* ไฟติดที่เลนของโน้ตที่โดน */
+  press.add(l);
+  if(!best){ tick(ac().currentTime, false); return l; }
   const off = Math.abs(best.t - t);
   if(best.midi==null){ if(!fxOn) tone(LANE_MIDI[l], ac().currentTime, .05, .09); } else best.stop = tone(best.midi, ac().currentTime, best.d);
   if(best.hold){ best.held = true; best.pressT = t; }
   judge(best, off <= sp.perf ? 'perf' : 'good');
+  return l;
 }
 function releaseLane(l){
   press.delete(l); if(!G) return;
@@ -580,13 +587,14 @@ $('#stage').addEventListener('pointerdown', e => {
   if(e.target.closest('.hud .x, .res')) return;
   e.preventDefault(); const r = $('#stage').getBoundingClientRect();
   const l = Math.max(0, Math.min(LANES-1, Math.floor((e.clientX - r.left) / (r.width/LANES))));
-  ptr.set(e.pointerId, l); hitLane(l);
+  ptr.set(e.pointerId, hitLane(l));
 });
 const up = e => { if(ptr.has(e.pointerId)){ releaseLane(ptr.get(e.pointerId)); ptr.delete(e.pointerId); } };
 addEventListener('pointerup', up); addEventListener('pointercancel', up);
 const KEYS = { d:0, f:1, j:2, k:3 };
-addEventListener('keydown', e => { const l = KEYS[e.key]; if(l!=null && !e.repeat && !press.has(l)) hitLane(l); });
-addEventListener('keyup', e => { const l = KEYS[e.key]; if(l!=null) releaseLane(l); });
+const keyLane = {};
+addEventListener('keydown', e => { const l = KEYS[e.key]; if(l!=null && !e.repeat && keyLane[e.key]==null) keyLane[e.key] = hitLane(l); });
+addEventListener('keyup', e => { if(keyLane[e.key]!=null){ releaseLane(keyLane[e.key]); delete keyLane[e.key]; } });
 
 function frame(){
   if(!G) return;
