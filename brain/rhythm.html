@@ -627,7 +627,7 @@ function frame(){
 function draw(t, sp){
   const lw = laneW(), hy = hitY(), pps = (hy + 30) / sp.fall;
   cx.clearRect(0, 0, W, H);
-  for(let l=0;l<LANES;l++){
+  if(!anyTap) for(let l=0;l<LANES;l++){   /* แถบช่อง แสดงเฉพาะโหมดแตะให้ตรงช่อง */
     cx.fillStyle = press.has(l) ? 'rgba(255,255,255,.14)' : (l%2 ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.08)');
     cx.fillRect(l*lw, 0, lw, H);
   }
@@ -653,7 +653,14 @@ function draw(t, sp){
   /* ปุ่มกดสี่เหลี่ยมใหญ่ที่เส้นตี (วาดก่อน ให้โน้ตลอยทับ) */
   cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke();
   const PS = padS();
-  for(let l=0;l<LANES;l++){
+  if(anyTap){
+    /* โหมดแตะตรงไหนก็ได้: แถบรับยาวเต็มจอแถบเดียว ไม่มีช่อง · กดแล้วขึ้นสีของโน้ตที่โดน */
+    const lit = [...press][0], bh = PS*.8;
+    rr(16, hy - bh/2, W - 32, bh, 26); cx.fillStyle = lit!=null ? LC[lit] : 'rgba(255,255,255,.10)'; cx.fill();
+    cx.lineWidth = 5; cx.strokeStyle = lit!=null ? LC[lit] : 'rgba(255,255,255,.55)'; cx.stroke();
+    cx.fillStyle = 'rgba(255,255,255,.55)'; cx.font = '800 20px Mali, sans-serif'; cx.textAlign = 'center';
+    cx.fillText('👆 แตะตรงไหนก็ได้', W/2, hy + bh/2 + 30);
+  } else for(let l=0;l<LANES;l++){
     const px = (l+.5)*lw - PS/2, py = hy - PS/2;
     rr(px, py, PS, PS, 22); cx.fillStyle = press.has(l) ? LC[l] : 'rgba(255,255,255,.10)'; cx.fill();
     cx.lineWidth = 5; cx.strokeStyle = LC[l]; cx.stroke();
