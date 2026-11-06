@@ -469,6 +469,8 @@ const laneW = () => W / LANES;
 /* โหมดแตะตรงไหนก็ได้ = แผ่นโน้ตยาวเต็มช่อง (แบบเปียโนไทล์) แตะที่ตัวแผ่นได้ตลอดทางที่มันตกลงมา */
 const tileW = () => laneW() - 6, tileH = () => Math.min(laneW()*1.3, H*.26, 220);
 const hitY = () => anyTap ? H - tileH()/2 - 4 : H - 112;
+/* ความยาวแผ่น = ยาวตามเสียงที่ลาก (กดค้าง) แต่ไม่สั้นกว่าแผ่นปกติ · เว้นช่องนิดก่อนแผ่นถัดไป */
+const tileLen = (n, pps) => n.hold ? Math.max(tileH(), n.d*pps - 6) : tileH();
 /* ขนาดปุ่มกดด้านล่าง กับขนาดโน้ตสี่เหลี่ยมที่ไหลลงมา (ใหญ่ให้นิ้วเด็กกดง่าย) */
 const padS = () => Math.min(laneW()*.88, 128), noteS = () => Math.min(laneW()*.7, 96);
 /* เวลาที่ "ได้ยิน" จริง = นาฬิกาเสียง − ดีเลย์ลำโพง/หูฟัง · ตั้งจากการเคาะตาม (🎯) ได้ ไม่ตั้ง = ใช้ค่าที่เครื่องบอก */
@@ -577,8 +579,8 @@ function hitLane(l, px, py){
     if(best){
       const y = hitY() - (best.t - t)*(hitY() + 30)/sp.fall, PAD = 24;
       const x0 = best.lane*laneW() + 3, inX = px==null || (px >= x0 - PAD && px <= x0 + tileW() + PAD);
-      const top = y - (best.hold ? best.d*(hitY() + 30)/sp.fall : 0);   /* แผ่นกดค้าง: แตะตรงส่วนยาวก็ได้ */
-      const inY = py==null || (py >= top - tileH()/2 - PAD && py <= y + tileH()/2 + PAD);
+      const bot = y + tileH()/2, top = bot - tileLen(best, (hitY() + 30)/sp.fall);   /* แผ่นยาว: แตะตรงไหนของแผ่นก็ได้ */
+      const inY = py==null || (py >= top - PAD && py <= bot + PAD);
       if(y < 0 || !inX || !inY) best = null; else best.py = y;
     }
   } else G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
@@ -681,13 +683,24 @@ function draw(t, sp){
     const y = hy - (n.t - t)*pps;
     if(y < -NH && !n.hold) return;
     const x = (n.lane+.5)*lw - NS/2;
+    if(anyTap){
+      /* โหมดแผ่น: แผ่นเดียวยาวตามเสียงที่ลาก (แผ่นที่กดค้างตกต่อไปตามปกติ และสว่างขึ้น) */
+      if(n.judged && n.res!=='miss' && !n.held) return;
+      const bot = (n.held ? Math.min(y, hy) : y) + NH/2, top = bot - tileLen(n, pps);
+      if(top > H || bot < 0) return;
+      cx.globalAlpha = n.res==='miss' ? .3 : 1;
+      cx.fillStyle = LC[n.lane]; rr(x, top, NS, bot - top, 18); cx.fill();
+      cx.lineWidth = n.held ? 6 : 3; cx.strokeStyle = n.held ? '#fff' : 'rgba(255,255,255,.85)'; cx.stroke();
+      if(n.held){ cx.fillStyle = 'rgba(255,255,255,.3)'; rr(x, top, NS, bot - top, 18); cx.fill(); }
+      cx.fillStyle = 'rgba(255,255,255,.45)'; rr(x + 8, top + 8, NS - 16, NS*.22, 8); cx.fill();
+      cx.globalAlpha = 1;
+      return;
+    }
     if(n.hold){
-      const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? (anyTap ? Math.min(y, hy) + NH/2 : hy) : y;   /* โหมดแผ่น: แผ่นที่กดค้างตกต่อไปตามปกติ */
+      const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? hy : y;
       if(bot > top && !(n.judged && !n.held && n.res!=='miss' && t > n.t + .05)){
-        cx.globalAlpha = n.res==='miss' ? .2 : n.held ? .9 : .55; cx.fillStyle = LC[n.lane];
-        if(anyTap){ const tt = Math.max(-10, yTail + NH/2 - 6); if(bot > tt){ rr(x, tt, NS, bot - tt, 18); cx.fill(); } }   /* โหมดแผ่น: ส่วนกดค้างกว้างเท่าแผ่น จบพอดีก่อนแผ่นถัดไป */
-        else { rr(x + NS*.3, top, NS*.4, bot - top, NS*.2); cx.fill(); }
-        cx.globalAlpha = 1;
+        cx.globalAlpha = n.res==='miss' ? .2 : .55; cx.fillStyle = LC[n.lane];
+        rr(x + NS*.3, top, NS*.4, bot - top, NS*.2); cx.fill(); cx.globalAlpha = 1;
       }
     }
     if(n.judged && n.res!=='miss') return;
