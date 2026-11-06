@@ -77,7 +77,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 <main class="wrap">
   <section id="menu">
-    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะจอตอนโน้ตถึงช่องสี่เหลี่ยม เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
+    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะตรงไหนของจอก็ได้ตอนโน้ตถึงเส้นล่าง ตามลำดับที่ตกลงมา เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
     <div class="speeds" id="cats"></div>
     <div class="speeds" id="speeds"></div>
     <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="anyBtn">👆 แตะตรงไหนก็ได้</button><button type="button" id="fxBtn">✨ เสียงเอฟเฟกต์: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
@@ -465,7 +465,7 @@ let W = 0, H = 0, DPR = 1, G = null, t0 = 0, bi = 0, raf = 0, score = 0, combo =
 const press = new Set(), fx = [], pops = [];
 function size(){ const r = $('#stage').getBoundingClientRect(); DPR = Math.min(2, devicePixelRatio||1); W = r.width; H = r.height; cv.width = W*DPR; cv.height = H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
 new ResizeObserver(() => { if(!$('#play').hidden) size(); }).observe($('#stage'));
-const hitY = () => H - 112, laneW = () => W / LANES;
+const hitY = () => H - (anyTap ? 64 : 112), laneW = () => W / LANES;
 /* ขนาดปุ่มกดด้านล่าง กับขนาดโน้ตสี่เหลี่ยมที่ไหลลงมา (ใหญ่ให้นิ้วเด็กกดง่าย) */
 const padS = () => Math.min(laneW()*.88, 128), noteS = () => Math.min(laneW()*.7, 96);
 /* เวลาที่ "ได้ยิน" จริง = นาฬิกาเสียง − ดีเลย์ลำโพง/หูฟัง · ตั้งจากการเคาะตาม (🎯) ได้ ไม่ตั้ง = ใช้ค่าที่เครื่องบอก */
@@ -567,7 +567,11 @@ function hitLane(l){
   if(!G || demo) return l;
   const t = now(), sp = SPEEDS[spI];
   let best = null;
-  G.notes.forEach(n => { if(!n.judged && (anyTap || n.lane===l) && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
+  if(anyTap){
+    /* แตะตรงไหนก็ได้ แต่ต้องตามลำดับที่ตกลงมา: นับเฉพาะโน้ตตัวแรกที่ยังไม่ได้กด ถ้ายังไม่ถึงจังหวะก็ไม่นับ */
+    G.notes.forEach(n => { if(!n.judged && (!best || n.t < best.t)) best = n; });
+    if(best && Math.abs(best.t - t) > sp.good) best = null;
+  } else G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
   if(best) l = best.lane;   /* ไฟติดที่เลนของโน้ตที่โดน */
   press.add(l);
   if(!best){ tick(ac().currentTime, false); return l; }
@@ -651,15 +655,12 @@ function draw(t, sp){
     cx.fillStyle = '#FFE27A'; cx.fillRect(0, 0, W*Math.max(0, Math.min(1, t/G.end)), 5);
   }
   /* ปุ่มกดสี่เหลี่ยมใหญ่ที่เส้นตี (วาดก่อน ให้โน้ตลอยทับ) */
-  cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke();
+  if(!anyTap){ cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke(); }
   const PS = padS();
   if(anyTap){
-    /* โหมดแตะตรงไหนก็ได้: แถบรับยาวเต็มจอแถบเดียว ไม่มีช่อง · กดแล้วขึ้นสีของโน้ตที่โดน */
-    const lit = [...press][0], bh = PS*.8;
-    rr(16, hy - bh/2, W - 32, bh, 26); cx.fillStyle = lit!=null ? LC[lit] : 'rgba(255,255,255,.10)'; cx.fill();
-    cx.lineWidth = 5; cx.strokeStyle = lit!=null ? LC[lit] : 'rgba(255,255,255,.55)'; cx.stroke();
-    cx.fillStyle = 'rgba(255,255,255,.55)'; cx.font = '800 20px Mali, sans-serif'; cx.textAlign = 'center';
-    cx.fillText('👆 แตะตรงไหนก็ได้', W/2, hy + bh/2 + 30);
+    /* โหมดแตะตรงไหนก็ได้: ไม่มีปุ่มด้านล่าง มีแค่เส้นจุดบาง ๆ บอกว่าโน้ตถึงจังหวะตรงไหน */
+    cx.save(); cx.setLineDash([10, 10]); cx.strokeStyle = 'rgba(255,255,255,.45)'; cx.lineWidth = 3;
+    cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke(); cx.restore();
   } else for(let l=0;l<LANES;l++){
     const px = (l+.5)*lw - PS/2, py = hy - PS/2;
     rr(px, py, PS, PS, 22); cx.fillStyle = press.has(l) ? LC[l] : 'rgba(255,255,255,.10)'; cx.fill();
@@ -697,7 +698,7 @@ function draw(t, sp){
   for(let i=pops.length-1;i>=0;i--){ const p = pops[i], k = (ms - p.t)/(p.big ? 1800 : 700); if(k>1){ pops.splice(i,1); continue; }
     cx.globalAlpha = 1-k*k; cx.fillStyle = p.col;
     if(p.big){ cx.font = '800 44px Mali, sans-serif'; cx.fillText(p.txt, W/2, H*.42 - k*20); }
-    else { cx.font = '800 22px Mali, sans-serif'; cx.fillText(p.txt, (p.l+.5)*lw, hy - padS()/2 - 22 - k*30); } }
+    else { cx.font = '800 22px Mali, sans-serif'; cx.fillText(p.txt, (p.l+.5)*lw, hy - (anyTap ? noteS() : padS())/2 - 22 - k*30); } }
   cx.globalAlpha = 1;
   if(combo >= 3){ cx.font = '800 40px Mali, sans-serif'; cx.fillStyle = 'rgba(255,255,255,.85)'; cx.fillText(combo, W/2, H*.3); cx.font = '700 15px sans-serif'; cx.fillText('คอมโบ', W/2, H*.3 + 22); }
   /* นับถอยหลัง */
