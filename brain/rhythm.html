@@ -105,7 +105,40 @@ button{font:inherit;color:inherit;cursor:pointer}
 </div></div>
 <script>
 const $ = s => document.querySelector(s);
-function say(t){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'th-TH'; speechSynthesis.speak(u); }catch(e){} }
+/* เสียงพูดของเกม = เสียงคนจริงจาก ElevenLabs (audio/voice/vNN.mp3) ถ้าโหลดไม่ได้ใช้เสียงอ่านของเครื่องแทน
+   เล่นผ่าน Web Audio ให้เล่นได้กลางเกมบนไอแพด · คืน Promise ที่จบเมื่อพูดเสร็จ */
+const VOICE = {"พร้อมไหม":"01","ฟังก่อนนะ":"02","เก่งมาก ได้ 1 ดาว":"03","เก่งมาก ได้ 2 ดาว":"04","เก่งมาก ได้ 3 ดาว":"05","สุดยอด ได้มงกุฎ":"06","ลองอีกครั้งนะ อยู่ให้ถึงหนึ่งนาทีจะได้ดาว":"07","ลองเล่นเองเลย":"08","ลองอีกครั้งนะ":"09","แตะตรงไหนก็ได้":"10","แตะให้ตรงช่อง":"11","เปิดดนตรีประกอบ":"12","ปิดดนตรีประกอบ":"13","ตั้งจังหวะเรียบร้อย":"14","เปิดเพลงนี้ไม่ได้":"15","ทั้งหมด":"16","เพลงสูตรคูณ":"17","เพลงทำนอง":"18","ช้า":"19","ปกติ":"20","เร็ว":"21"};
+const vbuf = {};
+let vsrc = null;
+function loadVoice(t){
+  const k = VOICE[t]; if(!k) return null;
+  return vbuf[k] || (vbuf[k] = fetch('../audio/voice/v'+k+'.mp3').then(r => { if(!r.ok) throw 0; return r.arrayBuffer(); })
+    .then(b => ac().decodeAudioData(b)).catch(() => { delete vbuf[k]; return null; }));
+}
+function preloadVoices(){ Object.keys(VOICE).forEach(loadVoice); }
+addEventListener('pointerdown', preloadVoices, { once:true });
+function ttsSay(t, fin){
+  try{
+    if(!window.speechSynthesis) return fin && fin();
+    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'th-TH';
+    if(fin){ u.onend = fin; u.onerror = fin; } speechSynthesis.speak(u);
+  }catch(e){ fin && fin(); }
+}
+function say(t){
+  return new Promise(res => {
+    try{ speechSynthesis.cancel(); }catch(e){}
+    try{ if(vsrc){ vsrc.onended = null; vsrc.stop(); } }catch(e){} vsrc = null;
+    const p = loadVoice(t);
+    if(!p) return ttsSay(t, res);
+    p.then(buf => {
+      if(!buf) return ttsSay(t, res);
+      const a = ac(); a.resume && a.resume();
+      const s = a.createBufferSource(), g = a.createGain(); g.gain.value = 1.2;
+      s.buffer = buf; s.connect(g); g.connect(a.destination); s.onended = () => { if(vsrc===s) vsrc = null; res(); };
+      vsrc = s; s.start();
+    });
+  });
+}
 
 /* ---------------- เพลง (ทำนองหมดลิขสิทธิ์ เขียนเป็น โน้ต:จังหวะ · R = เงียบ) ---------------- */
 const SONGS = [
@@ -502,15 +535,8 @@ async function start(id, isDemo, btn){
 }
 /* พูดให้จบก่อน แล้วนับ 3 2 1 ตัวใหญ่ พร้อมเสียงเคาะ จึงค่อยปล่อยโน้ต */
 function sayDone(t){
-  return new Promise(res => {
-    let done = false; const fin = () => { if(!done){ done = true; res(); } };
-    try{
-      if(!window.speechSynthesis || (window.KP && KP.isMuted && KP.isMuted())) return setTimeout(fin, 200);
-      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'th-TH';
-      u.onend = fin; u.onerror = fin; speechSynthesis.speak(u);
-    }catch(e){ fin(); }
-    setTimeout(fin, 3000);
-  });
+  if(window.KP && KP.isMuted && KP.isMuted()) return wait(200);
+  return Promise.race([say(t), wait(3000)]);
 }
 const wait = ms => new Promise(r => setTimeout(r, ms));
 async function countdown(isDemo){
@@ -748,7 +774,7 @@ function finish(why){
 }
 
 renderMenu();
-window.__test = { get sp(){ return SPEEDS[spI]; }, hitY:() => hitY(), lag, setCalib:v => { calib = v; }, harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
+window.__test = { say, loadVoice, get sp(){ return SPEEDS[spI]; }, hitY:() => hitY(), lag, setCalib:v => { calib = v; }, harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
 </script>
 <script src="../common/progress.js"></script>
 </body>
