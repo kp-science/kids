@@ -500,10 +500,14 @@ function size(){ const r = $('#stage').getBoundingClientRect(); DPR = Math.min(2
 new ResizeObserver(() => { if(!$('#play').hidden) size(); }).observe($('#stage'));
 const laneW = () => W / LANES;
 /* โหมดแตะตรงไหนก็ได้ = แผ่นโน้ตยาวเต็มช่อง (แบบเปียโนไทล์) แตะที่ตัวแผ่นได้ตลอดทางที่มันตกลงมา */
-const tileW = () => laneW() - 6, tileH = () => Math.min(laneW()*1.3, H*.26, 220);
+const TGAP = 14, tileW = () => laneW() - TGAP, tileH = () => Math.min(laneW()*1.3, H*.26, 220);
 const hitY = () => anyTap ? H - tileH()/2 - 4 : H - 112;
 /* ความยาวแผ่น = ยาวตามเสียงที่ลาก (กดค้าง) แต่ไม่สั้นกว่าแผ่นปกติ · เว้นช่องนิดก่อนแผ่นถัดไป */
-const tileLen = (n, pps) => n.hold ? Math.max(tileH(), n.d*pps - 6) : tileH();
+const tileLen = (n, pps) => {
+  const base = n.hold ? Math.max(tileH(), n.d*pps) : tileH();
+  const cap = n.nx!=null ? (n.nx - n.t)*pps - TGAP : Infinity;   /* ไม่ให้ชนแผ่นถัดไปในช่องเดียวกัน */
+  return Math.max(40, Math.min(base, cap));
+};
 /* ขนาดปุ่มกดด้านล่าง กับขนาดโน้ตสี่เหลี่ยมที่ไหลลงมา (ใหญ่ให้นิ้วเด็กกดง่าย) */
 const padS = () => Math.min(laneW()*.88, 128), noteS = () => Math.min(laneW()*.7, 96);
 /* เวลาที่ "ได้ยิน" จริง = นาฬิกาเสียง − ดีเลย์ลำโพง/หูฟัง · ตั้งจากการเคาะตาม (🎯) ได้ ไม่ตั้ง = ใช้ค่าที่เครื่องบอก */
@@ -604,7 +608,7 @@ function hitLane(l, px, py){
     G.notes.forEach(n => { if(!n.judged && (!best || n.t < best.t)) best = n; });
     if(best){
       const y = hitY() - (best.t - t)*(hitY() + 30)/sp.fall, PAD = 24;
-      const x0 = best.lane*laneW() + 3, inX = px==null || (px >= x0 - PAD && px <= x0 + tileW() + PAD);
+      const x0 = best.lane*laneW() + TGAP/2, inX = px==null || (px >= x0 - PAD && px <= x0 + tileW() + PAD);
       const bot = y + tileH()/2, top = bot - tileLen(best, (hitY() + 30)/sp.fall);   /* แผ่นยาว: แตะตรงไหนของแผ่นก็ได้ */
       const inY = py==null || (py >= top - PAD && py <= bot + PAD);
       if(y < 0 || !inX || !inY) best = null; else best.py = y;
@@ -615,14 +619,23 @@ function hitLane(l, px, py){
   if(!best){ tick(ac().currentTime, false); return l; }
   const off = Math.abs(best.t - t);
   if(best.midi==null){ if(!fxOn) tone(LANE_MIDI[l], ac().currentTime, .05, .09); } else best.stop = tone(best.midi, ac().currentTime, best.d);
-  if(best.hold){ best.held = true; best.pressT = t; }
+  if(best.hold){ best.held = true; best.pressT = t;
+    /* โหมดแผ่น: ต้องกดค้างจนสีเข้มเต็มแผ่น (เท่าความยาวแผ่น) */
+    if(anyTap){ const pps = (hitY() + 30)/sp.fall; best.holdEnd = t + tileLen(best, pps)/pps; } }
   judge(best, (anyTap ? off <= sp.good : off <= sp.perf) ? 'perf' : 'good');
   return l;
 }
 function releaseLane(l){
   press.delete(l); if(!G) return;
   const t = now();
-  G.notes.forEach(n => { if(n.held && n.lane===l){ n.held = false; if(t < n.t + n.d - .12 && n.stop) n.stop(ac().currentTime); if(t >= n.t + n.d*.7){ score += 50; pop(l, 'ยาวเยี่ยม!', '#FFE27A'); hitFx('long'); } } });
+  G.notes.forEach(n => { if(n.held && n.lane===l){
+    n.held = false; n.relT = t;
+    const end = n.holdEnd!=null ? n.holdEnd : n.t + n.d;
+    if(t < end - .12 && n.stop) n.stop(ac().currentTime);
+    if(n.holdEnd!=null){   /* โหมดแผ่น: ปล่อยก่อนสุดแผ่น = ไม่ได้ ต้องกดค้างจนจบ */
+      if(t >= end - .12){ n.done = true; score += 50; pop(l, 'ยาวเยี่ยม!', '#FFE27A'); hitFx('long'); }
+      else { combo = 0; pop(l, 'กดค้างจนสุดนะ', '#FFB4B4'); }
+    } else if(t >= n.t + n.d*.7){ score += 50; pop(l, 'ยาวเยี่ยม!', '#FFE27A'); hitFx('long'); } } });
 }
 /* แตะได้หลายนิ้วพร้อมกัน · คอมพิวเตอร์ใช้ปุ่ม D F J K */
 const ptr = new Map();
@@ -656,7 +669,7 @@ function frame(){
     if(demo && n.midi!=null && !n.sched && n.t - t < .25 + lag()){ n.sched = true; n.stop = tone(n.midi, Math.max(a.currentTime, t0 + n.t), n.d); }   /* ตัวอย่าง: ตั้งเวลาเสียงให้ตรงจังหวะดนตรี */
     if(demo && !n.judged && t >= n.t){ n.judged = true; n.res = 'perf'; n.held = n.hold; burst(n.lane); press.add(n.lane); setTimeout(() => press.delete(n.lane), 140); }
     if(!n.judged && t - n.t > sp.good) judge(n, 'miss');
-    if(n.held && t >= n.t + n.d){ n.held = false; score += 50; pop(n.lane, 'ยาวเยี่ยม!', '#FFE27A'); if(!demo) hitFx('long'); }
+    if(n.held && t >= (n.holdEnd!=null ? n.holdEnd : n.t + n.d)){ n.held = false; n.done = true; score += 50; pop(n.lane, 'ยาวเยี่ยม!', '#FFE27A'); if(!demo) hitFx('long'); }
   });
   if(G.notes.length > 400) G.notes = G.notes.filter(n => !(n.judged && !n.held && t - n.t > 4));
   if(!demo) while(tier < MILES.length && t >= MILES[tier]) levelUp(tier+1);
@@ -705,20 +718,24 @@ function draw(t, sp){
   }
   /* โน้ตสี่เหลี่ยม · เส้นยาวต่อท้ายสำหรับกดค้าง */
   const NS = anyTap ? tileW() : noteS(), NH = anyTap ? tileH() : NS;
+  if(anyTap){ const nxt = {}; G.notes.slice().sort((a,b) => b.t - a.t).forEach(n => { n.nx = nxt[n.lane]; nxt[n.lane] = n.t; }); }
   G.notes.forEach(n => {
     const y = hy - (n.t - t)*pps;
     if(y < -NH && !n.hold) return;
     const x = (n.lane+.5)*lw - NS/2;
     if(anyTap){
-      /* โหมดแผ่น: แผ่นเดียวยาวตามเสียงที่ลาก (แผ่นที่กดค้างตกต่อไปตามปกติ และสว่างขึ้น) */
-      if(n.judged && n.res!=='miss' && !n.held) return;
-      const bot = (n.held ? Math.min(y, hy) : y) + NH/2, top = bot - tileLen(n, pps);
+      /* โหมดแผ่น: แผ่นเดียวยาวตามเสียงที่ลาก · แตะแล้วสีเข้มและตกต่อ · แผ่นยาวสีเข้มค่อย ๆ เต็มจากล่างขึ้นบนระหว่างกดค้าง */
+      const bot = y + NH/2, len = tileLen(n, pps), top = bot - len;
       if(top > H || bot < 0) return;
+      const hit = n.judged && n.res!=='miss';
       cx.globalAlpha = n.res==='miss' ? .3 : 1;
-      cx.fillStyle = LC[n.lane]; rr(x, top, NS, bot - top, 18); cx.fill();
-      cx.lineWidth = n.held ? 6 : 3; cx.strokeStyle = n.held ? '#fff' : 'rgba(255,255,255,.85)'; cx.stroke();
-      if(n.held){ cx.fillStyle = 'rgba(255,255,255,.3)'; rr(x, top, NS, bot - top, 18); cx.fill(); }
-      cx.fillStyle = 'rgba(255,255,255,.45)'; rr(x + 8, top + 8, NS - 16, NS*.22, 8); cx.fill();
+      cx.fillStyle = LC[n.lane]; rr(x, top, NS, len, 18); cx.fill();
+      if(hit){
+        const fh = n.hold && !n.done ? Math.min(len, Math.max(0, ((n.held ? t : n.relT) - n.pressT)*pps)) : len;
+        cx.save(); rr(x, top, NS, len, 18); cx.clip();
+        cx.fillStyle = 'rgba(30,20,60,.45)'; cx.fillRect(x, bot - fh, NS, fh); cx.restore();
+      } else { cx.fillStyle = 'rgba(255,255,255,.45)'; rr(x + 8, top + 8, NS - 16, NS*.22, 8); cx.fill(); }
+      rr(x, top, NS, len, 18); cx.lineWidth = n.held ? 6 : 3; cx.strokeStyle = n.held ? '#fff' : 'rgba(255,255,255,.85)'; cx.stroke();
       cx.globalAlpha = 1;
       return;
     }
