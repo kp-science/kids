@@ -456,7 +456,9 @@ let W = 0, H = 0, DPR = 1, G = null, t0 = 0, bi = 0, raf = 0, score = 0, combo =
 const press = new Set(), fx = [], pops = [];
 function size(){ const r = $('#stage').getBoundingClientRect(); DPR = Math.min(2, devicePixelRatio||1); W = r.width; H = r.height; cv.width = W*DPR; cv.height = H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
 new ResizeObserver(() => { if(!$('#play').hidden) size(); }).observe($('#stage'));
-const hitY = () => H - 96, laneW = () => W / LANES;
+const hitY = () => H - 112, laneW = () => W / LANES;
+/* ขนาดปุ่มกดด้านล่าง กับขนาดโน้ตสี่เหลี่ยมที่ไหลลงมา (ใหญ่ให้นิ้วเด็กกดง่าย) */
+const padS = () => Math.min(laneW()*.88, 128), noteS = () => Math.min(laneW()*.7, 96);
 /* เวลาที่ "ได้ยิน" จริง = นาฬิกาเสียง − ดีเลย์ลำโพง/หูฟัง · ตั้งจากการเคาะตาม (🎯) ได้ ไม่ตั้ง = ใช้ค่าที่เครื่องบอก */
 let calib = null;
 try{ const v = parseFloat(localStorage.getItem('kids-rhythm-offset')); if(isFinite(v)) calib = v; }catch(e){}
@@ -606,33 +608,36 @@ function draw(t, sp){
     cx.fillStyle = 'rgba(255,255,255,.18)'; cx.fillRect(0, 0, W, 5);
     cx.fillStyle = '#FFE27A'; cx.fillRect(0, 0, W*Math.max(0, Math.min(1, t/G.end)), 5);
   }
-  /* โน้ต */
+  /* ปุ่มกดสี่เหลี่ยมใหญ่ที่เส้นตี (วาดก่อน ให้โน้ตลอยทับ) */
+  cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke();
+  const PS = padS();
+  for(let l=0;l<LANES;l++){
+    const px = (l+.5)*lw - PS/2, py = hy - PS/2;
+    rr(px, py, PS, PS, 22); cx.fillStyle = press.has(l) ? LC[l] : 'rgba(255,255,255,.10)'; cx.fill();
+    cx.lineWidth = 5; cx.strokeStyle = LC[l]; cx.stroke();
+    rr(px + 10, py + 10, PS - 20, PS - 20, 14); cx.lineWidth = 2; cx.strokeStyle = 'rgba(255,255,255,.25)'; cx.stroke();
+  }
+  /* โน้ตสี่เหลี่ยม · เส้นยาวต่อท้ายสำหรับกดค้าง */
+  const NS = noteS();
   G.notes.forEach(n => {
     const y = hy - (n.t - t)*pps;
-    if(y < -40 && !n.hold) return;
-    const x = n.lane*lw + lw*.14, w = lw*.72;
+    if(y < -NS && !n.hold) return;
+    const x = (n.lane+.5)*lw - NS/2;
     if(n.hold){
       const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? hy : y;
       if(bot > top && !(n.judged && !n.held && n.res!=='miss' && t > n.t + .05)){
         cx.globalAlpha = n.res==='miss' ? .2 : .55; cx.fillStyle = LC[n.lane];
-        rr(x + w*.28, top, w*.44, bot - top, w*.22); cx.fill(); cx.globalAlpha = 1;
+        rr(x + NS*.3, top, NS*.4, bot - top, NS*.2); cx.fill(); cx.globalAlpha = 1;
       }
     }
     if(n.judged && n.res!=='miss') return;
-    if(y > H + 30 || y < -40) return;
+    if(y > H + NS || y < -NS) return;
     cx.globalAlpha = n.res==='miss' ? .3 : 1;
-    cx.fillStyle = LC[n.lane]; rr(x, y-14, w, 28, 14); cx.fill();
-    cx.fillStyle = 'rgba(255,255,255,.6)'; rr(x+6, y-10, w-12, 8, 4); cx.fill();
+    cx.fillStyle = LC[n.lane]; rr(x, y - NS/2, NS, NS, 18); cx.fill();
+    cx.lineWidth = 3; cx.strokeStyle = 'rgba(255,255,255,.85)'; cx.stroke();
+    cx.fillStyle = 'rgba(255,255,255,.45)'; rr(x + 8, y - NS/2 + 8, NS - 16, NS*.22, 8); cx.fill();
     cx.globalAlpha = 1;
   });
-  /* เส้นตี + วงกลม */
-  cx.strokeStyle = 'rgba(255,255,255,.5)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke();
-  for(let l=0;l<LANES;l++){
-    const cxp = (l+.5)*lw, r = Math.min(34, lw*.3);
-    cx.beginPath(); cx.arc(cxp, hy, r, 0, Math.PI*2);
-    cx.fillStyle = press.has(l) ? LC[l] : 'rgba(255,255,255,.12)'; cx.fill();
-    cx.lineWidth = 4; cx.strokeStyle = LC[l]; cx.stroke();
-  }
   /* ประกาย */
   for(let i=fx.length-1;i>=0;i--){ const p = fx[i]; p.x += p.vx/60; p.y += p.vy/60; p.vy += 6; p.life -= .03;
     if(p.life<=0){ fx.splice(i,1); continue; } cx.globalAlpha = p.life; cx.fillStyle = p.c; cx.beginPath(); cx.arc(p.x, p.y, 5*p.life+1, 0, Math.PI*2); cx.fill(); }
@@ -643,7 +648,7 @@ function draw(t, sp){
   for(let i=pops.length-1;i>=0;i--){ const p = pops[i], k = (ms - p.t)/(p.big ? 1800 : 700); if(k>1){ pops.splice(i,1); continue; }
     cx.globalAlpha = 1-k*k; cx.fillStyle = p.col;
     if(p.big){ cx.font = '800 44px Mali, sans-serif'; cx.fillText(p.txt, W/2, H*.42 - k*20); }
-    else { cx.font = '800 22px Mali, sans-serif'; cx.fillText(p.txt, (p.l+.5)*lw, hy - 60 - k*30); } }
+    else { cx.font = '800 22px Mali, sans-serif'; cx.fillText(p.txt, (p.l+.5)*lw, hy - padS()/2 - 22 - k*30); } }
   cx.globalAlpha = 1;
   if(combo >= 3){ cx.font = '800 40px Mali, sans-serif'; cx.fillStyle = 'rgba(255,255,255,.85)'; cx.fillText(combo, W/2, H*.3); cx.font = '700 15px sans-serif'; cx.fillText('คอมโบ', W/2, H*.3 + 22); }
   /* นับถอยหลัง */
