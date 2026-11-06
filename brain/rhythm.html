@@ -77,7 +77,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 <main class="wrap">
   <section id="menu">
-    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>โน้ตไหลลงมา แตะตรงไหนของจอก็ได้ตอนโน้ตถึงเส้นล่าง ตามลำดับที่ตกลงมา เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
+    <div class="hero"><h1>🎵 แตะให้ตรงจังหวะ</h1><p>แผ่นโน้ตตกลงมา แตะที่แผ่นได้เลยตอนไหนก็ได้ก่อนมันหลุดจอ ตามลำดับที่ตกลงมา เพลงจะดังจากนิ้วของหนู · เส้นยาวให้กดค้างไว้<br>เพลงวนเร็วขึ้นเรื่อย ๆ อยู่ได้ 1 นาที ⭐ · 2 นาที ⭐⭐ · 3 นาที ⭐⭐⭐ · 4 นาที 👑</p></div>
     <div class="speeds" id="cats"></div>
     <div class="speeds" id="speeds"></div>
     <div class="speeds"><button type="button" id="band">🥁 ดนตรีประกอบ: เปิด</button><button type="button" id="anyBtn">👆 แตะตรงไหนก็ได้</button><button type="button" id="fxBtn">✨ เสียงเอฟเฟกต์: เปิด</button><button type="button" id="calBtn">🎯 ตั้งจังหวะนิ้ว</button></div>
@@ -465,7 +465,10 @@ let W = 0, H = 0, DPR = 1, G = null, t0 = 0, bi = 0, raf = 0, score = 0, combo =
 const press = new Set(), fx = [], pops = [];
 function size(){ const r = $('#stage').getBoundingClientRect(); DPR = Math.min(2, devicePixelRatio||1); W = r.width; H = r.height; cv.width = W*DPR; cv.height = H*DPR; cx.setTransform(DPR,0,0,DPR,0,0); }
 new ResizeObserver(() => { if(!$('#play').hidden) size(); }).observe($('#stage'));
-const hitY = () => H - (anyTap ? 64 : 112), laneW = () => W / LANES;
+const laneW = () => W / LANES;
+/* โหมดแตะตรงไหนก็ได้ = แผ่นโน้ตยาวเต็มช่อง (แบบเปียโนไทล์) แตะที่ตัวแผ่นได้ตลอดทางที่มันตกลงมา */
+const tileW = () => laneW() - 6, tileH = () => Math.min(laneW()*1.3, H*.26, 220);
+const hitY = () => anyTap ? H - tileH()/2 - 4 : H - 112;
 /* ขนาดปุ่มกดด้านล่าง กับขนาดโน้ตสี่เหลี่ยมที่ไหลลงมา (ใหญ่ให้นิ้วเด็กกดง่าย) */
 const padS = () => Math.min(laneW()*.88, 128), noteS = () => Math.min(laneW()*.7, 96);
 /* เวลาที่ "ได้ยิน" จริง = นาฬิกาเสียง − ดีเลย์ลำโพง/หูฟัง · ตั้งจากการเคาะตาม (🎯) ได้ ไม่ตั้ง = ใช้ค่าที่เครื่องบอก */
@@ -547,12 +550,12 @@ function judge(n, kind){
     if(G && G.audio){ const g = musicGain().gain, t = ac().currentTime; g.cancelScheduledValues(t); g.setTargetAtTime(.35, t, .03); g.setTargetAtTime(1, t+.3, .1); }
     return; }
   combo++; score += (kind==='perf' ? 100 : 60) + Math.min(combo, 30)*2; life = Math.min(100, life + (kind==='perf' ? 3 : 1));
-  pop(n.lane, kind==='perf' ? 'เยี่ยม!' : 'ดี!', kind==='perf' ? '#FFE27A' : '#B8F2D8'); burst(n.lane);
+  pop(n.lane, kind==='perf' ? 'เยี่ยม!' : 'ดี!', kind==='perf' ? '#FFE27A' : '#B8F2D8'); burst(n.lane, 12, n.py);
   hitFx(combo % 10 === 0 ? 'combo' : kind);
 }
 function pop(l, txt, col, big){ pops.push({ l, txt, col, big, t:performance.now() }); }
-function burst(l, n=12){ for(let i=0;i<n;i++){ const a = Math.random()*Math.PI*2, v = 80+Math.random()*160;
-  fx.push({ x:l==null ? W/2 : (l+.5)*laneW(), y:l==null ? H*.4 : hitY(), vx:Math.cos(a)*v, vy:Math.sin(a)*v-80, life:1, c:l==null ? LC[i%4] : LC[l] }); } }
+function burst(l, n=12, y){ for(let i=0;i<n;i++){ const a = Math.random()*Math.PI*2, v = 80+Math.random()*160;
+  fx.push({ x:l==null ? W/2 : (l+.5)*laneW(), y:l==null ? H*.4 : (y!=null ? y : hitY()), vx:Math.cos(a)*v, vy:Math.sin(a)*v-80, life:1, c:l==null ? LC[i%4] : LC[l] }); } }
 function levelUp(k){
   tier = k; burst(null, 60);
   const txt = k>=4 ? '👑 ได้มงกุฎ!' : '⭐'.repeat(k)+' ได้ '+k+' ดาว!';
@@ -563,14 +566,20 @@ function levelUp(k){
 /* แตะตรงไหนก็ได้ (ค่าเริ่มต้น) = นับให้โน้ตที่ใกล้จังหวะที่สุดทุกเลน · ปิดแล้วต้องแตะให้ตรงเลน */
 let anyTap = true;
 try{ anyTap = localStorage.getItem('kids-rhythm-any') !== '0'; }catch(e){}
-function hitLane(l){
+function hitLane(l, px, py){
   if(!G || demo) return l;
   const t = now(), sp = SPEEDS[spI];
   let best = null;
   if(anyTap){
-    /* แตะตรงไหนก็ได้ แต่ต้องตามลำดับที่ตกลงมา: นับเฉพาะโน้ตตัวแรกที่ยังไม่ได้กด ถ้ายังไม่ถึงจังหวะก็ไม่นับ */
+    /* แตะที่แผ่นโน้ตได้ทุกที่ที่มันตกลงมา ไม่ต้องรอถึงข้างล่าง แต่ต้องตามลำดับ: นับเฉพาะแผ่นแรกที่ยังไม่ได้แตะ
+       แตะพื้นที่ว่างหรือแผ่นที่มาทีหลัง = ไม่นับ · คีย์บอร์ด (ไม่มีตำแหน่ง) = แผ่นแรกที่เห็นบนจอ */
     G.notes.forEach(n => { if(!n.judged && (!best || n.t < best.t)) best = n; });
-    if(best && Math.abs(best.t - t) > sp.good) best = null;
+    if(best){
+      const y = hitY() - (best.t - t)*(hitY() + 30)/sp.fall, PAD = 24;
+      const x0 = best.lane*laneW() + 3, inX = px==null || (px >= x0 - PAD && px <= x0 + tileW() + PAD);
+      const inY = py==null || (py >= y - tileH()/2 - PAD && py <= y + tileH()/2 + PAD);
+      if(y < 0 || !inX || !inY) best = null; else best.py = y;
+    }
   } else G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
   if(best) l = best.lane;   /* ไฟติดที่เลนของโน้ตที่โดน */
   press.add(l);
@@ -578,7 +587,7 @@ function hitLane(l){
   const off = Math.abs(best.t - t);
   if(best.midi==null){ if(!fxOn) tone(LANE_MIDI[l], ac().currentTime, .05, .09); } else best.stop = tone(best.midi, ac().currentTime, best.d);
   if(best.hold){ best.held = true; best.pressT = t; }
-  judge(best, off <= sp.perf ? 'perf' : 'good');
+  judge(best, (anyTap ? off <= sp.good : off <= sp.perf) ? 'perf' : 'good');
   return l;
 }
 function releaseLane(l){
@@ -592,7 +601,7 @@ $('#stage').addEventListener('pointerdown', e => {
   if(e.target.closest('.hud .x, .res')) return;
   e.preventDefault(); const r = $('#stage').getBoundingClientRect();
   const l = Math.max(0, Math.min(LANES-1, Math.floor((e.clientX - r.left) / (r.width/LANES))));
-  ptr.set(e.pointerId, hitLane(l));
+  ptr.set(e.pointerId, hitLane(l, e.clientX - r.left, e.clientY - r.top));
 });
 const up = e => { if(ptr.has(e.pointerId)){ releaseLane(ptr.get(e.pointerId)); ptr.delete(e.pointerId); } };
 addEventListener('pointerup', up); addEventListener('pointercancel', up);
@@ -631,7 +640,9 @@ function frame(){
 function draw(t, sp){
   const lw = laneW(), hy = hitY(), pps = (hy + 30) / sp.fall;
   cx.clearRect(0, 0, W, H);
-  if(!anyTap) for(let l=0;l<LANES;l++){   /* แถบช่อง แสดงเฉพาะโหมดแตะให้ตรงช่อง */
+  if(anyTap){ cx.strokeStyle = 'rgba(255,255,255,.08)'; cx.lineWidth = 2;   /* เส้นแบ่งช่องจาง ๆ */
+    for(let l=1;l<LANES;l++){ cx.beginPath(); cx.moveTo(l*lw, 0); cx.lineTo(l*lw, H); cx.stroke(); } }
+  else for(let l=0;l<LANES;l++){   /* แถบช่อง แสดงเฉพาะโหมดแตะให้ตรงช่อง */
     cx.fillStyle = press.has(l) ? 'rgba(255,255,255,.14)' : (l%2 ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.08)');
     cx.fillRect(l*lw, 0, lw, H);
   }
@@ -657,21 +668,17 @@ function draw(t, sp){
   /* ปุ่มกดสี่เหลี่ยมใหญ่ที่เส้นตี (วาดก่อน ให้โน้ตลอยทับ) */
   if(!anyTap){ cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke(); }
   const PS = padS();
-  if(anyTap){
-    /* โหมดแตะตรงไหนก็ได้: ไม่มีปุ่มด้านล่าง มีแค่เส้นจุดบาง ๆ บอกว่าโน้ตถึงจังหวะตรงไหน */
-    cx.save(); cx.setLineDash([10, 10]); cx.strokeStyle = 'rgba(255,255,255,.45)'; cx.lineWidth = 3;
-    cx.beginPath(); cx.moveTo(0, hy); cx.lineTo(W, hy); cx.stroke(); cx.restore();
-  } else for(let l=0;l<LANES;l++){
+  if(!anyTap) for(let l=0;l<LANES;l++){
     const px = (l+.5)*lw - PS/2, py = hy - PS/2;
     rr(px, py, PS, PS, 22); cx.fillStyle = press.has(l) ? LC[l] : 'rgba(255,255,255,.10)'; cx.fill();
     cx.lineWidth = 5; cx.strokeStyle = LC[l]; cx.stroke();
     rr(px + 10, py + 10, PS - 20, PS - 20, 14); cx.lineWidth = 2; cx.strokeStyle = 'rgba(255,255,255,.25)'; cx.stroke();
   }
   /* โน้ตสี่เหลี่ยม · เส้นยาวต่อท้ายสำหรับกดค้าง */
-  const NS = noteS();
+  const NS = anyTap ? tileW() : noteS(), NH = anyTap ? tileH() : NS;
   G.notes.forEach(n => {
     const y = hy - (n.t - t)*pps;
-    if(y < -NS && !n.hold) return;
+    if(y < -NH && !n.hold) return;
     const x = (n.lane+.5)*lw - NS/2;
     if(n.hold){
       const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? hy : y;
@@ -681,11 +688,11 @@ function draw(t, sp){
       }
     }
     if(n.judged && n.res!=='miss') return;
-    if(y > H + NS || y < -NS) return;
+    if(y > H + NH || y < -NH) return;
     cx.globalAlpha = n.res==='miss' ? .3 : 1;
-    cx.fillStyle = LC[n.lane]; rr(x, y - NS/2, NS, NS, 18); cx.fill();
+    cx.fillStyle = LC[n.lane]; rr(x, y - NH/2, NS, NH, 18); cx.fill();
     cx.lineWidth = 3; cx.strokeStyle = 'rgba(255,255,255,.85)'; cx.stroke();
-    cx.fillStyle = 'rgba(255,255,255,.45)'; rr(x + 8, y - NS/2 + 8, NS - 16, NS*.22, 8); cx.fill();
+    cx.fillStyle = 'rgba(255,255,255,.45)'; rr(x + 8, y - NH/2 + 8, NS - 16, Math.min(NS, NH)*.22, 8); cx.fill();
     cx.globalAlpha = 1;
   });
   /* ประกาย */
@@ -698,7 +705,7 @@ function draw(t, sp){
   for(let i=pops.length-1;i>=0;i--){ const p = pops[i], k = (ms - p.t)/(p.big ? 1800 : 700); if(k>1){ pops.splice(i,1); continue; }
     cx.globalAlpha = 1-k*k; cx.fillStyle = p.col;
     if(p.big){ cx.font = '800 44px Mali, sans-serif'; cx.fillText(p.txt, W/2, H*.42 - k*20); }
-    else { cx.font = '800 22px Mali, sans-serif'; cx.fillText(p.txt, (p.l+.5)*lw, hy - (anyTap ? noteS() : padS())/2 - 22 - k*30); } }
+    else { cx.font = '800 22px Mali, sans-serif'; cx.fillText(p.txt, (p.l+.5)*lw, (anyTap ? H*.55 : hy - padS()/2 - 22) - k*30); } }
   cx.globalAlpha = 1;
   if(combo >= 3){ cx.font = '800 40px Mali, sans-serif'; cx.fillStyle = 'rgba(255,255,255,.85)'; cx.fillText(combo, W/2, H*.3); cx.font = '700 15px sans-serif'; cx.fillText('คอมโบ', W/2, H*.3 + 22); }
   /* นับถอยหลัง */
@@ -725,7 +732,7 @@ function finish(why){
 }
 
 renderMenu();
-window.__test = { lag, setCalib:v => { calib = v; }, harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
+window.__test = { get sp(){ return SPEEDS[spI]; }, hitY:() => hitY(), lag, setCalib:v => { calib = v; }, harmonize, SONGS, build, start, hitLane, releaseLane, get G(){ return G; }, now, cnt:() => cnt, get life(){ return life; }, set life(v){ life = v; }, get tier(){ return tier; }, finish };
 </script>
 <script src="../common/progress.js"></script>
 </body>
