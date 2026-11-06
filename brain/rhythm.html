@@ -577,7 +577,8 @@ function hitLane(l, px, py){
     if(best){
       const y = hitY() - (best.t - t)*(hitY() + 30)/sp.fall, PAD = 24;
       const x0 = best.lane*laneW() + 3, inX = px==null || (px >= x0 - PAD && px <= x0 + tileW() + PAD);
-      const inY = py==null || (py >= y - tileH()/2 - PAD && py <= y + tileH()/2 + PAD);
+      const top = y - (best.hold ? best.d*(hitY() + 30)/sp.fall : 0);   /* แผ่นกดค้าง: แตะตรงส่วนยาวก็ได้ */
+      const inY = py==null || (py >= top - tileH()/2 - PAD && py <= y + tileH()/2 + PAD);
       if(y < 0 || !inX || !inY) best = null; else best.py = y;
     }
   } else G.notes.forEach(n => { if(!n.judged && n.lane===l && Math.abs(n.t - t) <= sp.good && (!best || Math.abs(n.t-t) < Math.abs(best.t-t))) best = n; });
@@ -681,10 +682,12 @@ function draw(t, sp){
     if(y < -NH && !n.hold) return;
     const x = (n.lane+.5)*lw - NS/2;
     if(n.hold){
-      const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? hy : y;
+      const yTail = hy - (n.t + n.d - t)*pps, top = Math.max(-10, yTail), bot = n.held ? (anyTap ? Math.min(y, hy) + NH/2 : hy) : y;   /* โหมดแผ่น: แผ่นที่กดค้างตกต่อไปตามปกติ */
       if(bot > top && !(n.judged && !n.held && n.res!=='miss' && t > n.t + .05)){
-        cx.globalAlpha = n.res==='miss' ? .2 : .55; cx.fillStyle = LC[n.lane];
-        rr(x + NS*.3, top, NS*.4, bot - top, NS*.2); cx.fill(); cx.globalAlpha = 1;
+        cx.globalAlpha = n.res==='miss' ? .2 : n.held ? .9 : .55; cx.fillStyle = LC[n.lane];
+        if(anyTap){ const tt = Math.max(-10, yTail + NH/2 - 6); if(bot > tt){ rr(x, tt, NS, bot - tt, 18); cx.fill(); } }   /* โหมดแผ่น: ส่วนกดค้างกว้างเท่าแผ่น จบพอดีก่อนแผ่นถัดไป */
+        else { rr(x + NS*.3, top, NS*.4, bot - top, NS*.2); cx.fill(); }
+        cx.globalAlpha = 1;
       }
     }
     if(n.judged && n.res!=='miss') return;
